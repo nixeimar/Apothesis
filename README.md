@@ -6,6 +6,6 @@ It is still under development but please be free to contact me if something is o
 
 Contact information:
 
-Nikolaos (Nikos) Cheimarios
+Nikolaos (Nikos) Cheimarios: 
 nixeimar@chemeng.ntua.gr
 
