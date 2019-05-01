@@ -1,4 +1,4 @@
-Apothesis is a open source software for simulating depositions processes via the kinetic Monte Carlo method. 
+Apothesis is a open source software for simulating deposition processes via the kinetic Monte Carlo method. 
 This is the first step for creating a generalized kinetic Monte Carlo code 
 for surface growth phenomena targeting chemical vapor and atomic layer deposition processes.  
 
