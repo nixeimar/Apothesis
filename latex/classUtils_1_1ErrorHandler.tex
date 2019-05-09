@@ -1,0 +1,64 @@
+\hypertarget{classUtils_1_1ErrorHandler}{}\section{Utils\+:\+:Error\+Handler Class Reference}
+\label{classUtils_1_1ErrorHandler}\index{Utils\+::\+Error\+Handler@{Utils\+::\+Error\+Handler}}
+
+
+{\ttfamily \#include $<$errorhandler.\+h$>$}
+
+Inheritance diagram for Utils\+:\+:Error\+Handler\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classUtils_1_1ErrorHandler}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classUtils_1_1ErrorHandler_af9d42cd68ec6959575b23f5e0acd1674}\label{classUtils_1_1ErrorHandler_af9d42cd68ec6959575b23f5e0acd1674}} 
+\mbox{\hyperlink{classUtils_1_1ErrorHandler_af9d42cd68ec6959575b23f5e0acd1674}{Error\+Handler}} (\mbox{\hyperlink{classApothesis}{Apothesis}} $\ast$apothesis)
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classUtils_1_1ErrorHandler_ae9077e0d6ebdc00de2431b1fb83ee86f}\label{classUtils_1_1ErrorHandler_ae9077e0d6ebdc00de2431b1fb83ee86f}} 
+virtual \mbox{\hyperlink{classUtils_1_1ErrorHandler_ae9077e0d6ebdc00de2431b1fb83ee86f}{$\sim$\+Error\+Handler}} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classUtils_1_1ErrorHandler_a8b2b06323fcdb8e996104ff33cfc6840}{error\+\_\+simple\+\_\+msg}} (string msg)
+\begin{DoxyCompactList}\small\item\em Different ways to handle an error depending on its nature. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classUtils_1_1ErrorHandler_a47765c6b3ec00dc1b17aeaa6c4e9a803}\label{classUtils_1_1ErrorHandler_a47765c6b3ec00dc1b17aeaa6c4e9a803}} 
+void \mbox{\hyperlink{classUtils_1_1ErrorHandler_a47765c6b3ec00dc1b17aeaa6c4e9a803}{error\+Msg}} (const string \&file, const string \&filetype, int line, const string \&msg)
+\begin{DoxyCompactList}\small\item\em Error message. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classUtils_1_1ErrorHandler_a05f868786277d5bbdc4707c36f122ba6}\label{classUtils_1_1ErrorHandler_a05f868786277d5bbdc4707c36f122ba6}} 
+void \mbox{\hyperlink{classUtils_1_1ErrorHandler_a05f868786277d5bbdc4707c36f122ba6}{error\+Msg}} (const string \&file, const string \&filetype, int line, int column, const string \&msg)
+\begin{DoxyCompactList}\small\item\em Error message. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classUtils_1_1ErrorHandler_a8f0a658e09dfcd13d3b075ff9080554f}\label{classUtils_1_1ErrorHandler_a8f0a658e09dfcd13d3b075ff9080554f}} 
+void \mbox{\hyperlink{classUtils_1_1ErrorHandler_a8f0a658e09dfcd13d3b075ff9080554f}{error\+Msg}} (const string \&file, const string \&filetype, const string \&msg)
+\begin{DoxyCompactList}\small\item\em Error message. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classUtils_1_1ErrorHandler_a42f8bebc7f7a9a80c7b763d82afe2074}\label{classUtils_1_1ErrorHandler_a42f8bebc7f7a9a80c7b763d82afe2074}} 
+void \mbox{\hyperlink{classUtils_1_1ErrorHandler_a42f8bebc7f7a9a80c7b763d82afe2074}{warning\+Msg}} (const string \&file, const string \&filetype, const string \&msg)
+\begin{DoxyCompactList}\small\item\em Warning message. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classUtils_1_1ErrorHandler_adb593ecfc758b7ddc5143e6a136bb53c}\label{classUtils_1_1ErrorHandler_adb593ecfc758b7ddc5143e6a136bb53c}} 
+void \mbox{\hyperlink{classUtils_1_1ErrorHandler_adb593ecfc758b7ddc5143e6a136bb53c}{warning\+Msg}} (const string \&movetype, const string \&msg)
+\begin{DoxyCompactList}\small\item\em Warning message. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classUtils_1_1ErrorHandler_afacf74c2bb2aefb55a2bf4efa561e92e}\label{classUtils_1_1ErrorHandler_afacf74c2bb2aefb55a2bf4efa561e92e}} 
+void \mbox{\hyperlink{classUtils_1_1ErrorHandler_afacf74c2bb2aefb55a2bf4efa561e92e}{warning\+Simple\+\_\+msg}} (const string \&msg)
+\begin{DoxyCompactList}\small\item\em Warning message simple text. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+A class for handling the development and user errors. Different ways to handle an error depending on its nature. Many of the functions are not implememented yet. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classUtils_1_1ErrorHandler_a8b2b06323fcdb8e996104ff33cfc6840}\label{classUtils_1_1ErrorHandler_a8b2b06323fcdb8e996104ff33cfc6840}} 
+\index{Utils\+::\+Error\+Handler@{Utils\+::\+Error\+Handler}!error\+\_\+simple\+\_\+msg@{error\+\_\+simple\+\_\+msg}}
+\index{error\+\_\+simple\+\_\+msg@{error\+\_\+simple\+\_\+msg}!Utils\+::\+Error\+Handler@{Utils\+::\+Error\+Handler}}
+\subsubsection{\texorpdfstring{error\+\_\+simple\+\_\+msg()}{error\_simple\_msg()}}
+{\footnotesize\ttfamily void Utils\+::\+Error\+Handler\+::error\+\_\+simple\+\_\+msg (\begin{DoxyParamCaption}\item[{string}]{msg }\end{DoxyParamCaption})}
+
+
+
+Different ways to handle an error depending on its nature. 
+
+Error message simple text 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+errorhandler.\+h\item 
+errorhandler.\+cpp\end{DoxyCompactItemize}

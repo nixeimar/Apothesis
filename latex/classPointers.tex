@@ -1,0 +1,44 @@
+\hypertarget{classPointers}{}\section{Pointers Class Reference}
+\label{classPointers}\index{Pointers@{Pointers}}
+
+
+{\ttfamily \#include $<$pointers.\+h$>$}
+
+Inheritance diagram for Pointers\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classPointers}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classPointers_affc1e7aa2bea5b24f4b03660d64897da}\label{classPointers_affc1e7aa2bea5b24f4b03660d64897da}} 
+\mbox{\hyperlink{classPointers_affc1e7aa2bea5b24f4b03660d64897da}{Pointers}} (\mbox{\hyperlink{classApothesis}{Apothesis}} $\ast$apothesis)
+\begin{DoxyCompactList}\small\item\em Contructor. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classPointers_a2573d2d29e2ee82e5eb351e9b340297f}\label{classPointers_a2573d2d29e2ee82e5eb351e9b340297f}} 
+\mbox{\hyperlink{classApothesis}{Apothesis}} $\ast$\& \mbox{\hyperlink{classPointers_a2573d2d29e2ee82e5eb351e9b340297f}{m\+\_\+apothesis}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classPointers}{Pointers}} to the classes of kmc.\+cpp. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classPointers_aed3e1462a45bffbe51b2de8fb36ea5a0}\label{classPointers_aed3e1462a45bffbe51b2de8fb36ea5a0}} 
+\mbox{\hyperlink{classLattice}{Lattice}} $\ast$\& \mbox{\hyperlink{classPointers_aed3e1462a45bffbe51b2de8fb36ea5a0}{m\+\_\+lattice}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classPointers}{Pointers}} to the classes of kmc.\+cpp. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classPointers_aff865007d21415a6ee4a8b03ad3c1bc5}\label{classPointers_aff865007d21415a6ee4a8b03ad3c1bc5}} 
+\mbox{\hyperlink{classIO}{IO}} $\ast$\& \mbox{\hyperlink{classPointers_aff865007d21415a6ee4a8b03ad3c1bc5}{m\+\_\+io}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classPointers}{Pointers}} to the classes of kmc.\+cpp. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classPointers_a38807af78210f98930ae491abb9ebf68}\label{classPointers_a38807af78210f98930ae491abb9ebf68}} 
+\mbox{\hyperlink{classUtils_1_1ErrorHandler}{Utils\+::\+Error\+Handler}} $\ast$\& \mbox{\hyperlink{classPointers_a38807af78210f98930ae491abb9ebf68}{m\+\_\+error\+Handler}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classPointers}{Pointers}} to the classes of kmc.\+cpp. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classPointers_ac0cc2a98afeec07800eca1828978e322}\label{classPointers_ac0cc2a98afeec07800eca1828978e322}} 
+\mbox{\hyperlink{classUtils_1_1Parameters}{Utils\+::\+Parameters}} $\ast$\& \mbox{\hyperlink{classPointers_ac0cc2a98afeec07800eca1828978e322}{m\+\_\+parameters}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classPointers}{Pointers}} to the classes of kmc.\+cpp. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The pointers class contains pointers to the classes defined in kmc.\+cpp. Itcreates a common space of all the class instances that are defined in the kmc class. As long as a kmc instance exists these classes are \char`\"{}united\char`\"{} in this common space. So, if someone wants to use the lattice instance from the io instance all that has to do is to call the insance as this defined in the kmc.\+cpp. For example in kcc.\+cpp an instance of the class lattice is p\+Lattice and an object of the io class is p\+IO. If someones wants to use the p\+IO from p\+Lattice all (s)he has to do is to call p\+I\+O-\/$>$ and the relevant public functionalities of the class. This is very handy to bind together different instances. (Taken from L\+A\+M\+M\+PS ;) ) 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+pointers.\+h\end{DoxyCompactItemize}

@@ -1,0 +1,88 @@
+\hypertarget{classMicroProcesses_1_1Diffusion}{}\section{Micro\+Processes\+:\+:Diffusion Class Reference}
+\label{classMicroProcesses_1_1Diffusion}\index{Micro\+Processes\+::\+Diffusion@{Micro\+Processes\+::\+Diffusion}}
+Inheritance diagram for Micro\+Processes\+:\+:Diffusion\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classMicroProcesses_1_1Diffusion}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMicroProcesses_1_1Diffusion_ac9ea5351a9030303907c2bf866076aa2}\label{classMicroProcesses_1_1Diffusion_ac9ea5351a9030303907c2bf866076aa2}} 
+\mbox{\hyperlink{classMicroProcesses_1_1Diffusion_ac9ea5351a9030303907c2bf866076aa2}{Diffusion}} ()
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMicroProcesses_1_1Diffusion_ad8f0097d8ef4e20a5e4c4e6a2bc0c228}\label{classMicroProcesses_1_1Diffusion_ad8f0097d8ef4e20a5e4c4e6a2bc0c228}} 
+virtual \mbox{\hyperlink{classMicroProcesses_1_1Diffusion_ad8f0097d8ef4e20a5e4c4e6a2bc0c228}{$\sim$\+Diffusion}} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMicroProcesses_1_1Diffusion_abdf4a0708fdec9bc6877418afaf51bb5}\label{classMicroProcesses_1_1Diffusion_abdf4a0708fdec9bc6877418afaf51bb5}} 
+void \mbox{\hyperlink{classMicroProcesses_1_1Diffusion_abdf4a0708fdec9bc6877418afaf51bb5}{init}} ()
+\begin{DoxyCompactList}\small\item\em Here everyhing needed for initialization of the process should be put. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMicroProcesses_1_1Diffusion_a8828bfcf075bd04443de9e9932fb5eab}\label{classMicroProcesses_1_1Diffusion_a8828bfcf075bd04443de9e9932fb5eab}} 
+void \mbox{\hyperlink{classMicroProcesses_1_1Diffusion_a8828bfcf075bd04443de9e9932fb5eab}{set\+Name}} (string s)
+\begin{DoxyCompactList}\small\item\em The name of the process. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMicroProcesses_1_1Diffusion_af483d53a291f3524a273d35d24f7f24c}\label{classMicroProcesses_1_1Diffusion_af483d53a291f3524a273d35d24f7f24c}} 
+double \mbox{\hyperlink{classMicroProcesses_1_1Diffusion_af483d53a291f3524a273d35d24f7f24c}{get\+Probability}} ()
+\begin{DoxyCompactList}\small\item\em Compute the overall probabilities of this process and return it. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMicroProcesses_1_1Diffusion_ad6cab95e42f11fed711a7b7b324291c8}\label{classMicroProcesses_1_1Diffusion_ad6cab95e42f11fed711a7b7b324291c8}} 
+string \mbox{\hyperlink{classMicroProcesses_1_1Diffusion_ad6cab95e42f11fed711a7b7b324291c8}{get\+Name}} ()
+\begin{DoxyCompactList}\small\item\em Returns the name of the process. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMicroProcesses_1_1Diffusion_a17993edabb08ca2fb96d22ef3cd838ca}{set\+Instance}} (\mbox{\hyperlink{classApothesis}{Apothesis}} $\ast$apothesis)
+\item 
+\mbox{\Hypertarget{classMicroProcesses_1_1Diffusion_ad82f57afa447a4d96b596d242ffb67e2}\label{classMicroProcesses_1_1Diffusion_ad82f57afa447a4d96b596d242ffb67e2}} 
+void \mbox{\hyperlink{classMicroProcesses_1_1Diffusion_ad82f57afa447a4d96b596d242ffb67e2}{active\+Sites}} (\mbox{\hyperlink{classLattice}{Lattice}} $\ast$)
+\begin{DoxyCompactList}\small\item\em Set the lattice uppon which adsorpiton will be performed. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMicroProcesses_1_1Diffusion_af699c30b1c182cce03e9a9826b0c5b51}\label{classMicroProcesses_1_1Diffusion_af699c30b1c182cce03e9a9826b0c5b51}} 
+void \mbox{\hyperlink{classMicroProcesses_1_1Diffusion_af699c30b1c182cce03e9a9826b0c5b51}{select\+Site}} ()
+\begin{DoxyCompactList}\small\item\em The initial site that the diffusion will begin. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMicroProcesses_1_1Diffusion_afff30436b63d3842c87895358ddbd575}\label{classMicroProcesses_1_1Diffusion_afff30436b63d3842c87895358ddbd575}} 
+void \mbox{\hyperlink{classMicroProcesses_1_1Diffusion_afff30436b63d3842c87895358ddbd575}{perform}} ()
+\begin{DoxyCompactList}\small\item\em Perform the process. This is what actually is called by the main K\+MC instance. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMicroProcesses_1_1Diffusion_a53e5d56710045b4f8783d9c05591357f}{set\+Process\+Map}} (map$<$ \mbox{\hyperlink{classMicroProcesses_1_1Process}{Process}} $\ast$, list$<$ \mbox{\hyperlink{classSurfaceTiles_1_1Site}{Site}} $\ast$ $>$ $\ast$ $>$ $\ast$)
+\item 
+\mbox{\Hypertarget{classMicroProcesses_1_1Diffusion_a8e19130f8f9948f1a6a446f4065027dd}\label{classMicroProcesses_1_1Diffusion_a8e19130f8f9948f1a6a446f4065027dd}} 
+list$<$ \mbox{\hyperlink{classSurfaceTiles_1_1Site}{Site}} $\ast$$>$ \mbox{\hyperlink{classMicroProcesses_1_1Diffusion_a8e19130f8f9948f1a6a446f4065027dd}{get\+Active\+List}} ()
+\begin{DoxyCompactList}\small\item\em The list of active sites for diffusion. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMicroProcesses_1_1Diffusion_a281afcddb42b87ae9ba3b48a54524cd1}{test}} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMicroProcesses_1_1Diffusion_aa5938a315954467db6f7d7f4e59fcf62}\label{classMicroProcesses_1_1Diffusion_aa5938a315954467db6f7d7f4e59fcf62}} 
+\mbox{\hyperlink{classApothesis}{Apothesis}} $\ast$ \mbox{\hyperlink{classMicroProcesses_1_1Diffusion_aa5938a315954467db6f7d7f4e59fcf62}{m\+\_\+apothesis}}
+\begin{DoxyCompactList}\small\item\em The kmc instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classMicroProcesses_1_1Diffusion_a17993edabb08ca2fb96d22ef3cd838ca}\label{classMicroProcesses_1_1Diffusion_a17993edabb08ca2fb96d22ef3cd838ca}} 
+\index{Micro\+Processes\+::\+Diffusion@{Micro\+Processes\+::\+Diffusion}!set\+Instance@{set\+Instance}}
+\index{set\+Instance@{set\+Instance}!Micro\+Processes\+::\+Diffusion@{Micro\+Processes\+::\+Diffusion}}
+\subsubsection{\texorpdfstring{set\+Instance()}{setInstance()}}
+{\footnotesize\ttfamily void Micro\+Processes\+::\+Diffusion\+::set\+Instance (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classApothesis}{Apothesis}} $\ast$}]{apothesis }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Set the instance of \mbox{\hyperlink{classApothesis}{Apothesis}}. This allows to have access to all other functionalities of the K\+MC class. 
+
+Implements \mbox{\hyperlink{classMicroProcesses_1_1Process_a4c419af2e6e6477200b45bf687783c84}{Micro\+Processes\+::\+Process}}.
+
+\mbox{\Hypertarget{classMicroProcesses_1_1Diffusion_a53e5d56710045b4f8783d9c05591357f}\label{classMicroProcesses_1_1Diffusion_a53e5d56710045b4f8783d9c05591357f}} 
+\index{Micro\+Processes\+::\+Diffusion@{Micro\+Processes\+::\+Diffusion}!set\+Process\+Map@{set\+Process\+Map}}
+\index{set\+Process\+Map@{set\+Process\+Map}!Micro\+Processes\+::\+Diffusion@{Micro\+Processes\+::\+Diffusion}}
+\subsubsection{\texorpdfstring{set\+Process\+Map()}{setProcessMap()}}
+{\footnotesize\ttfamily void Micro\+Processes\+::\+Diffusion\+::set\+Process\+Map (\begin{DoxyParamCaption}\item[{map$<$ \mbox{\hyperlink{classMicroProcesses_1_1Process}{Process}} $\ast$, list$<$ \mbox{\hyperlink{classSurfaceTiles_1_1Site}{Site}} $\ast$ $>$ $\ast$ $>$ $\ast$}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+A process map which is used between the different processes. This need to be evaluated since it is not so handy. 
+
+Implements \mbox{\hyperlink{classMicroProcesses_1_1Process_a4e726f7491eb805efd9dcd1c0c3a380f}{Micro\+Processes\+::\+Process}}.
+
+\mbox{\Hypertarget{classMicroProcesses_1_1Diffusion_a281afcddb42b87ae9ba3b48a54524cd1}\label{classMicroProcesses_1_1Diffusion_a281afcddb42b87ae9ba3b48a54524cd1}} 
+\index{Micro\+Processes\+::\+Diffusion@{Micro\+Processes\+::\+Diffusion}!test@{test}}
+\index{test@{test}!Micro\+Processes\+::\+Diffusion@{Micro\+Processes\+::\+Diffusion}}
+\subsubsection{\texorpdfstring{test()}{test()}}
+{\footnotesize\ttfamily void Micro\+Processes\+::\+Diffusion\+::test (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here various tests should be putted in order to check for the validity of the process e.\+g. the number of the particles in the active surface must be constant (mass is constant). 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+diffusion.\+h\item 
+diffusion.\+cpp\end{DoxyCompactItemize}

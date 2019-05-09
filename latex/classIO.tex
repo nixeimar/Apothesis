@@ -1,0 +1,188 @@
+\hypertarget{classIO}{}\section{IO Class Reference}
+\label{classIO}\index{IO@{IO}}
+
+
+{\ttfamily \#include $<$io.\+h$>$}
+
+Inheritance diagram for IO\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classIO}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classIO_a527094b0734eedb3b151d65d5af39087}\label{classIO_a527094b0734eedb3b151d65d5af39087}} 
+enum {\bfseries C\+A\+SE} \{ {\bfseries Sensitive}, 
+{\bfseries Insensitive}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classIO_a6f367b73267c77dc282c26fd55db1fa6}\label{classIO_a6f367b73267c77dc282c26fd55db1fa6}} 
+{\bfseries IO} (\mbox{\hyperlink{classApothesis}{Apothesis}} $\ast$apothesis)
+\item 
+void \mbox{\hyperlink{classIO_a502bfdc83c767e8ae0861db0aa8a02d2}{init}} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\Hypertarget{classIO_ac6a72db3d529f2af860b91816b67174f}\label{classIO_ac6a72db3d529f2af860b91816b67174f}} 
+string \mbox{\hyperlink{classIO_ac6a72db3d529f2af860b91816b67174f}{get\+Input\+Path}} () const
+\begin{DoxyCompactList}\small\item\em Returns the path of the input file. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_ad10a2a8b673fe7ffaa343e6c4fbcd6ce}\label{classIO_ad10a2a8b673fe7ffaa343e6c4fbcd6ce}} 
+const string \& \mbox{\hyperlink{classIO_ad10a2a8b673fe7ffaa343e6c4fbcd6ce}{get\+Output\+Path}} () const
+\begin{DoxyCompactList}\small\item\em Returns the path of the output file. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_a6ef2ba4201c95276f8787515f5821806}\label{classIO_a6ef2ba4201c95276f8787515f5821806}} 
+const string \& \mbox{\hyperlink{classIO_a6ef2ba4201c95276f8787515f5821806}{get\+Input\+Filename}} () const
+\begin{DoxyCompactList}\small\item\em Returns the name of the input file if it is user defined. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_a51821af4035e8381548ba53a2e7ae3fa}\label{classIO_a51821af4035e8381548ba53a2e7ae3fa}} 
+const string \& \mbox{\hyperlink{classIO_a51821af4035e8381548ba53a2e7ae3fa}{get\+Output\+Filename}} () const
+\begin{DoxyCompactList}\small\item\em Returns the name of the output file if it is user defined. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_aa21a66163d1da9fe02c019c1d20ba3a0}\label{classIO_aa21a66163d1da9fe02c019c1d20ba3a0}} 
+void \mbox{\hyperlink{classIO_aa21a66163d1da9fe02c019c1d20ba3a0}{open\+Input\+File}} ()
+\begin{DoxyCompactList}\small\item\em Opens the input file. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classIO_a430eb7b5efc3f8467ffc0b507984e705}{open\+Output\+File}} (string name)
+\begin{DoxyCompactList}\small\item\em Opens the output file with the name name. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_ac5468cb6c41f3e7b9535bada4b3b3c50}\label{classIO_ac5468cb6c41f3e7b9535bada4b3b3c50}} 
+void \mbox{\hyperlink{classIO_ac5468cb6c41f3e7b9535bada4b3b3c50}{close\+Output\+File}} ()
+\begin{DoxyCompactList}\small\item\em Closes the output file. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_ac9c648884d50b1591a32e973fcadbd8e}\label{classIO_ac9c648884d50b1591a32e973fcadbd8e}} 
+void \mbox{\hyperlink{classIO_ac9c648884d50b1591a32e973fcadbd8e}{read\+Input\+File}} ()
+\begin{DoxyCompactList}\small\item\em Reads the input file \char`\"{} .\+kmc\char`\"{}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_a1de5e3aed18a83b17f92f70b426e17be}\label{classIO_a1de5e3aed18a83b17f92f70b426e17be}} 
+double \mbox{\hyperlink{classIO_a1de5e3aed18a83b17f92f70b426e17be}{to\+Double}} (string)
+\begin{DoxyCompactList}\small\item\em Converts a string to double. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_a8f9cb0f4f28337227aa55dca489c73ac}\label{classIO_a8f9cb0f4f28337227aa55dca489c73ac}} 
+int \mbox{\hyperlink{classIO_a8f9cb0f4f28337227aa55dca489c73ac}{to\+Int}} (string)
+\begin{DoxyCompactList}\small\item\em Converts a string to int. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_aca502a6a0d7f32718cca9005ae729c4a}\label{classIO_aca502a6a0d7f32718cca9005ae729c4a}} 
+bool \mbox{\hyperlink{classIO_aca502a6a0d7f32718cca9005ae729c4a}{contains}} (string, string, C\+A\+SE cas=Insensitive)
+\begin{DoxyCompactList}\small\item\em Check if a string contains another string. T\+O\+DO\+: This should be transferred to a generic string class). \end{DoxyCompactList}\item 
+vector$<$ string $>$ \mbox{\hyperlink{classIO_a33419de8dcf51c88e18c8e66a9644d6c}{split}} (string, string)
+\begin{DoxyCompactList}\small\item\em Splits a string to a vector of strings. T\+O\+DO\+: This should be transferred to a generic string class). \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_ab60a7df8f29335c81c5a8b8ba3d6ea58}\label{classIO_ab60a7df8f29335c81c5a8b8ba3d6ea58}} 
+string \mbox{\hyperlink{classIO_ab60a7df8f29335c81c5a8b8ba3d6ea58}{simplified}} (string)
+\begin{DoxyCompactList}\small\item\em Given a string returns a string with all the delimeters replaced. T\+O\+DO\+: This should be transferred to a generic string class). \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_a79e0886ebe243149d56296b2f57d8f19}\label{classIO_a79e0886ebe243149d56296b2f57d8f19}} 
+bool \mbox{\hyperlink{classIO_a79e0886ebe243149d56296b2f57d8f19}{is\+Number}} (string)
+\begin{DoxyCompactList}\small\item\em Returns if the given string in number. T\+O\+DO\+: This should be transferred to a generic string class). \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_a1f89e3dabdeb1571eace90943e31b500}\label{classIO_a1f89e3dabdeb1571eace90943e31b500}} 
+bool \mbox{\hyperlink{classIO_a1f89e3dabdeb1571eace90943e31b500}{exists}} (const string \&s)
+\begin{DoxyCompactList}\small\item\em Checks if a file exists. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_a3a359eb873a40e3bf55b64b0ca1ced5f}\label{classIO_a3a359eb873a40e3bf55b64b0ca1ced5f}} 
+std\+::string \mbox{\hyperlink{classIO_a3a359eb873a40e3bf55b64b0ca1ced5f}{convert\+To\+String}} (double x)
+\begin{DoxyCompactList}\small\item\em Converts a double to string. T\+O\+DO\+: This should be transferred to a generic string class). \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_afb5b6ce5adacc6f99c112a8a82b7ff07}\label{classIO_afb5b6ce5adacc6f99c112a8a82b7ff07}} 
+std\+::string \mbox{\hyperlink{classIO_afb5b6ce5adacc6f99c112a8a82b7ff07}{convert\+To\+String}} (int x)
+\begin{DoxyCompactList}\small\item\em Converts an integer to string. T\+O\+DO\+: This should be tranwrite\+Iteration\+Infosferred to a generic string class). \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_ad96e22de53231443bbe314e79101ea71}\label{classIO_ad96e22de53231443bbe314e79101ea71}} 
+string \mbox{\hyperlink{classIO_ad96e22de53231443bbe314e79101ea71}{Get\+Current\+Working\+Dir}} ()
+\begin{DoxyCompactList}\small\item\em Return the working directory. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_abbfd2a471e6d16478b4ae1534af54da5}\label{classIO_abbfd2a471e6d16478b4ae1534af54da5}} 
+\mbox{\hyperlink{classLattice_a0521158021627f01f6bb0a9c72df65e2}{Lattice\+::\+Type}} \mbox{\hyperlink{classIO_abbfd2a471e6d16478b4ae1534af54da5}{get\+Lattice\+Type}} ()
+\begin{DoxyCompactList}\small\item\em Specific input for the lattice. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_a0bd5601c77d94d3cccbd92ef98734e6c}\label{classIO_a0bd5601c77d94d3cccbd92ef98734e6c}} 
+bool \mbox{\hyperlink{classIO_a0bd5601c77d94d3cccbd92ef98734e6c}{starts\+With}} (string str, string substr)
+\begin{DoxyCompactList}\small\item\em Check of a string starts with a certain string. T\+O\+DO\+: This should be transferred to a generic string class). \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classIO_a6e0785ec87e3b11635a4563977520a99}{write\+Log\+Output}} (string)
+\item 
+\mbox{\Hypertarget{classIO_a097e7b662d3c34941ffd8701a0870aa1}\label{classIO_a097e7b662d3c34941ffd8701a0870aa1}} 
+void \mbox{\hyperlink{classIO_a097e7b662d3c34941ffd8701a0870aa1}{write\+Lattice\+Info}} ()
+\begin{DoxyCompactList}\small\item\em Write lattice info. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_a030b090eaf223c80e34333b78e3c1830}\label{classIO_a030b090eaf223c80e34333b78e3c1830}} 
+void \mbox{\hyperlink{classIO_a030b090eaf223c80e34333b78e3c1830}{write\+Lattice\+Heights}} ()
+\begin{DoxyCompactList}\small\item\em Write the height of each site. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_aafa964233c1f238062a3234b809ac392}\label{classIO_aafa964233c1f238062a3234b809ac392}} 
+void \mbox{\hyperlink{classIO_aafa964233c1f238062a3234b809ac392}{export\+Lattice\+X\+YZ}} ()
+\begin{DoxyCompactList}\small\item\em Export the lattice in xyz format. Not implemented yet. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_ac76b42f8d8e4cab930d75a272ac2d7be}\label{classIO_ac76b42f8d8e4cab930d75a272ac2d7be}} 
+void \mbox{\hyperlink{classIO_ac76b42f8d8e4cab930d75a272ac2d7be}{export\+Lattice\+C\+ML}} ()
+\begin{DoxyCompactList}\small\item\em Export the lattice in cml format. Not implemented yet. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classIO_a652fb01f8c744913a60b1854a8436ca9}\label{classIO_a652fb01f8c744913a60b1854a8436ca9}} 
+string \mbox{\hyperlink{classIO_a652fb01f8c744913a60b1854a8436ca9}{m\+\_\+s\+Lattice\+Type}}
+\begin{DoxyCompactList}\small\item\em The type of lattice. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_ae8115e8fa81f4e9d70468f770ac8ec23}\label{classIO_ae8115e8fa81f4e9d70468f770ac8ec23}} 
+map$<$ string, \mbox{\hyperlink{classLattice_a0521158021627f01f6bb0a9c72df65e2}{Lattice\+::\+Type}} $>$ \mbox{\hyperlink{classIO_ae8115e8fa81f4e9d70468f770ac8ec23}{m\+\_\+m\+Lattice\+Type}}
+\begin{DoxyCompactList}\small\item\em Supported lattice types. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_abebacf3a58f6ac21d9123a296aa7cc5c}\label{classIO_abebacf3a58f6ac21d9123a296aa7cc5c}} 
+map$<$ string, list$<$ string $>$ $>$ \mbox{\hyperlink{classIO_abebacf3a58f6ac21d9123a296aa7cc5c}{m\+\_\+m\+Proc}}
+\begin{DoxyCompactList}\small\item\em The processes to be constructed with their parameters (per process) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_a1bce4558d452e3dd2237184f854de05a}\label{classIO_a1bce4558d452e3dd2237184f854de05a}} 
+ifstream \mbox{\hyperlink{classIO_a1bce4558d452e3dd2237184f854de05a}{m\+\_\+\+Input\+File}}
+\begin{DoxyCompactList}\small\item\em The input file. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_ae8f8764c81d42d331365dd1b73b4fd58}\label{classIO_ae8f8764c81d42d331365dd1b73b4fd58}} 
+ofstream \mbox{\hyperlink{classIO_ae8f8764c81d42d331365dd1b73b4fd58}{m\+\_\+\+Out\+File}}
+\begin{DoxyCompactList}\small\item\em The output file. \end{DoxyCompactList}\item 
+string \mbox{\hyperlink{classIO_a7685f7b9fcdf945b14bb3ca100e0cf49}{m\+\_\+s\+Process}}
+\item 
+\mbox{\Hypertarget{classIO_a498cce7187c540e12d8dc8e34dcfc30b}\label{classIO_a498cce7187c540e12d8dc8e34dcfc30b}} 
+string \mbox{\hyperlink{classIO_a498cce7187c540e12d8dc8e34dcfc30b}{m\+\_\+s\+Lattice}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classLattice}{Lattice}} keyword. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_a540874a497024a017f3a5f3a44fe4a3f}\label{classIO_a540874a497024a017f3a5f3a44fe4a3f}} 
+string \mbox{\hyperlink{classIO_a540874a497024a017f3a5f3a44fe4a3f}{m\+\_\+s\+Temperature}}
+\begin{DoxyCompactList}\small\item\em Temperature keyword. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_ac8c1b50fbc99cea5c3405e7903b7d8f1}\label{classIO_ac8c1b50fbc99cea5c3405e7903b7d8f1}} 
+string \mbox{\hyperlink{classIO_ac8c1b50fbc99cea5c3405e7903b7d8f1}{m\+\_\+s\+Pressure}}
+\begin{DoxyCompactList}\small\item\em Pressure keyword. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_a45c04a8fa3c6ea567fee51693c3e52d5}\label{classIO_a45c04a8fa3c6ea567fee51693c3e52d5}} 
+string \mbox{\hyperlink{classIO_a45c04a8fa3c6ea567fee51693c3e52d5}{m\+\_\+s\+Comment\+Line}}
+\begin{DoxyCompactList}\small\item\em Comment. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classIO_aaa76fd794e1fe15797501ef4da832672}\label{classIO_aaa76fd794e1fe15797501ef4da832672}} 
+string \mbox{\hyperlink{classIO_aaa76fd794e1fe15797501ef4da832672}{m\+\_\+s\+Iterations}}
+\begin{DoxyCompactList}\small\item\em Num of iterations keyword. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Tha class for hnadlin input/output operations 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classIO_a502bfdc83c767e8ae0861db0aa8a02d2}\label{classIO_a502bfdc83c767e8ae0861db0aa8a02d2}} 
+\index{IO@{IO}!init@{init}}
+\index{init@{init}!IO@{IO}}
+\subsubsection{\texorpdfstring{init()}{init()}}
+{\footnotesize\ttfamily void I\+O\+::init (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+Initialization of the files\+: Assigns paths and file names If they are not given by the user, the default values are used Dafault\+: The path of the executable Input file name\+: input.\+kmc Output file name\+: output.\+log \mbox{\Hypertarget{classIO_a430eb7b5efc3f8467ffc0b507984e705}\label{classIO_a430eb7b5efc3f8467ffc0b507984e705}} 
+\index{IO@{IO}!open\+Output\+File@{open\+Output\+File}}
+\index{open\+Output\+File@{open\+Output\+File}!IO@{IO}}
+\subsubsection{\texorpdfstring{open\+Output\+File()}{openOutputFile()}}
+{\footnotesize\ttfamily bool I\+O\+::open\+Output\+File (\begin{DoxyParamCaption}\item[{string}]{name }\end{DoxyParamCaption})}
+
+
+
+Opens the output file with the name name. 
+
+Opens the output file. \mbox{\Hypertarget{classIO_a33419de8dcf51c88e18c8e66a9644d6c}\label{classIO_a33419de8dcf51c88e18c8e66a9644d6c}} 
+\index{IO@{IO}!split@{split}}
+\index{split@{split}!IO@{IO}}
+\subsubsection{\texorpdfstring{split()}{split()}}
+{\footnotesize\ttfamily vector$<$ string $>$ I\+O\+::split (\begin{DoxyParamCaption}\item[{string}]{str,  }\item[{string}]{delim }\end{DoxyParamCaption})}
+
+
+
+Splits a string to a vector of strings. T\+O\+DO\+: This should be transferred to a generic string class). 
+
+Splits a string to a vector of strings. \mbox{\Hypertarget{classIO_a6e0785ec87e3b11635a4563977520a99}\label{classIO_a6e0785ec87e3b11635a4563977520a99}} 
+\index{IO@{IO}!write\+Log\+Output@{write\+Log\+Output}}
+\index{write\+Log\+Output@{write\+Log\+Output}!IO@{IO}}
+\subsubsection{\texorpdfstring{write\+Log\+Output()}{writeLogOutput()}}
+{\footnotesize\ttfamily void I\+O\+::write\+Log\+Output (\begin{DoxyParamCaption}\item[{string}]{str }\end{DoxyParamCaption})}
+
+Write in the output file. For this an appropriate format must be defined. Now it is only writes a simple string. 
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classIO_a7685f7b9fcdf945b14bb3ca100e0cf49}\label{classIO_a7685f7b9fcdf945b14bb3ca100e0cf49}} 
+\index{IO@{IO}!m\+\_\+s\+Process@{m\+\_\+s\+Process}}
+\index{m\+\_\+s\+Process@{m\+\_\+s\+Process}!IO@{IO}}
+\subsubsection{\texorpdfstring{m\+\_\+s\+Process}{m\_sProcess}}
+{\footnotesize\ttfamily string I\+O\+::m\+\_\+s\+Process\hspace{0.3cm}{\ttfamily [protected]}}
+
+Keywords\+: Process keyword 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+io.\+h\item 
+io.\+cpp\end{DoxyCompactItemize}
