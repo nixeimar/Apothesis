@@ -1,0 +1,8 @@
+num_iterations 100
+lattice FCC 10 10 10
+
+temperature 400
+pressure 1 #cNcsdoicnsdocin 
+
+process Adsorption 0.5 2.0 
+
