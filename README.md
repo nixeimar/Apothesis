@@ -8,9 +8,9 @@ It is still under development but please feel free to contact me if you have som
 
 Compile 
 --------------------------------------------------------------------------------------------------------------
-On linux systems to compile in the source directory run qmake and make. This should do the trick.
-Having QtCreator will make things a lot easier in (mostly) windows and linux systems systems. 
-Since the project is not based on Qt framework (although it started like that, thus the Qt deps) 
+On linux systems in the source directory run qmake and make. This should do the trick.
+Having QtCreator will make things a lot easier on (mostly) windows and linux OS. 
+Since the project is not based on Qt framework (although it started like that - thats why the Qt deps) 
 I will provided a cmake at first instance. 
 
 
