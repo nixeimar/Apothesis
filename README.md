@@ -16,8 +16,8 @@ I will provided a cmake at first instance.
 
 Test
 --------------------------------------------------------------------------------------------------------------
-I have test input files under "test" directory to explore the logic behind the development and the I/O operations. 
-Copy and paste the file in the executable and run apothesis... This should word fine. 
+I have created test input files under "test" directory to explore the logic behind the development and the I/O operations. 
+Copy and paste the file in the executable and run apothesis... This should work fine. 
 
 Contact information:
 
