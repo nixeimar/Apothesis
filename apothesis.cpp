@@ -102,7 +102,7 @@ void Apothesis::exec()
     pErrorHandler->error_simple_msg("Zero iterations found.");
     EXIT;
     }else{
-      cout << "adsorption process is being started..." << endl;
+      cout << "Adsorption process is being started..." << endl;
     }
     
   for ( int i = 0; i< iterations; i++)
