@@ -101,11 +101,13 @@ void Apothesis::exec()
   if ( iterations == 0){
     pErrorHandler->error_simple_msg("Zero iterations found.");
     EXIT;
+    }else{
+      cout << "Adsorption process is being started..." << endl;
     }
-
+    
   for ( int i = 0; i< iterations; i++)
     {
-
+    
     ///Here a process should be selected in random. We have only one for now...
 
     /// Print to output
@@ -117,14 +119,13 @@ void Apothesis::exec()
 
     /// Check if there are available sites that it can be performed
     if (lAdsList.size() == 0){
-      cout << "No adsorption site is available. Exiting..." << endl;
+      cout << "No more adsorption site is available. Exiting..." << endl;
       pErrorHandler->error_simple_msg( "No adsorption site is available. Last time step: " + to_string( i ) );
       EXIT;
       }
 
     /// Select randomly a site
     m_vProcesses[ 0 ]->selectSite();
-
     /// Perform the process
     m_vProcesses[ 0]->perform();
 
@@ -133,6 +134,10 @@ void Apothesis::exec()
     /// The user should also check if the messages are written on the terminal or not.
     pIO->writeLogOutput( m_vProcesses[ 0]->getName() + " " );
     pIO->writeLatticeHeights();
+
+    if(i==0){
+      cout << "Adsorption is being performed..." << endl;
+    }
     }
 
   }
