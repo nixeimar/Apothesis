@@ -16,7 +16,7 @@
 //============================================================================
 
 #include "parameters.h"
-#include <iostream>
+
 namespace Utils  {
 
 Parameters::Parameters(Apothesis* apothesis ):Pointers(apothesis){;}
