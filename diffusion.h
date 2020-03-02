@@ -38,7 +38,7 @@ public:
     void init();
 
     /// The name of the process.
-    void setName(string s);
+    void setName(string s){ m_sName = s;}
 
     /// Compute the overall probabilities of this process and return it.
     double getProbability();
@@ -70,11 +70,28 @@ public:
     /// the number of the particles in the active surface must be constant (mass is constant).
     void test();
 
+    /// Returns true if the process can be performed in the site that callls it.
+    bool controltRules( Site* site );
+
   protected:
     /// The kmc instance.
     Apothesis* m_apothesis;
 
+    /// The name of the process
+    string m_sName;
+
 private:
+
+    /** The lattice of the process */
+    Lattice* m_pLattice;
+
+    /// The adsorption list which hold all the available sites for deposition
+    list<Site* > m_lAdsSites;
+
+    /** Pointer to the process map */
+    map< Process*, list<Site*>* >* m_pProcessMap;
+
+    /// For registring the process.
     REGISTER_PROCESS( Diffusion)
 };
 

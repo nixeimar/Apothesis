@@ -28,7 +28,7 @@ Diffusion::~Diffusion(){;}
 
 void Diffusion::init(){;}
 
-void Diffusion::setName( string name ){;}
+//void Diffusion::setName( string name ){;}
 
 string Diffusion::getName(){;}
 

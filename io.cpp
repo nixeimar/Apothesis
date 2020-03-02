@@ -52,7 +52,7 @@ void IO::readInputFile()
 
     // Remove any tabs, weird spaces etc.
     sLine = simplified( sLine );
-
+    //cout << sLine << endl;
     // split the line using space separator and store them to a vector of tokens
     vector<string> vsTokens;
     vsTokens = split( sLine, string( " " ) );
@@ -160,6 +160,7 @@ void IO::readInputFile()
 void IO::openInputFile()
   {
   m_InputFile.open( "input.kmc", ios::in );
+
   if ( !m_InputFile.is_open() ) {
     m_errorHandler->error_simple_msg( "Cannot open file input.kmc" ) ;
     EXIT;
