@@ -50,7 +50,7 @@ public:
     /// This allows to have access to all other functionalities of the KMC class.
     void setInstance( Apothesis* apothesis ){ m_apothesis = apothesis; }
 
-    /// Set the lattice uppon which adsorpiton will be performed.
+    /// Set the lattice uppon which diffusion will be performed.
     void activeSites( Lattice* );
 
     /// The initial site that the diffusion will begin.
@@ -80,12 +80,32 @@ public:
     /// The name of the process
     string m_sName;
 
+    /// Remove a site from a list
+    void mf_removeFromList();
+
+    /// Add a site to a list
+    void mf_addToList(Site* s);
+
+    /// Update the neighbour sites of this site. This is performed here since depending on the process
+    /// this changes. E.g. fotr adsortpion in a FCC lattice the first neighbors are different compared to the
+    /// adsroption in a BCC lattice.
+    void mf_updateNeighNum();
+
+    /// The site that diffusion is performed
+    Site* m_site;
+
+    /// The value of the probability of the process is stored here
+    double m_dProbability;
+
+    /// The number of neighs of this site
+    int m_iNeighNum;
+
 private:
 
     /** The lattice of the process */
     Lattice* m_pLattice;
 
-    /// The adsorption list which hold all the available sites for deposition
+    /// The diffusion list which hold all the available sites for deposition
     list<Site* > m_lAdsSites;
 
     /** Pointer to the process map */
