@@ -111,7 +111,7 @@ class Adsorption: public Process
     int m_iNeighNum;
 
   private:
-
+  
     /** The lattice of the process */
     Lattice* m_pLattice;
 
@@ -121,7 +121,6 @@ class Adsorption: public Process
     /** Pointer to the process map */
     map< Process*, list<Site*>* >* m_pProcessMap;
 
-  private:
     /// For registring the process.
     REGISTER_PROCESS( Adsorption)
   };

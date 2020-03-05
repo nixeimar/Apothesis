@@ -377,7 +377,8 @@ diffusion.o: diffusion.cpp diffusion.h \
 		factory_process.h \
 		register.h \
 		abstract_process.h \
-		register.cpp
+		register.cpp \
+		parameters.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o diffusion.o diffusion.cpp
 
 errorhandler.o: errorhandler.cpp errorhandler.h \

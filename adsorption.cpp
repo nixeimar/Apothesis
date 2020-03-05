@@ -81,7 +81,6 @@ void Adsorption::mf_removeFromList() { m_lAdsSites.remove( m_site); m_site->remo
 
 void Adsorption::mf_addToList(Site *s) { m_lAdsSites.push_back( s); }
 
-
 void Adsorption::mf_updateNeighNum()
   {
   bool isActiveEAST = false;

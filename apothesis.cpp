@@ -102,7 +102,7 @@ void Apothesis::exec()
     pErrorHandler->error_simple_msg("Zero iterations found.");
     EXIT;
     }else{
-      cout << "Adsorption process is being started..." << endl;
+      cout <<m_vProcesses[0]->getName()<< " process is being started..." << endl;
     }
     
   for ( int i = 0; i< iterations; i++)
@@ -119,8 +119,8 @@ void Apothesis::exec()
 
     /// Check if there are available sites that it can be performed
     if (lAdsList.size() == 0){
-      cout << "No more adsorption site is available. Exiting..." << endl;
-      pErrorHandler->error_simple_msg( "No adsorption site is available. Last time step: " + to_string( i ) );
+      cout << "No more "<<m_vProcesses[0]->getName()<< " site is available. Exiting..." << endl;
+      pErrorHandler->error_simple_msg( "No "+ m_vProcesses[0]->getName() + " site is available. Last time step: " + to_string( i ) );
       EXIT;
       }
 
@@ -136,7 +136,7 @@ void Apothesis::exec()
     pIO->writeLatticeHeights();
 
     if(i==0){
-      cout << "Adsorption is being performed..." << endl;
+      cout << m_vProcesses[0]->getName() << "process is being performed..." << endl;
     }
     }
 
