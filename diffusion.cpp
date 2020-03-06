@@ -18,6 +18,7 @@
 #include "diffusion.h"
 #include "register.cpp"
 #include "parameters.h"
+#include <cmath>
 
 namespace MicroProcesses{
 
@@ -117,19 +118,19 @@ void Diffusion::mf_updateNeighNum()
 double Diffusion::getProbability(){
   /* These are parameters values (I/O) */
   double dNavogadro = m_apothesis->pParameters->dAvogadroNum;
-  double dPres = m_apothesis->pParameters->getPressure();
+  //double dPres = m_apothesis->pParameters->getPressure();
   double dTemp = m_apothesis->pParameters->getTemperature();
   double dkBoltz = m_apothesis->pParameters->dkBoltz;
 
-  double dmass = 27e-3/dNavogadro;
-  double dpi = 3.14159265;
-  double dstick = 0.5;
-  double dCites = 1.4e+19;
-  double dy = 3.05e-3;
+  //these parameters are now given constant values for now.
+  //later they will be taken from the input file.
+  double v0 = 0.5;
+  double E = 27500*4.2/dNavogadro;
+  double Em = 0;
+  double n = 5;
 
-
-  //did not get the formula for probability. So for now kept it to be 0.5.
-  return 0.5;
+  double prob = -v0*exp((E-Em)/(dkBoltz*dTemp))*exp(-n*E/(dkBoltz*dTemp));
+  return prob;
 }
 
 list<Site* > Diffusion::getActiveList()
