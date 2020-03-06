@@ -8,19 +8,29 @@ It is still under development but please feel free to contact me if you have som
 
 Compile 
 --------------------------------------------------------------------------------------------------------------
-On linux systems in the source directory run qmake and make. This should do the trick.
+On linux systems in the source directory run 
+```
+qmake
+make
+```
+This should do the trick.
 Having QtCreator will make things a lot easier on (mostly) windows and linux OS. 
 Since the project is not based on Qt framework (although it started like that - thats why the Qt deps) 
 I will provided a cmake at first instance. 
 
-
 Test
 --------------------------------------------------------------------------------------------------------------
-I have created test input files under "test" directory to explore the logic behind the development and the I/O operations. 
-Copy and paste the file in the executable and run apothesis... This should work fine. 
+There is a test input file under `test` directory to explore the logic behind the development and the I/O operations. 
+To try it run
+```
+cd test
+../Apothesis 
+```
+This should work fine. 
 
 Contact information:
 
 Nikolaos (Nikos) Cheimarios: 
 nixeimar@chemeng.ntua.gr
+
 
