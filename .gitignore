@@ -1,0 +1,4 @@
+# ignore make and build files
+*.o
+Makefile
+Apothesis

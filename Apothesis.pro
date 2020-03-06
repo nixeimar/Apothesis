@@ -22,7 +22,7 @@ HEADERS += abstract_process.h \
            process.h \
            register.h \
            site.h \
-    apothesis.h
+           apothesis.h
 SOURCES += adsorption.cpp \
            diffusion.cpp \
            errorhandler.cpp \
@@ -34,4 +34,4 @@ SOURCES += adsorption.cpp \
            process.cpp \
            register.cpp \
            site.cpp \
-    apothesis.cpp
+           apothesis.cpp
