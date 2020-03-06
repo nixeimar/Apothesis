@@ -136,7 +136,7 @@ void Apothesis::exec()
     pIO->writeLatticeHeights();
 
     if(i==0){
-      cout << m_vProcesses[0]->getName() << "process is being performed..." << endl;
+      cout << m_vProcesses[0]->getName() << " process is being performed..." << endl;
     }
     }
 

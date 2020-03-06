@@ -135,7 +135,6 @@ double Adsorption::getProbability()
   double dTemp = m_apothesis->pParameters->getTemperature();
   double dkBoltz = m_apothesis->pParameters->dkBoltz;
 
-
   double dmass = 27e-3/dNavogadro;
   double dpi = 3.14159265;
   double dstick = 0.5;
