@@ -181,11 +181,18 @@ class IO: public Pointers
     /// Pressure keyword
     string m_sPressure;
 
-    /// Comment
-    string m_sCommentLine;
-
     ///  Num of iterations keyword.
     string m_sIterations;
+    
+    /// Comment
+    string m_sCommentLine;
+  private:
+    /// The number of flags given by the user
+    int m_iArgc;
+
+    /// The flags given by the user
+    char** m_vcArgv;
+    
 
   };
 
