@@ -29,25 +29,36 @@
  * The Makefile was generated with qmake but the qt libradies are excluded.
  *
  */
-
 #include <iostream>
 #include <list>
 #include "site.h"
-
 #include "apothesis.h"
 #include "lattice.h"
 #include "process.h"
 
+/////////////////////////
+#include "SurfaceReaction.h"
+/////////////////////////
 using namespace std;
 using namespace MicroProcesses;
 
 int main( int argc, char* argv[] )
 {
+    SurfaceReaction sr;
+    string  writeOut;
+
+    sr.setMessage("Hello I am MySurfaceReaction class");
+    writeOut = sr.getMessage();
+
+    cout << "Class Output: " << endl;
+    cout  << writeOut << endl;
+
     Apothesis* apothesis = new Apothesis( argc, argv );
     apothesis->init();
     apothesis->exec();
 
     if ( apothesis )
       delete apothesis;
-  }
+}
+
 
