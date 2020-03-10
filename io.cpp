@@ -205,7 +205,6 @@ string IO::simplified( string str )
 
 bool IO::isNumber( string str){
   char c;
-  size_t i = 0;
   size_t n = str.size();
   //string::iterator it = str.begin(); --- not used anywhere.
 
