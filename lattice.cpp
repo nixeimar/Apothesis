@@ -57,7 +57,7 @@ void Lattice::build()
 
   // The sites of the lattice.
   m_vSites.resize( getSize() );
-  for ( int i = 0; i < m_vSites.size(); i++)
+  for ( unsigned int i = 0; i < m_vSites.size(); i++)
     m_vSites[ i ] = new Site();
 
   //  m_pSites = new Site[ m_iSizeX*m_iSizeY];
@@ -672,7 +672,7 @@ void Lattice::mf_buildNeighbours()
 
 void Lattice::check()
   {
-  int k = 0;
+  //int k = 0; --- not used anywhere.
 
   cout << "Checking lattice..." << endl;
 

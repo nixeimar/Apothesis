@@ -74,11 +74,15 @@ public:
     bool controltRules( Site* site );
 
   protected:
-    /// The kmc instance.
-    Apothesis* m_apothesis;
-
+    
     /// The name of the process
     string m_sName;
+
+    /// The number of neighs of this site
+    int m_iNeighNum;
+
+    /// The kmc instance.
+    Apothesis* m_apothesis;
 
     /// Remove a site from a list
     void mf_removeFromList();
@@ -96,9 +100,6 @@ public:
 
     /// The value of the probability of the process is stored here
     double m_dProbability;
-
-    /// The number of neighs of this site
-    int m_iNeighNum;
 
 private:
 

@@ -75,6 +75,7 @@ void Apothesis::init()
       pErrorHandler->error_simple_msg("Unknown process->" + mapIt->first );
       EXIT;
       }
+      procsCounter++;
     }
 
   if ( m_vProcesses.empty() ){

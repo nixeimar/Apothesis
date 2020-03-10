@@ -42,11 +42,11 @@ public:
 
     /// Pointers to the classes that will share the common space i.e. the "pointer"
 
-    /// Ponter to the input/output class
-    IO* pIO;
-
     /// Pointer to the lattice class
     Lattice* pLattice;
+
+    /// Ponter to the input/output class
+    IO* pIO;
 
     /// Pointer to the error class
     Utils::ErrorHandler* pErrorHandler;

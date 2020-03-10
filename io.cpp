@@ -37,11 +37,13 @@ IO::~IO(){}
 
 void IO::init( int argc, char* argv[] )
   {
-  openInputFile();
+    m_iArgc = argc;
+    m_vcArgv = argv;
+    openInputFile();
   }
 
 
-string IO::getInputPath() const {;}
+string IO::getInputPath() const {return "";}
 
 void IO::readInputFile()
   {
@@ -64,7 +66,7 @@ void IO::readInputFile()
     if ( startsWith( vsTokens[ 0 ], m_sCommentLine ) ) continue;
 
     bool bComment = false;
-    for ( int i = 0; i< vsTokens.size(); i++){
+    for ( unsigned int i = 0; i< vsTokens.size(); i++){
       if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
         bComment = true;
 
@@ -148,7 +150,7 @@ void IO::readInputFile()
       // We want the parameters
       // First is the keyword process, then the name of the process as this is defined in the REGISTER_PROCESS( e.g. Adsorption)
       // and then after 2 the parameters follow
-      for ( int i = 2; i < vsTokens.size(); i++ ){
+      for ( unsigned int i = 2; i < vsTokens.size(); i++ ){
         tempVec.push_back( toDouble( vsTokens[ i ] ) );
         }
       m_parameters->setProcess( vsTokens[ 1 ], tempVec );
@@ -174,10 +176,9 @@ string IO::simplified( string str )
   bool is_white = false;
   bool was_white = false;
   bool append = false;
-  size_t i = 0;
   size_t n = str.size();
   size_t nm = n - 1;
-  string::iterator it = str.begin();
+  //string::iterator it = str.begin(); ---- not used anywhere.
 
   for (size_t i = 0; i < n; i++) {
     c = str[i];
@@ -206,7 +207,7 @@ bool IO::isNumber( string str){
   char c;
   size_t i = 0;
   size_t n = str.size();
-  string::iterator it = str.begin();
+  //string::iterator it = str.begin(); --- not used anywhere.
 
   bool bPlusFound = false;
   bool bPlusFound2 = false;
