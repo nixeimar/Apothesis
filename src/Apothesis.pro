@@ -5,7 +5,6 @@
 TEMPLATE = app
 TARGET = Apothesis
 INCLUDEPATH += . \
-              constant \
               IO \
               lattice \
               error \
@@ -25,8 +24,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # Input
 HEADERS += apothesis.h \
            register.h \
-           constant/parameters.h \
-           constant/pointers.h \
+           processes/parameters.h \
+           pointers.h \
            error/errorhandler.h \
            IO/io.h \
            lattice/lattice.h \
@@ -40,7 +39,7 @@ HEADERS += apothesis.h \
 SOURCES += apothesis.cpp \
            main.cpp \
            register.cpp \
-           constant/parameters.cpp \
+           processes/parameters.cpp \
            error/errorhandler.cpp \
            IO/io.cpp \
            lattice/lattice.cpp \
