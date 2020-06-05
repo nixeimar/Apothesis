@@ -21,10 +21,9 @@
 #include "io.h"
 #include "errorhandler.h"
 #include "parameters.h"
-
 #include "process.h"
 
-//using namespace MicroProcesses;
+using namespace MicroProcesses;
 
 Apothesis::Apothesis( int argc, char* argv[] ):pLattice( 0 ),pIO( 0 )
   {

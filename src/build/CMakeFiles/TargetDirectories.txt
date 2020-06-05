@@ -1,0 +1,3 @@
+/home/deifilia/Documents/Apothesis/Apothesis/src/build/CMakeFiles/rebuild_cache.dir
+/home/deifilia/Documents/Apothesis/Apothesis/src/build/CMakeFiles/Apothesis.dir
+/home/deifilia/Documents/Apothesis/Apothesis/src/build/CMakeFiles/edit_cache.dir

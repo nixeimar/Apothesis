@@ -31,7 +31,6 @@
 #include "apothesis.h"
 #include "lattice.h"
 
-#include "lattice.h"
 #include "errorhandler.h"
 #include "parameters.h"
 
