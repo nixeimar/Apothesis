@@ -49,7 +49,9 @@
 using namespace std;
 using namespace Utils;
 
-/** Tha class for hnadlin input/output operations */
+/** Tha class for handling input/output operations */
+
+class Pointers;
 
 class IO: public Pointers
   {
@@ -81,7 +83,7 @@ class IO: public Pointers
     const string& getOutputFilename() const;
 
     /// Opens the input file.
-    void openInputFile();
+    void openInputFile(string file);
 
     /// Opens the output file with the name name.
     bool openOutputFile( string name );

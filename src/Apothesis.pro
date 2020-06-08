@@ -28,6 +28,7 @@ HEADERS += apothesis.h \
            pointers.h \
            error/errorhandler.h \
            IO/io.h \
+           IO/SpeciesIO.h \ 
            lattice/lattice.h \
            lattice/site.h \
            processes/abstract_process.h \
@@ -42,6 +43,7 @@ SOURCES += apothesis.cpp \
            processes/parameters.cpp \
            error/errorhandler.cpp \
            IO/io.cpp \
+           IO/SpeciesIO.cpp \
            lattice/lattice.cpp \
            lattice/site.cpp \
            processes/adsorption.cpp \

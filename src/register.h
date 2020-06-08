@@ -25,7 +25,6 @@
 
 template<class T>
 class Register: public AbstractProcess// Pointers class contains ptrs to master copy of
-
 {
 public:
     /// Contructor.

@@ -25,9 +25,9 @@ namespace MicroProcesses{
 REGISTER_PROCESS_IMPL( Diffusion)
 
 Diffusion::Diffusion():m_sName("Diffusion"),m_iNeighNum(0), m_apothesis(0)
-  {
+{
   init();
-  }
+}
 
 Diffusion::~Diffusion(){;}
 

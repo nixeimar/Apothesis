@@ -97,12 +97,18 @@ void Apothesis::exec()
   {
   ///Perform the number of KMC steps read from the input.
   int iterations = pParameters->getIterations();
-  if ( iterations == 0){
+
+  if ( iterations == 0)
+  {
     pErrorHandler->error_simple_msg("Zero iterations found.");
     EXIT;
-    }else{
-      cout <<m_vProcesses[0]->getName()<< " process is being started..." << endl;
-    }
+  }
+  else
+  {
+    cout <<m_vProcesses[0]->getName()<< " process is being started..." << endl;
+    pIO->writeLogOutput("Running " + to_string(iterations) + " iterations");
+  }
+  
     
   for ( int i = 0; i< iterations; i++)
     {
@@ -117,11 +123,12 @@ void Apothesis::exec()
     list<Site*> lAdsList = m_vProcesses[ 0]->getActiveList();
 
     /// Check if there are available sites that it can be performed
-    if (lAdsList.size() == 0){
+    if (lAdsList.size() == 0)
+    {
       cout << "No more "<<m_vProcesses[0]->getName()<< " site is available. Exiting..." << endl;
       pErrorHandler->error_simple_msg( "No "+ m_vProcesses[0]->getName() + " site is available. Last time step: " + to_string( i ) );
       EXIT;
-      }
+    }
 
     /// Select randomly a site
     m_vProcesses[ 0 ]->selectSite();

@@ -36,9 +36,9 @@ IO::IO(Apothesis* apothesis):Pointers( apothesis),
 IO::~IO(){}
 
 void IO::init( int argc, char* argv[] )
-  {
-  openInputFile();
-  }
+{
+  openInputFile("input.kmc");
+}
 
 
 string IO::getInputPath() const {;}
@@ -157,9 +157,9 @@ void IO::readInputFile()
     }//Reading the lines
   }
 
-void IO::openInputFile()
+void IO::openInputFile(string file)
   {
-  m_InputFile.open( "input.kmc", ios::in );
+  m_InputFile.open(file, ios::in );
 
   if ( !m_InputFile.is_open() ) {
     m_errorHandler->error_simple_msg( "Cannot open file input.kmc" ) ;
