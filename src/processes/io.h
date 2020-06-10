@@ -52,6 +52,7 @@ using namespace Utils;
 /** Tha class for handling input/output operations */
 
 class Pointers;
+//class Parameters;
 
 class IO: public Pointers
   {

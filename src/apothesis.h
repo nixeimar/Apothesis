@@ -28,11 +28,11 @@ using namespace std;
 
 /** The basic class of the kinetic monte carlo code. */
 
+namespace Utils{ class ErrorHandler; class Parameters;}
+namespace SurfaceTiles{ class Site; }
 namespace MicroProcesses { class Process; }
 class Lattice;
 class IO;
-namespace Utils{ class ErrorHandler; class Parameters;}
-namespace SurfaceTiles{ class Site; }
 
 class Apothesis
 {

@@ -17,6 +17,7 @@
 
 #include "io.h"
 
+
 IO::IO(Apothesis* apothesis):Pointers( apothesis),
                  m_sLatticeType("NONE"),
                  m_sProcess("process"),

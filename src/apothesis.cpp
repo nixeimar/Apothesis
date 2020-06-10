@@ -24,13 +24,14 @@
 #include "process.h"
 
 using namespace MicroProcesses;
+//using namespace Utils;
 
 Apothesis::Apothesis( int argc, char* argv[] ):pLattice( 0 ),pIO( 0 )
   {
   m_iArgc = argc;
   m_vcArgv = argv;
 
-  pParameters = new Parameters( this);
+  pParameters = new Utils::Parameters(this);
 
   /* This must be constructed before the input */
   pLattice = new Lattice( this );

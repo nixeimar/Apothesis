@@ -31,9 +31,9 @@
  */
 #include <iostream>
 #include <list>
-//#include "site.h"
-//#include "lattice.h"
-//#include "process.h"
+#include "site.h"
+#include "lattice.h"
+#include "process.h"
 #include "apothesis.h"
 
 /////////////////////////
