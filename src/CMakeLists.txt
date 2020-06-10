@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.0)
 #set(CMAKE_BUILD_TYPE Debug)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
+find_package(RapidJSON)
+
 project(Apothesis)
 
 set(header_files
@@ -19,13 +21,14 @@ set(header_files
     processes/SurfaceReaction.h
     error/errorhandler.h
     processes/parameters.h
+    IO/read.h
 )
 set(essential_src_files
     apothesis.cpp
     register.cpp
 )
 set(IO_files
-    processes/io.cpp
+    IO/read.cpp
 )
 set(process_files
     processes/adsorption.cpp
@@ -34,6 +37,7 @@ set(process_files
     processes/process.cpp
     processes/SurfaceReaction.cpp
     processes/parameters.cpp
+    processes/io.cpp
 )
 set(error_files
     error/errorhandler.cpp 
