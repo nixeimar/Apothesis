@@ -15,8 +15,8 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#ifndef IO_H
-#define IO_H
+#ifndef READ_H
+#define READ_H
 
 #include <fstream>
 
@@ -34,6 +34,15 @@
 #include "errorhandler.h"
 #include "parameters.h"
 
+// Include RapidJSON header files
+#include "rapidjson/document.h"
+#include "rapidjson/filereadstream.h"
+#include "rapidjson/pointer.h"
+#include "rapidjson/rapidjson.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/filewritestream.h"
+#include <iostream>
 
 
 #if defined( _WIN32) || defined( _WIN64)
@@ -54,7 +63,8 @@ using namespace Utils;
 /** Tha class for handling input/output operations */
 
 class Pointers;
-//class Parameters;
+
+typedef rapidjson::Document Document;
 
 class Read: public Pointers
   {
@@ -73,88 +83,8 @@ class Read: public Pointers
     /// Output file name: output.log
     void init( int argc, char* argv[] );
 
-    /// Returns the path of the input file.
-    string getInputPath() const;
-
-    /// Returns the path of the output file.
-    const string& getOutputPath() const;
-
-    /// Returns the name of the input file if it is user defined.
-    const string& getInputFilename() const;
-
-    /// Returns the name of the output file if it is user defined.
-    const string& getOutputFilename() const;
-
-    /// Opens the input file.
-    void openInputFile(string file);
-
-    /// Opens the output file with the name name.
-    bool openOutputFile( string name );
-
-    /// Closes the output file.
-    void closeOutputFile();
-
     /// Reads the input file " .kmc".
-    void readInputFile();
-
-    /// Converts a string to double.
-    double toDouble( string );
-
-    /// Converts a string to int.
-    int toInt( string );
-
-    /// Check if a string contains another string. TODO: This should be transferred to a generic string class).
-    bool contains( string, string, CASE cas = Insensitive );
-
-    /// Splits a string to a vector of strings. TODO: This should be transferred to a generic string class).
-    vector<string> split( string , string );
-
-    /// Given a string returns a string with all the delimeters replaced. TODO: This should be transferred to a generic string class).
-    string simplified( string );
-
-    /// Returns if the given string in number. TODO: This should be transferred to a generic string class).
-    bool isNumber( string );
-
-    /// Checks if a file exists.
-    bool exists(const string& s);
-
-    /// Converts a double to string. TODO: This should be transferred to a generic string class).
-    std::string convertToString( double x);
-
-    /// Converts an integer to string. TODO: This should be tranwriteIterationInfosferred to a generic string class).
-    std::string convertToString( int x);
-
-    /// Return the working directory
-    string GetCurrentWorkingDir();
-
-    /// Specific input for the lattice.
-    Lattice::Type getLatticeType();
-
-    ///  Check of a string starts with a certain string. TODO: This should be transferred to a generic string class).
-    inline bool startsWith( string str, string substr )
-      {
-      if ( str.find( substr ) != string::npos )
-        return true;
-      else
-        return false;
-      }
-
-    /// Write in the output file.
-    /// For this an appropriate format must be defined.
-    /// Now it is only writes a simple string.
-    void writeLogOutput( string );
-
-    /// Write lattice info.
-    void writeLatticeInfo();
-
-    /// Write the height of each site
-    void writeLatticeHeights();
-
-    /// Export the lattice in xyz format. Not implemented yet
-    void exportLatticeXYZ();
-
-    /// Export the lattice in cml format. Not implemented yet.
-    void exportLatticeCML();
+    rapidjson::Document readInputFile(string filename);
 
   protected:
     /// The type of lattice
@@ -193,4 +123,4 @@ class Read: public Pointers
 
   };
 
-#endif // IO_H
+#endif // READ_H
