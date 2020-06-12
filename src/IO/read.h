@@ -81,12 +81,17 @@ class Read: public Pointers
     /// Dafault: The path of the executable
     /// Input file name: input.kmc
     /// Output file name: output.log
-    void init( int argc, char* argv[] );
 
     /// Reads the input file " .kmc".
-    rapidjson::Document readInputFile(string filename);
+    Document readInputFile(string filename);
+
+    //Document getInput() const;
 
   protected:
+
+    // Parsed input file
+    Document m_input;
+
     /// The type of lattice
     string m_sLatticeType;
 

@@ -16,9 +16,12 @@
 //============================================================================
 
 #include "lattice.h"
+#include "read.h"
 
-
-Lattice::Lattice( Apothesis* apothesis):Pointers( apothesis){;}
+Lattice::Lattice( Apothesis* apothesis):Pointers( apothesis)
+{
+  //Document input = 
+}
 
 void Lattice::setType( string sType)
   {

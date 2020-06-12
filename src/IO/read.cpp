@@ -17,7 +17,9 @@
 
 #include "read.h"
 
+// typedef the relevant rapidjson classes
 typedef rapidjson::Document Document;
+typedef rapidjson::FileReadStream FileReadStream;
 
 Read::Read(Apothesis* apothesis):Pointers( apothesis),
                  m_sLatticeType("NONE"),
@@ -26,21 +28,36 @@ Read::Read(Apothesis* apothesis):Pointers( apothesis),
                  m_sTemperature("temperature"),
                  m_sPressure("pressure"),
                  m_sIterations("num_iterations"),
-                 m_sCommentLine("#")
+                 m_sCommentLine("#"),
+                 m_input(readInputFile("input.kmc"))
   {
+    //Initialize the map for the lattice
+    m_mLatticeType[ "NONE" ] = Lattice::NONE;
+    m_mLatticeType[ "BCC" ] = Lattice::BCC;
+    m_mLatticeType[ "FCC" ] = Lattice::FCC;
+
+    string lattice_type = m_input["lattice"]["type"].GetString();
 
   }
 
 Read::~Read(){}
 
-void Read::init( int argc, char* argv[] )
-{
-
-}
-
-
 Document Read::readInputFile(string filename)
 {
+  FILE* fp = fopen(filename.c_str(), "r");
 
+  // Throws an error if the file cannot be opened
+  if (fp == NULL)
+  {
+    throw std::runtime_error(std::strerror(errno));
+  }
+  char readBuffer[65536];
+  FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+
+  Document doc;
+  doc.ParseStream(is);
+
+  fclose(fp);
+
+  return doc;  
 }
-
