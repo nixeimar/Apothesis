@@ -19,6 +19,7 @@
 #include "apothesis.h"
 #include "lattice.h"
 #include "io.h"
+#include "read.h"
 #include "errorhandler.h"
 #include "parameters.h"
 #include "process.h"
@@ -26,30 +27,36 @@
 using namespace MicroProcesses;
 //using namespace Utils;
 
-Apothesis::Apothesis( int argc, char* argv[] ):pLattice( 0 ),pIO( 0 )
+Apothesis::Apothesis( int argc, char* argv[] ):pLattice( 0 ),pRead( 0 )
   {
-  m_iArgc = argc;
-  m_vcArgv = argv;
+    m_iArgc = argc;
+    m_vcArgv = argv;
 
-  pParameters = new Utils::Parameters(this);
+    pParameters = new Utils::Parameters(this);
 
-  /* This must be constructed before the input */
-  pLattice = new Lattice( this );
+    /* This must be constructed before the input */
+    pLattice = new Lattice( this );
 
-  // Create input instance
-  pIO = new IO(this);
-  pIO->init( m_iArgc, m_vcArgv );
+    // Create input instance
+    pIO = new IO(this);
+    //pIO->init( m_iArgc, m_vcArgv );
 
-  // Read the input
-  pIO->readInputFile();
+    pRead = new Read(this);
 
-  // Build the lattice. This should always follow the read input
-  pLattice->build();
+    // Read the input
+    //pIO->readInputFile();
+
+    // Build the lattice. This should always follow the read input
+
+    std::cout<<"Building the lattice"<<std::endl;
+    pLattice->build();
+    std::cout<<"Finished building the lattice"<<std::endl;
   }
 
 Apothesis::~Apothesis()
   {
   delete pIO;
+  delete pRead;
   delete pLattice;
 
   // Delete the processes created by the factory method
@@ -62,12 +69,16 @@ Apothesis::~Apothesis()
 void Apothesis::init()
   {
 
+  cout<<"Making a map" << endl;
   /// Get the processes read and create them
   map< string, vector<double> > tempMap = pParameters->getProcesses();
   // Contruct the process
   int procsCounter = 0;
   map< string, vector<double> >::iterator mapIt = tempMap.begin();
-  for (; mapIt != tempMap.end(); mapIt++ ){
+
+  cout<<"Creating factory processes" << endl;
+  for (; mapIt != tempMap.end(); mapIt++ )
+  {
     Process* proc = FactoryProcess::createProcess( mapIt->first );
     if ( proc )
       m_vProcesses.push_back( proc );
@@ -75,13 +86,14 @@ void Apothesis::init()
       pErrorHandler->error_simple_msg("Unknown process->" + mapIt->first );
       EXIT;
       }
-    }
+  }
 
   if ( m_vProcesses.empty() ){
     pErrorHandler->error_simple_msg("No processes found.");
     EXIT;
     }
 
+  cout<<"Opening output file"<<endl;
   /// The output file name will come from the user and will have the extenstion .log
   /// This would come as a parameter from the user from the args (also the input).
   /// Now both are hard copied.

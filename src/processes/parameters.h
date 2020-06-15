@@ -45,7 +45,7 @@ class Parameters: public Pointers
     inline double getTemperature() { return m_dT; }
 
     /// Set the pressure value.
-    void setPressure( double );
+    inline void setPressure( double P) { m_dP = P; };
 
     /// Get the pressure value.
     inline double getPressure() { return m_dP; }

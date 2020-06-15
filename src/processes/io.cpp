@@ -32,6 +32,7 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
   m_mLatticeType[ "BCC" ] = Lattice::BCC;
   m_mLatticeType[ "FCC" ] = Lattice::FCC;
 
+
   }
 
 IO::~IO(){}
@@ -45,7 +46,8 @@ void IO::init( int argc, char* argv[] )
 string IO::getInputPath() const {;}
 
 void IO::readInputFile()
-  {
+{
+
   list< string > lKeywords{ m_sLattice, m_sProcess, m_sPressure, m_sTemperature, m_sIterations };
 
   string sLine;
@@ -125,7 +127,8 @@ void IO::readInputFile()
 
     if ( vsTokens[ 0].compare(  m_sPressure ) == 0 ){
       if ( isNumber( vsTokens[ 1 ] ) ){
-        m_parameters->setTemperature( toDouble( vsTokens[ 1] ) );
+        // Is this an error?
+        m_parameters->setPressure( toDouble( vsTokens[ 1] ) );
         }
       else {
         m_errorHandler->error_simple_msg("Could not read pressure from input file. Is it a number?");

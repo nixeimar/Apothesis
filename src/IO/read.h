@@ -96,7 +96,7 @@ class Read: public Pointers
     string m_sLatticeType;
 
     /// Supported lattice types
-    map< string, Lattice::Type> m_mLatticeType;
+    map< string, Lattice::Type> m_LatticeType;
 
     /// The processes to be constructed with their parameters (per process)
     map< string, list< string > >  m_mProc;
@@ -125,6 +125,9 @@ class Read: public Pointers
 
     ///  Num of iterations keyword.
     string m_sIterations;
+
+    // Dimensions in the lattice
+    int m_dimensions;
 
   };
 

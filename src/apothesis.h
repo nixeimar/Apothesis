@@ -33,6 +33,7 @@ namespace SurfaceTiles{ class Site; }
 namespace MicroProcesses { class Process; }
 class Lattice;
 class IO;
+class Read;
 
 class Apothesis
 {
@@ -44,6 +45,9 @@ public:
 
     /// Ponter to the input/output class
     IO* pIO;
+
+    /// Ponter to the read class
+    Read* pRead;
 
     /// Pointer to the lattice class
     Lattice* pLattice;

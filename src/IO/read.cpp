@@ -20,6 +20,8 @@
 // typedef the relevant rapidjson classes
 typedef rapidjson::Document Document;
 typedef rapidjson::FileReadStream FileReadStream;
+//typedef rapidjson::GenericValue<rapidjson::Encoding, rapidjson::Allocator> ValueType;
+//typedef rapidjson::GenericObject<false, ValueType> Object;
 
 Read::Read(Apothesis* apothesis):Pointers( apothesis),
                  m_sLatticeType("NONE"),
@@ -29,15 +31,65 @@ Read::Read(Apothesis* apothesis):Pointers( apothesis),
                  m_sPressure("pressure"),
                  m_sIterations("num_iterations"),
                  m_sCommentLine("#"),
-                 m_input(readInputFile("input.kmc"))
+                 m_input(readInputFile("input.kmc")),
+                 m_dimensions(3)
   {
     //Initialize the map for the lattice
-    m_mLatticeType[ "NONE" ] = Lattice::NONE;
-    m_mLatticeType[ "BCC" ] = Lattice::BCC;
-    m_mLatticeType[ "FCC" ] = Lattice::FCC;
+    m_LatticeType[ "NONE" ] = Lattice::NONE;
+    m_LatticeType[ "BCC" ] = Lattice::BCC;
+    m_LatticeType[ "FCC" ] = Lattice::FCC;
 
-    string lattice_type = m_input["lattice"]["type"].GetString();
+    
+    string lattice_type = m_input["Lattice"]["Type"].GetString();
+    std::cout<<"lattice_type "<< lattice_type << std::endl;
+    
+    m_lattice->setType(lattice_type);
 
+    // Initialize the vector holding dimensions of the lattice
+    vector<int> latticeDimensions;
+
+    // Read the elements in the input file
+    //auto dimensions = m_input["lattice"]["dims"].GetObject();
+
+    for (int i = 0; i < m_dimensions; i++)
+    {
+      //latticeDimensions.push_back(latticeDimensions[i]);
+      latticeDimensions.push_back(10);
+    }
+
+    std::cout<<"Setting lattice dimensions " << std::endl;
+    m_lattice->setX(latticeDimensions[0]);
+    m_lattice->setY(latticeDimensions[1]);
+    m_lattice->setInitialHeight(latticeDimensions[2]);
+    
+    std::cout<<"Setting Iterations " << std::endl;
+    // Set the iterations, temperature, and pressure
+    m_parameters->setIterations(m_input["Iterations"].GetInt());
+
+    std::cout<<"Setting Temperature " << std::endl;
+    m_parameters->setTemperature(m_input["Temperature"].GetDouble());
+
+    std::cout<<"Setting Pressure " << std::endl;
+    m_parameters->setPressure(m_input["Pressure"].GetDouble());
+
+    // How to show diffusion?
+    
+    vector <double> diffusionParameters;
+    //auto process = m_input["Process"].GetObject();
+
+    std::cout<<"Setting Diffusion parameter 1 " << std::endl;
+
+    double param1 = m_input["Process"]["Diffusion"]["param_1"].GetDouble();
+    double param2 = m_input["Process"]["Diffusion"]["param_2"].GetDouble();
+    
+    diffusionParameters.push_back(param1);
+    diffusionParameters.push_back(param2);
+
+    std::cout<<"Setting Diffusion parameter 2 " << std::endl;
+    diffusionParameters.push_back(m_input["Process"]["Diffusion"]["param_2"].GetDouble());
+
+    std::cout<<"Setting Diffusion Parameters " << std::endl;
+    m_parameters->setProcess( "Diffusion", diffusionParameters );
   }
 
 Read::~Read(){}
