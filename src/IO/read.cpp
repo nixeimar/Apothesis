@@ -78,6 +78,13 @@ Read::Read(Apothesis* apothesis):Pointers( apothesis),
       apothesis->addProcess(itr->name.GetString());
     }
 
+    // Storing all processes into apothesis class
+    Value& speciesName = m_input["Species"];
+    for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
+    {
+      m_speciesName.push_back(itr->name.GetString());
+    }
+
   }
 
 Read::~Read(){}

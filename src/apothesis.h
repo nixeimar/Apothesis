@@ -21,6 +21,7 @@
 #include <map>
 #include <list>
 #include <vector>
+#include "species.h"
 
 #define EXIT { printf("Apothesis terminated. \n"); exit( EXIT_FAILURE ); }
 
@@ -68,6 +69,9 @@ public:
     /// Add a process
     void addProcess(string process);
 
+    /// Return access to list of species
+    vector<Species> getSpecies();
+
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
     // Not to handy. Re-think... I have found another way... Implement it
@@ -84,6 +88,9 @@ private:
 
     /// The flags given by the user
     char** m_vcArgv;
+
+    // List of species
+    vector<Species> m_species();
 };
 
 #endif // KMC_H

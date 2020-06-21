@@ -23,6 +23,7 @@
 #include "errorhandler.h"
 #include "parameters.h"
 #include "process.h"
+#include "species.h"
 #include "string.h"
 
 using namespace MicroProcesses;
@@ -73,7 +74,7 @@ void Apothesis::init()
 
   cout<<"Making a map" << endl;
 
-  
+
 
   /// Get the processes read and create them
   map< string, vector<double> > tempMap = pParameters->getProcesses();

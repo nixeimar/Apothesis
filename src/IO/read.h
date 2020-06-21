@@ -30,6 +30,7 @@
 #include "pointers.h"
 #include "apothesis.h"
 #include "lattice.h"
+#include "species.h"
 
 #include "errorhandler.h"
 #include "parameters.h"
@@ -128,6 +129,9 @@ class Read: public Pointers
 
     // Dimensions in the lattice
     int m_dimensions;
+
+    // Name of species
+    vector<string> m_speciesName;
 
   };
 
