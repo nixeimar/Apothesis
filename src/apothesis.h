@@ -70,7 +70,7 @@ public:
     void addProcess(string process);
 
     /// Return access to list of species
-    vector<Species> getSpecies();
+    vector<Species *> getSpecies();
 
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
@@ -90,7 +90,7 @@ private:
     char** m_vcArgv;
 
     // List of species
-    vector<Species> m_species();
+    vector<Species *> m_species;
 };
 
 #endif // KMC_H

@@ -85,6 +85,12 @@ Read::Read(Apothesis* apothesis):Pointers( apothesis),
       m_speciesName.push_back(itr->name.GetString());
     }
 
+    for (vector<string>::const_iterator itr = m_speciesName.begin(); itr != m_speciesName.end(); ++itr)
+    {
+      const char* name = (*itr).c_str();
+      double mw = m_input["Species"][name]["mw"].GetDouble();
+      m_MWs.push_back(mw);
+    }
   }
 
 Read::~Read(){}
@@ -107,4 +113,14 @@ Document Read::readInputFile(string filename)
   fclose(fp);
 
   return doc;  
+}
+
+vector<string> Read::getSpeciesNames()
+{
+  return m_speciesName;
+}
+
+vector<double> Read::getMWs()
+{
+  return m_MWs;
 }

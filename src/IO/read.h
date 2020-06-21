@@ -88,6 +88,12 @@ class Read: public Pointers
 
     //Document getInput() const;
 
+    // Return vector of species names
+    vector<string> getSpeciesNames();
+
+    // Return vector of molecular weights
+    vector<double> getMWs();
+
   protected:
 
     // Parsed input file
@@ -132,6 +138,9 @@ class Read: public Pointers
 
     // Name of species
     vector<string> m_speciesName;
+
+    // List of molecular weights
+    vector<double> m_MWs;
 
   };
 

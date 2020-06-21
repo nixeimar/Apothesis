@@ -46,6 +46,17 @@ Apothesis::Apothesis( int argc, char* argv[] ):pLattice( 0 ),pRead( 0 )
 
     pRead = new Read(this);
 
+    vector<string> pName = pRead->getSpeciesNames();
+
+    for (vector<string>::iterator it = pName.begin(); it != pName.end(); ++it)
+    {
+      int counter = 0;
+      // Read the molecular weights from the pName file
+      vector<double> pMW = pRead->getMWs();
+      m_species.push_back( new Species(*it, pMW[counter], 0));
+    }
+    
+
     // Read the input
     //pIO->readInputFile();
 
@@ -172,6 +183,11 @@ void Apothesis::exec()
   void Apothesis::addProcess(string process)
   {
     m_processes.push_back(process);
+  }
+
+  vector<Species *> Apothesis::getSpecies()
+  {
+    return m_species;
   }
 
 
