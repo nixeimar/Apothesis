@@ -23,8 +23,10 @@
 #include "errorhandler.h"
 #include "parameters.h"
 #include "process.h"
+#include "string.h"
 
 using namespace MicroProcesses;
+
 //using namespace Utils;
 
 Apothesis::Apothesis( int argc, char* argv[] ):pLattice( 0 ),pRead( 0 )
@@ -67,11 +69,15 @@ Apothesis::~Apothesis()
   }
 
 void Apothesis::init()
-  {
+{
 
   cout<<"Making a map" << endl;
+
+  
+
   /// Get the processes read and create them
   map< string, vector<double> > tempMap = pParameters->getProcesses();
+
   // Contruct the process
   int procsCounter = 0;
   map< string, vector<double> >::iterator mapIt = tempMap.begin();
@@ -82,10 +88,11 @@ void Apothesis::init()
     Process* proc = FactoryProcess::createProcess( mapIt->first );
     if ( proc )
       m_vProcesses.push_back( proc );
-    else {
+    else 
+    {
       pErrorHandler->error_simple_msg("Unknown process->" + mapIt->first );
       EXIT;
-      }
+    }
   }
 
   if ( m_vProcesses.empty() ){
@@ -101,13 +108,13 @@ void Apothesis::init()
 
   /// First the processes that participate in the simulation
   /// that were read from the file input and the I/O functionality
-    m_vProcesses[ 0]->setInstance( this );
-    m_vProcesses[ 0]->activeSites( pLattice );
-    m_vProcesses[ 0]->setProcessMap( &m_processMap );
+    m_vProcesses[0]->setInstance( this );
+    m_vProcesses[0]->activeSites( pLattice );
+    m_vProcesses[0]->setProcessMap( &m_processMap );
 }
 
 void Apothesis::exec()
-  {
+{
   ///Perform the number of KMC steps read from the input.
   int iterations = pParameters->getIterations();
 
@@ -159,6 +166,11 @@ void Apothesis::exec()
     }
     }
 
+  }
+
+  void Apothesis::addProcess(string process)
+  {
+    m_processes.push_back(process);
   }
 
 

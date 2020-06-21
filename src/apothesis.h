@@ -65,6 +65,9 @@ public:
     /// Perform the KMC iteratios
     void exec();
 
+    /// Add a process
+    void addProcess(string process);
+
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
     // Not to handy. Re-think... I have found another way... Implement it
@@ -72,6 +75,9 @@ private:
 
     /// Vector holding the processes to be performed.
     vector< MicroProcesses::Process* > m_vProcesses;
+
+    /// Vector holding the name of the processes (string)
+    vector<string> m_processes;
 
     /// The number of flags given by the user
     int m_iArgc;

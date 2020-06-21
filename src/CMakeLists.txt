@@ -22,6 +22,7 @@ set(header_files
     error/errorhandler.h
     processes/parameters.h
     IO/read.h
+    species/species.h
 )
 set(essential_src_files
     apothesis.cpp
@@ -48,13 +49,16 @@ set(lattice_files
     lattice/lattice.cpp
 )
 
-
+set(species_files
+    species/species.cpp
+)
 add_executable(${PROJECT_NAME} "main.cpp"
     ${header_files}
     ${process_files}
     ${error_files}
     ${IO_files}
     ${lattice_files}
+    ${species_files}
     ${essential_src_files}
 )
 
@@ -64,4 +68,5 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     processes
     IO
     lattice
+    species
 )

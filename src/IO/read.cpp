@@ -20,8 +20,7 @@
 // typedef the relevant rapidjson classes
 typedef rapidjson::Document Document;
 typedef rapidjson::FileReadStream FileReadStream;
-//typedef rapidjson::GenericValue<rapidjson::Encoding, rapidjson::Allocator> ValueType;
-//typedef rapidjson::GenericObject<false, ValueType> Object;
+typedef rapidjson::Value Value;
 
 Read::Read(Apothesis* apothesis):Pointers( apothesis),
                  m_sLatticeType("NONE"),
@@ -72,24 +71,13 @@ Read::Read(Apothesis* apothesis):Pointers( apothesis),
     std::cout<<"Setting Pressure " << std::endl;
     m_parameters->setPressure(m_input["Pressure"].GetDouble());
 
-    // How to show diffusion?
-    
-    vector <double> diffusionParameters;
-    //auto process = m_input["Process"].GetObject();
+    // Storing all processes into apothesis class
+    Value& process = m_input["process"];
+    for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
+    {
+      apothesis->addProcess(itr->name.GetString());
+    }
 
-    std::cout<<"Setting Diffusion parameter 1 " << std::endl;
-
-    double param1 = m_input["Process"]["Diffusion"]["param_1"].GetDouble();
-    double param2 = m_input["Process"]["Diffusion"]["param_2"].GetDouble();
-    
-    diffusionParameters.push_back(param1);
-    diffusionParameters.push_back(param2);
-
-    std::cout<<"Setting Diffusion parameter 2 " << std::endl;
-    diffusionParameters.push_back(m_input["Process"]["Diffusion"]["param_2"].GetDouble());
-
-    std::cout<<"Setting Diffusion Parameters " << std::endl;
-    m_parameters->setProcess( "Diffusion", diffusionParameters );
   }
 
 Read::~Read(){}
