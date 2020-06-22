@@ -83,6 +83,9 @@ private:
     /// Vector holding the name of the processes (string)
     vector<string> m_processes;
 
+    /// Function to log to output file whether a parameter is properly read
+    void logSuccessfulRead(bool read, string parameter);
+
     /// The number of flags given by the user
     int m_iArgc;
 

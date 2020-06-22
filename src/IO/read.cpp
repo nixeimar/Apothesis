@@ -38,7 +38,9 @@ Read::Read(Apothesis* apothesis):Pointers( apothesis),
     m_LatticeType[ "BCC" ] = Lattice::BCC;
     m_LatticeType[ "FCC" ] = Lattice::FCC;
 
-    
+    bool b = m_input.IsObject();
+    std::cout<<b<<std::endl;
+    assert(true);
     string lattice_type = m_input["Lattice"]["Type"].GetString();
     std::cout<<"lattice_type "<< lattice_type << std::endl;
     
@@ -104,11 +106,20 @@ Document Read::readInputFile(string filename)
   {
     throw std::runtime_error(std::strerror(errno));
   }
+  else
+  {
+    std::cout<<filename << " successfully opened."<<std::endl;
+  }
+  
   char readBuffer[65536];
   FileReadStream is(fp, readBuffer, sizeof(readBuffer));
 
   Document doc;
   doc.ParseStream(is);
+
+  doc.IsObject() ? std::cout<<"Successfully parsed"<<std::endl
+  :
+  std::cout<<"Error in format of input file" << std::endl;
 
   fclose(fp);
 

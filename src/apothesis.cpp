@@ -90,19 +90,33 @@ Apothesis::~Apothesis()
 
 void Apothesis::init()
 {
-  
+   cout<<"Opening output file"<<endl;
+  /// The output file name will come from the user and will have the extenstion .log
+  /// This would come as a parameter from the user from the args (also the input).
+  /// Now both are hard copied.
+  pIO->openOutputFile( "Output");
+
   // Processes in this case
   vector<string> pProc = pRead->getSpeciesNames();
 
   Document& doc = pRead->getDoc();
 
-  
+  pIO->writeLogOutput("Initializing processes");
+
   if (std::find(pProc.begin(), pProc.end(), "Adsorption") != pProc.end())
   {
+    pIO->writeLogOutput("Initializing Adsorption");
+    
     // Read parameters for Adsorption
     Value& spec = doc["Process"]["Adsorption"]["Species"];
     Value& stick = doc["Process"]["Adsorption"]["Sticking"];
-    Value& mFrac = doc["Process"]["Adsorption"]["Sticking"];
+    Value& mFrac = doc["Process"]["Adsorption"]["MassFraction"];
+  
+    // Verify presence of each parameter in input file
+    logSuccessfulRead(spec.IsArray(), "Adsorption species");
+    logSuccessfulRead(stick.IsArray(), "Adsorption sticking coefficients");
+    logSuccessfulRead(mFrac.IsArray(), "Adsorption mass fraction");
+    
 
     // Initialize vectors
     vector<string> species;
@@ -111,6 +125,15 @@ void Apothesis::init()
 
     for(SizeType i = 0; i < spec.Size(); i++)
     {
+      // Output possible errors
+      if (!spec[i].IsString())
+        pErrorHandler->error_simple_msg("Species format is not a string");
+      if(!stick[i].IsNumber())
+        pErrorHandler->error_simple_msg("Sticking coefficient format is not a double");
+      if(!mFrac[i].IsNumber())
+        pErrorHandler->error_simple_msg("Mass fraction format is not a double");
+
+      // Push values to corresponding vectors
       species.push_back(spec[i].GetString());
       sticking.push_back(stick[i].GetDouble());
       massFraction.push_back(mFrac[i].GetDouble());
@@ -123,20 +146,21 @@ void Apothesis::init()
       *itr = *itr/sum;
     }
 
+    // Add process to m_vProcesses
     m_vProcesses.push_back(new Adsorption (species, sticking));
 
   }
   if (std::find(pProc.begin(), pProc.end(), "Desorption") != pProc.end())
   {
-
+    pIO->writeLogOutput("Initializing Desorption");
   }
   if (std::find(pProc.begin(), pProc.end(), "Diffusion") != pProc.end())
   {
-
+    pIO->writeLogOutput("Initializing Diffusion");
   }
   if (std::find(pProc.begin(), pProc.end(), "Reaction") != pProc.end())
   {
-
+    pIO->writeLogOutput("Initializing Reaction");
   }
   
 
@@ -166,12 +190,6 @@ void Apothesis::init()
     pErrorHandler->error_simple_msg("No processes found.");
     EXIT;
     }
-
-  cout<<"Opening output file"<<endl;
-  /// The output file name will come from the user and will have the extenstion .log
-  /// This would come as a parameter from the user from the args (also the input).
-  /// Now both are hard copied.
-  pIO->openOutputFile( "Output");
 
   /// First the processes that participate in the simulation
   /// that were read from the file input and the I/O functionality
@@ -245,4 +263,9 @@ void Apothesis::exec()
     return m_species;
   }
 
+  void Apothesis::logSuccessfulRead(bool read, string parameter)
+  {
+    read ? pIO->writeLogOutput("Reading "  + parameter) 
+    :  pErrorHandler-> error_simple_msg("No " + parameter + " found in input file");
+  }
 
