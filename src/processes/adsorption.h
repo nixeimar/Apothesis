@@ -36,21 +36,22 @@ namespace MicroProcesses{
 For the simplest case e.g. BCC lattices all the sites are available for deposition. */
 
 class Adsorption: public Process
-  {
+{
   public:
     /// Constructor
-    Adsorption();
+    Adsorption
+    (
+      vector<string> species,
+      vector<double> stickingCoeffs
+    );
 
     /// Destructor
     virtual ~Adsorption();
 
-    /// Here everyhing needed for initialization of the process should be put
-    void init();
-
     /// The name of the process.
     void setName(string s){ m_sName = s;}
 
-    /// Compute the overall probabilities of this process and return it.
+    /// Compute the overall probabilities of this processus and return it.
     double getProbability();
 
     /// Returns the name of the process.
@@ -66,12 +67,10 @@ class Adsorption: public Process
     /// Slect the site that the adsorption will be performed from the available sites.
     void selectSite();
 
+    void setProcessMap( map< Process*, list<Site* >* >* );
+
     /// Perform the process. This is what actually is called by the main KMC instance.
     void perform();
-
-    /// A process map which is used between the different processes.
-    /// This need to be evaluated since it is not so handy.
-    void setProcessMap( map< Process*, list<Site* >* >* );
 
     /// The list of active sites for adsorption.
     list<Site*> getActiveList();
@@ -110,6 +109,12 @@ class Adsorption: public Process
     /// The number of neighs of this site
     int m_iNeighNum;
 
+    /// Species that can adsorb
+    vector<string> m_adsorptionSpecies;
+
+    /// Sticking coefficients
+    vector<double> m_stickingCoeffs;
+
   private:
   
     /** The lattice of the process */
@@ -118,11 +123,6 @@ class Adsorption: public Process
     /// The adsorption list which hold all the available sites for deposition
     list<Site* > m_lAdsSites;
 
-    /** Pointer to the process map */
-    map< Process*, list<Site*>* >* m_pProcessMap;
-
-    /// For registring the process.
-    REGISTER_PROCESS( Adsorption)
   };
 }
 

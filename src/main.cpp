@@ -54,7 +54,11 @@ int main( int argc, char* argv[] )
     //cout  << writeOut << endl;
 
     Apothesis* apothesis = new Apothesis( argc, argv );
+
+    cout << "Initiating Apothesis" << endl;
     apothesis->init();
+
+    cout << "Executing Apothesis" << endl;
     apothesis->exec();
 
     if ( apothesis )

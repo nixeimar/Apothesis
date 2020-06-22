@@ -115,7 +115,8 @@ void Diffusion::mf_updateNeighNum()
   }
 
 //this process is not complete.
-double Diffusion::getProbability(){
+double Diffusion::getProbability()
+{
   /* These are parameters values (I/O) */
   double dNavogadro = m_apothesis->pParameters->dAvogadroNum;
   //double dPres = m_apothesis->pParameters->getPressure();

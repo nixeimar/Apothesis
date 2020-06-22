@@ -115,6 +115,11 @@ Document Read::readInputFile(string filename)
   return doc;  
 }
 
+Document& Read::getDoc()
+{
+  return m_input; 
+}
+
 vector<string> Read::getSpeciesNames()
 {
   return m_speciesName;

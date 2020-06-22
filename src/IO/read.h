@@ -86,6 +86,8 @@ class Read: public Pointers
     /// Reads the input file " .kmc".
     Document readInputFile(string filename);
 
+    Document& getDoc();
+
     //Document getInput() const;
 
     // Return vector of species names

@@ -21,18 +21,22 @@
 
 namespace MicroProcesses{
 
-REGISTER_PROCESS_IMPL (Adsorption)
-
-Adsorption::Adsorption():m_sName("Adsorption"),m_iNeighNum(0), m_apothesis(0)
-  {
-  init();
-  }
+Adsorption::Adsorption
+(
+  vector<string> species,
+  vector<double> stickingCoeffs
+)
+:
+m_sName("Adsorption"),
+m_iNeighNum(0), 
+m_apothesis(0),
+m_adsorptionSpecies(species),
+m_stickingCoeffs(stickingCoeffs)
+{
+;  
+}
 
 Adsorption::~Adsorption(){}
-
-void Adsorption::init()
-  {
-  }
 
 string Adsorption::getName(){ return m_sName; }
 
@@ -49,14 +53,8 @@ void Adsorption::activeSites(Lattice* lattice)
       }
   }
 
-void Adsorption::setProcessMap( map< Process*, list<Site* >* >* procMap )
-  {
-  m_pProcessMap = procMap;
-  (*m_pProcessMap)[ this] = &m_lAdsSites;
-  }
-
 void Adsorption::selectSite()
-  {
+{
   /* This comes from random i.e. picking from the available list for adsorption randomly */
   int y = rand()%getActiveList().size();
   int counter = 0;
@@ -66,23 +64,25 @@ void Adsorption::selectSite()
       m_site = (*site);
     counter++;
     }
-  }
+}
+
+void Adsorption::setProcessMap( map< Process*, list<Site* >* >* ){}
 
 void Adsorption::perform()
-  {
+{
   int height = m_site->getHeight();
   height = height + 2;
   m_site->setHeight( height);
   mf_removeFromList();
   mf_updateNeighNum();
-  }
+}
 
 void Adsorption::mf_removeFromList() { m_lAdsSites.remove( m_site); m_site->removeProcess( this ); }
 
 void Adsorption::mf_addToList(Site *s) { m_lAdsSites.push_back( s); }
 
 void Adsorption::mf_updateNeighNum()
-  {
+{
   bool isActiveEAST = false;
   isActiveEAST = ( m_site->getHeight() == m_site->getNeighPosition( Site::EAST )->getHeight()  && \
                    m_site->getHeight() == m_site->getNeighPosition( Site::EAST_DOWN)->getHeight() && \
@@ -115,20 +115,20 @@ void Adsorption::mf_updateNeighNum()
 
   if ( isActiveSOUTH )
     mf_addToList( m_site->getActivationSite( Site::ACTV_SOUTH ));
-  }
+}
 
 list<Site*> Adsorption::getActiveList()
-  {
+{
   return m_lAdsSites;
-  }
+}
 
 void Adsorption::test()
-  {
+{
   cout << m_lAdsSites.size() << endl;
-  }
+}
 
 double Adsorption::getProbability()
-  {
+{
   /* These are parameters values (I/O) */
   double dNavogadro = m_apothesis->pParameters->dAvogadroNum;
   double dPres = m_apothesis->pParameters->getPressure();
@@ -148,6 +148,6 @@ double Adsorption::getProbability()
     return m_lAdsSites.size()*dflux;
   else
     return 0.0;
-  }
+}
 
 }

@@ -25,8 +25,14 @@
 #include "process.h"
 #include "species.h"
 #include "string.h"
+#include "adsorption.h"
+#include<numeric>
 
 using namespace MicroProcesses;
+
+typedef rapidjson::Document Document;
+typedef rapidjson::Value Value;
+typedef rapidjson::SizeType SizeType;
 
 //using namespace Utils;
 
@@ -55,6 +61,8 @@ Apothesis::Apothesis( int argc, char* argv[] ):pLattice( 0 ),pRead( 0 )
       vector<double> pMW = pRead->getMWs();
       m_species.push_back( new Species(*it, pMW[counter], 0));
     }
+
+
     
 
     // Read the input
@@ -82,10 +90,57 @@ Apothesis::~Apothesis()
 
 void Apothesis::init()
 {
+  
+  // Processes in this case
+  vector<string> pProc = pRead->getSpeciesNames();
 
-  cout<<"Making a map" << endl;
+  Document& doc = pRead->getDoc();
 
+  
+  if (std::find(pProc.begin(), pProc.end(), "Adsorption") != pProc.end())
+  {
+    // Read parameters for Adsorption
+    Value& spec = doc["Process"]["Adsorption"]["Species"];
+    Value& stick = doc["Process"]["Adsorption"]["Sticking"];
+    Value& mFrac = doc["Process"]["Adsorption"]["Sticking"];
 
+    // Initialize vectors
+    vector<string> species;
+    vector<double> sticking;
+    vector<double> massFraction;
+
+    for(SizeType i = 0; i < spec.Size(); i++)
+    {
+      species.push_back(spec[i].GetString());
+      sticking.push_back(stick[i].GetDouble());
+      massFraction.push_back(mFrac[i].GetDouble());
+    }
+
+    // Normalize the values of the mass fraction
+    double sum = std::accumulate(massFraction.begin(), massFraction.end(), 0);
+    for (vector<double> :: iterator itr = massFraction.begin(); itr != massFraction.end(); ++itr)
+    {
+      *itr = *itr/sum;
+    }
+
+    m_vProcesses.push_back(new Adsorption (species, sticking));
+
+  }
+  if (std::find(pProc.begin(), pProc.end(), "Desorption") != pProc.end())
+  {
+
+  }
+  if (std::find(pProc.begin(), pProc.end(), "Diffusion") != pProc.end())
+  {
+
+  }
+  if (std::find(pProc.begin(), pProc.end(), "Reaction") != pProc.end())
+  {
+
+  }
+  
+
+  cout<<"Making a map" << endl;  
 
   /// Get the processes read and create them
   map< string, vector<double> > tempMap = pParameters->getProcesses();
@@ -143,7 +198,7 @@ void Apothesis::exec()
   
     
   for ( int i = 0; i< iterations; i++)
-    {
+  {
     
     ///Here a process should be selected in random. We have only one for now...
 
