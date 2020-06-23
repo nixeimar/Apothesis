@@ -22,7 +22,7 @@ typedef rapidjson::Document Document;
 typedef rapidjson::FileReadStream FileReadStream;
 typedef rapidjson::Value Value;
 
-Read::Read(Apothesis* apothesis):Pointers( apothesis),
+Read::Read(Apothesis* apothesis):Pointers(apothesis),
                  m_sLatticeType("NONE"),
                  m_sProcess("process"),
                  m_sLattice("lattice"),
@@ -38,9 +38,6 @@ Read::Read(Apothesis* apothesis):Pointers( apothesis),
     m_LatticeType[ "BCC" ] = Lattice::BCC;
     m_LatticeType[ "FCC" ] = Lattice::FCC;
 
-    bool b = m_input.IsObject();
-    std::cout<<b<<std::endl;
-    assert(true);
     string lattice_type = m_input["Lattice"]["Type"].GetString();
     std::cout<<"lattice_type "<< lattice_type << std::endl;
     
@@ -55,41 +52,49 @@ Read::Read(Apothesis* apothesis):Pointers( apothesis),
     for (int i = 0; i < m_dimensions; i++)
     {
       //latticeDimensions.push_back(latticeDimensions[i]);
+      //TODO automate reading from input file
       latticeDimensions.push_back(10);
     }
 
-    std::cout<<"Setting lattice dimensions " << std::endl;
+//    std::cout<<"Setting lattice dimensions " << std::endl;
     m_lattice->setX(latticeDimensions[0]);
     m_lattice->setY(latticeDimensions[1]);
     m_lattice->setInitialHeight(latticeDimensions[2]);
     
-    std::cout<<"Setting Iterations " << std::endl;
     // Set the iterations, temperature, and pressure
+    apothesis->logSuccessfulRead(m_input.HasMember("Iterations"), "Iterations");
     m_parameters->setIterations(m_input["Iterations"].GetInt());
 
-    std::cout<<"Setting Temperature " << std::endl;
+    apothesis->logSuccessfulRead(m_input.HasMember("Temperature"), "Temperature");
     m_parameters->setTemperature(m_input["Temperature"].GetDouble());
 
-    std::cout<<"Setting Pressure " << std::endl;
+    apothesis->logSuccessfulRead(m_input.HasMember("Pressure"), "Pressure");
     m_parameters->setPressure(m_input["Pressure"].GetDouble());
 
-    // Storing all processes into apothesis class
-    Value& process = m_input["process"];
+    // Storing all processes names into apothesis class
+    apothesis->logSuccessfulRead(m_input.HasMember("Process"), "Process");
+    Value& process = m_input["Process"];
+
     for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
     {
       apothesis->addProcess(itr->name.GetString());
     }
 
     // Storing all processes into apothesis class
+    apothesis->logSuccessfulRead(m_input.HasMember("Species"), "Species");
     Value& speciesName = m_input["Species"];
-    for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
+
+    for (Value::ConstMemberIterator itr = speciesName.MemberBegin(); itr != speciesName.MemberEnd(); ++itr)
     {
-      m_speciesName.push_back(itr->name.GetString());
+      if (itr->name.IsString())
+        m_speciesName.push_back(itr->name.GetString());
     }
 
     for (vector<string>::const_iterator itr = m_speciesName.begin(); itr != m_speciesName.end(); ++itr)
     {
       const char* name = (*itr).c_str();
+      apothesis->logSuccessfulRead(speciesName.HasMember(name), name);
+      
       double mw = m_input["Species"][name]["mw"].GetDouble();
       m_MWs.push_back(mw);
     }
@@ -117,7 +122,7 @@ Document Read::readInputFile(string filename)
   Document doc;
   doc.ParseStream(is);
 
-  doc.IsObject() ? std::cout<<"Successfully parsed"<<std::endl
+  doc.IsObject() ? std::cout<<"Successfully parsed input file"<<std::endl
   :
   std::cout<<"Error in format of input file" << std::endl;
 

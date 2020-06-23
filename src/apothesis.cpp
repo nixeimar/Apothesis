@@ -265,7 +265,12 @@ void Apothesis::exec()
 
   void Apothesis::logSuccessfulRead(bool read, string parameter)
   {
+    if(!pIO->outputOpen())
+    {
+      pIO->openOutputFile("Output");
+    }
+    
     read ? pIO->writeLogOutput("Reading "  + parameter) 
-    :  pErrorHandler-> error_simple_msg("No " + parameter + " found in input file");
+    :  pIO->writeLogOutput("Can't find "  + parameter) ; //pErrorHandler-> error_simple_msg("No " + parameter + " found in input file");
   }
 

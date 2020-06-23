@@ -31,9 +31,9 @@ ErrorHandler::~ErrorHandler()
   }
 
 void ErrorHandler::error_simple_msg( string msg )
-  {
+{
   cout << "Error:" + msg << endl;
-  }
+}
 
 
 void ErrorHandler::warningSimple_msg( const string &msg )

@@ -410,7 +410,7 @@ void IO::writeLatticeInfo()
   }
 
 void IO::writeLatticeHeights()
-  {
+{
 
   // This must be formatted output.
   m_OutFile << " --------------------------------------- " << endl;
@@ -420,23 +420,28 @@ void IO::writeLatticeHeights()
     m_OutFile << endl;
     }
   m_OutFile << " --------------------------------------- " << endl;
-  }
+}
 
 string IO::GetCurrentWorkingDir()
-  {
+{
   char buff[FILENAME_MAX];
   string current_working_dir( buff );
   return current_working_dir;
-  }
+}
 
 Lattice::Type IO::getLatticeType()
-  {
+{
   map<string, Lattice::Type>::iterator itMap = m_mLatticeType.find( m_sLatticeType);
   if ( itMap == m_mLatticeType.end() )
     return m_mLatticeType[ "NONE"];
 
   return m_mLatticeType[ m_sLatticeType ];
-  }
+}
+
+bool IO::outputOpen()
+{
+  return m_OutFile.is_open();
+}
 
 
 

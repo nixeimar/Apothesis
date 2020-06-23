@@ -154,6 +154,9 @@ class IO: public Pointers
     /// Export the lattice in cml format. Not implemented yet.
     void exportLatticeCML();
 
+    /// Check if Output file is open
+    bool outputOpen();
+
   protected:
     /// The type of lattice
     string m_sLatticeType;

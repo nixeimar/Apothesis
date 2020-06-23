@@ -69,6 +69,9 @@ public:
     /// Add a process
     void addProcess(string process);
 
+    /// Function to log to output file whether a parameter is properly read
+    void logSuccessfulRead(bool read, string parameter);
+
     /// Return access to list of species
     vector<Species *> getSpecies();
 
@@ -82,9 +85,6 @@ private:
 
     /// Vector holding the name of the processes (string)
     vector<string> m_processes;
-
-    /// Function to log to output file whether a parameter is properly read
-    void logSuccessfulRead(bool read, string parameter);
 
     /// The number of flags given by the user
     int m_iArgc;
