@@ -26,6 +26,9 @@
 #include "species.h"
 #include "string.h"
 #include "adsorption.h"
+#include "desorption.h"
+#include "diffusion.h"
+#include "SurfaceReaction.h"
 #include<numeric>
 
 using namespace MicroProcesses;
@@ -94,10 +97,14 @@ void Apothesis::init()
   /// The output file name will come from the user and will have the extenstion .log
   /// This would come as a parameter from the user from the args (also the input).
   /// Now both are hard copied.
-  pIO->openOutputFile( "Output");
+
+  if (!pIO->outputOpen())
+    pIO->openOutputFile("Output");
 
   // Processes in this case
-  vector<string> pProc = pRead->getSpeciesNames();
+  vector<string> pProc = m_processes;
+
+  cout<<pProc[0]<<endl;
 
   Document& doc = pRead->getDoc();
 
@@ -108,25 +115,24 @@ void Apothesis::init()
     pIO->writeLogOutput("Initializing Adsorption");
     
     // Read parameters for Adsorption
-    Value& spec = doc["Process"]["Adsorption"]["Species"];
+    Value& specie = doc["Process"]["Adsorption"]["Species"];
     Value& stick = doc["Process"]["Adsorption"]["Sticking"];
     Value& mFrac = doc["Process"]["Adsorption"]["MassFraction"];
   
     // Verify presence of each parameter in input file
-    logSuccessfulRead(spec.IsArray(), "Adsorption species");
+    logSuccessfulRead(specie.IsArray(), "Adsorption species");
     logSuccessfulRead(stick.IsArray(), "Adsorption sticking coefficients");
     logSuccessfulRead(mFrac.IsArray(), "Adsorption mass fraction");
     
-
     // Initialize vectors
     vector<string> species;
     vector<double> sticking;
     vector<double> massFraction;
 
-    for(SizeType i = 0; i < spec.Size(); i++)
+    for(SizeType i = 0; i < specie.Size(); i++)
     {
       // Output possible errors
-      if (!spec[i].IsString())
+      if (!specie[i].IsString())
         pErrorHandler->error_simple_msg("Species format is not a string");
       if(!stick[i].IsNumber())
         pErrorHandler->error_simple_msg("Sticking coefficient format is not a double");
@@ -134,7 +140,7 @@ void Apothesis::init()
         pErrorHandler->error_simple_msg("Mass fraction format is not a double");
 
       // Push values to corresponding vectors
-      species.push_back(spec[i].GetString());
+      species.push_back(specie[i].GetString());
       sticking.push_back(stick[i].GetDouble());
       massFraction.push_back(mFrac[i].GetDouble());
     }
@@ -148,15 +154,86 @@ void Apothesis::init()
 
     // Add process to m_vProcesses
     m_vProcesses.push_back(new Adsorption (species, sticking));
-
+    pIO->writeLogOutput("Adsorption process is initialized.");
   }
   if (std::find(pProc.begin(), pProc.end(), "Desorption") != pProc.end())
   {
     pIO->writeLogOutput("Initializing Desorption");
+    
+    // Read parameters for Desorption
+    Value& vSpecie = doc["Process"]["Desorption"]["Species"];
+    Value& vEnergy = doc["Process"]["Desorption"]["Energy"];
+    Value& vFreq = doc["Process"]["Desorption"]["Frequency"];
+  
+    // Verify presence of each parameter in input file
+    logSuccessfulRead(vSpecie.IsArray(), "Desorption species");
+    logSuccessfulRead(vEnergy.IsArray(), "Desorption energy");
+    logSuccessfulRead(vFreq.IsArray(), "Desorption frequency");
+    
+    // Initialize vectors
+    vector<string> species;
+    vector<double> energy;
+    vector<double> frequency;
+
+    for(SizeType i = 0; i < vSpecie.Size(); i++)
+    {
+      // Output possible errors
+      if (!vSpecie[i].IsString())
+        pErrorHandler->error_simple_msg("Species format is not a string");
+      if(!vEnergy[i].IsNumber())
+        pErrorHandler->error_simple_msg("Desorption energy format is not a number");
+      if(!vFreq[i].IsNumber())
+        pErrorHandler->error_simple_msg("Desorption frequency format is not a number");
+
+      // Push values to corresponding vectors
+      species.push_back(vSpecie[i].GetString());
+      energy.push_back(vEnergy[i].GetDouble());
+      frequency.push_back(vFreq[i].GetDouble());
+    }
+
+    // Add process to m_vProcesses
+    m_vProcesses.push_back(new Desorption (species, energy, frequency));
+    pIO->writeLogOutput("Desorption process is initialized.");
+
   }
   if (std::find(pProc.begin(), pProc.end(), "Diffusion") != pProc.end())
   {
     pIO->writeLogOutput("Initializing Diffusion");
+
+    // Read parameters for Diffusion
+    Value& vSpecie = doc["Process"]["Diffusion"]["Species"];
+    Value& vEnergy = doc["Process"]["Diffusion"]["Energy"];
+    Value& vFreq = doc["Process"]["Diffusion"]["Frequency"];
+  
+    // Verify presence of each parameter in input file
+    logSuccessfulRead(vSpecie.IsArray(), "Diffusion species");
+    logSuccessfulRead(vEnergy.IsArray(), "Diffusion energy");
+    logSuccessfulRead(vFreq.IsArray(), "Diffusion frequency");
+    
+    // Initialize vectors
+    vector<string> species;
+    vector<double> energy;
+    vector<double> frequency;
+
+    for(SizeType i = 0; i < vSpecie.Size(); i++)
+    {
+      // Output possible errors
+      if (!vSpecie[i].IsString())
+        pErrorHandler->error_simple_msg("Species format is not a string");
+      if(!vEnergy[i].IsNumber())
+        pErrorHandler->error_simple_msg("Diffusion energy format is not a number");
+      if(!vFreq[i].IsNumber())
+        pErrorHandler->error_simple_msg("Diffusion frequency format is not a number");
+
+      // Push values to corresponding vectors
+      species.push_back(vSpecie[i].GetString());
+      energy.push_back(vEnergy[i].GetDouble());
+      frequency.push_back(vFreq[i].GetDouble());
+    }
+
+    // Add process to m_vProcesses
+    m_vProcesses.push_back(new Diffusion (species, energy, frequency));
+    pIO->writeLogOutput("...Done initializing diffusion process."); 
   }
   if (std::find(pProc.begin(), pProc.end(), "Reaction") != pProc.end())
   {
@@ -166,31 +243,31 @@ void Apothesis::init()
 
   cout<<"Making a map" << endl;  
 
-  /// Get the processes read and create them
-  map< string, vector<double> > tempMap = pParameters->getProcesses();
-
-  // Contruct the process
-  int procsCounter = 0;
-  map< string, vector<double> >::iterator mapIt = tempMap.begin();
-
-  cout<<"Creating factory processes" << endl;
-  for (; mapIt != tempMap.end(); mapIt++ )
-  {
-    Process* proc = FactoryProcess::createProcess( mapIt->first );
-    if ( proc )
-      m_vProcesses.push_back( proc );
-    else 
-    {
-      pErrorHandler->error_simple_msg("Unknown process->" + mapIt->first );
-      EXIT;
-    }
-  }
-
-  if ( m_vProcesses.empty() ){
-    pErrorHandler->error_simple_msg("No processes found.");
-    EXIT;
-    }
-
+//  /// Get the processes read and create them
+//  map< string, vector<double> > tempMap = pParameters->getProcesses();
+//
+//  // Contruct the process
+//  int procsCounter = 0;
+//  map< string, vector<double> >::iterator mapIt = tempMap.begin();
+//
+//  cout<<"Creating factory processes" << endl;
+//  for (; mapIt != tempMap.end(); mapIt++ )
+//  {
+//    Process* proc = FactoryProcess::createProcess( mapIt->first );
+//    if ( proc )
+//      m_vProcesses.push_back( proc );
+//    else 
+//    {
+//      pErrorHandler->error_simple_msg("Unknown process->" + mapIt->first );
+//      EXIT;
+//    }
+//  }
+//
+//  if ( m_vProcesses.empty() ){
+//    pErrorHandler->error_simple_msg("No processes found.");
+//    EXIT;
+//    }
+//
   /// First the processes that participate in the simulation
   /// that were read from the file input and the I/O functionality
     m_vProcesses[0]->setInstance( this );
@@ -271,6 +348,6 @@ void Apothesis::exec()
     }
     
     read ? pIO->writeLogOutput("Reading "  + parameter) 
-    :  pIO->writeLogOutput("Can't find "  + parameter) ; //pErrorHandler-> error_simple_msg("No " + parameter + " found in input file");
+    :  pErrorHandler-> error_simple_msg("No " + parameter + " found in input file");
   }
 

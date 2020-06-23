@@ -75,26 +75,30 @@ Read::Read(Apothesis* apothesis):Pointers(apothesis),
     apothesis->logSuccessfulRead(m_input.HasMember("Process"), "Process");
     Value& process = m_input["Process"];
 
+    // Add processes into a vector, stored under apothesis
     for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
     {
       apothesis->addProcess(itr->name.GetString());
     }
 
-    // Storing all processes into apothesis class
+    // Storing all species  into apothesis class
     apothesis->logSuccessfulRead(m_input.HasMember("Species"), "Species");
     Value& speciesName = m_input["Species"];
 
+    // Push names of existing species
     for (Value::ConstMemberIterator itr = speciesName.MemberBegin(); itr != speciesName.MemberEnd(); ++itr)
     {
       if (itr->name.IsString())
         m_speciesName.push_back(itr->name.GetString());
     }
 
+    // Read species and corresponding molecular weights into member vars within apothesis
     for (vector<string>::const_iterator itr = m_speciesName.begin(); itr != m_speciesName.end(); ++itr)
     {
       const char* name = (*itr).c_str();
       apothesis->logSuccessfulRead(speciesName.HasMember(name), name);
       
+      // TODO: Include a map with default values in case nothing is specified
       double mw = m_input["Species"][name]["mw"].GetDouble();
       m_MWs.push_back(mw);
     }

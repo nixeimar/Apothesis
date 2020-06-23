@@ -28,9 +28,13 @@ namespace MicroProcesses{
 class Diffusion: public Process
 {
 public:
-    /// Constructor
-    Diffusion();
-
+     /// Constructor
+    Diffusion
+    (
+      vector<string> species,
+      vector<double> energy,
+      vector<double> frequency
+    );
     /// Destructor
     virtual ~Diffusion();
 
@@ -100,6 +104,15 @@ public:
     /// The number of neighs of this site
     int m_iNeighNum;
 
+     /// Species that can diffuse
+    vector<string> m_diffusionSpecies;
+
+    /// Energy coefficients
+    vector<double> m_diffusionEnergy;
+
+    /// Frequency
+    vector<double> m_diffusionFrequency;
+
 private:
 
     /** The lattice of the process */
@@ -110,9 +123,6 @@ private:
 
     /** Pointer to the process map */
     map< Process*, list<Site*>* >* m_pProcessMap;
-
-    /// For registring the process.
-    REGISTER_PROCESS( Diffusion)
 };
 
 }

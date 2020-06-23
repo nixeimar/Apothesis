@@ -32,8 +32,8 @@ m_sName("Desorption"),
 m_iNeighNum(0), 
 m_apothesis(0),
 m_desorptionSpecies(species),
-m_energy(energy),
-m_frequency(frequency)
+m_desorptionEnergy(energy),
+m_desorptionFrequency(frequency)
 {
 ;  
 }

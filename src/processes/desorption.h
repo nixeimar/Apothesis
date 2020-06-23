@@ -110,14 +110,14 @@ class Desorption: public Process
     /// The number of neighs of this site
     int m_iNeighNum;
 
-    /// Species that can adsorb
+    /// Species that can desorb
     vector<string> m_desorptionSpecies;
 
-    /// Sticking coefficients
-    vector<double> m_energy;
+    /// Energy coefficients
+    vector<double> m_desorptionEnergy;
 
     /// Frequency
-    vector<double> m_frequency;
+    vector<double> m_desorptionFrequency;
 
   private:
   
