@@ -18,6 +18,7 @@ set(header_files
     processes/adsorption.h 
     processes/diffusion.h
     processes/factory_process.h
+    processes/desorption.h
     processes/SurfaceReaction.h
     error/errorhandler.h
     processes/parameters.h
@@ -39,6 +40,7 @@ set(process_files
     processes/SurfaceReaction.cpp
     processes/parameters.cpp
     processes/io.cpp
+    processes/desorption.cpp
 )
 set(error_files
     error/errorhandler.cpp 
