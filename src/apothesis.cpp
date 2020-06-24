@@ -57,13 +57,13 @@ Apothesis::Apothesis( int argc, char* argv[] ):pLattice( 0 ),pRead( 0 )
 
     vector<string> pName = pRead->getSpeciesNames();
 
-    for (vector<string>::iterator it = pName.begin(); it != pName.end(); ++it)
-    {
-      int counter = 0;
-      // Read the molecular weights from the pName file
-      vector<double> pMW = pRead->getMWs();
-      m_species.push_back( new Species(*it, pMW[counter], 0));
-    }
+    //for (vector<string>::iterator it = pName.begin(); it != pName.end(); ++it)
+    //{
+    //  int counter = 0;
+    //  // Read the molecular weights from the pName file
+    //  vector<double> pMW = pRead->getMWs();
+    //  m_species.push_back( new Species(*it, pMW[counter], 0));
+    //}
 
 
     
@@ -154,7 +154,7 @@ void Apothesis::init()
 
     // Add process to m_vProcesses
     m_vProcesses.push_back(new Adsorption (species, sticking));
-    pIO->writeLogOutput("Adsorption process is initialized.");
+    pIO->writeLogOutput("...Done initializing Adsorption process.");
   }
   if (std::find(pProc.begin(), pProc.end(), "Desorption") != pProc.end())
   {
@@ -193,7 +193,7 @@ void Apothesis::init()
 
     // Add process to m_vProcesses
     m_vProcesses.push_back(new Desorption (species, energy, frequency));
-    pIO->writeLogOutput("Desorption process is initialized.");
+    pIO->writeLogOutput("...Done initializing desorption process.");
 
   }
   if (std::find(pProc.begin(), pProc.end(), "Diffusion") != pProc.end())
@@ -238,11 +238,64 @@ void Apothesis::init()
   if (std::find(pProc.begin(), pProc.end(), "Reaction") != pProc.end())
   {
     pIO->writeLogOutput("Initializing Reaction");
+
+    // Read parameters for Reaction
+    Value& vSpecie = doc["Process"]["Reaction"]["Species"];
+    Value& vStoich = doc["Process"]["Reaction"]["Stoichiometry"];
+    Value& vEnergy = doc["Process"]["Reaction"]["Energy"];
+    Value& vPreExp = doc["Process"]["Reaction"]["PreExp"];
+  
+    // Verify presence of each parameter in input file
+    logSuccessfulRead(vSpecie.IsArray(), "Reaction species");
+    logSuccessfulRead(vStoich.IsArray(), "Reaction Stoichiometry");
+    logSuccessfulRead(vEnergy.IsNumber(), "Enthalpy of reaction");
+    logSuccessfulRead(vPreExp.IsNumber(), "Pre-exponential factor for the reaction");
+    
+    // Initialize vectors
+    vector<string> species;
+    vector<double> stoichiometry;
+    double energy;
+    double preexp;
+
+    // Loop through species
+    for(SizeType i = 0; i < vSpecie.Size(); i++)
+    {
+      // Output possible errors
+      if (!vSpecie[i].IsString())
+        pErrorHandler->error_simple_msg("Species format is not a string");
+      if(!vStoich[i].IsNumber())
+        pErrorHandler->error_simple_msg("Diffusion energy format is not a number");
+      
+      // Push values to corresponding vectors
+      species.push_back(vSpecie[i].GetString());
+      stoichiometry.push_back(vStoich[i].GetDouble());
+
+      auto mws = pRead->getMWs();
+      Species* s = new Species(vSpecie[i].GetString(), mws[i], vStoich[i].GetDouble());
+      m_species.push_back(s);
+    }
+    
+    // Store value for energy and pre-exponential factor
+    energy = vEnergy.GetDouble();
+    preexp = vPreExp.GetDouble();
+
+    // Check mass balance on reaction
+    double cumulativemass = 0;
+    for (vector<Species*> :: iterator itr = m_species.begin(); itr != m_species.end(); ++itr)
+    {
+      Species* s = *itr;
+      cumulativemass += s->getMW() * s->getStoicCoeff();
+    }
+    
+    if (abs(cumulativemass) > 1e-10)
+    {
+      cout<<"Warning! Mass balance of Reaction is not balanced"<< endl;
+    }
+    
+    m_vProcesses.push_back(new SurfaceReaction(species, stoichiometry, energy, preexp));
+    pIO->writeLogOutput("...Done initializing reaction."); 
   }
   
-
-  cout<<"Making a map" << endl;  
-
 //  /// Get the processes read and create them
 //  map< string, vector<double> > tempMap = pParameters->getProcesses();
 //
@@ -335,11 +388,6 @@ void Apothesis::exec()
     m_processes.push_back(process);
   }
 
-  vector<Species *> Apothesis::getSpecies()
-  {
-    return m_species;
-  }
-
   void Apothesis::logSuccessfulRead(bool read, string parameter)
   {
     if(!pIO->outputOpen())
@@ -351,3 +399,22 @@ void Apothesis::exec()
     :  pErrorHandler-> error_simple_msg("No " + parameter + " found in input file");
   }
 
+
+  vector<Species *> Apothesis::getSpecies()
+  {
+    return m_species;
+  }
+
+  Species* Apothesis::findSpecies(string species)
+  {
+    auto pSpecies = getSpecies();
+    for (vector<Species*> :: iterator itr = pSpecies.begin(); itr != pSpecies.end(); ++itr)
+    {
+      string currSpec = (*itr)->getName();
+      if (!species.compare(currSpec))
+      {
+        return *itr;
+      }
+    }
+    pErrorHandler->error_simple_msg("Species " + species + " could not be found.");
+  }

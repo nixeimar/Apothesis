@@ -81,7 +81,7 @@ Read::Read(Apothesis* apothesis):Pointers(apothesis),
       apothesis->addProcess(itr->name.GetString());
     }
 
-    // Storing all species  into apothesis class
+    // Storing all species into apothesis class
     apothesis->logSuccessfulRead(m_input.HasMember("Species"), "Species");
     Value& speciesName = m_input["Species"];
 

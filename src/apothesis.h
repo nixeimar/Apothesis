@@ -75,6 +75,9 @@ public:
     /// Return access to list of species
     vector<Species *> getSpecies();
 
+    /// Return pointer to a given species, based on the name
+    Species* findSpecies(string species);
+
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
     // Not to handy. Re-think... I have found another way... Implement it
@@ -93,7 +96,7 @@ private:
     char** m_vcArgv;
 
     // List of species
-    vector<Species *> m_species;
+    vector<Species*> m_species;
 };
 
 #endif // KMC_H
