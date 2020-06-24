@@ -37,10 +37,10 @@ set(process_files
     processes/diffusion.cpp
     processes/factory_process.cpp
     processes/process.cpp
-    processes/SurfaceReaction.cpp
     processes/parameters.cpp
     processes/io.cpp
     processes/desorption.cpp
+    processes/SurfaceReaction.cpp
 )
 set(error_files
     error/errorhandler.cpp 
