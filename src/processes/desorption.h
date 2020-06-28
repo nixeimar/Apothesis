@@ -101,7 +101,7 @@ class Desorption: public Process
     /// adsroption in a BCC lattice.
     void mf_updateNeighNum();
 
-    /// The site that adsorption is performed
+    /// The site that desorption is performed
     Site* m_site;
 
     /// The value of the probability of the process is stored here
@@ -109,6 +109,23 @@ class Desorption: public Process
 
     /// The number of neighs of this site
     int m_iNeighNum;
+
+    /// Return names of desorption species
+    const vector<string> getDesorptionSpecies();
+
+    /// Return array of desorption energy
+    const vector<double> getDesorptionEnergy();
+   
+    /// Return array of desorption frequency
+    const vector<double> getDesorptionFrequency();
+
+  private:
+  
+    /** The lattice of the process */
+    Lattice* m_pLattice;
+
+    /// The adsorption list which hold all the available sites for deposition
+    list<Site* > m_lAdsSites;
 
     /// Species that can desorb
     vector<string> m_desorptionSpecies;
@@ -118,14 +135,6 @@ class Desorption: public Process
 
     /// Frequency
     vector<double> m_desorptionFrequency;
-
-  private:
-  
-    /** The lattice of the process */
-    Lattice* m_pLattice;
-
-    /// The adsorption list which hold all the available sites for deposition
-    list<Site* > m_lAdsSites;
 
   };
 }

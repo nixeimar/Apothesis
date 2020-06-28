@@ -77,6 +77,11 @@ public:
 
     /// Return pointer to a given species, based on the name
     Species* findSpecies(string species);
+    
+    /// Return normalized probabilities of each process
+    vector<double> calculateProbabilities(list<MicroProcesses::Process*>);
+
+    MicroProcesses::Process* getProcessAt(int index, list<MicroProcesses::Process*> pProcesses);
 
 private:
     /// The process map which holds all the processes and the sites that each can be performed.

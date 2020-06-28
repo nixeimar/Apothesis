@@ -121,6 +121,9 @@ public:
     /// Remove a processes from the list of processes that this site can participate in.
     void removeProcess( Process* );
 
+    /// Get pointer to possible processes that can occur on this site
+    list< Process* > getProcesses();
+
 protected:
     /// The ID of the site.
     int m_iID;

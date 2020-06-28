@@ -92,6 +92,9 @@ class Lattice: public Pointers
     /// Sets the minimun initial height for the lattice.
     void setInitialHeight( int  height );
 
+    /// Returns random site
+    Site* randomSite();
+
   protected:
     /// The size of the lattice in the x-dimension.
     int m_iSizeX;

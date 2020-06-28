@@ -53,6 +53,10 @@ void Site::addProcess(Process* process) { m_lProcs.push_back( process ); }
 
 void Site::removeProcess(Process* process) { m_lProcs.remove( process ); }
 
+list<Process*> Site::getProcesses()
+{
+  return m_lProcs;
+}
 }
 
 

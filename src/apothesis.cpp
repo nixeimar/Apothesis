@@ -294,33 +294,9 @@ void Apothesis::init()
     
     m_vProcesses.push_back(new SurfaceReaction(species, stoichiometry, energy, preexp));
     pIO->writeLogOutput("...Done initializing reaction."); 
-  }
+}
   
-//  /// Get the processes read and create them
-//  map< string, vector<double> > tempMap = pParameters->getProcesses();
-//
-//  // Contruct the process
-//  int procsCounter = 0;
-//  map< string, vector<double> >::iterator mapIt = tempMap.begin();
-//
-//  cout<<"Creating factory processes" << endl;
-//  for (; mapIt != tempMap.end(); mapIt++ )
-//  {
-//    Process* proc = FactoryProcess::createProcess( mapIt->first );
-//    if ( proc )
-//      m_vProcesses.push_back( proc );
-//    else 
-//    {
-//      pErrorHandler->error_simple_msg("Unknown process->" + mapIt->first );
-//      EXIT;
-//    }
-//  }
-//
-//  if ( m_vProcesses.empty() ){
-//    pErrorHandler->error_simple_msg("No processes found.");
-//    EXIT;
-//    }
-//
+
   /// First the processes that participate in the simulation
   /// that were read from the file input and the I/O functionality
     m_vProcesses[0]->setInstance( this );
@@ -347,29 +323,68 @@ void Apothesis::exec()
     
   for ( int i = 0; i< iterations; i++)
   {
+    //TODO: If (debug) print out the id of the lattice site
+    /// Select random site
+    Site* pSite = pLattice->randomSite();
+
+
+    /// Find available processes in that site
+    list<Process*> pProcesses = pSite->getProcesses();
+
     
-    ///Here a process should be selected in random. We have only one for now...
+    
+    vector<double> probability = calculateProbabilities(pProcesses);
+
+    /// Select random process
+    
+    // Get random number (with 3 digits) between 0 and 1
+    double random = (rand() % 1000 ) / 1000;
+    int processIndex = 0;
+
+    // Iterate through probabiltiies to find index
+    for(int i = 1; i < probability.size(); i++)
+    {
+      // probability[i] is upper bound of a given process
+      if(random < probability[i])
+      {
+        // the process index is equal to i - 1
+        processIndex = i-1;
+
+        // if we found something, break out of the for loop
+        break;
+      }
+    }
+
+    // Get process at index i
+    Process* process = getProcessAt(processIndex, pProcesses);
+    
+    
+    /// Perform process
+
+    process->perform();
+
+    ///Here a process should be sPerform processelected in random. We have only one for now...
 
     /// Print to output
     pIO->writeLogOutput( "Time step: " + to_string( i ) );
 
 
-    /// Get the active sites of the process
-    list<Site*> lAdsList = m_vProcesses[ 0]->getActiveList();
+    ///// Get the active sites of the processp
+    //list<Site*> lAdsList = m_vProcesses[ 0]->getActiveList();
 
-    /// Check if there are available sites that it can be performed
-    if (lAdsList.size() == 0)
-    {
-      cout << "No more "<<m_vProcesses[0]->getName()<< " site is available. Exiting..." << endl;
-      pErrorHandler->error_simple_msg( "No "+ m_vProcesses[0]->getName() + " site is available. Last time step: " + to_string( i ) );
-      EXIT;
-    }
+    ///// Check if there are available sites that it can be performed
+    //if (lAdsList.size() == 0)
+    //{
+    //  cout << "No more "<<m_vProcesses[0]->getName()<< " site is available. Exiting..." << endl;
+    //  pErrorHandler->error_simple_msg( "No "+ m_vProcesses[0]->getName() + " site is available. Last time step: " + to_string( i ) );
+    //  EXIT;
+    //}
 
     /// Select randomly a site
-    m_vProcesses[ 0 ]->selectSite();
-    /// Perform the process
-    m_vProcesses[ 0]->perform();
-
+    //m_vProcesses[ 0 ]->selectSite();
+    ///// Perform the process
+    //m_vProcesses[ 0]->perform();
+//
     /// The frequency that the various information are written in the file
     /// must befined by the user. Fix it ...
     /// The user should also check if the messages are written on the terminal or not.
@@ -417,4 +432,41 @@ void Apothesis::exec()
       }
     }
     pErrorHandler->error_simple_msg("Species " + species + " could not be found.");
+  }
+
+  vector<double> Apothesis::calculateProbabilities(list<Process*> pProcesses)
+  {
+    /// Calculate probabilities for each process
+    int numProcesses = pProcesses.size();
+
+    /// Calculate probability of each
+    vector<double> probability;
+    double total = 0;
+    list<Process*> :: iterator itr = pProcesses.begin();
+
+    // Find the probability for each process. Push onto prob.
+    for(int i = 0; i < numProcesses; i++)
+    {
+      Process* process = *itr;
+      double prob = process->getProbability();
+      probability.push_back(prob);
+      total += prob;
+    }
+
+    // Normalize all values
+    for (vector<double> :: iterator itr = probability.begin(); itr != probability.end(); ++itr)
+    {
+      // TODO: ensure this is actually modified
+      *itr = *itr / total;
+    }
+
+    return probability;
+    
+  }
+
+  Process* Apothesis::getProcessAt(int index, list<Process*> pProcesses)
+  {
+    list<Process*> :: iterator it = pProcesses.begin();
+    std::advance(it, index);
+    return *it;
   }

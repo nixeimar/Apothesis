@@ -37,6 +37,14 @@ void Lattice::setY( int y ) { m_iSizeY = y; }
 
 void Lattice::setInitialHeight( int  height ) { m_iHeight = height; }
 
+Site* Lattice::randomSite()
+{
+  int numSites = m_iSizeX * m_iSizeY;
+
+  // TODO: Does this need to only consider sites where smth is possible? ie 'active' sites
+  return getSite(rand() % numSites);
+}
+
 void Lattice::build()
   {
   if ( m_Type == NONE){

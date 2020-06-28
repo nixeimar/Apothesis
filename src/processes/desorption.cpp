@@ -129,27 +129,61 @@ void Desorption::test()
   cout << m_lAdsSites.size() << endl;
 }
 
+
 double Desorption::getProbability()
 {
+  // Find the species on the site
+
   /* These are parameters values (I/O) */
-  double dNavogadro = m_apothesis->pParameters->dAvogadroNum;
-  double dPres = m_apothesis->pParameters->getPressure();
   double dTemp = m_apothesis->pParameters->getTemperature();
   double dkBoltz = m_apothesis->pParameters->dkBoltz;
 
-  double dmass = 27e-3/dNavogadro;
-  double dpi = 3.14159265;
-  double dstick = 0.5;
-  double dCites = 1.4e+19;
-  double dy = 3.05e-3;
+  // how to find the number of neighbours?
+ //   {
+ //     cout << "No more "<<m_vProcesses[0]->getName()<< " site is available. Exiting..." << endl;
+ //     pErrorHandler->error_simple_msg( "No "+ m_vProcesses[0]->getName() + " site is available. Last time step: " + to_string( i ) );
+ //     EXIT;
+ //   }
+
+  double n = 1;
+  int index = -1;
+  
+  // Find index of individual species
+  for (int i = 0; i < m_desorptionSpecies.size(); i++)
+  {
+    //if(!m_desorptionSpecies[i].compare(species))
+    //{
+    //  index = i; 
+    //}
+  }
+
+  double freq = m_desorptionFrequency[index];
+  double energy = m_desorptionEnergy[index];
+
+  // TODO: Error message if index = -1
 
   /* Desorption probability see Lam and Vlachos  */
-  double dflux = dstick*dPres*dy/(dCites*sqrt(2.0*dpi*dmass*dkBoltz*dTemp));
+  double dflux = freq*exp(-n*energy/(dkBoltz*dTemp));
 
   if ( m_lAdsSites.size() !=0 )
     return m_lAdsSites.size()*dflux;
   else
     return 0.0;
+}
+
+const vector<string> Desorption::getDesorptionSpecies()
+{
+  return m_desorptionSpecies;
+}
+
+const vector<double> Desorption::getDesorptionEnergy()
+{
+  return m_desorptionEnergy;
+}
+
+const vector<double> Desorption::getDesorptionFrequency()
+{
+  return m_desorptionFrequency;
 }
 
 }
