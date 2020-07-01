@@ -24,14 +24,16 @@ namespace MicroProcesses{
 Adsorption::Adsorption
 (
   vector<string> species,
-  vector<double> stickingCoeffs
+  vector<double> stickingCoeffs,
+  vector<double> massFraction
 )
 :
 m_sName("Adsorption"),
 m_iNeighNum(0), 
 m_apothesis(0),
 m_adsorptionSpecies(species),
-m_stickingCoeffs(stickingCoeffs)
+m_stickingCoeffs(stickingCoeffs),
+m_massfraction(massFraction)
 {
 ;  
 }
@@ -73,6 +75,8 @@ void Adsorption::perform()
   int height = m_site->getHeight();
   height = height + 2;
   m_site->setHeight( height);
+  // How to set a random adsorption species? Get a pointer to apothesis in order to find/get access to the species list
+  //m_site->setSpecies(m_adsorptionSpecies[0]);
   mf_removeFromList();
   mf_updateNeighNum();
 }
@@ -117,6 +121,11 @@ void Adsorption::mf_updateNeighNum()
     mf_addToList( m_site->getActivationSite( Site::ACTV_SOUTH ));
 }
 
+const vector<double> Adsorption::getMassFraction()
+{
+  return m_massfraction;
+}
+
 list<Site*> Adsorption::getActiveList()
 {
   return m_lAdsSites;
@@ -134,12 +143,15 @@ double Adsorption::getProbability()
   double dPres = m_apothesis->pParameters->getPressure();
   double dTemp = m_apothesis->pParameters->getTemperature();
   double dkBoltz = m_apothesis->pParameters->dkBoltz;
+  
+  string s = m_site->getSpeciesName();
+  int index = m_apothesis->findSpeciesIndex(s);
 
   double dmass = 27e-3/dNavogadro;
   double dpi = 3.14159265;
-  double dstick = 0.5;
+  double dstick = m_stickingCoeffs[index];
   double dCites = 1.4e+19;
-  double dy = 3.05e-3;
+  double dy = getMassFraction()[index];
 
   /* Adsorption probability see Lam and Vlachos  */
   double dflux = dstick*dPres*dy/(dCites*sqrt(2.0*dpi*dmass*dkBoltz*dTemp));

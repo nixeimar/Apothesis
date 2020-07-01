@@ -57,17 +57,6 @@ Apothesis::Apothesis( int argc, char* argv[] ):pLattice( 0 ),pRead( 0 )
 
     vector<string> pName = pRead->getSpeciesNames();
 
-    //for (vector<string>::iterator it = pName.begin(); it != pName.end(); ++it)
-    //{
-    //  int counter = 0;
-    //  // Read the molecular weights from the pName file
-    //  vector<double> pMW = pRead->getMWs();
-    //  m_species.push_back( new Species(*it, pMW[counter], 0));
-    //}
-
-
-    
-
     // Read the input
     //pIO->readInputFile();
 
@@ -153,7 +142,7 @@ void Apothesis::init()
     }
 
     // Add process to m_vProcesses
-    m_vProcesses.push_back(new Adsorption (species, sticking));
+    m_vProcesses.push_back(new Adsorption (species, sticking, massFraction));
     pIO->writeLogOutput("...Done initializing Adsorption process.");
   }
   if (std::find(pProc.begin(), pProc.end(), "Desorption") != pProc.end())
@@ -323,80 +312,43 @@ void Apothesis::exec()
     
   for ( int i = 0; i< iterations; i++)
   {
-    //TODO: If (debug) print out the id of the lattice site
-    /// Select random site
-    Site* pSite = pLattice->randomSite();
-
-
-    /// Find available processes in that site
-    list<Process*> pProcesses = pSite->getProcesses();
-
-    
-    
-    vector<double> probability = calculateProbabilities(pProcesses);
-
-    /// Select random process
-    
-    // Get random number (with 3 digits) between 0 and 1
-    double random = (rand() % 1000 ) / 1000;
-    int processIndex = 0;
-
-    // Iterate through probabiltiies to find index
-    for(int i = 1; i < probability.size(); i++)
-    {
-      // probability[i] is upper bound of a given process
-      if(random < probability[i])
-      {
-        // the process index is equal to i - 1
-        processIndex = i-1;
-
-        // if we found something, break out of the for loop
-        break;
-      }
-    }
-
-    // Get process at index i
-    Process* process = getProcessAt(processIndex, pProcesses);
-    
-    
-    /// Perform process
-
-    process->perform();
-
-    ///Here a process should be sPerform processelected in random. We have only one for now...
 
     /// Print to output
     pIO->writeLogOutput( "Time step: " + to_string( i ) );
 
+    //TODO: If (debug) print out the id of the lattice site
+    
+    ///Here a process should be sPerform processelected in random. We have only one for now...
 
     ///// Get the active sites of the processp
-    //list<Site*> lAdsList = m_vProcesses[ 0]->getActiveList();
+    list<Site*> lAdsList = m_vProcesses[ 0]->getActiveList();
 
     ///// Check if there are available sites that it can be performed
-    //if (lAdsList.size() == 0)
-    //{
-    //  cout << "No more "<<m_vProcesses[0]->getName()<< " site is available. Exiting..." << endl;
-    //  pErrorHandler->error_simple_msg( "No "+ m_vProcesses[0]->getName() + " site is available. Last time step: " + to_string( i ) );
-    //  EXIT;
-    //}
-
-    /// Select randomly a site
-    //m_vProcesses[ 0 ]->selectSite();
-    ///// Perform the process
-    //m_vProcesses[ 0]->perform();
-//
-    /// The frequency that the various information are written in the file
-    /// must befined by the user. Fix it ...
-    /// The user should also check if the messages are written on the terminal or not.
+    if (lAdsList.size() == 0)
+    {
+      cout << "No more "<<m_vProcesses[0]->getName()<< " site is available. Exiting..." << endl;
+      pErrorHandler->error_simple_msg( "No "+ m_vProcesses[0]->getName() + " site is available. Last time step: " + to_string( i ) );
+      EXIT;
+    }
+    
+    //Select randomly a site
+    m_vProcesses[ 0 ]->selectSite();
+    /// Perform the process
+    m_vProcesses[ 0]->perform();
+    
+    // The frequency that the various information are written in the file
+    // must befined by the user. Fix it ...
+    // The user should also check if the messages are written on the terminal or not.
     pIO->writeLogOutput( m_vProcesses[ 0]->getName() + " " );
     pIO->writeLatticeHeights();
 
     if(i==0){
       cout << m_vProcesses[0]->getName() << " process is being performed..." << endl;
     }
-    }
+    
 
   }
+}
 
   void Apothesis::addProcess(string process)
   {
@@ -434,6 +386,22 @@ void Apothesis::exec()
     pErrorHandler->error_simple_msg("Species " + species + " could not be found.");
   }
 
+  int Apothesis::findSpeciesIndex(string species)
+  {
+    auto pSpecies = getSpecies();
+    int index = 0;
+    for (vector<Species*> :: iterator itr = pSpecies.begin(); itr != pSpecies.end(); ++itr)
+    {
+      string currSpec = (*itr)->getName();
+      if (!species.compare(currSpec))
+      {
+        return index;
+      }
+      index += 1;
+    }
+    pErrorHandler->error_simple_msg("Species " + species + " could not be found.");
+    return -1;
+  }
   vector<double> Apothesis::calculateProbabilities(list<Process*> pProcesses)
   {
     /// Calculate probabilities for each process

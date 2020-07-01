@@ -41,6 +41,13 @@ int Site::getHeight() { return m_iHeight; }
 
 void Site::setNeighboursNum( int num){ m_iNumNeighs = num;
                                        }
+
+int Site::getNeighboursNum()
+{
+  //TODO: How to get number of neighbours?
+  return m_vNeigh.size();
+}
+  
 void Site::setNeighPosition( Site* s, NeighPoisition np){ m_mapNeigh[ np] = s; }
 
 Site* Site::getNeighPosition( NeighPoisition np){ return m_mapNeigh[ np];}
@@ -48,6 +55,21 @@ Site* Site::getNeighPosition( NeighPoisition np){ return m_mapNeigh[ np];}
 void Site::storeActivationSite( Site* s, ActivationSite as){ m_mapAct[ as] = s;}
 
 Site* Site::getActivationSite( ActivationSite as){ return m_mapAct[ as];}
+
+void Site::setSpecies(Species* s)
+{
+  m_species = s;
+}
+
+Species* Site::getSpecies()
+{
+  return m_species;
+}
+
+string Site::getSpeciesName()
+{
+  return m_species->getName();
+}
 
 void Site::addProcess(Process* process) { m_lProcs.push_back( process ); }
 

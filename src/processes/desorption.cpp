@@ -73,7 +73,7 @@ void Desorption::setProcessMap( map< Process*, list<Site* >* >* ){}
 void Desorption::perform()
 {
   int height = m_site->getHeight();
-  height = height + 2;
+  height = height - 2;
   m_site->setHeight( height);
   mf_removeFromList();
   mf_updateNeighNum();
@@ -138,29 +138,15 @@ double Desorption::getProbability()
   double dTemp = m_apothesis->pParameters->getTemperature();
   double dkBoltz = m_apothesis->pParameters->dkBoltz;
 
-  // how to find the number of neighbours?
- //   {
- //     cout << "No more "<<m_vProcesses[0]->getName()<< " site is available. Exiting..." << endl;
- //     pErrorHandler->error_simple_msg( "No "+ m_vProcesses[0]->getName() + " site is available. Last time step: " + to_string( i ) );
- //     EXIT;
- //   }
-
-  double n = 1;
-  int index = -1;
+  // Adjust species class to include desorption, adsorption energy 
+  string s = m_site->getSpeciesName();
+  double n = m_site->getNeighboursNum();
+  int index = m_apothesis->findSpeciesIndex(s);
   
-  // Find index of individual species
-  for (int i = 0; i < m_desorptionSpecies.size(); i++)
-  {
-    //if(!m_desorptionSpecies[i].compare(species))
-    //{
-    //  index = i; 
-    //}
-  }
-
+  
+// TODO: Error message if index = -1
   double freq = m_desorptionFrequency[index];
   double energy = m_desorptionEnergy[index];
-
-  // TODO: Error message if index = -1
 
   /* Desorption probability see Lam and Vlachos  */
   double dflux = freq*exp(-n*energy/(dkBoltz*dTemp));

@@ -24,6 +24,7 @@
 #include <map>
 
 #include "process.h"
+#include "species.h"
 
 using namespace std;
 using namespace MicroProcesses;
@@ -33,9 +34,6 @@ using namespace MicroProcesses;
 
 namespace SurfaceTiles
 {
-
-// Forward decleration - Not implemented yet
-class Element;
 
 class Site
 {
@@ -83,7 +81,7 @@ public:
     /// Get the neigbours at the same level.
     vector< Site* > getNeighs();
 
-    /// Check if this site is activeand can absorb.
+    /// Check if this site is active and can absorb.
     bool isActive();
 
     /// Set an ID for this site.
@@ -113,7 +111,11 @@ public:
     /// This will holds all the elements that can interact with the surfaces.
     /// Important when we talk about surface reactions.
     /// Element class has not implement yet for that we use forward decleration.
-    void setElements( Element* );
+    void setSpecies( Species* s);
+
+    Species* getSpecies();
+
+    string getSpeciesName();
 
     /// Add a processes in the list of processes that this site can participate in.
     void addProcess( Process* );
@@ -141,7 +143,7 @@ protected:
     /// Holds the number of the neighbours of the particular site according to each height/
     int m_iNumNeighs;
 
-    /// A map that holds the neihbour sites according to their orientation.
+    /// A map that holds the neighbour sites according to their orientation.
     map< NeighPoisition, Site*> m_mapNeigh;
 
     /// A map that hold the sites that this site can activate if it has all the its neighbours occupied.
@@ -152,6 +154,8 @@ protected:
 
     /// The list of processes that this site can participate in.
     list< Process* > m_lProcs;
+
+    Species* m_species;
 };
 
 }

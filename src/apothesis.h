@@ -77,6 +77,9 @@ public:
 
     /// Return pointer to a given species, based on the name
     Species* findSpecies(string species);
+
+    /// Return index of the species list
+    int findSpeciesIndex(string species);
     
     /// Return normalized probabilities of each process
     vector<double> calculateProbabilities(list<MicroProcesses::Process*>);
