@@ -87,25 +87,27 @@ void Adsorption::mf_addToList(Site *s) { m_lAdsSites.push_back( s); }
 
 void Adsorption::mf_updateNeighNum()
 {
+  int siteHeight = m_site->getHeight();
+
   bool isActiveEAST = false;
-  isActiveEAST = ( m_site->getHeight() == m_site->getNeighPosition( Site::EAST )->getHeight()  && \
-                   m_site->getHeight() == m_site->getNeighPosition( Site::EAST_DOWN)->getHeight() && \
-                   m_site->getHeight() == m_site->getNeighPosition( Site::EAST_UP)->getHeight() );
+  isActiveEAST = ( siteHeight == m_site->getNeighPosition( Site::EAST )->getHeight()  && \
+                   siteHeight == m_site->getNeighPosition( Site::EAST_DOWN)->getHeight() && \
+                   siteHeight == m_site->getNeighPosition( Site::EAST_UP)->getHeight() );
 
   bool isActiveWEST = false;
-  isActiveWEST = ( m_site->getHeight() == m_site->getNeighPosition( Site::WEST )->getHeight() && \
-                   m_site->getHeight() == m_site->getNeighPosition( Site::WEST_DOWN)->getHeight() && \
-                   m_site->getHeight() == m_site->getNeighPosition( Site::WEST_UP)->getHeight() );
+  isActiveWEST = ( siteHeight == m_site->getNeighPosition( Site::WEST )->getHeight() && \
+                   siteHeight == m_site->getNeighPosition( Site::WEST_DOWN)->getHeight() && \
+                   siteHeight == m_site->getNeighPosition( Site::WEST_UP)->getHeight() );
 
   bool isActiveNORTH = false;
-  isActiveNORTH = ( m_site->getHeight() == m_site->getNeighPosition( Site::WEST_UP )->getHeight() && \
-                    m_site->getHeight() == m_site->getNeighPosition( Site::EAST_UP)->getHeight() && \
-                    m_site->getHeight() == m_site->getNeighPosition( Site::NORTH)->getHeight() );
+  isActiveNORTH = ( siteHeight == m_site->getNeighPosition( Site::WEST_UP )->getHeight() && \
+                    siteHeight == m_site->getNeighPosition( Site::EAST_UP)->getHeight() && \
+                    siteHeight == m_site->getNeighPosition( Site::NORTH)->getHeight() );
 
   bool isActiveSOUTH = false;
-  isActiveSOUTH = ( m_site->getHeight() == m_site->getNeighPosition( Site::WEST_DOWN )->getHeight() && \
-                    m_site->getHeight() == m_site->getNeighPosition( Site::EAST_DOWN)->getHeight() &&  \
-                    m_site->getHeight() == m_site->getNeighPosition( Site::SOUTH)->getHeight() );
+  isActiveSOUTH = ( siteHeight == m_site->getNeighPosition( Site::WEST_DOWN )->getHeight() && \
+                    siteHeight == m_site->getNeighPosition( Site::EAST_DOWN)->getHeight() &&  \
+                    siteHeight == m_site->getNeighPosition( Site::SOUTH)->getHeight() );
 
   // Store the activated sites
   if ( isActiveEAST )
