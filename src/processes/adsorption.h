@@ -41,9 +41,9 @@ class Adsorption: public Process
     /// Constructor
     Adsorption
     (
-      vector<string> species,
-      vector<double> stickingCoeffs,
-      vector<double> massFraction
+      string species,
+      double stickingCoeffs,
+      double massFraction
     );
 
     /// Destructor
@@ -101,7 +101,7 @@ class Adsorption: public Process
     /// adsroption in a BCC lattice.
     void mf_updateNeighNum();
 
-    const vector<double> getMassFraction();
+    const double getMassFraction();
 
     /// The site that adsorption is performed
     Site* m_site;
@@ -113,13 +113,13 @@ class Adsorption: public Process
     int m_iNeighNum;
 
     /// Species that can adsorb
-    vector<string> m_adsorptionSpecies;
+    string m_adsorptionSpecies;
 
     /// Sticking coefficients
-    vector<double> m_stickingCoeffs;
+    double m_stickingCoeffs;
     
     /// Mass fractions
-    vector<double> m_massfraction;
+    double m_massfraction;
 
   private:
   

@@ -23,9 +23,9 @@ namespace MicroProcesses{
 
 Adsorption::Adsorption
 (
-  vector<string> species,
-  vector<double> stickingCoeffs,
-  vector<double> massFraction
+  string species,
+  double stickingCoeffs,
+  double massFraction
 )
 :
 m_sName("Adsorption"),
@@ -123,7 +123,7 @@ void Adsorption::mf_updateNeighNum()
     mf_addToList( m_site->getActivationSite( Site::ACTV_SOUTH ));
 }
 
-const vector<double> Adsorption::getMassFraction()
+const double Adsorption::getMassFraction()
 {
   return m_massfraction;
 }
@@ -151,11 +151,11 @@ double Adsorption::getProbability()
 
   double dmass = 27e-3/dNavogadro;
   double dpi = 3.14159265;
-  double dstick = m_stickingCoeffs[index];
+  double dstick = m_stickingCoeffs;
   double dCites = 1.4e+19;
-  double dy = getMassFraction()[index];
+  double dy = getMassFraction();
 
-  /* Adsorption probability see Lam and Vlachos  */
+  /* Adsorption probability see Lam and Vlachos */
   double dflux = dstick*dPres*dy/(dCites*sqrt(2.0*dpi*dmass*dkBoltz*dTemp));
 
   if ( m_lAdsSites.size() !=0 )

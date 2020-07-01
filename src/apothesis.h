@@ -82,9 +82,11 @@ public:
     int findSpeciesIndex(string species);
     
     /// Return normalized probabilities of each process
-    vector<double> calculateProbabilities(list<MicroProcesses::Process*>);
+    vector<double> calculateProbabilities(vector<MicroProcesses::Process*>);
 
-    MicroProcesses::Process* getProcessAt(int index, list<MicroProcesses::Process*> pProcesses);
+    MicroProcesses::Process* getProcessAt(int index, vector<MicroProcesses::Process*> pProcesses);
+
+    MicroProcesses::Process* pickProcess(vector<double> probabilities, double random, vector<MicroProcesses::Process*> pProcesses);
 
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
