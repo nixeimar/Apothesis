@@ -31,9 +31,9 @@ public:
      /// Constructor
     Diffusion
     (
-      vector<string> species,
-      vector<double> energy,
-      vector<double> frequency
+      string species,
+      double energy,
+      double frequency
     );
     /// Destructor
     virtual ~Diffusion();
@@ -105,13 +105,13 @@ public:
     int m_iNeighNum;
 
      /// Species that can diffuse
-    vector<string> m_diffusionSpecies;
+    string m_diffusionSpecies;
 
     /// Energy coefficients
-    vector<double> m_diffusionEnergy;
+    double m_diffusionEnergy;
 
     /// Frequency
-    vector<double> m_diffusionFrequency;
+    double m_diffusionFrequency;
 
 private:
 

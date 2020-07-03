@@ -23,9 +23,9 @@ namespace MicroProcesses{
 
 Desorption::Desorption
 (
-    vector<string> species,
-    vector<double> energy,
-    vector<double> frequency
+    string species,
+    double energy,
+    double frequency
 )
 :
 m_sName("Desorption"),
@@ -145,8 +145,8 @@ double Desorption::getProbability()
   
   
 // TODO: Error message if index = -1
-  double freq = m_desorptionFrequency[index];
-  double energy = m_desorptionEnergy[index];
+  double freq = m_desorptionFrequency;
+  double energy = m_desorptionEnergy;
 
   /* Desorption probability see Lam and Vlachos  */
   double dflux = freq*exp(-n*energy/(dkBoltz*dTemp));
@@ -157,17 +157,17 @@ double Desorption::getProbability()
     return 0.0;
 }
 
-const vector<string> Desorption::getDesorptionSpecies()
+const string Desorption::getDesorptionSpecies()
 {
   return m_desorptionSpecies;
 }
 
-const vector<double> Desorption::getDesorptionEnergy()
+const double Desorption::getDesorptionEnergy()
 {
   return m_desorptionEnergy;
 }
 
-const vector<double> Desorption::getDesorptionFrequency()
+const double Desorption::getDesorptionFrequency()
 {
   return m_desorptionFrequency;
 }

@@ -25,9 +25,9 @@ namespace MicroProcesses{
 /// Constructor
 Diffusion::Diffusion
 (
-    vector<string> species,
-    vector<double> energy,
-    vector<double> frequency
+    string species,
+    double energy,
+    double frequency
 )
 :
 m_sName("Diffusion"),
@@ -43,8 +43,6 @@ m_diffusionFrequency(frequency)
 Diffusion::~Diffusion(){;}
 
 void Diffusion::init(){;}
-
-//void Diffusion::setName( string name ){;}
 
 string Diffusion::getName(){ return m_sName; }
 

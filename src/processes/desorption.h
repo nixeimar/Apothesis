@@ -41,9 +41,9 @@ class Desorption: public Process
     /// Constructor
     Desorption
     (
-      vector<string> species,
-      vector<double> energy,
-      vector<double> frequency
+      string species,
+      double energy,
+      double frequency
     );
 
     /// Destructor
@@ -111,13 +111,13 @@ class Desorption: public Process
     int m_iNeighNum;
 
     /// Return names of desorption species
-    const vector<string> getDesorptionSpecies();
+    const string getDesorptionSpecies();
 
     /// Return array of desorption energy
-    const vector<double> getDesorptionEnergy();
+    const double getDesorptionEnergy();
    
     /// Return array of desorption frequency
-    const vector<double> getDesorptionFrequency();
+    const double getDesorptionFrequency();
 
   private:
   
@@ -128,13 +128,13 @@ class Desorption: public Process
     list<Site* > m_lAdsSites;
 
     /// Species that can desorb
-    vector<string> m_desorptionSpecies;
+    string m_desorptionSpecies;
 
     /// Energy coefficients
-    vector<double> m_desorptionEnergy;
+    double m_desorptionEnergy;
 
     /// Frequency
-    vector<double> m_desorptionFrequency;
+    double m_desorptionFrequency;
 
   };
 }

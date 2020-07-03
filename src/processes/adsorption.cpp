@@ -72,6 +72,7 @@ void Adsorption::setProcessMap( map< Process*, list<Site* >* >* ){}
 
 void Adsorption::perform()
 {
+  selectSite();
   int height = m_site->getHeight();
   height = height + 2;
   m_site->setHeight( height);
@@ -79,6 +80,14 @@ void Adsorption::perform()
   //m_site->setSpecies(m_adsorptionSpecies[0]);
   mf_removeFromList();
   mf_updateNeighNum();
+
+  /// Check if there are available sites that it can be performed
+  if (m_lAdsSites.size() == 0)
+  {
+    cout << "No more "<<getName()<< " site is available. Exiting..." << endl;
+    m_apothesis->pErrorHandler->error_simple_msg( "No "+ getName() + " site is available.");
+    EXIT;
+  }
 }
 
 void Adsorption::mf_removeFromList() { m_lAdsSites.remove( m_site); m_site->removeProcess( this ); }
@@ -146,8 +155,7 @@ double Adsorption::getProbability()
   double dTemp = m_apothesis->pParameters->getTemperature();
   double dkBoltz = m_apothesis->pParameters->dkBoltz;
   
-  string s = m_site->getSpeciesName();
-  int index = m_apothesis->findSpeciesIndex(s);
+  int index = m_apothesis->findSpeciesIndex(m_adsorptionSpecies);
 
   double dmass = 27e-3/dNavogadro;
   double dpi = 3.14159265;

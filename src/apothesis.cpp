@@ -118,6 +118,9 @@ void Apothesis::init()
     vector<double> sticking;
     vector<double> massFraction;
 
+    // Sum of mass fraction. Later used to normalize.
+    double sum = 0;
+
     for(SizeType i = 0; i < specie.Size(); i++)
     {
       // Output possible errors
@@ -132,17 +135,18 @@ void Apothesis::init()
       species.push_back(specie[i].GetString());
       sticking.push_back(stick[i].GetDouble());
       massFraction.push_back(mFrac[i].GetDouble());
+      sum += massFraction[i];
     }
 
     // Normalize the values of the mass fraction
-    double sum = std::accumulate(massFraction.begin(), massFraction.end(), 0);
     for (vector<double> :: iterator itr = massFraction.begin(); itr != massFraction.end(); ++itr)
     {
       *itr = *itr/sum;
     }
 
-    for(SizeType i = 0; i < specie.Size(); ++i)
+    for(int i = 0; i < species.size(); ++i)
     {
+      cout<<"species: " << species[i] << endl;
       m_vProcesses.push_back(new Adsorption (species[i], sticking[i], massFraction[i]));
     }
 
@@ -185,7 +189,10 @@ void Apothesis::init()
     }
 
     // Add process to m_vProcesses
-    m_vProcesses.push_back(new Desorption (species, energy, frequency));
+    for (int i = 0; i < species.size(); ++i)
+    {
+   //   m_vProcesses.push_back(new Desorption (species[i], energy[i], frequency[i]));
+    }
     pIO->writeLogOutput("...Done initializing desorption process.");
 
   }
@@ -225,7 +232,10 @@ void Apothesis::init()
     }
 
     // Add process to m_vProcesses
-    m_vProcesses.push_back(new Diffusion (species, energy, frequency));
+    for(int i = 0; i < species.size(); ++i)
+    {
+     //   m_vProcesses.push_back(new Diffusion (species[i], energy[i], frequency[i]));
+    }
     pIO->writeLogOutput("...Done initializing diffusion process."); 
   }
   if (std::find(pProc.begin(), pProc.end(), "Reaction") != pProc.end())
@@ -285,7 +295,7 @@ void Apothesis::init()
       cout<<"Warning! Mass balance of Reaction is not balanced"<< endl;
     }
     
-    m_vProcesses.push_back(new SurfaceReaction(species, stoichiometry, energy, preexp));
+    //m_vProcesses.push_back(new SurfaceReaction(species, stoichiometry, energy, preexp));
     pIO->writeLogOutput("...Done initializing reaction."); 
 }
   
@@ -294,7 +304,11 @@ void Apothesis::init()
   /// that were read from the file input and the I/O functionality
     m_vProcesses[0]->setInstance( this );
     m_vProcesses[0]->activeSites( pLattice );
-    m_vProcesses[0]->setProcessMap( &m_processMap );
+    //m_vProcesses[0]->setProcessMap( &m_processMap );
+
+    m_vProcesses[1]->setInstance( this );
+    m_vProcesses[1]->activeSites( pLattice );
+    //m_vProcesses[1]->setProcessMap( &m_processMap );
 }
 
 void Apothesis::exec()
@@ -322,39 +336,27 @@ void Apothesis::exec()
 
     //TODO: If (debug) print out the id of the lattice site
     vector<Process*> processes = m_vProcesses;
-
+  
     /// Find probability of each process
     vector<double> probabilities = calculateProbabilities(m_vProcesses);
     
-
     /// Pick random number with 3 digits
-    double random = rand() % 10000 / 10000; 
+    double random = (double) rand() / RAND_MAX; 
 
     /// Pick Process
     Process* p = pickProcess(probabilities, random, processes);
 
-    /// Get the active sites of the process
-    list<Site*> lAdsList = p->getActiveList();
-
     /// Pick random site
-    m_vProcesses[0]->selectSite();
-
-    /// Check if there are available sites that it can be performed
-    if (lAdsList.size() == 0)
-    {
-      cout << "No more "<<m_vProcesses[0]->getName()<< " site is available. Exiting..." << endl;
-      pErrorHandler->error_simple_msg( "No "+ m_vProcesses[0]->getName() + " site is available. Last time step: " + to_string( i ) );
-      EXIT;
-    }
+    //p->selectSite();
 
     /// Perform process on that site
-    m_vProcesses[0]->perform();
+    p->perform();
 
     
     // The frequency that the various information are written in the file
     // must befined by the user. Fix it ...
     // The user should also check if the messages are written on the terminal or not.
-    pIO->writeLogOutput( m_vProcesses[ 0]->getName() + " " );
+    pIO->writeLogOutput( p->getName() + " " );
     pIO->writeLatticeHeights();
 
     if(i==0){
@@ -459,10 +461,11 @@ void Apothesis::exec()
   Process* Apothesis::pickProcess(vector<double> probabilities, double random, vector<Process*> pProcesses)
   {
     for (int index = 1; index < probabilities.size(); ++index)
-    {
+    {      
       if(random < probabilities[index])
       {
         return pProcesses[index-1];
       }
     }
+    return pProcesses[probabilities.size()-1];
   }
