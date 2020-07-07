@@ -90,6 +90,9 @@ class Adsorption: public Process
     /// Set associated desorption pointer
     void setDesorptionPointer(Desorption* d);
 
+    /// Set Desorption switch
+    void setDesorption();
+
   protected:
     /// The kmc instance.
     Apothesis* m_apothesis;
@@ -130,6 +133,10 @@ class Adsorption: public Process
 
     /// Return pointer to corresponding desorption class
     Desorption* getDesorption();
+
+    bool m_canDesorb;
+
+    bool canDesorb();
 
   private:
   

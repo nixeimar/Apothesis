@@ -33,7 +33,8 @@ m_iNeighNum(0),
 m_apothesis(0),
 m_adsorptionSpecies(species),
 m_stickingCoeffs(stickingCoeffs),
-m_massfraction(massFraction)
+m_massfraction(massFraction),
+m_canDesorb(false)
 {
 ;  
 }
@@ -84,6 +85,12 @@ void Adsorption::perform()
   
   mf_removeFromList();
   mf_updateNeighNum();
+
+  // Add desorption site to Desorption class
+  if (canDesorb())
+  {
+    getDesorption()->mf_addToList(m_site);
+  }
 
   /// Check if there are available sites that it can be performed
   if (m_lAdsSites.size() == 0)
@@ -184,6 +191,17 @@ Desorption* Adsorption::getDesorption()
 void Adsorption::setDesorptionPointer(Desorption* d)
 {
   m_pDesorption = d;
+}
+
+bool Adsorption::canDesorb()
+{
+  return m_canDesorb;
+}
+
+// Set desorption boolean variable to be true 
+void Adsorption::setDesorption()
+{
+  m_canDesorb = true; 
 }
 
 }

@@ -146,8 +146,6 @@ void Apothesis::init()
 
     for(int i = 0; i < species.size(); ++i)
     {
-      cout<<"species: " << species[i] << endl;
-
       Adsorption* a = new Adsorption (species[i], sticking[i], massFraction[i]);
 
       // Keep two separate vectors: one for all processes, one for adsorption processes only
@@ -205,14 +203,16 @@ void Apothesis::init()
         // Check if associated adsorption class is a valid (non-null) pointer. Associate desorption class with appropriate adsorption and vice versa
         if (pAdsorption)
         {
-          d->setAdsorptionPointer(pAdsorption);          
+          d->setAdsorptionPointer(pAdsorption); 
+          pAdsorption->setDesorptionPointer(d);  
+          pAdsorption->setDesorption();
         }
 
         // if not, create associations in adsorption and desorption
 
         // else, output warning
         
-   //   m_vProcesses.push_back(new Desorption (species[i], energy[i], frequency[i]));
+      m_vProcesses.push_back(d);
     }
     pIO->writeLogOutput("...Done initializing desorption process.");
 
@@ -329,6 +329,9 @@ void Apothesis::init()
 
     m_vProcesses[1]->setInstance( this );
     m_vProcesses[1]->activeSites( pLattice );
+
+    m_vProcesses[2]->setInstance(this);
+    m_vProcesses[2]->activeSites( pLattice );
     //m_vProcesses[1]->setProcessMap( &m_processMap );
 }
 
@@ -449,21 +452,22 @@ void Apothesis::exec()
     vector<Process*> :: iterator itr = pProcesses.begin();
 
     // Find the probability for each process. Push onto prob.
-    for(int i = 0; i < numProcesses; i++)
+    for(; itr != pProcesses.end(); ++itr)
     {
       Process* process = *itr;
       double prob = process->getProbability();
-      probability.push_back(prob);
+      probability.push_back(prob + total);
       total += prob;
     }
 
     // Normalize all values
     for (vector<double> :: iterator itr = probability.begin(); itr != probability.end(); ++itr)
     {
-      // TODO: ensure this is actually modified
       *itr = *itr / total;
+      cout << "probability: " << *itr;
     }
-
+    cout << endl;
+    
     return probability;
     
   }

@@ -87,6 +87,10 @@ class Desorption: public Process
     /// Set associated adsorption pointer
     void setAdsorptionPointer(Adsorption* a);
 
+
+    /// Add a site to a list
+    void mf_addToList(Site* s);
+    
   protected:
     /// The kmc instance.
     Apothesis* m_apothesis;
@@ -96,9 +100,6 @@ class Desorption: public Process
 
     /// Remove a site from a list
     void mf_removeFromList();
-
-    /// Add a site to a list
-    void mf_addToList(Site* s);
 
     /// Update the neighbour sites of this site. This is performed here since depending on the process
     /// this changes. E.g. fotr adsortpion in a FCC lattice the first neighbors are different compared to the
@@ -131,8 +132,8 @@ class Desorption: public Process
     /** The lattice of the process */
     Lattice* m_pLattice;
 
-    /// The adsorption list which hold all the available sites for deposition
-    list<Site* > m_lAdsSites;
+    /// The desorption list which hold all the available sites for deposition
+    list<Site* > m_lDesSites;
 
     /// Species that can desorb
     string m_desorptionSpecies;
@@ -145,7 +146,7 @@ class Desorption: public Process
 
     Adsorption* m_pAdsorption;
 
-  };
+};
 }
 
 #endif // ADSORPTION_H

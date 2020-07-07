@@ -45,12 +45,13 @@ string Desorption::getName(){ return m_sName; }
 //This should be called only once in the initialization
 void Desorption::activeSites(Lattice* lattice)
   {
+
   m_pLattice = lattice;
   vector< Site* > vSites = m_pLattice->getSites();
 
   for ( int i = 0; i < m_pLattice->getSize(); i++)
     if ( vSites[ i ]->getID()%2 != 0 ) {
-      m_lAdsSites.push_back( vSites[ i ] );
+      //m_lDesSites.push_back( vSites[ i ] );
       vSites[ i ]->addProcess( this );
       }
   }
@@ -58,10 +59,11 @@ void Desorption::activeSites(Lattice* lattice)
 void Desorption::selectSite()
 {
   /* This comes from random i.e. picking from the available list for Desorption randomly */
-  int y = rand()%getActiveList().size();
+  int len = getActiveList().size();
+  int y = rand()%len;
   int counter = 0;
-  list<Site* >::iterator site = m_lAdsSites.begin();
-  for (; site != m_lAdsSites.end(); site++ ){
+  list<Site* >::iterator site = m_lDesSites.begin();
+  for (; site != m_lDesSites.end(); site++ ){
     if ( counter == y )
       m_site = (*site);
     counter++;
@@ -72,6 +74,8 @@ void Desorption::setProcessMap( map< Process*, list<Site* >* >* ){}
 
 void Desorption::perform()
 {
+  selectSite();
+
   int height = m_site->getHeight();
   height = height - 2;
   m_site->setHeight( height);
@@ -79,9 +83,9 @@ void Desorption::perform()
   mf_updateNeighNum();
 }
 
-void Desorption::mf_removeFromList() { m_lAdsSites.remove( m_site); m_site->removeProcess( this ); }
+void Desorption::mf_removeFromList() { m_lDesSites.remove( m_site); m_site->removeProcess( this ); }
 
-void Desorption::mf_addToList(Site *s) { m_lAdsSites.push_back( s); }
+void Desorption::mf_addToList(Site *s) { m_lDesSites.push_back( s); }
 
 void Desorption::mf_updateNeighNum()
 {
@@ -121,40 +125,48 @@ void Desorption::mf_updateNeighNum()
 
 list<Site*> Desorption::getActiveList()
 {
-  return m_lAdsSites;
+  return m_lDesSites;
 }
 
 void Desorption::test()
 {
-  cout << m_lAdsSites.size() << endl;
+  cout << m_lDesSites.size() << endl;
 }
 
 
 double Desorption::getProbability()
 {
+  if ( m_lDesSites.size() == 0 )
+  {
+    return 0;
+  }
   // Find the species on the site
-
   /* These are parameters values (I/O) */
   double dTemp = m_apothesis->pParameters->getTemperature();
   double dkBoltz = m_apothesis->pParameters->dkBoltz;
 
-  // Adjust species class to include desorption, adsorption energy 
-  string s = m_site->getSpeciesName();
-  double n = m_site->getNeighboursNum();
-  int index = m_apothesis->findSpeciesIndex(s);
-  
-  
-// TODO: Error message if index = -1
   double freq = m_desorptionFrequency;
   double energy = m_desorptionEnergy;
 
-  /* Desorption probability see Lam and Vlachos  */
-  double dflux = freq*exp(-n*energy/(dkBoltz*dTemp));
+  double prob = 0;
 
-  if ( m_lAdsSites.size() !=0 )
-    return m_lAdsSites.size()*dflux;
-  else
-    return 0.0;
+  // Calculate probability for each 
+  // TODO: rethink how we can avoid recalculation of each site on each iteration. Maybe w map?
+  for (list<Site*> :: iterator itr = m_lDesSites.begin(); itr != m_lDesSites.end(); ++itr)
+  {
+      // Adjust species class to include desorption, adsorption energy 
+    Site* s = *itr;
+    double n = s->getNeighboursNum();
+
+    /* Desorption probability see Lam and Vlachos  */
+    double dflux = freq*exp(-n*energy/(dkBoltz*dTemp));
+    prob += dflux;
+
+  }
+
+  
+  if ( m_lDesSites.size() !=0 )
+    return prob;
 }
 
 const string Desorption::getDesorptionSpecies()

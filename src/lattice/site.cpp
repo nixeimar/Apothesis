@@ -39,12 +39,10 @@ void Site::setHeight(int h){ m_iHeight = h;}
 
 int Site::getHeight() { return m_iHeight; }
 
-void Site::setNeighboursNum( int num){ m_iNumNeighs = num;
-                                       }
+void Site::setNeighboursNum( int num){ m_iNumNeighs = num;}
 
 int Site::getNeighboursNum()
 {
-  //TODO: How to get number of neighbours?
   return m_vNeigh.size();
 }
   
