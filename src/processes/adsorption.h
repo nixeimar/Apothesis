@@ -25,6 +25,7 @@
 #include <math.h>
 
 #include "apothesis.h"
+#include "desorption.h"
 #include "site.h"
 
 using namespace std;
@@ -58,6 +59,9 @@ class Adsorption: public Process
     /// Returns the name of the process.
     string getName();
 
+    /// Returns name of spceies
+    string getSpecies();
+
     /// Set the instance of the kmc.
     /// This allows to have access to all other functionalities of the KMC class.
     void setInstance( Apothesis* apothesis ){ m_apothesis = apothesis; }
@@ -82,6 +86,9 @@ class Adsorption: public Process
 
     /// Returns true if the process can be performed in the site that callls it.
     bool controltRules( Site* site );
+
+    /// Set associated desorption pointer
+    void setDesorptionPointer(Desorption* d);
 
   protected:
     /// The kmc instance.
@@ -121,6 +128,9 @@ class Adsorption: public Process
     /// Mass fractions
     double m_massfraction;
 
+    /// Return pointer to corresponding desorption class
+    Desorption* getDesorption();
+
   private:
   
     /** The lattice of the process */
@@ -128,6 +138,9 @@ class Adsorption: public Process
 
     /// The adsorption list which hold all the available sites for deposition
     list<Site* > m_lAdsSites;
+
+    /// Pointer to associated desorption class
+    Desorption* m_pDesorption;
 
   };
 }

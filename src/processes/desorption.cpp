@@ -172,4 +172,14 @@ const double Desorption::getDesorptionFrequency()
   return m_desorptionFrequency;
 }
 
+Adsorption* Desorption::getAdsorption()
+{
+  return m_pAdsorption;
+}
+
+void Desorption::setAdsorptionPointer(Adsorption* a)
+{
+  m_pAdsorption = a;
+}
+
 }

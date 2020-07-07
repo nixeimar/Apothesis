@@ -31,7 +31,7 @@ using namespace std;
 
 namespace Utils{ class ErrorHandler; class Parameters;}
 namespace SurfaceTiles{ class Site; }
-namespace MicroProcesses { class Process; }
+namespace MicroProcesses { class Process; class Adsorption; class Desorption;}
 class Lattice;
 class IO;
 class Read;
@@ -88,13 +88,17 @@ public:
 
     MicroProcesses::Process* pickProcess(vector<double> probabilities, double random, vector<MicroProcesses::Process*> pProcesses);
 
+    MicroProcesses::Adsorption* findAdsorption(string species);
+
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
     // Not to handy. Re-think... I have found another way... Implement it
     map< MicroProcesses::Process*, list< SurfaceTiles::Site* >* > m_processMap;
 
     /// Vector holding the processes to be performed.
-    vector< MicroProcesses::Process* > m_vProcesses;
+    vector< MicroProcesses::Process*> m_vProcesses;
+
+    vector< MicroProcesses::Adsorption*> m_vAdsorption;
 
     /// Vector holding the name of the processes (string)
     vector<string> m_processes;

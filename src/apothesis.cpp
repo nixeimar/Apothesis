@@ -147,7 +147,12 @@ void Apothesis::init()
     for(int i = 0; i < species.size(); ++i)
     {
       cout<<"species: " << species[i] << endl;
-      m_vProcesses.push_back(new Adsorption (species[i], sticking[i], massFraction[i]));
+
+      Adsorption* a = new Adsorption (species[i], sticking[i], massFraction[i]);
+
+      // Keep two separate vectors: one for all processes, one for adsorption processes only
+      m_vAdsorption.push_back(a);
+      m_vProcesses.push_back(a);
     }
 
     
@@ -191,6 +196,22 @@ void Apothesis::init()
     // Add process to m_vProcesses
     for (int i = 0; i < species.size(); ++i)
     {
+        // Call function to find adsorption class
+        Adsorption* pAdsorption = findAdsorption(species[i]);
+        
+        // Create new instance of desorption class
+        Desorption* d = new Desorption (species[i], energy[i], frequency[i]);
+
+        // Check if associated adsorption class is a valid (non-null) pointer. Associate desorption class with appropriate adsorption and vice versa
+        if (pAdsorption)
+        {
+          d->setAdsorptionPointer(pAdsorption);          
+        }
+
+        // if not, create associations in adsorption and desorption
+
+        // else, output warning
+        
    //   m_vProcesses.push_back(new Desorption (species[i], energy[i], frequency[i]));
     }
     pIO->writeLogOutput("...Done initializing desorption process.");
@@ -340,19 +361,16 @@ void Apothesis::exec()
     /// Find probability of each process
     vector<double> probabilities = calculateProbabilities(m_vProcesses);
     
+
     /// Pick random number with 3 digits
     double random = (double) rand() / RAND_MAX; 
 
     /// Pick Process
     Process* p = pickProcess(probabilities, random, processes);
 
-    /// Pick random site
-    //p->selectSite();
-
     /// Perform process on that site
     p->perform();
 
-    
     // The frequency that the various information are written in the file
     // must befined by the user. Fix it ...
     // The user should also check if the messages are written on the terminal or not.
@@ -468,4 +486,18 @@ void Apothesis::exec()
       }
     }
     return pProcesses[probabilities.size()-1];
+  }
+
+  Adsorption* Apothesis::findAdsorption(string species)
+  {
+    for(vector<Adsorption*> :: iterator itr = m_vAdsorption.begin(); itr != m_vAdsorption.end(); ++itr)
+    {
+      Adsorption* a = *itr;
+      if (!species.compare(a->getSpecies()))
+      {
+        return a;
+      }
+      // find name of adsorption speciesspecies
+    }
+    cout<<"Warning! Could not find instance of Adsorption class for desorbed species "<< species << endl;
   }

@@ -42,6 +42,8 @@ Adsorption::~Adsorption(){}
 
 string Adsorption::getName(){ return m_sName; }
 
+string Adsorption::getSpecies(){ return m_adsorptionSpecies; }
+
 //This should be called only once in the initialization
 void Adsorption::activeSites(Lattice* lattice)
   {
@@ -73,11 +75,13 @@ void Adsorption::setProcessMap( map< Process*, list<Site* >* >* ){}
 void Adsorption::perform()
 {
   selectSite();
+
   int height = m_site->getHeight();
   height = height + 2;
   m_site->setHeight( height);
   // How to set a random adsorption species? Get a pointer to apothesis in order to find/get access to the species list
   //m_site->setSpecies(m_adsorptionSpecies[0]);
+  
   mf_removeFromList();
   mf_updateNeighNum();
 
@@ -170,6 +174,16 @@ double Adsorption::getProbability()
     return m_lAdsSites.size()*dflux;
   else
     return 0.0;
+}
+
+Desorption* Adsorption::getDesorption()
+{
+  return m_pDesorption;
+}
+
+void Adsorption::setDesorptionPointer(Desorption* d)
+{
+  m_pDesorption = d;
 }
 
 }

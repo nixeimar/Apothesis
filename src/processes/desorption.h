@@ -25,6 +25,7 @@
 #include <math.h>
 
 #include "apothesis.h"
+#include "adsorption.h"
 #include "site.h"
 
 using namespace std;
@@ -83,6 +84,9 @@ class Desorption: public Process
     /// Returns true if the process can be performed in the site that callls it.
     bool controltRules( Site* site );
 
+    /// Set associated adsorption pointer
+    void setAdsorptionPointer(Adsorption* a);
+
   protected:
     /// The kmc instance.
     Apothesis* m_apothesis;
@@ -119,6 +123,9 @@ class Desorption: public Process
     /// Return array of desorption frequency
     const double getDesorptionFrequency();
 
+    /// Return pointer to corresponding adsorption class
+    Adsorption* getAdsorption();
+
   private:
   
     /** The lattice of the process */
@@ -135,6 +142,8 @@ class Desorption: public Process
 
     /// Frequency
     double m_desorptionFrequency;
+
+    Adsorption* m_pAdsorption;
 
   };
 }
