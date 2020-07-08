@@ -146,7 +146,7 @@ void Apothesis::init()
 
     for(int i = 0; i < species.size(); ++i)
     {
-      Adsorption* a = new Adsorption (species[i], sticking[i], massFraction[i]);
+      Adsorption* a = new Adsorption (this, species[i], sticking[i], massFraction[i]);
 
       // Keep two separate vectors: one for all processes, one for adsorption processes only
       m_vAdsorption.push_back(a);
@@ -198,7 +198,7 @@ void Apothesis::init()
         Adsorption* pAdsorption = findAdsorption(species[i]);
         
         // Create new instance of desorption class
-        Desorption* d = new Desorption (species[i], energy[i], frequency[i]);
+        Desorption* d = new Desorption (this, species[i], energy[i], frequency[i]);
 
         // Check if associated adsorption class is a valid (non-null) pointer. Associate desorption class with appropriate adsorption and vice versa
         if (pAdsorption)
@@ -322,15 +322,17 @@ void Apothesis::init()
   
 
   /// First the processes that participate in the simulation
+
+  //TODO: Automate initialization of active sites
   /// that were read from the file input and the I/O functionality
-    m_vProcesses[0]->setInstance( this );
+    //m_vProcesses[0]->setInstance( this );
     m_vProcesses[0]->activeSites( pLattice );
     //m_vProcesses[0]->setProcessMap( &m_processMap );
 
-    m_vProcesses[1]->setInstance( this );
+    //m_vProcesses[1]->setInstance( this );
     m_vProcesses[1]->activeSites( pLattice );
 
-    m_vProcesses[2]->setInstance(this);
+   // m_vProcesses[2]->setInstance(this);
     m_vProcesses[2]->activeSites( pLattice );
     //m_vProcesses[1]->setProcessMap( &m_processMap );
 }
@@ -464,9 +466,7 @@ void Apothesis::exec()
     for (vector<double> :: iterator itr = probability.begin(); itr != probability.end(); ++itr)
     {
       *itr = *itr / total;
-      cout << "probability: " << *itr;
     }
-    cout << endl;
     
     return probability;
     
@@ -482,11 +482,11 @@ void Apothesis::exec()
 
   Process* Apothesis::pickProcess(vector<double> probabilities, double random, vector<Process*> pProcesses)
   {
-    for (int index = 1; index < probabilities.size(); ++index)
+    for (int index = 0; index < probabilities.size(); ++index)
     {      
       if(random < probabilities[index])
       {
-        return pProcesses[index-1];
+        return pProcesses[index];
       }
     }
     return pProcesses[probabilities.size()-1];

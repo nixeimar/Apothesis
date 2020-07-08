@@ -23,6 +23,7 @@ namespace MicroProcesses{
 
 Adsorption::Adsorption
 (
+  Apothesis* instance,
   string species,
   double stickingCoeffs,
   double massFraction
@@ -30,7 +31,7 @@ Adsorption::Adsorption
 :
 m_sName("Adsorption"),
 m_iNeighNum(0), 
-m_apothesis(0),
+m_apothesis(instance),
 m_adsorptionSpecies(species),
 m_stickingCoeffs(stickingCoeffs),
 m_massfraction(massFraction),

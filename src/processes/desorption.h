@@ -42,6 +42,7 @@ class Desorption: public Process
     /// Constructor
     Desorption
     (
+      Apothesis* instance,
       string species,
       double energy,
       double frequency
@@ -53,15 +54,14 @@ class Desorption: public Process
     /// The name of the process.
     void setName(string s){ m_sName = s;}
 
+    //To be deleted
+    void setInstance( Apothesis* apothesis ){}
+    
     /// Compute the overall probabilities of this processus and return it.
     double getProbability();
 
     /// Returns the name of the process.
     string getName();
-
-    /// Set the instance of the kmc.
-    /// This allows to have access to all other functionalities of the KMC class.
-    void setInstance( Apothesis* apothesis ){ m_apothesis = apothesis; }
 
     /// Constructs the sites that adsorption can be performed.
     void activeSites( Lattice* );
@@ -87,9 +87,11 @@ class Desorption: public Process
     /// Set associated adsorption pointer
     void setAdsorptionPointer(Adsorption* a);
 
-
     /// Add a site to a list
     void mf_addToList(Site* s);
+
+    /// Update counter on number of sites with n neighbours
+    void updateSiteCounter(int neighbours, bool addOrRemove);
     
   protected:
     /// The kmc instance.
@@ -145,6 +147,14 @@ class Desorption: public Process
     double m_desorptionFrequency;
 
     Adsorption* m_pAdsorption;
+
+    vector<double> generateProbabilities();
+
+    vector<double> m_numNeighbours;
+
+    vector<double> m_probabilities;
+
+    const int m_maxNeighbours;
 
 };
 }

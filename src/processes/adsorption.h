@@ -42,6 +42,7 @@ class Adsorption: public Process
     /// Constructor
     Adsorption
     (
+      Apothesis* instance,
       string species,
       double stickingCoeffs,
       double massFraction
@@ -64,7 +65,7 @@ class Adsorption: public Process
 
     /// Set the instance of the kmc.
     /// This allows to have access to all other functionalities of the KMC class.
-    void setInstance( Apothesis* apothesis ){ m_apothesis = apothesis; }
+    void setInstance( Apothesis* apothesis ){} //m_apothesis = apothesis; }
 
     /// Constructs the sites that adsorption can be performed.
     void activeSites( Lattice* );
