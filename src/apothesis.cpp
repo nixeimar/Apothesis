@@ -501,7 +501,7 @@ void Apothesis::exec()
       {
         return a;
       }
-      // find name of adsorption speciesspecies
+      // find name of adsorption species
     }
     cout<<"Warning! Could not find instance of Adsorption class for desorbed species "<< species << endl;
   }

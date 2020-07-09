@@ -91,6 +91,10 @@ void Adsorption::perform()
   if (canDesorb())
   {
     getDesorption()->mf_addToList(m_site);
+    int neighbours = m_site->getNeighboursNum();
+
+    // Updates the list of neighbours in desorption class
+    getDesorption()->updateSiteCounter(neighbours, true);
   }
 
   /// Check if there are available sites that it can be performed

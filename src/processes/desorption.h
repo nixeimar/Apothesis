@@ -146,14 +146,20 @@ class Desorption: public Process
     /// Frequency
     double m_desorptionFrequency;
 
+    /// Pointer to associated adsorption class
     Adsorption* m_pAdsorption;
 
+    // Build probability table 
     vector<double> generateProbabilities();
-
-    vector<double> m_numNeighbours;
-
+    
+    // Vector to hold the probabilities. Number of neighbour - 1 = index of list
     vector<double> m_probabilities;
 
+    // Number of sites with n number of neighbours
+    // TODO: How to initialize this as a const vector? The value should not change 
+    vector<double> m_numNeighbours;
+
+    // Maximum number of neighbours possible
     const int m_maxNeighbours;
 
 };

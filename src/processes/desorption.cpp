@@ -87,8 +87,13 @@ void Desorption::perform()
   int height = m_site->getHeight();
   height = height - 2;
   m_site->setHeight( height);
+
+  int numNeighbours = m_site->getNeighboursNum();
   mf_removeFromList();
   mf_updateNeighNum();
+
+  // Remove count from list of sites that have n number of neighbours
+  updateSiteCounter(numNeighbours, false);
 }
 
 void Desorption::mf_removeFromList() 
@@ -156,20 +161,17 @@ double Desorption::getProbability()
   
   double prob = 0;
 
-  // Calculate probability for each 
+  // Calculate probability for each possible value of n
   for (int i = 0; i < m_maxNeighbours; ++i)
   {
     prob += m_probabilities[i] * m_numNeighbours[i];
   }
 
-  
-  if ( m_lDesSites.size() !=0 )
-    return prob;
+  return prob;
 }
 
 vector<double> Desorption::generateProbabilities()
 {
-  // Find the species on the site
   /* These are parameters values (I/O) */
   double dTemp = m_apothesis->pParameters->getTemperature();
   double dkBoltz = m_apothesis->pParameters->dkBoltz;
@@ -214,6 +216,7 @@ void Desorption::setAdsorptionPointer(Adsorption* a)
 
 void Desorption::updateSiteCounter(int neighbours, bool addOrRemove)
 {
+  // Updates list of number of neighbours each possible site has
   if (addOrRemove)
   {
     m_numNeighbours[neighbours-1]++;
