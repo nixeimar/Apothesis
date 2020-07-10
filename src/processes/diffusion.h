@@ -31,6 +31,7 @@ public:
      /// Constructor
     Diffusion
     (
+      Apothesis* instance,
       string species,
       double energy,
       double frequency
@@ -52,7 +53,7 @@ public:
 
     /// Set the instance of Apothesis.
     /// This allows to have access to all other functionalities of the KMC class.
-    void setInstance( Apothesis* apothesis ){ m_apothesis = apothesis; }
+    void setInstance( Apothesis* apothesis ){;}
 
     /// Set the lattice uppon which diffusion will be performed.
     void activeSites( Lattice* );
@@ -77,6 +78,8 @@ public:
     /// Returns true if the process can be performed in the site that callls it.
     bool controltRules( Site* site );
 
+    void updateSiteCounter(int neighbours, bool addOrRemove);
+
   protected:
     /// The kmc instance.
     Apothesis* m_apothesis;
@@ -93,7 +96,10 @@ public:
     /// Update the neighbour sites of this site. This is performed here since depending on the process
     /// this changes. E.g. fotr adsortpion in a FCC lattice the first neighbors are different compared to the
     /// adsroption in a BCC lattice.
-    void mf_updateNeighNum();
+    void mf_updateNeighNum(Site* s);
+
+    // Update the counts of all neighbours
+    Site* chooseNeighbour(vector<Site*> neighbours);
 
     /// The site that diffusion is performed
     Site* m_site;
@@ -113,16 +119,49 @@ public:
     /// Frequency
     double m_diffusionFrequency;
 
+    // Set adsorption pointer
+    void setAdsorptionPointer(Adsorption* a);
+
+    // Set desorption pointer
+    void setDesorptionPointer(Desorption* d);
+
+    // Get access to the adsorption pointer
+    Adsorption* getAdsorption();
+
+    // Get access to the desorption pointer
+    Desorption* getDesorption();
+
+
+
 private:
 
     /** The lattice of the process */
     Lattice* m_pLattice;
 
     /// The diffusion list which hold all the available sites for deposition
-    list<Site* > m_lAdsSites;
+    list<Site* > m_lDiffSites;
 
     /** Pointer to the process map */
     map< Process*, list<Site*>* >* m_pProcessMap;
+
+    // Build probability table 
+    vector<double> generateProbabilities();
+    
+    // Vector to hold the probabilities. Number of neighbour - 1 = index of list
+    vector<double> m_probabilities;
+
+    // Number of sites with n number of neighbours
+    // TODO: How to initialize this as a const vector? The value should not change 
+    vector<double> m_numNeighbours;
+
+    // Maximum number of neighbours possible
+    const int m_maxNeighbours;
+
+    // Pointer to associated adsorption class
+    Adsorption* m_pAdsorption;
+
+    // Pointer to associated adsorption class
+    Desorption* m_pDesorption;
 };
 
 }

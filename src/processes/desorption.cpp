@@ -82,8 +82,6 @@ void Desorption::setProcessMap( map< Process*, list<Site* >* >* ){}
 
 void Desorption::perform()
 {
-  selectSite();
-  
   int height = m_site->getHeight();
   height = height - 2;
   m_site->setHeight( height);
@@ -228,6 +226,11 @@ void Desorption::updateSiteCounter(int neighbours, bool addOrRemove)
       m_numNeighbours[neighbours-1]--;
     }
   }
+}
+
+void Desorption::setSite(Site* s)
+{
+  m_site = s;
 }
 
 }

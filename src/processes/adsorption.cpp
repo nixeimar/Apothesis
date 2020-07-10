@@ -76,8 +76,6 @@ void Adsorption::setProcessMap( map< Process*, list<Site* >* >* ){}
 
 void Adsorption::perform()
 {
-  selectSite();
-
   int height = m_site->getHeight();
   height = height + 2;
   m_site->setHeight( height);
@@ -207,6 +205,11 @@ bool Adsorption::canDesorb()
 void Adsorption::setDesorption()
 {
   m_canDesorb = true; 
+}
+
+void Adsorption::setSite(Site* s)
+{
+  m_site = s;
 }
 
 }

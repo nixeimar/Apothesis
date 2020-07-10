@@ -92,6 +92,9 @@ class Desorption: public Process
 
     /// Update counter on number of sites with n neighbours
     void updateSiteCounter(int neighbours, bool addOrRemove);
+
+    /// Set site
+    void setSite(Site* s);
     
   protected:
     /// The kmc instance.

@@ -94,6 +94,9 @@ class Adsorption: public Process
     /// Set Desorption switch
     void setDesorption();
 
+    /// Set site
+    void setSite(Site* s);
+
   protected:
     /// The kmc instance.
     Apothesis* m_apothesis;

@@ -255,7 +255,11 @@ void Apothesis::init()
     // Add process to m_vProcesses
     for(int i = 0; i < species.size(); ++i)
     {
-     //   m_vProcesses.push_back(new Diffusion (species[i], energy[i], frequency[i]));
+      // Call function to find adsorption class
+        Adsorption* pAdsorption = findAdsorption(species[i]);
+        Diffusion* diff = new Diffusion (this, species[i], energy[i], frequency[i]);
+        
+        m_vProcesses.push_back(diff);
     }
     pIO->writeLogOutput("...Done initializing diffusion process."); 
   }
@@ -373,6 +377,9 @@ void Apothesis::exec()
     /// Pick Process
     Process* p = pickProcess(probabilities, random, processes);
 
+    // Site should be picked here
+    p->selectSite();
+  
     /// Perform process on that site
     p->perform();
 
