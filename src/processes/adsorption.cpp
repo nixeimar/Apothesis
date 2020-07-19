@@ -76,13 +76,18 @@ void Adsorption::setProcessMap( map< Process*, list<Site* >* >* ){}
 
 void Adsorption::perform()
 {
-  int height = m_site->getHeight();
-  height = height + 2;
-  m_site->setHeight( height);
-  // How to set a random adsorption species? Get a pointer to apothesis in order to find/get access to the species list
-  //m_site->setSpecies(m_adsorptionSpecies[0]);
+  // Set height to increase if the site is not phantom
+  if (!m_site->isPhantom())
+  {
+    m_site->setPhantom(true);
+    int height = m_site->getHeight();
+    height = height + 2;
+    m_site->setHeight(height);
+  }
   
-  mf_removeFromList();
+  // When do we need to remove this adsorption site from the list?
+  //mf_removeFromList();
+
   mf_updateNeighNum();
 
   // Add desorption site to Desorption class
@@ -202,9 +207,9 @@ bool Adsorption::canDesorb()
 }
 
 // Set desorption boolean variable to be true 
-void Adsorption::setDesorption()
+void Adsorption::setDesorption(bool canDesorb)
 {
-  m_canDesorb = true; 
+  m_canDesorb = canDesorb; 
 }
 
 void Adsorption::setSite(Site* s)

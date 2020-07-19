@@ -126,6 +126,12 @@ public:
     /// Get pointer to possible processes that can occur on this site
     list< Process* > getProcesses();
 
+    /// Set the site as phantom (or not)
+    void setPhantom(bool phantom);
+
+    /// Return boolean of current state of site
+    bool isPhantom();
+
 protected:
     /// The ID of the site.
     int m_iID;
@@ -156,6 +162,8 @@ protected:
     list< Process* > m_lProcs;
 
     Species* m_species;
+
+    bool m_phantom;
 };
 
 }

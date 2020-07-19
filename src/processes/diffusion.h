@@ -80,6 +80,12 @@ public:
 
     void updateSiteCounter(int neighbours, bool addOrRemove);
 
+    // Set adsorption pointer
+    void setAdsorptionPointer(Adsorption* a);
+
+    // Set desorption pointer
+    void setDesorptionPointer(Desorption* d);
+
   protected:
     /// The kmc instance.
     Apothesis* m_apothesis;
@@ -118,12 +124,6 @@ public:
 
     /// Frequency
     double m_diffusionFrequency;
-
-    // Set adsorption pointer
-    void setAdsorptionPointer(Adsorption* a);
-
-    // Set desorption pointer
-    void setDesorptionPointer(Desorption* d);
 
     // Get access to the adsorption pointer
     Adsorption* getAdsorption();

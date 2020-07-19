@@ -63,6 +63,9 @@ class Desorption: public Process
     /// Returns the name of the process.
     string getName();
 
+    /// Returns name of species
+    string getSpecies();
+
     /// Constructs the sites that adsorption can be performed.
     void activeSites( Lattice* );
 

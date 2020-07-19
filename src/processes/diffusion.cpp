@@ -21,6 +21,7 @@
 #include "register.cpp"
 #include "parameters.h"
 #include <cmath>
+#include <algorithm>
 
 namespace MicroProcesses{
 
@@ -137,7 +138,11 @@ void Diffusion::perform()
 
 void Diffusion::mf_removeFromList() { m_lDiffSites.remove( m_site); m_site->removeProcess( this ); }
 
-void Diffusion::mf_addToList(Site *s) { m_lDiffSites.push_back( s); }
+void Diffusion::mf_addToList(Site *s) 
+{
+  if (find(m_lDiffSites.begin(), m_lDiffSites.end(),s)==m_lDiffSites.end()) 
+    m_lDiffSites.push_back( s); 
+}
 
 void Diffusion::mf_updateNeighNum(Site* site)
 {
@@ -175,10 +180,8 @@ void Diffusion::mf_updateNeighNum(Site* site)
     mf_addToList( site->getActivationSite( Site::ACTV_SOUTH ));
 }
 
-//this process is not complete.
 double Diffusion::getProbability()
 {
-
   if ( m_lDiffSites.size() == 0 )
   {
     return 0;
@@ -197,6 +200,7 @@ double Diffusion::getProbability()
 
 list<Site* > Diffusion::getActiveList()
 {
+  //TODO: Figure out way to keep track of this list! from adsorption and desorption sides
   return m_lDiffSites;
 }
 

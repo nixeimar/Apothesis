@@ -205,13 +205,15 @@ void Apothesis::init()
         {
           d->setAdsorptionPointer(pAdsorption); 
           pAdsorption->setDesorptionPointer(d);  
-          pAdsorption->setDesorption();
+          pAdsorption->setDesorption(true);
         }
 
+       
         // if not, create associations in adsorption and desorption
 
         // else, output warning
-        
+
+      m_vDesorption.push_back(d);
       m_vProcesses.push_back(d);
     }
     pIO->writeLogOutput("...Done initializing desorption process.");
@@ -257,8 +259,12 @@ void Apothesis::init()
     {
       // Call function to find adsorption class
         Adsorption* pAdsorption = findAdsorption(species[i]);
+        Desorption* pDesorption = findDesorption(species[i]);
+
         Diffusion* diff = new Diffusion (this, species[i], energy[i], frequency[i]);
-        
+        diff->setAdsorptionPointer(pAdsorption);
+        diff->setDesorptionPointer(pDesorption);
+
         m_vProcesses.push_back(diff);
     }
     pIO->writeLogOutput("...Done initializing diffusion process."); 
@@ -507,6 +513,20 @@ void Apothesis::exec()
       if (!species.compare(a->getSpecies()))
       {
         return a;
+      }
+      // find name of adsorption species
+    }
+    cout<<"Warning! Could not find instance of Adsorption class for desorbed species "<< species << endl;
+  }
+
+  Desorption* Apothesis::findDesorption(string species)
+  {
+    for(vector<Desorption*> :: iterator itr = m_vDesorption.begin(); itr != m_vDesorption.end(); ++itr)
+    {
+      Desorption* d = *itr;
+      if (!species.compare(d->getSpecies()))
+      {
+        return d;
       }
       // find name of adsorption species
     }

@@ -50,6 +50,8 @@ Desorption::~Desorption(){}
 
 string Desorption::getName(){ return m_sName; }
 
+string Desorption::getSpecies(){ return m_desorptionSpecies; }
+
 //This should be called only once in the initialization
 void Desorption::activeSites(Lattice* lattice)
 {

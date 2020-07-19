@@ -22,7 +22,9 @@
 
 namespace SurfaceTiles{
 
-Site::Site(){;}
+Site::Site():
+m_phantom(false)
+{;}
 
 Site::~Site(){;}
 
@@ -76,6 +78,16 @@ void Site::removeProcess(Process* process) { m_lProcs.remove( process ); }
 list<Process*> Site::getProcesses()
 {
   return m_lProcs;
+}
+
+void Site::setPhantom(bool phantom)
+{
+  m_phantom = phantom;
+}
+
+bool Site::isPhantom()
+{
+  return m_phantom;
 }
 }
 

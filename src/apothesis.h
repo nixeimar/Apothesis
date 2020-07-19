@@ -90,6 +90,8 @@ public:
 
     MicroProcesses::Adsorption* findAdsorption(string species);
 
+    MicroProcesses::Desorption* findDesorption(string species);
+
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
     // Not to handy. Re-think... I have found another way... Implement it
@@ -99,6 +101,8 @@ private:
     vector< MicroProcesses::Process*> m_vProcesses;
 
     vector< MicroProcesses::Adsorption*> m_vAdsorption;
+    
+    vector< MicroProcesses::Desorption*> m_vDesorption;
 
     /// Vector holding the name of the processes (string)
     vector<string> m_processes;

@@ -92,7 +92,7 @@ class Adsorption: public Process
     void setDesorptionPointer(Desorption* d);
 
     /// Set Desorption switch
-    void setDesorption();
+    void setDesorption(bool canDesorb);
 
     /// Set site
     void setSite(Site* s);
