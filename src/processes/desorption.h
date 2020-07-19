@@ -43,7 +43,8 @@ class Desorption: public Process
     Desorption
     (
       Apothesis* instance,
-      string species,
+      string speciesName,
+      Species* species,
       double energy,
       double frequency
     );
@@ -64,7 +65,10 @@ class Desorption: public Process
     string getName();
 
     /// Returns name of species
-    string getSpecies();
+    const string getSpeciesName();
+
+    /// Returns instance of species class
+    const Species* getSpecies();
 
     /// Constructs the sites that adsorption can be performed.
     void activeSites( Lattice* );
@@ -143,8 +147,11 @@ class Desorption: public Process
     /// The desorption list which hold all the available sites for deposition
     list<Site* > m_lDesSites;
 
-    /// Species that can desorb
-    string m_desorptionSpecies;
+    /// Species name that can desorb
+    string m_desorptionSpeciesName;
+
+    /// Species instance that can desorb
+    Species* m_desorptionSpecies;
 
     /// Energy coefficients
     double m_desorptionEnergy;

@@ -211,7 +211,7 @@ void Apothesis::init()
         Adsorption* pAdsorption = findAdsorption(species[i]);
         
         // Create new instance of desorption class
-        Desorption* d = new Desorption (this, species[i], energy[i], frequency[i]);
+        Desorption* d = new Desorption (this, species[i], m_species[species[i]], energy[i], frequency[i]);
 
         // Check if associated adsorption class is a valid (non-null) pointer. Associate desorption class with appropriate adsorption and vice versa
         if (pAdsorption)
@@ -320,6 +320,7 @@ void Apothesis::init()
       stoichiometry.push_back(vStoich[i].GetDouble());
 
       string name = vSpecie[i].GetString();
+      // If the species is not already defined, push new member onto maps
       if (m_species[name] == NULL)
       {
         Species* s = new Species(name, mws[i], vStoich[i].GetDouble());
@@ -520,7 +521,7 @@ void Apothesis::exec()
     for(vector<Desorption*> :: iterator itr = m_vDesorption.begin(); itr != m_vDesorption.end(); ++itr)
     {
       Desorption* d = *itr;
-      if (!species.compare(d->getSpecies()))
+      if (!species.compare(d->getSpeciesName()))
       {
         return d;
       }

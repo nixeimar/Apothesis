@@ -24,7 +24,8 @@ namespace MicroProcesses{
 Desorption::Desorption
 (
     Apothesis* instance,
-    string species,
+    string speciesName,
+    Species* species,
     double energy,
     double frequency
 )
@@ -32,6 +33,7 @@ Desorption::Desorption
 m_sName("Desorption"),
 m_iNeighNum(0), 
 m_apothesis(instance),
+m_desorptionSpeciesName(speciesName),
 m_desorptionSpecies(species),
 m_desorptionEnergy(energy),
 m_desorptionFrequency(frequency),
@@ -50,7 +52,9 @@ Desorption::~Desorption(){}
 
 string Desorption::getName(){ return m_sName; }
 
-string Desorption::getSpecies(){ return m_desorptionSpecies; }
+const string Desorption::getSpeciesName(){ return m_desorptionSpeciesName; }
+
+const Species* Desorption::getSpecies(){ return m_desorptionSpecies; }
 
 //This should be called only once in the initialization
 void Desorption::activeSites(Lattice* lattice)
@@ -187,11 +191,6 @@ vector<double> Desorption::generateProbabilities()
   }
 
   return prob;
-}
-
-const string Desorption::getDesorptionSpecies()
-{
-  return m_desorptionSpecies;
 }
 
 const double Desorption::getDesorptionEnergy()
