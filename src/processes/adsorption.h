@@ -43,7 +43,8 @@ class Adsorption: public Process
     Adsorption
     (
       Apothesis* instance,
-      string species,
+      string speciesName,
+      Species* species,
       double stickingCoeffs,
       double massFraction
     );
@@ -61,7 +62,7 @@ class Adsorption: public Process
     string getName();
 
     /// Returns name of spceies
-    string getSpecies();
+    string getSpeciesName();
 
     /// Set the instance of the kmc.
     /// This allows to have access to all other functionalities of the KMC class.
@@ -127,7 +128,10 @@ class Adsorption: public Process
     int m_iNeighNum;
 
     /// Species that can adsorb
-    string m_adsorptionSpecies;
+    string m_adsorptionSpeciesName;
+
+    /// Instance of species class that can be adsorbed
+    Species* m_adsorptionSpecies;
 
     /// Sticking coefficients
     double m_stickingCoeffs;

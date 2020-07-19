@@ -24,7 +24,8 @@ namespace MicroProcesses{
 Adsorption::Adsorption
 (
   Apothesis* instance,
-  string species,
+  string speciesName,
+  Species* species,
   double stickingCoeffs,
   double massFraction
 )
@@ -32,6 +33,7 @@ Adsorption::Adsorption
 m_sName("Adsorption"),
 m_iNeighNum(0), 
 m_apothesis(instance),
+m_adsorptionSpeciesName(speciesName),
 m_adsorptionSpecies(species),
 m_stickingCoeffs(stickingCoeffs),
 m_massfraction(massFraction),
@@ -44,7 +46,7 @@ Adsorption::~Adsorption(){}
 
 string Adsorption::getName(){ return m_sName; }
 
-string Adsorption::getSpecies(){ return m_adsorptionSpecies; }
+string Adsorption::getSpeciesName(){ return m_adsorptionSpeciesName; }
 
 //This should be called only once in the initialization
 void Adsorption::activeSites(Lattice* lattice)
@@ -85,6 +87,7 @@ void Adsorption::perform()
     m_site->setHeight(height);
   }
   
+  m_site->addSpecies(m_apothesis->getSpecies(m_adsorptionSpeciesName));
   // When do we need to remove this adsorption site from the list?
   //mf_removeFromList();
 
@@ -174,8 +177,6 @@ double Adsorption::getProbability()
   double dTemp = m_apothesis->pParameters->getTemperature();
   double dkBoltz = m_apothesis->pParameters->dkBoltz;
   
-  int index = m_apothesis->findSpeciesIndex(m_adsorptionSpecies);
-
   double dmass = 27e-3/dNavogadro;
   double dpi = 3.14159265;
   double dstick = m_stickingCoeffs;

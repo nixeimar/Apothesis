@@ -33,6 +33,13 @@ public:
         double mw,
         double stoicCoeff
     );
+
+    Species
+    (
+        string name,
+        double mw
+    );
+    
     virtual ~Species();
 
     string getName();

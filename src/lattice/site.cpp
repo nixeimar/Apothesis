@@ -56,19 +56,24 @@ void Site::storeActivationSite( Site* s, ActivationSite as){ m_mapAct[ as] = s;}
 
 Site* Site::getActivationSite( ActivationSite as){ return m_mapAct[ as];}
 
-void Site::setSpecies(Species* s)
+void Site::addSpecies(Species* s)
 {
-  m_species = s;
+  m_species.push_back(s);
 }
 
-Species* Site::getSpecies()
+vector<Species*> Site::getSpecies()
 {
   return m_species;
 }
 
-string Site::getSpeciesName()
+vector<string> Site::getSpeciesName()
 {
-  return m_species->getName();
+  vector<string> names;
+  for (vector<Species*>::iterator itr = m_species.begin(); itr != m_species.end(); ++itr)
+  {
+    names.push_back((*itr)->getName());
+  }
+  return names;
 }
 
 void Site::addProcess(Process* process) { m_lProcs.push_back( process ); }

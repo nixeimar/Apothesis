@@ -31,6 +31,18 @@ m_stoicCoeff(stoicCoeff)
     ;
 }
 
+Species::Species
+(
+    string name,
+    double mw
+)
+:
+m_name(name),
+m_mw(mw)
+{  
+    ;
+}
+
 // Deconstructor for species class
 Species::~Species(){}
 

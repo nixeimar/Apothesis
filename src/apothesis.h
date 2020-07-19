@@ -73,14 +73,11 @@ public:
     void logSuccessfulRead(bool read, string parameter);
 
     /// Return access to list of species
-    vector<Species *> getSpecies();
+    map<string, Species*> getAllSpecies();
 
-    /// Return pointer to a given species, based on the name
-    Species* findSpecies(string species);
+    // Return species
+    Species* getSpecies(string species);
 
-    /// Return index of the species list
-    int findSpeciesIndex(string species);
-    
     /// Return normalized probabilities of each process
     vector<double> calculateProbabilities(vector<MicroProcesses::Process*>);
 
@@ -113,8 +110,8 @@ private:
     /// The flags given by the user
     char** m_vcArgv;
 
-    // List of species
-    vector<Species*> m_species;
+    // map of species
+    map<string, Species*> m_species;
 };
 
 #endif // KMC_H

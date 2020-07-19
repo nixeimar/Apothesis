@@ -97,6 +97,19 @@ void Apothesis::init()
 
   Document& doc = pRead->getDoc();
 
+  pIO->writeLogOutput("Initializing instances of species");
+  if (std::find(pProc.begin(), pProc.end(), "Reaction") == pProc.end())
+  {
+    vector<double> mws = pRead->getMWs();
+    vector<string> names = pRead->getSpeciesNames();
+
+    for (int i = 0; i < mws.size(); ++i)
+    {
+      Species* s = new Species(names[i], mws[i]);
+      m_species[names[i]] = s;
+    }
+  }
+
   pIO->writeLogOutput("Initializing processes");
 
   if (std::find(pProc.begin(), pProc.end(), "Adsorption") != pProc.end())
@@ -146,7 +159,7 @@ void Apothesis::init()
 
     for(int i = 0; i < species.size(); ++i)
     {
-      Adsorption* a = new Adsorption (this, species[i], sticking[i], massFraction[i]);
+      Adsorption* a = new Adsorption (this, species[i], m_species[species[i]], sticking[i], massFraction[i]);
 
       // Keep two separate vectors: one for all processes, one for adsorption processes only
       m_vAdsorption.push_back(a);
@@ -291,6 +304,8 @@ void Apothesis::init()
     double energy;
     double preexp;
 
+    auto mws = pRead->getMWs();
+
     // Loop through species
     for(SizeType i = 0; i < vSpecie.Size(); i++)
     {
@@ -304,9 +319,13 @@ void Apothesis::init()
       species.push_back(vSpecie[i].GetString());
       stoichiometry.push_back(vStoich[i].GetDouble());
 
-      auto mws = pRead->getMWs();
-      Species* s = new Species(vSpecie[i].GetString(), mws[i], vStoich[i].GetDouble());
-      m_species.push_back(s);
+      string name = vSpecie[i].GetString();
+      if (m_species[name] == NULL)
+      {
+        Species* s = new Species(name, mws[i], vStoich[i].GetDouble());
+        m_species[name] = s;
+      }
+      
     }
     
     // Store value for energy and pre-exponential factor
@@ -315,9 +334,9 @@ void Apothesis::init()
 
     // Check mass balance on reaction
     double cumulativemass = 0;
-    for (vector<Species*> :: iterator itr = m_species.begin(); itr != m_species.end(); ++itr)
+    for (map<string, Species*> :: iterator itr = m_species.begin(); itr != m_species.end(); ++itr)
     {
-      Species* s = *itr;
+      Species* s = itr->second;
       cumulativemass += s->getMW() * s->getStoicCoeff();
     }
     
@@ -328,7 +347,8 @@ void Apothesis::init()
     
     //m_vProcesses.push_back(new SurfaceReaction(species, stoichiometry, energy, preexp));
     pIO->writeLogOutput("...Done initializing reaction."); 
-}
+  }
+  
   
 
   /// First the processes that participate in the simulation
@@ -420,41 +440,17 @@ void Apothesis::exec()
   }
 
 
-  vector<Species *> Apothesis::getSpecies()
+  map<string, Species*> Apothesis::getAllSpecies()
   {
     return m_species;
   }
 
-  Species* Apothesis::findSpecies(string species)
+  
+  Species* Apothesis::getSpecies(string species)
   {
-    auto pSpecies = getSpecies();
-    for (vector<Species*> :: iterator itr = pSpecies.begin(); itr != pSpecies.end(); ++itr)
-    {
-      string currSpec = (*itr)->getName();
-      if (!species.compare(currSpec))
-      {
-        return *itr;
-      }
-    }
-    pErrorHandler->error_simple_msg("Species " + species + " could not be found.");
+    return m_species[species];
   }
 
-  int Apothesis::findSpeciesIndex(string species)
-  {
-    auto pSpecies = getSpecies();
-    int index = 0;
-    for (vector<Species*> :: iterator itr = pSpecies.begin(); itr != pSpecies.end(); ++itr)
-    {
-      string currSpec = (*itr)->getName();
-      if (!species.compare(currSpec))
-      {
-        return index;
-      }
-      index += 1;
-    }
-    pErrorHandler->error_simple_msg("Species " + species + " could not be found.");
-    return -1;
-  }
   
   vector<double> Apothesis::calculateProbabilities(vector<Process*> pProcesses)
   {
@@ -510,7 +506,7 @@ void Apothesis::exec()
     for(vector<Adsorption*> :: iterator itr = m_vAdsorption.begin(); itr != m_vAdsorption.end(); ++itr)
     {
       Adsorption* a = *itr;
-      if (!species.compare(a->getSpecies()))
+      if (!species.compare(a->getSpeciesName()))
       {
         return a;
       }

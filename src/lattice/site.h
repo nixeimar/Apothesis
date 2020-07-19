@@ -111,11 +111,11 @@ public:
     /// This will holds all the elements that can interact with the surfaces.
     /// Important when we talk about surface reactions.
     /// Element class has not implement yet for that we use forward decleration.
-    void setSpecies( Species* s);
+    void addSpecies( Species* s);
 
-    Species* getSpecies();
+    vector<Species*> getSpecies();
 
-    string getSpeciesName();
+    vector<string> getSpeciesName();
 
     /// Add a processes in the list of processes that this site can participate in.
     void addProcess( Process* );
@@ -161,7 +161,7 @@ protected:
     /// The list of processes that this site can participate in.
     list< Process* > m_lProcs;
 
-    Species* m_species;
+    vector<Species*> m_species;
 
     bool m_phantom;
 };
