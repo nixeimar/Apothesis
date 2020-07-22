@@ -113,6 +113,8 @@ public:
     /// Element class has not implement yet for that we use forward decleration.
     void addSpecies( Species* s);
 
+    void removeSpecies( Species* s);
+
     vector<Species*> getSpecies();
 
     vector<string> getSpeciesName();

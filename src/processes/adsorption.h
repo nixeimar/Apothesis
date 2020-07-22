@@ -151,11 +151,12 @@ class Adsorption: public Process
     /** The lattice of the process */
     Lattice* m_pLattice;
 
-    /// The adsorption list which hold all the available sites for deposition
+    /// The adsorption list which hold all the available sites for adsorption
     list<Site* > m_lAdsSites;
 
     /// Pointer to associated desorption class
     Desorption* m_pDesorption;
+
 
   };
 }

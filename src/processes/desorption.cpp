@@ -88,21 +88,34 @@ void Desorption::setProcessMap( map< Process*, list<Site* >* >* ){}
 
 void Desorption::perform()
 {
-  int height = m_site->getHeight();
-  height = height - 2;
-  m_site->setHeight( height);
-
+  if (!m_site->isPhantom())
+  {
+    int height = m_site->getHeight();
+    height = height - 2;
+    m_site->setHeight( height);
+  }
+  
   int numNeighbours = m_site->getNeighboursNum();
-  mf_removeFromList();
+
+  m_site->removeSpecies(m_apothesis->getSpecies(m_desorptionSpeciesName));
+
+  
+  // If there are no longer any species that can be desorbed, remove from list
+  if (m_site->getSpecies().size() == 0)
+  {
+    mf_removeFromList();  
+  }
+  
   mf_updateNeighNum();
 
   // Remove count from list of sites that have n number of neighbours
   updateSiteCounter(numNeighbours, false);
+  
 }
 
 void Desorption::mf_removeFromList() 
 { 
-  m_lDesSites.remove( m_site); 
+  m_lDesSites.remove(m_site); 
   //TODO: Is this necessary?
   m_site->removeProcess( this ); 
 }
@@ -143,6 +156,11 @@ void Desorption::mf_updateNeighNum()
 
   if ( isActiveSOUTH )
     mf_addToList( m_site->getActivationSite( Site::ACTV_SOUTH ));
+
+  // Clear all non-unique elements in list
+  m_lDesSites.sort();
+  m_lDesSites.unique();
+  m_iNeighNum = m_lDesSites.size();
 }
 
 list<Site*> Desorption::getActiveList()
@@ -226,6 +244,21 @@ void Desorption::updateSiteCounter(int neighbours, bool addOrRemove)
     {
       m_numNeighbours[neighbours-1]--;
     }
+  }
+}
+
+void Desorption::updateNeighbours(Site* s)
+{
+  // TODO: For all the neighbours of this site remove num sites and update m_numNeighbours
+  vector<Site*> sites = s->getNeighs();
+  for(vector<Site*> :: iterator itr = sites.begin(); itr != sites.end(); ++itr)
+  {
+    Site* site = *itr;
+    updateSiteCounter(site->getNeighboursNum(), false);
+    m_site = site;
+    // Recalculate the number of sites
+    mf_updateNeighNum();
+    updateSiteCounter(m_site->getNeighboursNum(), true);
   }
 }
 

@@ -78,7 +78,15 @@ void Adsorption::setProcessMap( map< Process*, list<Site* >* >* ){}
 
 void Adsorption::perform()
 {
+  // If you can desorb, pre-empt the desorption update by removing n neighbours from desorption list
+  if (canDesorb())
+  {
+    int initNeighbours = m_site->getNeighboursNum();
+    getDesorption()->updateSiteCounter(initNeighbours, false);
+  }
+
   // Set height to increase if the site is not phantom
+  // ie if this is the first molecule being added to this site
   if (!m_site->isPhantom())
   {
     m_site->setPhantom(true);
@@ -87,20 +95,23 @@ void Adsorption::perform()
     m_site->setHeight(height);
   }
   
+  // Adsorb the species by adding the name to the site
   m_site->addSpecies(m_apothesis->getSpecies(m_adsorptionSpeciesName));
-  // When do we need to remove this adsorption site from the list?
-  //mf_removeFromList();
 
+  // update the number of neighbours this site has
   mf_updateNeighNum();
 
   // Add desorption site to Desorption class
   if (canDesorb())
   {
+    // Add site as possible desorption site
     getDesorption()->mf_addToList(m_site);
     int neighbours = m_site->getNeighboursNum();
 
     // Updates the list of neighbours in desorption class
     getDesorption()->updateSiteCounter(neighbours, true);
+
+    getDesorption()->updateNeighbours(m_site);
   }
 
   /// Check if there are available sites that it can be performed
@@ -141,6 +152,7 @@ void Adsorption::mf_updateNeighNum()
                     siteHeight == m_site->getNeighPosition( Site::SOUTH)->getHeight() );
 
   // Store the activated sites
+
   if ( isActiveEAST )
     mf_addToList( m_site->getActivationSite( Site::ACTV_EAST ));
 
@@ -152,6 +164,11 @@ void Adsorption::mf_updateNeighNum()
 
   if ( isActiveSOUTH )
     mf_addToList( m_site->getActivationSite( Site::ACTV_SOUTH ));
+
+  // Clears all non-unique elements in the list
+  m_lAdsSites.sort();
+  m_lAdsSites.unique();
+  m_iNeighNum = m_lAdsSites.size();
 }
 
 const double Adsorption::getMassFraction()
@@ -177,9 +194,11 @@ double Adsorption::getProbability()
   double dTemp = m_apothesis->pParameters->getTemperature();
   double dkBoltz = m_apothesis->pParameters->dkBoltz;
   
+  //TODO: Is dmass from input file?
   double dmass = 27e-3/dNavogadro;
   double dpi = 3.14159265;
   double dstick = m_stickingCoeffs;
+  //TODO: Is dCites from input file?
   double dCites = 1.4e+19;
   double dy = getMassFraction();
 

@@ -357,15 +357,11 @@ void Apothesis::init()
   //TODO: Automate initialization of active sites
   /// that were read from the file input and the I/O functionality
     //m_vProcesses[0]->setInstance( this );
-    m_vProcesses[0]->activeSites( pLattice );
-    //m_vProcesses[0]->setProcessMap( &m_processMap );
-
-    //m_vProcesses[1]->setInstance( this );
-    m_vProcesses[1]->activeSites( pLattice );
-
-   // m_vProcesses[2]->setInstance(this);
-    m_vProcesses[2]->activeSites( pLattice );
-    //m_vProcesses[1]->setProcessMap( &m_processMap );
+    for (vector<Process*> :: iterator itr = m_vProcesses.begin(); itr != m_vProcesses.end(); ++itr)
+    {
+      Process* p = *itr;
+      p->activeSites(pLattice);
+    }
 }
 
 void Apothesis::exec()

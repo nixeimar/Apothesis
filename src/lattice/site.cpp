@@ -61,6 +61,22 @@ void Site::addSpecies(Species* s)
   m_species.push_back(s);
 }
 
+void Site::removeSpecies(Species* s)
+{
+  // TODO: Is this better to do by species pointer or by string?. I think pointer is easier
+  // Search through species list until we've found the specific one to remove
+  for (vector<Species*>::iterator itr = m_species.begin(); itr != m_species.end(); ++itr)
+  {
+    if (*itr == s)
+    {
+        m_species.erase( itr );
+        break;
+    }
+  }
+  
+  cout<<"Warning: did not find an instance of " << s->getName() << "in site " << getID()<<endl;
+}
+
 vector<Species*> Site::getSpecies()
 {
   return m_species;

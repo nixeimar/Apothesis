@@ -100,6 +100,9 @@ class Desorption: public Process
     /// Update counter on number of sites with n neighbours
     void updateSiteCounter(int neighbours, bool addOrRemove);
 
+    /// Update counts on neighbours
+    void updateNeighbours(Site* s);
+
     /// Set site
     void setSite(Site* s);
     
@@ -166,10 +169,10 @@ class Desorption: public Process
     vector<double> generateProbabilities();
     
     // Vector to hold the probabilities. Number of neighbour - 1 = index of list
+    // TODO: How to initialize this as a const vector? The value should not change 
     vector<double> m_probabilities;
 
     // Number of sites with n number of neighbours
-    // TODO: How to initialize this as a const vector? The value should not change 
     vector<double> m_numNeighbours;
 
     // Maximum number of neighbours possible
