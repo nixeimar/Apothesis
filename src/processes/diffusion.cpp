@@ -140,8 +140,9 @@ void Diffusion::mf_removeFromList() { m_lDiffSites.remove( m_site); m_site->remo
 
 void Diffusion::mf_addToList(Site *s) 
 {
+  //TODO: Will this be better with a hashmap/map of some kind? for now, just do a search
   if (find(m_lDiffSites.begin(), m_lDiffSites.end(),s)==m_lDiffSites.end()) 
-    m_lDiffSites.push_back( s); 
+    m_lDiffSites.push_back(s); 
 }
 
 void Diffusion::mf_updateNeighNum(Site* site)
@@ -187,11 +188,6 @@ double Diffusion::getProbability()
     return 0;
   }
 
-  else if (m_site->getSpeciesName().size() == 0)
-  {
-    //return 0;
-  }
-  
   double prob = 0;
 
   // Calculate probability for each possible value of n

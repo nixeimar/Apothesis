@@ -424,7 +424,7 @@ void IO::writeLatticeHeights()
       << ", [ ";
       
       vector<string> speciesList = m_lattice->getSite(j+i*m_lattice->getX())->getSpeciesName();
-      if (speciesList.size() > 1)
+      if (speciesList.size() > 0)
       {
         for (vector<string> :: iterator itr = speciesList.begin(); itr != speciesList.end(); ++itr)
         {

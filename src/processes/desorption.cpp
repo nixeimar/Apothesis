@@ -37,7 +37,7 @@ m_desorptionSpeciesName(speciesName),
 m_desorptionSpecies(species),
 m_desorptionEnergy(energy),
 m_desorptionFrequency(frequency),
-m_maxNeighbours(5)
+m_maxNeighbours(5) //TODO: initialize maxneighbours
 {
   // Initialize list to state number of sites with n neighbours
   for(int i = 0; i < m_maxNeighbours; ++i)

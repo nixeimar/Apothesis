@@ -71,6 +71,12 @@ public:
     /// The list of active sites for diffusion.
     list<Site* > getActiveList();
 
+    /// Remove a site from a list
+    void mf_removeFromList();
+
+    /// Add a site to a list
+    void mf_addToList(Site* s);
+
     /// Here various tests should be putted in order to check for the validity of the process e.g.
     /// the number of the particles in the active surface must be constant (mass is constant).
     void test();
@@ -92,12 +98,6 @@ public:
 
     /// The name of the process
     string m_sName;
-
-    /// Remove a site from a list
-    void mf_removeFromList();
-
-    /// Add a site to a list
-    void mf_addToList(Site* s);
 
     /// Update the neighbour sites of this site. This is performed here since depending on the process
     /// this changes. E.g. fotr adsortpion in a FCC lattice the first neighbors are different compared to the

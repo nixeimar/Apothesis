@@ -26,6 +26,7 @@
 
 #include "apothesis.h"
 #include "desorption.h"
+#include "diffusion.h"
 #include "site.h"
 
 using namespace std;
@@ -95,6 +96,12 @@ class Adsorption: public Process
     /// Set Desorption switch
     void setDesorption(bool canDesorb);
 
+    /// Set associated diffusion pointer
+    void setDiffusionPointer(Diffusion* d);
+
+    /// Set Diffusion switch
+    void setDiffusion(bool canDiffuse);
+
     /// Set site
     void setSite(Site* s);
 
@@ -146,6 +153,13 @@ class Adsorption: public Process
 
     bool canDesorb();
 
+    /// Return pointer to corresponding diffusion class
+    Diffusion* getDiffusion();
+
+    bool m_canDiffuse;
+    
+    bool canDiffuse();
+
   private:
   
     /** The lattice of the process */
@@ -156,6 +170,9 @@ class Adsorption: public Process
 
     /// Pointer to associated desorption class
     Desorption* m_pDesorption;
+
+    /// Pointer to associated diffusion class
+    Diffusion* m_pDiffusion;
 
 
   };

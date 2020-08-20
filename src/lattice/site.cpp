@@ -69,7 +69,7 @@ void Site::removeSpecies(Species* s)
   {
     if (*itr == s)
     {
-        m_species.erase( itr );
+        m_species.erase(itr);
         break;
     }
   }

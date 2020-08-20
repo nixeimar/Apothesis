@@ -18,6 +18,7 @@
 #include "adsorption.h"
 #include "register.cpp"
 #include "parameters.h"
+#include <algorithm>
 
 namespace MicroProcesses{
 
@@ -37,7 +38,8 @@ m_adsorptionSpeciesName(speciesName),
 m_adsorptionSpecies(species),
 m_stickingCoeffs(stickingCoeffs),
 m_massfraction(massFraction),
-m_canDesorb(false)
+m_canDesorb(false),
+m_canDiffuse(false)
 {
 ;  
 }
@@ -97,12 +99,6 @@ void Adsorption::perform()
   
   // Adsorb the species by adding the name to the site
   m_site->addSpecies(m_apothesis->getSpecies(m_adsorptionSpeciesName));
-  
-  //vector<Species*> speciesList = m_site->getSpecies();
-  //for (vector<Species*> :: iterator itr = speciesList.begin(); itr != speciesList.end(); ++itr)
-//
-  //cout<<m_site->getSpecies()<<endl;
-
   // update the number of neighbours this site has
   mf_updateNeighNum();
 
@@ -117,6 +113,15 @@ void Adsorption::perform()
     getDesorption()->updateSiteCounter(neighbours, true);
 
     getDesorption()->updateNeighbours(m_site);
+  }
+
+  if (canDiffuse())
+  {
+    list<Site* > activeDiffList = getDiffusion()->getActiveList();
+    
+    // If you do not find the site on the list already, add to site
+    getDiffusion()->mf_addToList(m_site);
+    
   }
 
   /// Check if there are available sites that it can be performed
@@ -235,6 +240,26 @@ bool Adsorption::canDesorb()
 void Adsorption::setDesorption(bool canDesorb)
 {
   m_canDesorb = canDesorb; 
+}
+
+Diffusion* Adsorption::getDiffusion()
+{
+  return m_pDiffusion;
+}
+
+void Adsorption::setDiffusionPointer(Diffusion* d)
+{
+  m_pDiffusion = d;
+}
+
+bool Adsorption::canDiffuse()
+{
+  return m_canDiffuse;
+}
+
+void Adsorption::setDiffusion(bool canDiffuse)
+{
+  m_canDiffuse = canDiffuse;
 }
 
 void Adsorption::setSite(Site* s)
