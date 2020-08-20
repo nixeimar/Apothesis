@@ -37,7 +37,8 @@ m_desorptionSpeciesName(speciesName),
 m_desorptionSpecies(species),
 m_desorptionEnergy(energy),
 m_desorptionFrequency(frequency),
-m_maxNeighbours(5) //TODO: initialize maxneighbours
+m_maxNeighbours(5), //TODO: initialize maxneighbours
+m_canDiffuse(false)
 {
   // Initialize list to state number of sites with n neighbours
   for(int i = 0; i < m_maxNeighbours; ++i)
@@ -104,6 +105,9 @@ void Desorption::perform()
   if (m_site->getSpecies().size() == 0)
   {
     mf_removeFromList();  
+
+    // Access to diffusion class
+    getDiffusion()->mf_removeFromList(m_site);
   }
   
   mf_updateNeighNum();
@@ -235,6 +239,26 @@ Adsorption* Desorption::getAdsorption()
 void Desorption::setAdsorptionPointer(Adsorption* a)
 {
   m_pAdsorption = a;
+}
+
+Diffusion* Desorption::getDiffusion()
+{
+  return m_pDiffusion;
+}
+
+void Desorption::setDiffusionPointer(Diffusion* d)
+{
+  m_pDiffusion = d;
+}
+
+bool Desorption::canDiffuse()
+{
+  return m_canDiffuse;
+}
+
+void Desorption::setDiffusion(bool canDiffuse)
+{
+  m_canDiffuse = canDiffuse;
 }
 
 void Desorption::updateSiteCounter(int neighbours, bool addOrRemove)

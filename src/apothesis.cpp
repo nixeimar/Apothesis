@@ -281,6 +281,9 @@ void Apothesis::init()
         pAdsorption->setDiffusion(true);
         pAdsorption->setDiffusionPointer(diff);
 
+        pDesorption->setDiffusion(true);
+        pDesorption->setDiffusionPointer(diff);
+
         m_vProcesses.push_back(diff);
     }
     pIO->writeLogOutput("...Done initializing diffusion process."); 

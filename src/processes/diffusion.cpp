@@ -138,6 +138,13 @@ void Diffusion::perform()
 
 void Diffusion::mf_removeFromList() { m_lDiffSites.remove( m_site); m_site->removeProcess( this ); }
 
+void Diffusion::mf_removeFromList(Site* s) 
+{ 
+  m_lDiffSites.remove(s); 
+  //TODO: Is this necessary?
+  m_site->removeProcess( this ); 
+}
+
 void Diffusion::mf_addToList(Site *s) 
 {
   //TODO: Will this be better with a hashmap/map of some kind? for now, just do a search
