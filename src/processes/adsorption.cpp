@@ -97,6 +97,11 @@ void Adsorption::perform()
   
   // Adsorb the species by adding the name to the site
   m_site->addSpecies(m_apothesis->getSpecies(m_adsorptionSpeciesName));
+  
+  //vector<Species*> speciesList = m_site->getSpecies();
+  //for (vector<Species*> :: iterator itr = speciesList.begin(); itr != speciesList.end(); ++itr)
+//
+  //cout<<m_site->getSpecies()<<endl;
 
   // update the number of neighbours this site has
   mf_updateNeighNum();

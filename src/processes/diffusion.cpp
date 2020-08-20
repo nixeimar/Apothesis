@@ -64,7 +64,7 @@ void Diffusion::activeSites( Lattice* lattice){
 
   for ( int i = 0; i < m_pLattice->getSize(); i++)
     if ( vSites[ i ]->getID()%2 != 0 ) {
-      m_lDiffSites.push_back( vSites[ i ] );
+     // m_lDiffSites.push_back( vSites[ i ] );
       vSites[ i ]->addProcess( this );
     }
 }
@@ -185,6 +185,11 @@ double Diffusion::getProbability()
   if ( m_lDiffSites.size() == 0 )
   {
     return 0;
+  }
+
+  else if (m_site->getSpeciesName().size() == 0)
+  {
+    //return 0;
   }
   
   double prob = 0;

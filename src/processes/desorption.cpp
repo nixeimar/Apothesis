@@ -124,6 +124,7 @@ void Desorption::mf_addToList(Site *s) { m_lDesSites.push_back( s); }
 
 void Desorption::mf_updateNeighNum()
 {
+  //pLattice->updateNeighNum();
   bool isActiveEAST = false;
   isActiveEAST = ( m_site->getHeight() == m_site->getNeighPosition( Site::EAST )->getHeight()  && \
                    m_site->getHeight() == m_site->getNeighPosition( Site::EAST_DOWN)->getHeight() && \
@@ -177,6 +178,11 @@ void Desorption::test()
 double Desorption::getProbability()
 {
   if ( m_lDesSites.size() == 0 )
+  {
+    return 0;
+  }
+
+  else if (m_site->getSpeciesName().size() == 0)
   {
     return 0;
   }
@@ -249,8 +255,9 @@ void Desorption::updateSiteCounter(int neighbours, bool addOrRemove)
 
 void Desorption::updateNeighbours(Site* s)
 {
-  // TODO: For all the neighbours of this site remove num sites and update m_numNeighbours
+  // For all the neighbours of this site remove num sites and update m_numNeighbours
   vector<Site*> sites = s->getNeighs();
+  //TODO: ensure getNeighs is properly updated within site
   for(vector<Site*> :: iterator itr = sites.begin(); itr != sites.end(); ++itr)
   {
     Site* site = *itr;

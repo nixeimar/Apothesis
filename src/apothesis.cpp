@@ -354,7 +354,6 @@ void Apothesis::init()
 
   /// First the processes that participate in the simulation
 
-  //TODO: Automate initialization of active sites
   /// that were read from the file input and the I/O functionality
     //m_vProcesses[0]->setInstance( this );
     for (vector<Process*> :: iterator itr = m_vProcesses.begin(); itr != m_vProcesses.end(); ++itr)

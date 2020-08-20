@@ -138,7 +138,7 @@ private:
     /** The lattice of the process */
     Lattice* m_pLattice;
 
-    /// The diffusion list which hold all the available sites for deposition
+    /// The diffusion list which hold all the available sites for diffusion
     list<Site* > m_lDiffSites;
 
     /** Pointer to the process map */
