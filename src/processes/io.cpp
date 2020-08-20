@@ -414,9 +414,28 @@ void IO::writeLatticeHeights()
 
   // This must be formatted output.
   m_OutFile << " --------------------------------------- " << endl;
-  for ( int i = 0; i < m_lattice->getX(); i++) {
+  for ( int i = 0; i < m_lattice->getX(); i++) 
+  {
     for (int j = 0;  j < m_lattice->getY(); j++)
-      m_OutFile << m_lattice->getSites()[ j + i*m_lattice->getX() ]->getHeight() << "   ";
+    {
+      m_OutFile 
+      << "( " 
+      << m_lattice->getSites()[ j + i*m_lattice->getX() ]->getHeight() 
+      << ", [ ";
+      
+      vector<string> speciesList = m_lattice->getSite(j+i*m_lattice->getX())->getSpeciesName();
+      if (speciesList.size() > 1)
+      {
+        for (vector<string> :: iterator itr = speciesList.begin(); itr != speciesList.end(); ++itr)
+        {
+          string s = *itr;
+
+          m_OutFile << s << " ";
+        }
+      }
+      
+      m_OutFile << "] ) ";
+    }
     m_OutFile << endl;
     }
   m_OutFile << " --------------------------------------- " << endl;
