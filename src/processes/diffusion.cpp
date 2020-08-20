@@ -72,7 +72,8 @@ void Diffusion::activeSites( Lattice* lattice){
 void Diffusion::selectSite()
 {
   /* This comes from random i.e. picking from the available list for diffusion randomly */
-  int y = rand()%getActiveList().size();
+  int y = rand()%(getActiveList().size());
+  cout<<"size of active list: "<<getActiveList().size()<<endl;
   int counter = 0;
   list<Site* >::iterator site = m_lDiffSites.begin();
   for (; site != m_lDiffSites.end(); site++ )
@@ -140,9 +141,7 @@ void Diffusion::mf_removeFromList() { m_lDiffSites.remove( m_site); m_site->remo
 
 void Diffusion::mf_removeFromList(Site* s) 
 { 
-  m_lDiffSites.remove(s); 
-  //TODO: Is this necessary?
-  m_site->removeProcess( this ); 
+  m_lDiffSites.remove(s);
 }
 
 void Diffusion::mf_addToList(Site *s) 

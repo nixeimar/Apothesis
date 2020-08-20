@@ -47,13 +47,16 @@ Read::Read(Apothesis* apothesis):Pointers(apothesis),
     vector<int> latticeDimensions;
 
     // Read the elements in the input file
-    //auto dimensions = m_input["lattice"]["dims"].GetObject();
+    Value& dimensions = m_input["Lattice"]["dims"];
+    apothesis->logSuccessfulRead(dimensions.IsArray(), "Lattice dimensions");
 
     for (int i = 0; i < m_dimensions; i++)
     {
-      //latticeDimensions.push_back(latticeDimensions[i]);
-      //TODO automate reading from input file
-      latticeDimensions.push_back(10);
+      cout<<dimensions[i].GetDouble()<<endl;
+      if (!dimensions[i].IsDouble())
+        apothesis->pErrorHandler->error_simple_msg("Lattice dimension is not a number");
+      
+      latticeDimensions.push_back((int) dimensions[i].GetDouble());
     }
 
 //    std::cout<<"Setting lattice dimensions " << std::endl;
