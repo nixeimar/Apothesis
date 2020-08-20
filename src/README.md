@@ -6,7 +6,7 @@ for surface growth phenomena targeting chemical vapor and atomic layer depositio
 It is still under development but please feel free to contact me if you have something in mind! 
 
 
-Compile 
+Compile - qmake
 --------------------------------------------------------------------------------------------------------------
 On linux systems in the source directory run 
 ```
@@ -18,13 +18,23 @@ Having QtCreator will make things a lot easier on (mostly) windows and linux OS.
 Since the project is not based on Qt framework (although it started like that - thats why the Qt deps) 
 I will provided a cmake at first instance. 
 
+Compile - cmake
+--------------------------------------------------------------------------------------------------------------
+On linux systems, navigate to src/build
+``` 
+cmake ..
+make -j
+```
+
+
 Test
+
 --------------------------------------------------------------------------------------------------------------
 There is a test input file under `test` directory to explore the logic behind the development and the I/O operations. 
 To try it run
 ```
 cd test
-../Apothesis 
+../src/build/Apothesis .
 ```
 This should work fine. 
 
