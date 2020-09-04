@@ -113,7 +113,6 @@ Read::Read(Apothesis* apothesis):Pointers(apothesis),
       Value& configPtr = m_input["config"];
       apothesis->logSuccessfulRead(configPtr.HasMember("debug"), "debug");
       string debugMode = configPtr["debug"].GetString();
-      cout<<"DEALKDSJF; " << debugMode << endl;
       if (!debugMode.compare("On") || !debugMode.compare("on") || !debugMode.compare("True") || !debugMode.compare("true") || !debugMode.compare("debug"))
       {
         apothesis->setDebugMode(true);

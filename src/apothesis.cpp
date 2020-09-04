@@ -535,6 +535,12 @@ void Apothesis::exec()
     cout<<"Warning! Could not find instance of Adsorption class for desorbed species "<< species << endl;
   }
 
+  IO* Apothesis::getIOPointer()
+  {
+    return pIO;
+  }
+
+
   void Apothesis::setDebugMode(bool ifDebug)
   {
     m_debugMode = ifDebug;

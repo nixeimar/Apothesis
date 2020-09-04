@@ -20,6 +20,7 @@
 #include "adsorption.h"
 #include "register.cpp"
 #include "parameters.h"
+#include "io.h"
 #include <cmath>
 #include <algorithm>
 
@@ -139,7 +140,9 @@ void Diffusion::perform()
   // If we are in debugging more, print more information
   if (m_apothesis->getDebugMode())
   {
-    cout<<"Debug mode is TRUE";
+    IO* pIO = m_apothesis->getIOPointer();
+    string output = "Diffusing from " + to_string(m_site->getID()) + " to " + to_string(diffuseTo->getID());
+    pIO->writeLogOutput(output);
   }
   
 }
@@ -154,6 +157,7 @@ void Diffusion::mf_removeFromList(Site* s)
 void Diffusion::mf_addToList(Site *s) 
 {
   //TODO: Will this be better with a hashmap/map of some kind? for now, just do a search
+  // If the site doesn't already exist, add
   if (find(m_lDiffSites.begin(), m_lDiffSites.end(),s)==m_lDiffSites.end()) 
     m_lDiffSites.push_back(s); 
 }

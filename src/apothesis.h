@@ -89,6 +89,9 @@ public:
 
     MicroProcesses::Desorption* findDesorption(string species);
 
+    /// Return access to IO pointer
+    IO* getIOPointer();
+
     void setDebugMode(bool);
 
     bool getDebugMode();
