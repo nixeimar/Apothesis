@@ -117,13 +117,19 @@ void Diffusion::perform()
   a->setSite(diffuseTo);
   a->perform();
 
+  // Add new site to possible diffusion sites
+  mf_addToList(diffuseTo);
+  
+
   // update number of neighbours for all adjacent 
   vector<Site*> neigh = m_site->getNeighs();
   for(vector<Site*> :: iterator itr = neigh.begin(); itr != neigh.end(); ++itr)
   {
-    Site* s = *itr;
-    // TODO: how to update number of neighbours for each site
-    mf_updateNeighNum(s);
+    // update number of possible diffusion sites
+    updateSiteCounter((*itr)->getNeighboursNum(), false);
+    int newNeighbourNum = mf_getNumNeighbours(*itr);
+    updateSiteCounter(newNeighbourNum, true);
+
   }
 
   // update number of possible diffusion sites
@@ -135,7 +141,7 @@ void Diffusion::perform()
   mf_removeFromList();
 
   //TODO: Is this function still valid for diffusion process?
-  mf_updateNeighNum(m_site);
+//  mf_updateNeighNum(m_site);
 
   // If we are in debugging more, print more information
   if (m_apothesis->getDebugMode())
@@ -147,11 +153,43 @@ void Diffusion::perform()
   
 }
 
-void Diffusion::mf_removeFromList() { m_lDiffSites.remove( m_site); m_site->removeProcess( this ); }
+void Diffusion::mf_removeFromList() 
+{ 
+  cout<<"Before: ";
+  for (list<Site*>::iterator itr = m_lDiffSites.begin(); itr != m_lDiffSites.end(); ++itr)
+  {
+    cout<< (*itr)->getID() << ", ";
+  }
+  cout<<endl;
+  cout<<"Site we want to remove: " << m_site->getID() << endl;
+  m_lDiffSites.remove(m_site); 
+  cout<<"After: ";
+  for (list<Site*>::iterator itr = m_lDiffSites.begin(); itr != m_lDiffSites.end(); ++itr)
+  {
+    cout<< (*itr)->getID() << ", ";
+  }
+  cout<<endl;
+  m_site->removeProcess( this ); 
+}
 
 void Diffusion::mf_removeFromList(Site* s) 
 { 
+  cout<<"Before: ";
+  for (list<Site*>::iterator itr = m_lDiffSites.begin(); itr != m_lDiffSites.end(); ++itr)
+  {
+    cout<< (*itr)->getID() << ", ";
+  }
+  cout<<endl;
+
+  cout<<"Site we want to remove: " << s->getID() << endl;
   m_lDiffSites.remove(s);
+  cout<<"After: ";
+  for (list<Site*>::iterator itr = m_lDiffSites.begin(); itr != m_lDiffSites.end(); ++itr)
+  {
+    cout<< (*itr)->getID() << ", ";
+  }
+  cout<<endl;
+  s->removeProcess(this);
 }
 
 void Diffusion::mf_addToList(Site *s) 
@@ -160,42 +198,76 @@ void Diffusion::mf_addToList(Site *s)
   // If the site doesn't already exist, add
   if (find(m_lDiffSites.begin(), m_lDiffSites.end(),s)==m_lDiffSites.end()) 
     m_lDiffSites.push_back(s); 
+
+  
+  // If we are in debugging more, print neighbours of the site
+  if (m_apothesis->getDebugMode())
+  {
+    IO* pIO = m_apothesis->getIOPointer();
+    string output = "Site: " + to_string(s->getID()) + " neighbours ";
+    for (list<Site*>::iterator itr = m_lDiffSites.begin(); itr != m_lDiffSites.end(); ++itr)
+    {
+      output += to_string((*itr)->getID()) + ", ";
+    }
+    pIO->writeLogOutput(output);
+  }
+  
 }
 
-void Diffusion::mf_updateNeighNum(Site* site)
+int Diffusion::mf_getNumNeighbours(Site* site)
 {
+  int total = 0;
+
   bool isActiveEAST = false;
   isActiveEAST = ( site->getHeight() == site->getNeighPosition( Site::EAST )->getHeight()  && \
                    site->getHeight() == site->getNeighPosition( Site::EAST_DOWN)->getHeight() && \
                    site->getHeight() == site->getNeighPosition( Site::EAST_UP)->getHeight() );
+  if (isActiveEAST)
+  {
+    total++;
+    site->setNeigh(site->getNeighPosition(Site::EAST));
+  }
 
   bool isActiveWEST = false;
   isActiveWEST = ( site->getHeight() == site->getNeighPosition( Site::WEST )->getHeight() && \
                    site->getHeight() == site->getNeighPosition( Site::WEST_DOWN)->getHeight() && \
                    site->getHeight() == site->getNeighPosition( Site::WEST_UP)->getHeight() );
+  if (isActiveWEST)
+  {
+    total++;
+    site->setNeigh(site->getNeighPosition(Site::WEST));
+  }
 
   bool isActiveNORTH = false;
   isActiveNORTH = ( site->getHeight() == site->getNeighPosition( Site::WEST_UP )->getHeight() && \
                     site->getHeight() == site->getNeighPosition( Site::EAST_UP)->getHeight() && \
                     site->getHeight() == site->getNeighPosition( Site::NORTH)->getHeight() );
-
+  if (isActiveNORTH)
+  {
+    total++;
+    site->setNeigh(site->getNeighPosition(Site::NORTH));
+  }
   bool isActiveSOUTH = false;
   isActiveSOUTH = ( site->getHeight() == site->getNeighPosition( Site::WEST_DOWN )->getHeight() && \
                     site->getHeight() == site->getNeighPosition( Site::EAST_DOWN)->getHeight() &&  \
                     site->getHeight() == site->getNeighPosition( Site::SOUTH)->getHeight() );
+  if (isActiveSOUTH)
+  {
+    total++;
+    site->setNeigh(site->getNeighPosition(Site::SOUTH));
+  }
 
-  // Store the activated sites
-  if ( isActiveEAST )
-    mf_addToList( site->getActivationSite( Site::ACTV_EAST ));
+  // Clears all non-unique elements in the list
+  
+  site->setNeighboursNum(total);
 
-  if ( isActiveWEST )
-    mf_addToList( site->getActivationSite( Site::ACTV_WEST ));
+  return total;
 
-  if ( isActiveNORTH )
-    mf_addToList( site->getActivationSite( Site::ACTV_NORTH ));
+}
 
-  if ( isActiveSOUTH )
-    mf_addToList( site->getActivationSite( Site::ACTV_SOUTH ));
+void Diffusion::mf_updateNeighNum(Site* site)
+{
+  // Can be removed?
 }
 
 double Diffusion::getProbability()
@@ -204,6 +276,16 @@ double Diffusion::getProbability()
   {
     return 0;
   }
+
+
+
+  string output = "Current diffusable sites: ";
+  for (list<Site*>::iterator itr = m_lDiffSites.begin(); itr != m_lDiffSites.end(); ++itr)
+  {
+    output+= to_string((*itr)->getID()) + ", ";
+  }
+
+  m_apothesis->getIOPointer()->writeLogOutput(output);
 
   double prob = 0;
 

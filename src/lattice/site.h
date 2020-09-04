@@ -148,6 +148,10 @@ protected:
     /// The neighbours at the same level - We do not need this because we have the map (see below).
     vector< Site*> m_vNeigh;
 
+    /// Function to remove duplicate neighbours
+    //TODO
+    void removeDuplicates();
+
     /// Holds the number of the neighbours of the particular site according to each height/
     int m_iNumNeighs;
 

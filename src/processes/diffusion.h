@@ -107,6 +107,8 @@ public:
     /// adsroption in a BCC lattice.
     void mf_updateNeighNum(Site* s);
 
+    int mf_getNumNeighbours(Site* site);
+
     // Update the counts of all neighbours
     Site* chooseNeighbour(vector<Site*> neighbours);
 

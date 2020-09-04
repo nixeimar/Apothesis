@@ -110,6 +110,11 @@ bool Site::isPhantom()
 {
   return m_phantom;
 }
+
+void Site::removeDuplicates()
+{
+ //TODO
+}
 }
 
 

@@ -106,7 +106,7 @@ void Desorption::perform()
   {
     mf_removeFromList();  
 
-    // Access to diffusion class
+    // Access to diffusion class. If we have no more species, we also can't diffuse
     getDiffusion()->mf_removeFromList(m_site);
   }
   
