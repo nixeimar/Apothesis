@@ -52,8 +52,7 @@ Read::Read(Apothesis* apothesis):Pointers(apothesis),
 
     for (int i = 0; i < m_dimensions; i++)
     {
-      cout<<dimensions[i].GetDouble()<<endl;
-      if (!dimensions[i].IsDouble())
+      if (!dimensions[i].IsInt())
         apothesis->pErrorHandler->error_simple_msg("Lattice dimension is not a number");
       
       latticeDimensions.push_back((int) dimensions[i].GetDouble());
@@ -105,6 +104,34 @@ Read::Read(Apothesis* apothesis):Pointers(apothesis),
       double mw = m_input["Species"][name]["mw"].GetDouble();
       m_MWs.push_back(mw);
     }
+
+    // Read special configuration settings
+    // Storing all processes names into apothesis class
+    
+    try
+    {
+      Value& configPtr = m_input["config"];
+      apothesis->logSuccessfulRead(configPtr.HasMember("debug"), "debug");
+      string debugMode = configPtr["debug"].GetString();
+      cout<<"DEALKDSJF; " << debugMode << endl;
+      if (!debugMode.compare("On") || !debugMode.compare("on") || !debugMode.compare("True") || !debugMode.compare("true") || !debugMode.compare("debug"))
+      {
+        apothesis->setDebugMode(true);
+      }
+   }
+   catch(const std::exception& e)
+   {
+     // do nothing
+   }
+    
+    
+
+    // Add processes into a vector, stored under apothesis
+    for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
+    {
+      apothesis->addProcess(itr->name.GetString());
+    }
+
   }
 
 Read::~Read(){}

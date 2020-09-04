@@ -135,6 +135,13 @@ void Diffusion::perform()
 
   //TODO: Is this function still valid for diffusion process?
   mf_updateNeighNum(m_site);
+
+  // If we are in debugging more, print more information
+  if (m_apothesis->getDebugMode())
+  {
+    cout<<"Debug mode is TRUE";
+  }
+  
 }
 
 void Diffusion::mf_removeFromList() { m_lDiffSites.remove( m_site); m_site->removeProcess( this ); }

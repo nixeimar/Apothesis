@@ -110,7 +110,7 @@ void IO::readInputFile()
         m_lattice->setInitialHeight( toInt( vsTokens[ 4 ] ) );
         }
       else {
-        m_errorHandler->error_simple_msg("The height myst be a  number.");
+        m_errorHandler->error_simple_msg("The height must be a  number.");
         EXIT;
         }
       }

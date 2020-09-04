@@ -89,6 +89,10 @@ public:
 
     MicroProcesses::Desorption* findDesorption(string species);
 
+    void setDebugMode(bool);
+
+    bool getDebugMode();
+
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
     // Not to handy. Re-think... I have found another way... Implement it
@@ -112,6 +116,9 @@ private:
 
     // map of species
     map<string, Species*> m_species;
+
+    // Set debug mode
+    bool m_debugMode;
 };
 
 #endif // KMC_H

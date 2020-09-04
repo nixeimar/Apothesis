@@ -39,7 +39,11 @@ typedef rapidjson::SizeType SizeType;
 
 //using namespace Utils;
 
-Apothesis::Apothesis( int argc, char* argv[] ):pLattice( 0 ),pRead( 0 )
+Apothesis::Apothesis( int argc, char* argv[] )
+:
+pLattice( 0 ),
+pRead( 0 ),
+m_debugMode(false)
   {
     m_iArgc = argc;
     m_vcArgv = argv;
@@ -529,4 +533,14 @@ void Apothesis::exec()
       // find name of adsorption species
     }
     cout<<"Warning! Could not find instance of Adsorption class for desorbed species "<< species << endl;
+  }
+
+  void Apothesis::setDebugMode(bool ifDebug)
+  {
+    m_debugMode = ifDebug;
+  }
+
+  bool Apothesis::getDebugMode()
+  {
+    return m_debugMode;
   }

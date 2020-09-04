@@ -2,9 +2,9 @@
   "Lattice":
   {
     "Type": "FCC",
-    "dims": [10, 10, 10]
+    "dims": [4, 4, 10]
   },
-  "Iterations": 100,
+  "Iterations": 20,
   "Temperature": 400,
   "Pressure": 101325,
   "Species":
@@ -32,7 +32,11 @@
     {
       "Species": ["CuAMD"],
       "Energy": [10],
-      "Frequency": [1e-12]
+      "Frequency": [1e-1]
     }
+  },
+  "config":
+  {
+      "debug": "On"
   }
 }
