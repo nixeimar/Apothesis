@@ -74,7 +74,6 @@ void Diffusion::selectSite()
 {
   /* This comes from random i.e. picking from the available list for diffusion randomly */
   int y = rand()%(getActiveList().size());
-  cout<<"size of active list: "<<getActiveList().size()<<endl;
   int counter = 0;
   list<Site* >::iterator site = m_lDiffSites.begin();
   for (; site != m_lDiffSites.end(); site++ )
@@ -117,10 +116,6 @@ void Diffusion::perform()
   a->setSite(diffuseTo);
   a->perform();
 
-  // Add new site to possible diffusion sites
-  mf_addToList(diffuseTo);
-  
-
   // update number of neighbours for all adjacent 
   vector<Site*> neigh = m_site->getNeighs();
   for(vector<Site*> :: iterator itr = neigh.begin(); itr != neigh.end(); ++itr)
@@ -129,7 +124,6 @@ void Diffusion::perform()
     updateSiteCounter((*itr)->getNeighboursNum(), false);
     int newNeighbourNum = mf_getNumNeighbours(*itr);
     updateSiteCounter(newNeighbourNum, true);
-
   }
 
   // update number of possible diffusion sites
@@ -155,40 +149,13 @@ void Diffusion::perform()
 
 void Diffusion::mf_removeFromList() 
 { 
-  cout<<"Before: ";
-  for (list<Site*>::iterator itr = m_lDiffSites.begin(); itr != m_lDiffSites.end(); ++itr)
-  {
-    cout<< (*itr)->getID() << ", ";
-  }
-  cout<<endl;
-  cout<<"Site we want to remove: " << m_site->getID() << endl;
   m_lDiffSites.remove(m_site); 
-  cout<<"After: ";
-  for (list<Site*>::iterator itr = m_lDiffSites.begin(); itr != m_lDiffSites.end(); ++itr)
-  {
-    cout<< (*itr)->getID() << ", ";
-  }
-  cout<<endl;
   m_site->removeProcess( this ); 
 }
 
 void Diffusion::mf_removeFromList(Site* s) 
 { 
-  cout<<"Before: ";
-  for (list<Site*>::iterator itr = m_lDiffSites.begin(); itr != m_lDiffSites.end(); ++itr)
-  {
-    cout<< (*itr)->getID() << ", ";
-  }
-  cout<<endl;
-
-  cout<<"Site we want to remove: " << s->getID() << endl;
   m_lDiffSites.remove(s);
-  cout<<"After: ";
-  for (list<Site*>::iterator itr = m_lDiffSites.begin(); itr != m_lDiffSites.end(); ++itr)
-  {
-    cout<< (*itr)->getID() << ", ";
-  }
-  cout<<endl;
   s->removeProcess(this);
 }
 

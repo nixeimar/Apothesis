@@ -89,7 +89,7 @@ void Adsorption::perform()
 
   // Set height to increase if the site is not phantom
   // ie if this is the first molecule being added to this site
-  if (!m_site->isPhantom())
+  if (m_site->getSpecies().size() == 0)
   {
     m_site->setPhantom(true);
     int height = m_site->getHeight();
@@ -116,12 +116,9 @@ void Adsorption::perform()
   }
 
   if (canDiffuse())
-  {
-    list<Site* > activeDiffList = getDiffusion()->getActiveList();
-    
+  {  
     // If you do not find the site on the list already, add to site
     getDiffusion()->mf_addToList(m_site);
-    
   }
 
   /// Check if there are available sites that it can be performed

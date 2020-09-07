@@ -89,7 +89,7 @@ void Desorption::setProcessMap( map< Process*, list<Site* >* >* ){}
 
 void Desorption::perform()
 {
-  if (!m_site->isPhantom())
+  if (m_site->getSpecies().size() == 1)
   {
     int height = m_site->getHeight();
     height = height - 2;
@@ -124,7 +124,10 @@ void Desorption::mf_removeFromList()
   m_site->removeProcess( this ); 
 }
 
-void Desorption::mf_addToList(Site *s) { m_lDesSites.push_back( s); }
+void Desorption::mf_addToList(Site *s) 
+{ 
+  m_lDesSites.push_back(s); 
+}
 
 void Desorption::mf_updateNeighNum()
 {
