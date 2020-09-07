@@ -20,7 +20,8 @@
 
 #include "site.h"
 
-namespace SurfaceTiles{
+namespace SurfaceTiles
+{
 
 Site::Site():
 m_phantom(false)
@@ -28,33 +29,65 @@ m_phantom(false)
 
 Site::~Site(){;}
 
-vector<Site* > Site::getNeighs() { return m_vNeigh; }
+vector<Site* > Site::getNeighs() 
+{ 
+  return m_vNeigh; 
+}
 
-void Site::setNeigh( Site* s){
+void Site::setNeigh( Site* s)
+{
   m_vNeigh.push_back( s);
-  }
+}
 
-void Site::setID(int id) { m_iID = id;}
-int Site::getID() { return m_iID;}
+void Site::setID(int id) 
+{ 
+  m_iID = id;
+}
 
-void Site::setHeight(int h){ m_iHeight = h;}
+int Site::getID() 
+{ 
+  return m_iID;
+}
 
-int Site::getHeight() { return m_iHeight; }
+void Site::setHeight(int h)
+{ 
+  m_iHeight = h;
+}
 
-void Site::setNeighboursNum( int num){ m_iNumNeighs = num;}
+int Site::getHeight() 
+{ 
+  return m_iHeight; 
+}
+
+void Site::setNeighboursNum(int num)
+{ 
+  m_iNumNeighs = num;
+}
 
 int Site::getNeighboursNum()
 {
   return m_vNeigh.size();
 }
   
-void Site::setNeighPosition( Site* s, NeighPoisition np){ m_mapNeigh[ np] = s; }
+void Site::setNeighPosition(Site* s, NeighPoisition np)
+{ 
+  m_mapNeigh[np] = s; 
+}
 
-Site* Site::getNeighPosition( NeighPoisition np){ return m_mapNeigh[ np];}
+Site* Site::getNeighPosition(NeighPoisition np)
+{ 
+  return m_mapNeigh[np];
+}
 
-void Site::storeActivationSite( Site* s, ActivationSite as){ m_mapAct[ as] = s;}
+void Site::storeActivationSite(Site* s, ActivationSite as)
+{
+  m_mapAct[as] = s;
+}
 
-Site* Site::getActivationSite( ActivationSite as){ return m_mapAct[ as];}
+Site* Site::getActivationSite(ActivationSite as)
+{ 
+  return m_mapAct[as];
+}
 
 void Site::addSpecies(Species* s)
 {
@@ -102,9 +135,15 @@ vector<string> Site::getSpeciesName()
   return names;
 }
 
-void Site::addProcess(Process* process) { m_lProcs.push_back( process ); }
+void Site::addProcess(Process* process) 
+{ 
+  m_lProcs.push_back(process); 
+}
 
-void Site::removeProcess(Process* process) { m_lProcs.remove( process ); }
+void Site::removeProcess(Process* process) 
+{
+  m_lProcs.remove(process); 
+}
 
 list<Process*> Site::getProcesses()
 {
