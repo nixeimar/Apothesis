@@ -34,5 +34,9 @@
       "Sticking": [0.2, 0.5],
       "MassFraction": [0.1, 0.9]
     }
+  },
+  "config":
+  {
+    "debug": "Off"
   }
 }

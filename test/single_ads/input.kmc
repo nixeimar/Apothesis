@@ -22,5 +22,9 @@
       "Sticking": [0.2],
       "MassFraction": [1.0]
     }
+  },
+  "config":
+  {
+    "debug": "Off"
   }
 }
