@@ -15,8 +15,8 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#ifndef LATTICE_H
-#define LATTICE_H
+#ifndef FCC_H
+#define FCC_H
 
 #include <iostream>
 #include <stdlib.h>
@@ -24,52 +24,36 @@
 #include <list>
 #include <fstream>
 
-#include "pointers.h"
-#include "site.h"
-#include "errorhandler.h"
+#include "lattice.h"
 
 using namespace std;
 using namespace SurfaceTiles;
 using namespace Utils;
 
-class Lattice: public Pointers
+class FCC: public Lattice
   {
   public:
-    /// The type of the lattice.
-       enum Type{ NONE,
-               BCC,
-               FCC
-               };
 
     /// Constructor
-    Lattice(Apothesis* apothesis);
+    FCC( Apothesis* apothesis );
 
     /// Distructor.
-    virtual ~Lattice();
+    virtual ~FCC();
 
     /// Sets the type of the lattice.
     void setType( string );
 
     /// Returns the x dimension of the lattice.
-    virtual int getX() = 0;
+    inline int getX(){return m_iSizeX;}
 
     /// Returns the y dimension of the lattice.
-    virtual int getY() = 0;
+    inline int getY(){return m_iSizeY;}
 
     /// Returns the size of the lattice.
-    virtual int getSize() = 0;
-
-    /// Returns the type of the lattice
-    Lattice::Type getType();
-
-    ///Returns the lattice
-    Site* getLattice();
+    inline int getSize(){return  m_iSizeX*m_iSizeY;}
 
     /// Returns a site with a specific id.
     Site* getSite( int id);
-
-    /// Returns all the sites of the lattice.
-    vector<Site*> getSites();
 
     /// Various checks if the lattice has been constucted correctly. Partially implemented.
     void check();
@@ -77,42 +61,16 @@ class Lattice: public Pointers
     /// Init the lattice.
     void init();
 
-    /// Set the type of the lattice.
-    void setType( Type type );
-
-    /// Set the X dimension of the lattice.
-    void setX( int x );
-
-    /// Set the Y dimension of the lattice.
-    void setY( int y );
-
     /// Build the lattice with an intitial height.
-    virtual void build() = 0;
+    void build();
 
     /// Sets the minimun initial height for the lattice.
     void setInitialHeight( int  height );
 
-    /// Returns random site
-    Site* randomSite();
-
   protected:
-    /// The size of the lattice in the x-dimension.
-    int m_iSizeX;
-
-    /// The size of the lattice in the y-dimension.
-    int m_iSizeY;
-
-    /// The minimum initialize size of the lattice.
-    int m_iHeight;
-
-    /// The type of the lattice: BCC, FCC etc.
-    Type m_Type;
-
-    /// The sites that consist the lattice.
-    vector<Site* > m_vSites;
 
     /// The neighbours for the FCC lattice.
-    virtual void mf_neigh() = 0;
+    void mf_neigh();
 
   };
 

@@ -41,6 +41,21 @@ Read::Read(Apothesis* apothesis):Pointers(apothesis),
     string lattice_type = m_input["Lattice"]["Type"].GetString();
     std::cout<<"lattice_type "<< lattice_type << std::endl;
     
+    cout<<"lattice fcc is: " << m_LatticeType[lattice_type]<< endl;
+    switch(m_LatticeType[lattice_type])
+    {
+      case Lattice::FCC: 
+      {
+        FCC* lattice = new FCC(apothesis);
+        apothesis->pLattice = lattice;
+        break;
+      }
+      //case Lattice::FCC: apothesis->pLattice = new BCC(apothesis);
+      //TODO: In case of default, create error
+      default: {;}
+    }
+
+    m_lattice = apothesis->pLattice;
     m_lattice->setType(lattice_type);
 
     // Initialize the vector holding dimensions of the lattice
@@ -49,12 +64,10 @@ Read::Read(Apothesis* apothesis):Pointers(apothesis),
     // Read the elements in the input file
     Value& dimensions = m_input["Lattice"]["dims"];
     apothesis->logSuccessfulRead(dimensions.IsArray(), "Lattice dimensions");
-
     for (int i = 0; i < m_dimensions; i++)
     {
       if (!dimensions[i].IsInt())
         apothesis->pErrorHandler->error_simple_msg("Lattice dimension is not a number");
-      
       latticeDimensions.push_back((int) dimensions[i].GetDouble());
     }
 

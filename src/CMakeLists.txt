@@ -15,6 +15,7 @@ set(header_files
     lattice/lattice.h
     processes/process.h
     lattice/site.h
+    lattice/FCC.h
     processes/adsorption.h 
     processes/diffusion.h
     processes/factory_process.h
@@ -49,6 +50,7 @@ set(error_files
 set(lattice_files
     lattice/site.cpp
     lattice/lattice.cpp
+    lattice/FCC.cpp
 )
 
 set(species_files

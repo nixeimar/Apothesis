@@ -18,6 +18,7 @@
 #include "pointers.h"
 #include "apothesis.h"
 #include "lattice.h"
+#include "FCC.h"
 #include "io.h"
 #include "read.h"
 #include "errorhandler.h"
@@ -51,7 +52,6 @@ m_debugMode(false)
     pParameters = new Utils::Parameters(this);
 
     /* This must be constructed before the input */
-    pLattice = new Lattice( this );
 
     // Create input instance
     pIO = new IO(this);
@@ -60,7 +60,7 @@ m_debugMode(false)
     pRead = new Read(this);
 
     vector<string> pName = pRead->getSpeciesNames();
-
+cout<<"i am here"<<endl;
     // Read the input
     //pIO->readInputFile();
 
@@ -549,4 +549,9 @@ void Apothesis::exec()
   bool Apothesis::getDebugMode()
   {
     return m_debugMode;
+  }
+
+  void Apothesis::setLatticePointer(Lattice* lattice)
+  {
+    pLattice = lattice;
   }

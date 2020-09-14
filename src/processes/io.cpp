@@ -402,12 +402,12 @@ void IO::writeLogOutput( string str )
   }
 
 void IO::writeLatticeInfo()
-  {
+{
   m_OutFile << "Lattice size: " << m_lattice->getX() << "x" << m_lattice->getY();
 
   if ( m_lattice->getType() == Lattice::FCC )
     m_OutFile << "Lattice type: " << "FCC";
-  }
+}
 
 void IO::writeLatticeHeights()
 {

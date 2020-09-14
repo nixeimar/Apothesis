@@ -15,58 +15,75 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#include "lattice.h"
+#include "FCC.h"
 #include "read.h"
 
-Lattice::Lattice(Apothesis* apothesis):Pointers(apothesis)
-{
-  //Document input = 
+FCC::FCC(Apothesis* apothesis):Lattice(apothesis)
+{ 
+    ;
 }
 
+void FCC::setInitialHeight( int  height ) { m_iHeight = height; }
 
-void Lattice::setType( string sType)
-  {
-  if ( sType == "FCC")
-    m_Type = FCC;
-  else
-    m_Type = NONE;
-  }
-
-void Lattice::setX( int x ) { m_iSizeX = x; }
-
-void Lattice::setY( int y ) { m_iSizeY = y; }
-
-void Lattice::setInitialHeight( int  height ) { m_iHeight = height; }
-
-Site* Lattice::randomSite()
+void FCC::build()
 {
-  int numSites = m_iSizeX * m_iSizeY;
-
-  // TODO: Does this need to only consider sites where smth is possible? ie 'active' sites
-  return getSite(rand() % numSites);
-}
-
-
-Lattice::~Lattice()
-{
-}
-
-vector<Site*> Lattice::getSites()
-  {
-  return m_vSites;
-  }
-
-
-Lattice::Type Lattice::getType()
-  {
-  switch (m_Type) {
-    case FCC: return FCC;
-    case BCC: return BCC;
-    default: return NONE;
+  
+  if ( m_iSizeX%2 != 0 || m_iSizeX%2 != 0){
+    cout << "The size of the lattice must be an even number in each direction." << endl;
+    EXIT;
     }
-  }
 
-void Lattice::mf_neigh()
+  if ( m_iSizeX == 0 || m_iSizeY == 0) {
+    m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
+    EXIT;
+    }
+
+  if ( m_iHeight < 5) {
+    m_errorHandler->warningSimple_msg("The lattice initial height is too small.Consider revising.");
+    }
+
+  // The sites of the lattice.
+  m_vSites.resize( getSize() );
+  for ( int i = 0; i < m_vSites.size(); i++)
+    m_vSites[ i ] = new Site();
+
+  //  m_pSites = new Site[ m_iSizeX*m_iSizeY];
+
+    for (int i = 0; i < m_iSizeX; i++){
+      if (i%2 == 0)
+        for (int j = i*m_iSizeY; j < (m_iSizeY + i*m_iSizeY); j++)
+          if (j%2 == 0){
+            m_vSites[ j]->setID( j);
+            m_vSites[ j]->setHeight( m_iHeight -1 );
+            }
+          else{
+            m_vSites[ j]->setID( j);
+            m_vSites[ j]->setHeight( m_iHeight );
+            }
+      else
+        for (int j = i*m_iSizeY; j < (m_iSizeY + i*m_iSizeY); j++)
+          if (j%2 == 0){
+            m_vSites[ j]->setID( j);
+            m_vSites[ j]->setHeight( m_iHeight );
+            }
+          else{
+            m_vSites[ j]->setID( j);
+            m_vSites[ j]->setHeight( m_iHeight - 1);
+            }
+      }
+      
+
+  mf_neigh();
+}
+
+FCC::~FCC()
+{
+  for ( int i = 0; i<getSize(); i++)
+    delete m_vSites[i];
+}
+
+
+void FCC::mf_neigh()
   {
 
   /* All except the boundaries */
@@ -598,9 +615,9 @@ void Lattice::mf_neigh()
     }
   }
 
-Site* Lattice::getSite( int id){ return m_vSites[ id]; }
+Site* FCC::getSite( int id){ return m_vSites[ id]; }
 
-void Lattice::check()
+void FCC::check()
   {
   int k = 0;
 

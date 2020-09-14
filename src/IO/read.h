@@ -30,6 +30,7 @@
 #include "pointers.h"
 #include "apothesis.h"
 #include "lattice.h"
+#include "FCC.h"
 #include "species.h"
 
 #include "errorhandler.h"

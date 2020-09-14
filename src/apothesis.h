@@ -96,6 +96,8 @@ public:
 
     bool getDebugMode();
 
+    void setLatticePointer(Lattice* pLattice);
+
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
     // Not to handy. Re-think... I have found another way... Implement it
