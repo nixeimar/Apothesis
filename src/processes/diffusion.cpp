@@ -183,50 +183,15 @@ void Diffusion::mf_addToList(Site *s)
 
 int Diffusion::mf_getNumNeighbours(Site* site)
 {
+  //TODO 
   int total = 0;
 
-  bool isActiveEAST = false;
-  isActiveEAST = ( site->getHeight() == site->getNeighPosition( Site::EAST )->getHeight()  && \
-                   site->getHeight() == site->getNeighPosition( Site::EAST_DOWN)->getHeight() && \
-                   site->getHeight() == site->getNeighPosition( Site::EAST_UP)->getHeight() );
-  if (isActiveEAST)
-  {
-    total++;
-    site->setNeigh(site->getNeighPosition(Site::EAST));
-  }
-
-  bool isActiveWEST = false;
-  isActiveWEST = ( site->getHeight() == site->getNeighPosition( Site::WEST )->getHeight() && \
-                   site->getHeight() == site->getNeighPosition( Site::WEST_DOWN)->getHeight() && \
-                   site->getHeight() == site->getNeighPosition( Site::WEST_UP)->getHeight() );
-  if (isActiveWEST)
-  {
-    total++;
-    site->setNeigh(site->getNeighPosition(Site::WEST));
-  }
-
-  bool isActiveNORTH = false;
-  isActiveNORTH = ( site->getHeight() == site->getNeighPosition( Site::WEST_UP )->getHeight() && \
-                    site->getHeight() == site->getNeighPosition( Site::EAST_UP)->getHeight() && \
-                    site->getHeight() == site->getNeighPosition( Site::NORTH)->getHeight() );
-  if (isActiveNORTH)
-  {
-    total++;
-    site->setNeigh(site->getNeighPosition(Site::NORTH));
-  }
-  bool isActiveSOUTH = false;
-  isActiveSOUTH = ( site->getHeight() == site->getNeighPosition( Site::WEST_DOWN )->getHeight() && \
-                    site->getHeight() == site->getNeighPosition( Site::EAST_DOWN)->getHeight() &&  \
-                    site->getHeight() == site->getNeighPosition( Site::SOUTH)->getHeight() );
-  if (isActiveSOUTH)
-  {
-    total++;
-    site->setNeigh(site->getNeighPosition(Site::SOUTH));
-  }
+  
 
   // Clears all non-unique elements in the list
   
-  site->setNeighboursNum(total);
+  //site->setNeighboursNum(total);
+  cout<<"total: " << total << endl;
 
   return total;
 

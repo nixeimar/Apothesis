@@ -132,6 +132,7 @@ void Desorption::mf_addToList(Site *s)
 void Desorption::mf_updateNeighNum()
 {
   //pLattice->updateNeighNum();
+
   bool isActiveEAST = false;
   isActiveEAST = ( m_site->getHeight() == m_site->getNeighPosition( Site::EAST )->getHeight()  && \
                    m_site->getHeight() == m_site->getNeighPosition( Site::EAST_DOWN)->getHeight() && \
@@ -266,13 +267,15 @@ void Desorption::setDiffusion(bool canDiffuse)
 
 void Desorption::updateSiteCounter(int neighbours, bool addOrRemove)
 {
+  //TODO: better bound checking  
   // Updates list of number of neighbours each possible site has
   if (addOrRemove)
   {
-    m_numNeighbours[neighbours-1]++;
+    m_numNeighbours.at(neighbours-1)++;
   }
   else
   {
+    cout<<"neighbours: " << neighbours << endl;
     if (m_numNeighbours[neighbours-1] > 0)
     {
       m_numNeighbours[neighbours-1]--;

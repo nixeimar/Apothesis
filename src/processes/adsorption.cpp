@@ -100,7 +100,8 @@ void Adsorption::perform()
   // Adsorb the species by adding the name to the site
   m_site->addSpecies(m_apothesis->getSpecies(m_adsorptionSpeciesName));
   // update the number of neighbours this site has
-  mf_updateNeighNum();
+  int newNeighbours = mf_updateNeighNum();
+  //m_site->setNeighboursNum(newNeighbours);
 
   // Add desorption site to Desorption class
   if (canDesorb())
@@ -134,48 +135,12 @@ void Adsorption::mf_removeFromList() { m_lAdsSites.remove( m_site); m_site->remo
 
 void Adsorption::mf_addToList(Site *s) { m_lAdsSites.push_back( s); }
 
-void Adsorption::mf_updateNeighNum()
+int Adsorption::mf_updateNeighNum()
 {
-  int siteHeight = m_site->getHeight();
+  // TODO fill in function (or delete)
+  int totalNeigh = 0;
 
-  bool isActiveEAST = false;
-  isActiveEAST = ( siteHeight == m_site->getNeighPosition( Site::EAST )->getHeight()  && \
-                   siteHeight == m_site->getNeighPosition( Site::EAST_DOWN)->getHeight() && \
-                   siteHeight == m_site->getNeighPosition( Site::EAST_UP)->getHeight() );
-
-  bool isActiveWEST = false;
-  isActiveWEST = ( siteHeight == m_site->getNeighPosition( Site::WEST )->getHeight() && \
-                   siteHeight == m_site->getNeighPosition( Site::WEST_DOWN)->getHeight() && \
-                   siteHeight == m_site->getNeighPosition( Site::WEST_UP)->getHeight() );
-
-  bool isActiveNORTH = false;
-  isActiveNORTH = ( siteHeight == m_site->getNeighPosition( Site::WEST_UP )->getHeight() && \
-                    siteHeight == m_site->getNeighPosition( Site::EAST_UP)->getHeight() && \
-                    siteHeight == m_site->getNeighPosition( Site::NORTH)->getHeight() );
-
-  bool isActiveSOUTH = false;
-  isActiveSOUTH = ( siteHeight == m_site->getNeighPosition( Site::WEST_DOWN )->getHeight() && \
-                    siteHeight == m_site->getNeighPosition( Site::EAST_DOWN)->getHeight() &&  \
-                    siteHeight == m_site->getNeighPosition( Site::SOUTH)->getHeight() );
-
-  // Store the activated sites
-
-  if ( isActiveEAST )
-    mf_addToList( m_site->getActivationSite( Site::ACTV_EAST ));
-
-  if ( isActiveWEST )
-    mf_addToList( m_site->getActivationSite( Site::ACTV_WEST ));
-
-  if ( isActiveNORTH )
-    mf_addToList( m_site->getActivationSite( Site::ACTV_NORTH ));
-
-  if ( isActiveSOUTH )
-    mf_addToList( m_site->getActivationSite( Site::ACTV_SOUTH ));
-
-  // Clears all non-unique elements in the list
-  m_lAdsSites.sort();
-  m_lAdsSites.unique();
-  m_iNeighNum = m_lAdsSites.size();
+  return totalNeigh;
 }
 
 const double Adsorption::getMassFraction()

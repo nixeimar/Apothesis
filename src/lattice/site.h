@@ -148,6 +148,12 @@ protected:
     /// The neighbours at the same level - We do not need this because we have the map (see below).
     vector< Site*> m_vNeigh;
 
+    // Update neighbour list
+    int m_updateNeighbours();
+
+    // Call updateneighbours on another site
+    int m_updateNeighbours(Site* s);
+
     /// Function to remove duplicate neighbours
     //TODO
     void removeDuplicates();
@@ -160,6 +166,9 @@ protected:
 
     /// A map that hold the sites that this site can activate if it has all the its neighbours occupied.
     map< ActivationSite, Site* > m_mapAct;
+
+    /// A list of active sites for each process
+    map< Process*, vector<Site*>> activeSites;
 
     /// To check if a site is occupied or not.
     bool m_bIsOccupied;

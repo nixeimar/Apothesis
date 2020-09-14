@@ -121,7 +121,7 @@ class Adsorption: public Process
     /// Update the neighbour sites of this site. This is performed here since depending on the process
     /// this changes. E.g. fotr adsortpion in a FCC lattice the first neighbors are different compared to the
     /// adsroption in a BCC lattice.
-    void mf_updateNeighNum();
+    int mf_updateNeighNum();
 
     const double getMassFraction();
 

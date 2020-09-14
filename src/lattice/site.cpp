@@ -59,11 +59,8 @@ int Site::getHeight()
   return m_iHeight; 
 }
 
-void Site::setNeighboursNum(int num)
-{ 
-  m_iNumNeighs = num;
-}
 
+// TODO: redundance in ability to set neighboursnum and getNeighboursNum
 int Site::getNeighboursNum()
 {
   return m_vNeigh.size();
@@ -158,6 +155,57 @@ void Site::setPhantom(bool phantom)
 bool Site::isPhantom()
 {
   return m_phantom;
+}
+
+int Site::m_updateNeighbours()
+{
+  int siteHeight = getHeight();
+  int totalNeigh = 0;
+
+  
+  // TODO (?) Only care about atoms at the same height -- NESW
+  // Check NESW sites, see if the heights are the same. If same, add to list of neighbours. 
+  bool isActiveEAST = false;
+  isActiveEAST = ( siteHeight == getNeighPosition( Site::EAST )->getHeight()  && \
+                   siteHeight == getNeighPosition( Site::EAST_DOWN)->getHeight() && \
+                   siteHeight == getNeighPosition( Site::EAST_UP)->getHeight() );
+  if (isActiveEAST)
+  {
+    totalNeigh++;
+  }
+
+  bool isActiveWEST = false;
+  isActiveWEST = ( siteHeight == getNeighPosition( Site::WEST )->getHeight() && \
+                   siteHeight == getNeighPosition( Site::WEST_DOWN)->getHeight() && \
+                   siteHeight == getNeighPosition( Site::WEST_UP)->getHeight() );
+  if (isActiveWEST)
+  {
+    totalNeigh++;
+  }
+
+  bool isActiveNORTH = false;
+  isActiveNORTH = ( siteHeight == getNeighPosition( Site::WEST_UP )->getHeight() && \
+                    siteHeight == getNeighPosition( Site::EAST_UP)->getHeight() && \
+                    siteHeight == getNeighPosition( Site::NORTH)->getHeight() );
+  if (isActiveNORTH)
+  {
+    totalNeigh++;
+  }
+
+  bool isActiveSOUTH = false;
+  isActiveSOUTH = ( siteHeight == getNeighPosition( Site::WEST_DOWN )->getHeight() && \
+                    siteHeight == getNeighPosition( Site::EAST_DOWN)->getHeight() &&  \
+                    siteHeight == getNeighPosition( Site::SOUTH)->getHeight() );
+  if (isActiveSOUTH)
+  {
+    totalNeigh++;
+  }
+}
+
+int Site::m_updateNeighbours(Site* s)
+{
+  // If called on a different site, simply call the respective site's m_updateNeighbours() function
+  s->m_updateNeighbours();
 }
 
 void Site::removeDuplicates()
