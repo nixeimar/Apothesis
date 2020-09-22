@@ -21,6 +21,7 @@
 #include <map>
 #include <list>
 #include <vector>
+#include<string>
 #include "species.h"
 
 #define EXIT { printf("Apothesis terminated. \n"); exit( EXIT_FAILURE ); }

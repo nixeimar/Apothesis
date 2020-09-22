@@ -60,7 +60,7 @@ m_debugMode(false)
     pRead = new Read(this);
 
     vector<string> pName = pRead->getSpeciesNames();
-cout<<"i am here"<<endl;
+
     // Read the input
     //pIO->readInputFile();
 
@@ -113,6 +113,23 @@ void Apothesis::init()
       m_species[names[i]] = s;
     }
   }
+
+  // Initializing reactions between species
+  pIO->writeLogOutput("Reading interactions between species");
+  Value& speciesName = doc["Species"];
+  for (Value::ConstMemberIterator itr = speciesName.MemberBegin(); itr != speciesName.MemberEnd(); ++itr)
+  {
+    const char* name = itr->name.GetString();
+    if (doc[name].HasMember("Interactions"))
+    {
+      cout<<"Has it"<<endl;
+    }
+    else
+    {
+      cout<<"doesn;t have it"<<endl;
+    }
+    
+  }  
 
   pIO->writeLogOutput("Initializing processes");
 
@@ -170,6 +187,8 @@ void Apothesis::init()
       m_vProcesses.push_back(a);
     }
 
+    // Resolving Conflicts
+    
     
     pIO->writeLogOutput("...Done initializing Adsorption process.");
   }
