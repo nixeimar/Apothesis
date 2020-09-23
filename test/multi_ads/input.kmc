@@ -11,7 +11,8 @@
   {
     "CuAMD":
     {
-      "mw": 145
+      "mw": 145,
+      "Interactions": ["CuAMD", "H2"]
     },
     "H2":
     {
