@@ -598,3 +598,8 @@ void Apothesis::exec()
   {
     pLattice = lattice;
   }
+
+  vector<Adsorption*> Apothesis::getAdsorptionPointers()
+  {
+    return m_vAdsorption;
+  }

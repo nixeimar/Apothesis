@@ -108,6 +108,12 @@ class Adsorption: public Process
     /// Add new interaction to m_interactions list
     void addInteraction(Species* s);
 
+    /// Get interaction list
+    vector<Species*> getInteractions();
+
+    /// Remove specific site from list
+    void mf_removeFromList(Site* s);
+
   protected:
     /// The kmc instance.
     Apothesis* m_apothesis;

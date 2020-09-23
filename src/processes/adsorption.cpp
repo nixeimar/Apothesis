@@ -122,6 +122,19 @@ void Adsorption::perform()
     getDiffusion()->mf_addToList(m_site);
   }
 
+  // Check to see which other species CANNOT adsorb when this is present, and remove site from their ads lists.
+  vector<Adsorption*> pAdsVectors = m_apothesis->getAdsorptionPointers();
+  vector<Adsorption*> :: iterator itr = pAdsVectors.begin();
+  for (itr; itr != pAdsVectors.end(); ++itr)
+  {
+    Adsorption* pAds = *itr;
+    vector<Species*> possibleInteractions = pAds->getInteractions();
+     if (std::find(possibleInteractions.begin(), possibleInteractions.end(), m_adsorptionSpecies) == possibleInteractions.end())
+     {
+       pAds->mf_removeFromList(m_site);
+     }
+  }
+
   /// Check if there are available sites that it can be performed
   if (m_lAdsSites.size() == 0)
   {
@@ -129,6 +142,11 @@ void Adsorption::perform()
     m_apothesis->pErrorHandler->error_simple_msg( "No "+ getName() + " site is available.");
     EXIT;
   }
+}
+
+void Adsorption::mf_removeFromList(Site* s)
+{
+  m_lAdsSites.remove(s);;
 }
 
 void Adsorption::mf_removeFromList() { m_lAdsSites.remove( m_site); m_site->removeProcess( this ); }
@@ -237,6 +255,11 @@ void Adsorption::addInteraction(Species* s)
   {
     m_interactions.push_back(s);
   }
+}
+
+vector<Species*> Adsorption::getInteractions()
+{
+  return m_interactions;
 }
 
 }
