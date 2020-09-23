@@ -123,6 +123,9 @@ private:
     // map of species
     map<string, Species*> m_species;
 
+    // map of interactions
+    vector<tuple<string, string>> m_interactions;
+
     // Set debug mode
     bool m_debugMode;
 };

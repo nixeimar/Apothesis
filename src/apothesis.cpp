@@ -114,7 +114,7 @@ void Apothesis::init()
     }
   }
 
-  // Initializing reactions between species
+  // Initializing interactions between species
   pIO->writeLogOutput("Reading interactions between species");
   Value& speciesName = doc["Species"];
   for (Value::ConstMemberIterator itr = speciesName.MemberBegin(); itr != speciesName.MemberEnd(); ++itr)
@@ -123,11 +123,16 @@ void Apothesis::init()
     Value& singleSpecies = speciesName[name];
     if (singleSpecies.HasMember("Interactions"))
     {
-      cout<<"Has it"<<endl;
-    }
-    else
-    {
-      cout<<"doesn;t have it"<<endl;
+      Value& interactions = singleSpecies["Interactions"];
+
+      //TODO better logging function
+      logSuccessfulRead(interactions.IsArray(), "Interactions");
+
+      int numInters = interactions.Size();
+      for (int i = 0; i < numInters; i++)
+      {
+        m_interactions.push_back(make_tuple(name, interactions[i].GetString()));
+      }
     }
     
   }  
