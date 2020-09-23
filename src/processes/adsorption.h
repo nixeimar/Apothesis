@@ -105,6 +105,9 @@ class Adsorption: public Process
     /// Set site
     void setSite(Site* s);
 
+    /// Add new interaction to m_interactions list
+    void addInteraction(Species* s);
+
   protected:
     /// The kmc instance.
     Apothesis* m_apothesis;
@@ -173,6 +176,8 @@ class Adsorption: public Process
 
     /// Pointer to associated diffusion class
     Diffusion* m_pDiffusion;
+
+    vector<Species*> m_interactions;
 
 
   };

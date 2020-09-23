@@ -385,7 +385,25 @@ void Apothesis::init()
     pIO->writeLogOutput("...Done initializing reaction."); 
   }
   
-  
+  // Initialize interactions between adsorption species and classes
+  vector<tuple<string, string>> :: iterator itr = m_interactions.begin();
+  // For each pair of interactions, add the possible interaction (2-way) within the appropriate pointers
+  for (itr; itr != m_interactions.end(); ++itr)
+  {
+    tuple<string, string> temp = *itr;
+    string spec1 = get<0>(temp);
+    string spec2 = get<0>(temp);
+
+    Species* s1 = m_species[spec1];
+    Species* s2 = m_species[spec2];
+
+    //TODO: Add error catch statements and more comments here
+    Adsorption* pAdsorption1 = findAdsorption(spec1);
+    pAdsorption1->addInteraction(s2);
+
+    Adsorption* pAdsorption2 = findAdsorption(spec2);
+    pAdsorption1->addInteraction(s1);    
+  }
 
   /// First the processes that participate in the simulation
 

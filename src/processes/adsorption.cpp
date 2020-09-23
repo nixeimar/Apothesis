@@ -39,7 +39,7 @@ m_adsorptionSpecies(species),
 m_stickingCoeffs(stickingCoeffs),
 m_massfraction(massFraction),
 m_canDesorb(false),
-m_canDiffuse(false)
+m_canDiffuse(false) //TODO: Do I need to initialize m_interactions?
 {
 ;  
 }
@@ -227,6 +227,16 @@ void Adsorption::setDiffusion(bool canDiffuse)
 void Adsorption::setSite(Site* s)
 {
   m_site = s;
+}
+
+void Adsorption::addInteraction(Species* s)
+{
+  // Add species to possible interaction list if it does not currently exist
+  vector<Species*>::iterator itr = std::find (m_interactions.begin(), m_interactions.end(), s);
+  if (itr == m_interactions.end())
+  {
+    m_interactions.push_back(s);
+  }
 }
 
 }
