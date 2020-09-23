@@ -120,7 +120,8 @@ void Apothesis::init()
   for (Value::ConstMemberIterator itr = speciesName.MemberBegin(); itr != speciesName.MemberEnd(); ++itr)
   {
     const char* name = itr->name.GetString();
-    if (doc[name].HasMember("Interactions"))
+    Value& singleSpecies = speciesName[name];
+    if (singleSpecies.HasMember("Interactions"))
     {
       cout<<"Has it"<<endl;
     }
