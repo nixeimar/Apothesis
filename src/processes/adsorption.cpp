@@ -254,6 +254,7 @@ void Adsorption::addInteraction(Species* s)
   if (itr == m_interactions.end())
   {
     m_interactions.push_back(s);
+    cout<<"interacting this: " << this->getSpeciesName() << " and that " << s->getName();
   }
 }
 

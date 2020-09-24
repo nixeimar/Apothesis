@@ -392,7 +392,7 @@ void Apothesis::init()
   {
     tuple<string, string> temp = *itr;
     string spec1 = get<0>(temp);
-    string spec2 = get<0>(temp);
+    string spec2 = get<1>(temp);
 
     Species* s1 = m_species[spec1];
     Species* s2 = m_species[spec2];
