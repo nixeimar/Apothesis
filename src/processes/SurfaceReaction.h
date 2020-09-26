@@ -34,7 +34,8 @@ class SurfaceReaction: public Process
 		/// Constructor
 		SurfaceReaction
 		(
-			vector<string> species,
+			Apothesis* apothesis,
+			vector<Species*> species,
 			vector<double> stoichiometry,
 			double energy,
 			double preExpFactor
@@ -109,12 +110,20 @@ class SurfaceReaction: public Process
 	    /// The number of neighs of this site
 	    int m_iNeighNum;
 
-	     /// Species that can diffuse
-	    vector<string> m_reactionSpecies;
+	    /// Reactants
+	    vector<Species*> m_reactants;
+
+		/// Products
+		vector<Species*> m_products;
 
 	    /// Stoichiometric coefficients of the reaction species.
 		/// Reactants are negative, products are positive.
 	    vector<double> m_stoichiometry;
+
+		/// Redundant but useful: reactant and product stoichiometry. All positive.
+		vector<double> m_stoichReactants;
+
+		vector<double> m_stoichProducts;
 
 	    /// Energy of the reaction
 	    double m_energy;

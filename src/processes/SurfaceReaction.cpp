@@ -25,7 +25,8 @@ namespace MicroProcesses{
 /// Constructor
 SurfaceReaction::SurfaceReaction
 (
-  vector<string> species,
+  Apothesis* apothesis,
+  vector<Species*> species,
 	vector<double> stoichiometry,
 	double energy,
 	double preExpFactor
@@ -33,13 +34,50 @@ SurfaceReaction::SurfaceReaction
 :
 m_sName("SurfaceReaction"),
 m_iNeighNum(0), 
-m_apothesis(0),
-m_reactionSpecies(species),
 m_stoichiometry(stoichiometry),
 m_energy(energy),
 m_preExpFactor(preExpFactor)
 {
-;  
+  // Variable to check if the input file is configured properly
+  bool readPositive = false;
+  if (m_stoichiometry[0] >= 0)
+  {
+    m_apothesis->pErrorHandler->error_simple_msg("First stoichiometric input is positive or 0.");
+  }
+
+  double previousValue = m_stoichiometry[0];
+  int counter = 0;
+  for (vector<double> :: iterator itr = m_stoichiometry.begin(); itr != m_stoichiometry.end(); ++itr)
+  {
+    // Check to make sure first digit is negative, and no negative numbers appear after a positive
+    double stoichiometry = *itr;
+    if (stoichiometry > 0)
+    {
+      readPositive = true;
+    }
+
+    if (stoichiometry < 0 && readPositive)
+    {
+      m_apothesis->pErrorHandler->error_simple_msg("Stoichiometric configuration in input file is incorrect.");
+    }
+    if (stoichiometry < 0)
+    {
+      m_stoichReactants.push_back(-1 * stoichiometry);
+      m_reactants.push_back(species[counter]);
+    }
+    else if (stoichiometry > 0)
+    {
+      m_stoichProducts.push_back(stoichiometry);
+      m_products.push_back(species[counter]);
+    }
+    else
+    {
+      m_apothesis->pErrorHandler->error_simple_msg("Warning, value of stoichiometric coefficient is 0");
+    }
+    counter++;
+    
+  }
+
 }
 
 SurfaceReaction::~SurfaceReaction(){;}
