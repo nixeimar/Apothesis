@@ -334,7 +334,7 @@ void Apothesis::init()
     logSuccessfulRead(vPreExp.IsNumber(), "Pre-exponential factor for the reaction");
     
     // Initialize vectors
-    vector<string> species;
+    vector<Species*> species;
     vector<double> stoichiometry;
     double energy;
     double preexp;
@@ -351,7 +351,8 @@ void Apothesis::init()
         pErrorHandler->error_simple_msg("Diffusion energy format is not a number");
       
       // Push values to corresponding vectors
-      species.push_back(vSpecie[i].GetString());
+      Species* s = getSpecies(vSpecie[i].GetString());
+      species.push_back(s);
       stoichiometry.push_back(vStoich[i].GetDouble());
 
       string name = vSpecie[i].GetString();
@@ -497,7 +498,7 @@ void Apothesis::exec()
   
   Species* Apothesis::getSpecies(string species)
   {
-    return m_species[species];
+    return m_species.at(species);
   }
 
   

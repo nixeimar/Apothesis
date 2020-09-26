@@ -64,11 +64,15 @@ m_preExpFactor(preExpFactor)
     {
       m_stoichReactants.push_back(-1 * stoichiometry);
       m_reactants.push_back(species[counter]);
+      // Add species, index to map
+      m_speciesIndex[species[counter]];
     }
     else if (stoichiometry > 0)
     {
       m_stoichProducts.push_back(stoichiometry);
       m_products.push_back(species[counter]);
+      // Add species, index to map
+      m_speciesIndex[species[counter]];
     }
     else
     {
@@ -114,54 +118,31 @@ void SurfaceReaction::selectSite()
 void SurfaceReaction::perform()
 { 
   // Perform surface reaction here
+  vector<Species*> :: iterator rItr = m_reactants.begin();
+  vector<Species*> :: iterator pItr = m_products.begin();
+  for (; rItr != m_reactants.end(); ++rItr)
+  {
+    // Call desorption, or simply remove?
+    m_site->removeSpecies(*rItr);
+  }
+  for (; pItr != m_products.end(); ++pItr)
+  {
+    // Add species to site. Need to do anything else?
+    m_site->addSpecies(*pItr);
+  }
 }
 
 void SurfaceReaction::mf_removeFromList() { m_lAdsSites.remove( m_site); m_site->removeProcess( this ); }
 
 void SurfaceReaction::mf_addToList(Site *s) { m_lAdsSites.push_back( s); }
 
-void SurfaceReaction::mf_updateNeighNum()
-{
-  bool isActiveEAST = false;
-  isActiveEAST = ( m_site->getHeight() == m_site->getNeighPosition( Site::EAST )->getHeight()  && \
-                   m_site->getHeight() == m_site->getNeighPosition( Site::EAST_DOWN)->getHeight() && \
-                   m_site->getHeight() == m_site->getNeighPosition( Site::EAST_UP)->getHeight() );
-
-  bool isActiveWEST = false;
-  isActiveWEST = ( m_site->getHeight() == m_site->getNeighPosition( Site::WEST )->getHeight() && \
-                   m_site->getHeight() == m_site->getNeighPosition( Site::WEST_DOWN)->getHeight() && \
-                   m_site->getHeight() == m_site->getNeighPosition( Site::WEST_UP)->getHeight() );
-
-  bool isActiveNORTH = false;
-  isActiveNORTH = ( m_site->getHeight() == m_site->getNeighPosition( Site::WEST_UP )->getHeight() && \
-                    m_site->getHeight() == m_site->getNeighPosition( Site::EAST_UP)->getHeight() && \
-                    m_site->getHeight() == m_site->getNeighPosition( Site::NORTH)->getHeight() );
-
-  bool isActiveSOUTH = false;
-  isActiveSOUTH = ( m_site->getHeight() == m_site->getNeighPosition( Site::WEST_DOWN )->getHeight() && \
-                    m_site->getHeight() == m_site->getNeighPosition( Site::EAST_DOWN)->getHeight() &&  \
-                    m_site->getHeight() == m_site->getNeighPosition( Site::SOUTH)->getHeight() );
-
-  // Store the activated sites
-  if ( isActiveEAST )
-    mf_addToList( m_site->getActivationSite( Site::ACTV_EAST ));
-
-  if ( isActiveWEST )
-    mf_addToList( m_site->getActivationSite( Site::ACTV_WEST ));
-
-  if ( isActiveNORTH )
-    mf_addToList( m_site->getActivationSite( Site::ACTV_NORTH ));
-
-  if ( isActiveSOUTH )
-    mf_addToList( m_site->getActivationSite( Site::ACTV_SOUTH ));
-}
 
 //this process is not complete.
 double SurfaceReaction::getProbability()
 {
   /* These are parameters values (I/O) */
   double dNavogadro = m_apothesis->pParameters->dAvogadroNum;
-  //double dPres = m_apothesis->pParameters->getPressure();
+  double dPres = m_apothesis->pParameters->getPressure();
   double dTemp = m_apothesis->pParameters->getTemperature();
   double dkBoltz = m_apothesis->pParameters->dkBoltz;
 
@@ -172,7 +153,7 @@ double SurfaceReaction::getProbability()
   double Em = 0;
   double n = 5;
 
-  double prob = 1;
+  double prob = 100000;
   return prob;
 }
 
@@ -181,15 +162,35 @@ list<Site* > SurfaceReaction::getActiveList()
   return m_lAdsSites;
 }
 
-void SurfaceReaction::setProcessMap(map< Process*, list<Site* >* >* procMap )
-  {
-  m_pProcessMap = procMap;
-  (*m_pProcessMap)[ this] = &m_lAdsSites;
-  }
-
 void SurfaceReaction::test()
 {
   cout << m_lAdsSites.size() << endl;
+}
+
+bool SurfaceReaction::canReact(Site* site)
+{
+  vector<Species*> species = site->getSpecies();
+  vector<Species*> :: iterator sItr = species.begin();
+  vector<int> counter(m_stoichiometry.size(), 0);
+  for (; sItr != species.end(); ++sItr)
+  {
+    //TODO: Find out what happens if this is out of bounds or doesnt exist
+    int mappedIndex = m_speciesIndex.at(*sItr);
+    counter.at(mappedIndex)++;
+  }
+
+  bool canReact = false;
+  int count = 0;
+
+  // Needs double checking! How to avoid re-computation at every itr?
+  for(vector<int> :: iterator itr = counter.begin(); itr != counter.end(); ++itr)
+  {
+    if (*itr < m_stoichReactants.at(m_speciesIndex[species[count]]))
+    {
+      return false;
+    }
+  }
+  return true;
 }
 
 }

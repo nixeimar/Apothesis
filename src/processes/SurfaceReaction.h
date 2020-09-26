@@ -68,12 +68,8 @@ class SurfaceReaction: public Process
     	/// Perform the process. This is what actually is called by the main KMC instance.
     	void perform();
 
-    	/// A process map which is used between the different processes.
-    	/// This need to be evaluated since it is not so handy.
-    	void setProcessMap( map< Process*, list<Site* >* >* );
-
-    	/// The list of active sites for diffusion.
-    	list<Site* > getActiveList();
+	 	/// The list of active sites for diffusion.
+    	list<Site*> getActiveList();
 
     	/// Here various tests should be putted in order to check for the validity of the process e.g.
     	/// the number of the particles in the active surface must be constant (mass is constant).
@@ -81,6 +77,9 @@ class SurfaceReaction: public Process
 
     	/// Returns true if the process can be performed in the site that callls it.
     	bool controltRules( Site* site );
+
+    	/// Compares the species on a site and checks to see if it can react
+    	bool canReact(Site* site);
 
 	protected:
 
@@ -95,11 +94,6 @@ class SurfaceReaction: public Process
 
 	    /// Add a site to a list
 	    void mf_addToList(Site* s);
-
-	    /// Update the neighbour sites of this site. This is performed here since depending on the process
-	    /// this changes. E.g. fotr adsortpion in a FCC lattice the first neighbors are different compared to the
-	    /// adsroption in a BCC lattice.
-	    void mf_updateNeighNum();
 
 	    /// The site that diffusion is performed
 	    Site* m_site;
@@ -141,6 +135,9 @@ class SurfaceReaction: public Process
 
 	    /** Pointer to the process map */
 	    map< Process*, list<Site*>* >* m_pProcessMap;
+
+		/// map between species and index
+		map<Species*, int> m_speciesIndex;
 };
 
 
