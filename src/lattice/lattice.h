@@ -94,6 +94,12 @@ class Lattice: public Pointers
 
     /// Returns random site
     Site* randomSite();
+    
+    //Set true if the lattice has steps
+    void setSteps(bool hasSteps = false);
+
+    /// Store the surface step info
+    void setStepInfo(int, int, int);
 
   protected:
     /// The size of the lattice in the x-dimension.
@@ -113,6 +119,17 @@ class Lattice: public Pointers
 
     /// The neighbours for the FCC lattice.
     virtual void mf_neigh() = 0;
+
+    /// True if the lattice has steps (comes from the input file if the Step keyword is found).
+    bool m_bHasSteps;
+
+    ///Build the steps id m_bHasSteps is true. 
+    void mf_buildSteps();
+
+    //The info for the step surface i.e. [1 20 10]
+    int m_iStepX;
+    int m_iStepY;
+    int m_iStepZ;
 
   };
 

@@ -15,8 +15,8 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#ifndef LATTICE_H
-#define LATTICE_H
+#ifndef BCC_H
+#define BCC_H
 
 #include <iostream>
 #include <stdlib.h>
@@ -24,28 +24,21 @@
 #include <list>
 #include <fstream>
 
-#include "pointers.h"
-#include "site.h"
-#include "errorhandler.h"
+#include "lattice.h"
 
 using namespace std; 
 using namespace SurfaceTiles;
 using namespace Utils;
 
-class Lattice: public Pointers
+class BCC: public Lattice
   {
   public:
-    /// The type of the lattice.
-       enum Type{ NONE,
-               BCC,
-               FCC
-               };
 
     /// Constructor
-    Lattice( Apothesis* apothesis );
+    BCC( Apothesis* apothesis );
 
     /// Distructor.
-    virtual ~Lattice();
+    virtual ~BCC();
 
     /// Sets the type of the lattice.
     void setType( string );
@@ -59,32 +52,14 @@ class Lattice: public Pointers
     /// Returns the size of the lattice.
     inline int getSize(){return  m_iSizeX*m_iSizeY;}
 
-    /// Returns the type of the lattice
-    Lattice::Type getType();
-
-    ///Returns the lattice
-    Site* getLattice();
-
     /// Returns a site with a specific id.
     Site* getSite( int id);
-
-    /// Returns all the sites of the lattice.
-    vector<Site*> getSites();
 
     /// Various checks if the lattice has been constucted correctly. Partially implemented.
     void check();
 
     /// Init the lattice.
     void init();
-
-    /// Set the type of the lattice.
-    void setType( Type type );
-
-    /// Set the X dimension of the lattice.
-    void setX( int x );
-
-    /// Set the Y dimension of the lattice.
-    void setY( int y );
 
     /// Build the lattice with an intitial height.
     void build();
@@ -95,47 +70,13 @@ class Lattice: public Pointers
     /// Returns random site
     Site* randomSite();
 
-    //Set true if the lattice has steps
-    void setSteps(bool hasSteps = false);
-
-    /// Store the surface step info
-    void setStepInfo(int, int, int);
-
   protected:
-    /// The size of the lattice in the x-dimension.
-    int m_iSizeX;
-
-    /// The size of the lattice in the y-dimension.
-    int m_iSizeY;
-
-    /// The minimum initialize size of the lattice.
-    int m_iHeight;
-
-    /// The type of the lattice: BCC, FCC etc.
-    Type m_Type;
-
-    /// The sites that consist the lattice.
-    vector<Site* > m_vSites;
-
+   
 	/// Build the neighbours for the BCC lattice.
-	void mf_bccNeigh();
-
-    /// Build the neighbours for the FCC lattice.
-    void mf_fccNeigh();
+	void mf_neigh();
 
     /// Build the neighbours of each site depending on the type of the.
     void mf_buildNeighbours();
-
-    /// True if the lattice has steps (comes from the input file if the Step keyword is found).
-    bool m_bHasSteps;
-
-    ///Build the steps id m_bHasSteps is true. 
-    void mf_buildSteps();
-
-    //The info for the step surface i.e. [1 20 10]
-    int m_iStepX;
-    int m_iStepY;
-    int m_iStepZ;
 
   };
 

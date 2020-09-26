@@ -162,7 +162,7 @@ int Site::m_updateNeighbours()
   int siteHeight = getHeight();
   int totalNeigh = 0;
 
-  
+
   // TODO (?) Only care about atoms at the same height -- NESW
   // Check NESW sites, see if the heights are the same. If same, add to list of neighbours. 
   bool isActiveEAST = false;

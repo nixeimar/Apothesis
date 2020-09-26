@@ -25,12 +25,14 @@ Lattice::Lattice(Apothesis* apothesis):Pointers(apothesis)
 
 
 void Lattice::setType( string sType)
-  {
+ {
   if ( sType == "FCC")
     m_Type = FCC;
+  else if (sType == "BCC")
+    m_Type = BCC;
   else
     m_Type = NONE;
-  }
+}
 
 void Lattice::setX( int x ) { m_iSizeX = x; }
 
