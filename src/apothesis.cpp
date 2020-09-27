@@ -390,7 +390,9 @@ void Apothesis::init()
       immobilized = pRxn["Immobilize"].GetBool();
     }
 
-    m_vProcesses.push_back(new SurfaceReaction(this, species, stoichiometry, energy, preexp, immobilized));
+    SurfaceReaction* s = new SurfaceReaction(this, species, stoichiometry, energy, preexp, immobilized);
+    m_vProcesses.push_back(s);
+    m_vSurfaceReaction.push_back(s);
     pIO->writeLogOutput("...Done initializing reaction."); 
   }
   
@@ -437,7 +439,6 @@ void Apothesis::exec()
   }
   else
   {
-    cout <<m_vProcesses[0]->getName()<< " process is being started..." << endl;
     pIO->writeLogOutput("Running " + to_string(iterations) + " iterations");
   }
   
@@ -454,7 +455,6 @@ void Apothesis::exec()
     /// Find probability of each process
     vector<double> probabilities = calculateProbabilities(m_vProcesses);
     
-
     /// Pick random number with 3 digits
     double random = (double) rand() / RAND_MAX; 
 
@@ -466,6 +466,7 @@ void Apothesis::exec()
   
     /// Perform process on that site
     p->perform();
+
 
     // The frequency that the various information are written in the file
     // must befined by the user. Fix it ...
@@ -506,7 +507,7 @@ void Apothesis::exec()
   
   Species* Apothesis::getSpecies(string species)
   {
-    return m_species.at(species);
+    return m_species[species];
   }
 
   
@@ -612,3 +613,9 @@ void Apothesis::exec()
   {
     return m_vAdsorption;
   }
+
+  vector<SurfaceReaction*> Apothesis::getReactionPointers()
+  {
+    return m_vSurfaceReaction;
+  }
+  

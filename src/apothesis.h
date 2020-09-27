@@ -32,7 +32,7 @@ using namespace std;
 
 namespace Utils{ class ErrorHandler; class Parameters;}
 namespace SurfaceTiles{ class Site; }
-namespace MicroProcesses { class Process; class Adsorption; class Desorption;}
+namespace MicroProcesses { class Process; class Adsorption; class Desorption; class Diffusion; class SurfaceReaction;}
 class Lattice;
 class IO;
 class Read;
@@ -102,6 +102,9 @@ public:
     /// Return access to adsorption
     vector<MicroProcesses::Adsorption*> getAdsorptionPointers();
 
+    /// Return access to adsorption
+    vector<MicroProcesses::SurfaceReaction*> getReactionPointers();
+
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
     // Not to handy. Re-think... I have found another way... Implement it
@@ -113,6 +116,8 @@ private:
     vector< MicroProcesses::Adsorption*> m_vAdsorption;
     
     vector< MicroProcesses::Desorption*> m_vDesorption;
+
+    vector< MicroProcesses::SurfaceReaction*> m_vSurfaceReaction;
 
     /// Vector holding the name of the processes (string)
     vector<string> m_processes;
