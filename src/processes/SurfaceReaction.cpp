@@ -27,7 +27,7 @@ SurfaceReaction::SurfaceReaction
 (
   Apothesis* apothesis,
   vector<Species*> species,
-	vector<double> stoichiometry,
+	vector<double> const& stoichiometry,
 	double energy,
 	double preExpFactor,
   bool immobilized
@@ -42,6 +42,14 @@ m_immobilized(immobilized)
 {
   // Variable to check if the input file is configured properly
   bool readPositive = false;
+
+/*
+  for (vector<double> :: const_iterator itr = stoichiometry.begin(); itr != stoichiometry.end(); ++ itr)
+  {
+    m_stoichiometry.push_back(*itr);
+  }
+*/
+
   if (m_stoichiometry[0] >= 0)
   {
     m_apothesis->pErrorHandler->error_simple_msg("First stoichiometric input is positive or 0.");
@@ -49,7 +57,7 @@ m_immobilized(immobilized)
 
   double previousValue = m_stoichiometry[0];
   int counter = 0;
-  for (vector<double> :: iterator itr = m_stoichiometry.begin(); itr != m_stoichiometry.end(); ++itr)
+  for (vector<double> :: const_iterator itr = m_stoichiometry.begin(); itr != m_stoichiometry.end(); ++itr)
   {
     // Check to make sure first digit is negative, and no negative numbers appear after a positive
     double stoichiometry = *itr;
@@ -80,8 +88,7 @@ m_immobilized(immobilized)
     {
       m_apothesis->pErrorHandler->error_simple_msg("Warning, value of stoichiometric coefficient is 0");
     }
-    counter++;
-    
+    counter++; 
   }
 
 }
@@ -131,6 +138,19 @@ void SurfaceReaction::perform()
   {
     // Add species to site. Need to do anything else?
     m_site->addSpecies(*pItr);
+    m_site->setHeight(m_site->getHeight()+2); //TODO generalize
+  }
+
+  m_activeSites--;
+  if (m_immobilized)
+  {
+    vector<Adsorption*> pAds = m_apothesis->getAdsorptionPointers();
+    for (vector<Adsorption*> :: iterator itr = pAds.begin(); itr != pAds.end(); ++itr)
+    {
+      // Allow adsorption once more
+      Adsorption* a = *itr;
+      a->mf_addToList(m_site);
+    }
   }
 }
 
@@ -142,18 +162,7 @@ void SurfaceReaction::mf_addToList(Site *s) { m_lAdsSites.push_back( s); }
 //this process is not complete.
 double SurfaceReaction::getProbability()
 {
-  /* These are parameters values (I/O) */
-  double dNavogadro = m_apothesis->pParameters->dAvogadroNum;
-  double dPres = m_apothesis->pParameters->getPressure();
-  double dTemp = m_apothesis->pParameters->getTemperature();
-  double dkBoltz = m_apothesis->pParameters->dkBoltz;
-
-  //these parameters are now given constant values for now.
-  //later they will be taken from the input file.
-  double v0 = 0.5;
-  double E = 27500*4.2/dNavogadro;
-  double Em = 0;
-  double n = 5;
+  //TODO fill in probability here  
 
   double prob = 100000;
   return prob;
@@ -171,9 +180,15 @@ void SurfaceReaction::test()
 
 bool SurfaceReaction::canReact(Site* site)
 {
+
+  cout<<"Size of stoich is: " << m_stoichiometry.size()<<endl;
   vector<Species*> species = site->getSpecies();
   vector<Species*> :: iterator sItr = species.begin();
-  vector<int> counter(m_stoichiometry.size(), 0);
+
+  cout<<"size: " << m_reactants.size()<<endl;
+  
+  vector<int> counter(m_reactants.size(), 0);
+
   for (; sItr != species.end(); ++sItr)
   {
     //TODO: Find out what happens if this is out of bounds or doesnt exist
@@ -192,6 +207,8 @@ bool SurfaceReaction::canReact(Site* site)
       return false;
     }
   }
+  m_activeSites++;
+  mf_addToList(site);
   return true;
 }
 

@@ -27,6 +27,7 @@
 #include "apothesis.h"
 #include "desorption.h"
 #include "diffusion.h"
+#include "SurfaceReaction.h"
 #include "site.h"
 
 using namespace std;
@@ -113,6 +114,9 @@ class Adsorption: public Process
 
     /// Remove specific site from list
     void mf_removeFromList(Site* s);
+    
+    /// Add a site to a list
+    void mf_addToList(Site* s);
 
   protected:
     /// The kmc instance.
@@ -123,9 +127,6 @@ class Adsorption: public Process
 
     /// Remove a site from a list
     void mf_removeFromList();
-
-    /// Add a site to a list
-    void mf_addToList(Site* s);
 
     /// Update the neighbour sites of this site. This is performed here since depending on the process
     /// this changes. E.g. fotr adsortpion in a FCC lattice the first neighbors are different compared to the

@@ -20,6 +20,7 @@
 
 #include "process.h"
 #include "apothesis.h"
+#include "adsorption.h"
 #include "site.h"
 
 using namespace std; 
@@ -36,7 +37,7 @@ class SurfaceReaction: public Process
 		(
 			Apothesis* apothesis,
 			vector<Species*> species,
-			vector<double> stoichiometry,
+			vector<double> const& stoichiometry,
 			double energy,
 			double preExpFactor,
 			bool immobilized
@@ -116,7 +117,7 @@ class SurfaceReaction: public Process
 
 	    /// Stoichiometric coefficients of the reaction species.
 		/// Reactants are negative, products are positive.
-	    vector<double> m_stoichiometry;
+	    const vector<double> m_stoichiometry;
 
 		/// Redundant but useful: reactant and product stoichiometry. All positive.
 		vector<double> m_stoichReactants;
@@ -145,6 +146,9 @@ class SurfaceReaction: public Process
 
 		/// can you further adsorb after required elements
 		bool m_immobilized;
+
+		/// Active sites
+		int m_activeSites;
 };
 
 

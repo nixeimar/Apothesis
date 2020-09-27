@@ -96,7 +96,7 @@ void Adsorption::perform()
     height = height + 2;
     m_site->setHeight(height);
   }
-  
+
   // Adsorb the species by adding the name to the site
   m_site->addSpecies(m_apothesis->getSpecies(m_adsorptionSpeciesName));
   // update the number of neighbours this site has
@@ -122,6 +122,15 @@ void Adsorption::perform()
     getDiffusion()->mf_addToList(m_site);
   }
 
+  // TODO: check surface reactions class to see if the site needs to be added
+  vector<SurfaceReaction*> :: iterator rItr = m_apothesis->getReactionPointers().begin();
+  for (; rItr != m_apothesis->getReactionPointers().end(); ++rItr)
+  {
+    
+    SurfaceReaction* pSR = *rItr;
+    pSR->canReact(m_site);
+  }
+
   // Check to see which other species CANNOT adsorb when this is present, and remove site from their ads lists.
   vector<Adsorption*> pAdsVectors = m_apothesis->getAdsorptionPointers();
   vector<Adsorption*> :: iterator itr = pAdsVectors.begin();
@@ -131,7 +140,8 @@ void Adsorption::perform()
     vector<Species*> possibleInteractions = pAds->getInteractions();
      if (std::find(possibleInteractions.begin(), possibleInteractions.end(), m_adsorptionSpecies) == possibleInteractions.end())
      {
-       pAds->mf_removeFromList(m_site);
+       cout<<"Removing site from " << pAds->getSpeciesName()<<endl;
+      // pAds->mf_removeFromList(m_site);
      }
   }
 
@@ -254,7 +264,6 @@ void Adsorption::addInteraction(Species* s)
   if (itr == m_interactions.end())
   {
     m_interactions.push_back(s);
-    cout<<"interacting this: " << this->getSpeciesName() << " and that " << s->getName();
   }
 }
 
