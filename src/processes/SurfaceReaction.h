@@ -38,7 +38,8 @@ class SurfaceReaction: public Process
 			vector<Species*> species,
 			vector<double> stoichiometry,
 			double energy,
-			double preExpFactor
+			double preExpFactor,
+			bool immobilized
 		);
 		
 		/// Destructor
@@ -80,6 +81,9 @@ class SurfaceReaction: public Process
 
     	/// Compares the species on a site and checks to see if it can react
     	bool canReact(Site* site);
+
+		/// To be deleted
+		void setProcessMap(map< Process*, list<Site* >* >* procMap );
 
 	protected:
 
@@ -138,6 +142,9 @@ class SurfaceReaction: public Process
 
 		/// map between species and index
 		map<Species*, int> m_speciesIndex;
+
+		/// can you further adsorb after required elements
+		bool m_immobilized;
 };
 
 

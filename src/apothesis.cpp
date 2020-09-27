@@ -322,6 +322,7 @@ void Apothesis::init()
     pIO->writeLogOutput("Initializing Reaction");
 
     // Read parameters for Reaction
+    Value& pRxn = doc["Process"]["Reaction"];
     Value& vSpecie = doc["Process"]["Reaction"]["Species"];
     Value& vStoich = doc["Process"]["Reaction"]["Stoichiometry"];
     Value& vEnergy = doc["Process"]["Reaction"]["Energy"];
@@ -382,7 +383,14 @@ void Apothesis::init()
       cout<<"Warning! Mass balance of Reaction is not balanced"<< endl;
     }
     
-    //m_vProcesses.push_back(new SurfaceReaction(species, stoichiometry, energy, preexp));
+    // Read immobilization variable
+    bool immobilized = true;
+    if (pRxn.HasMember("Immobilize"))
+    {
+      immobilized = pRxn["Immobilize"].GetBool();
+    }
+
+    m_vProcesses.push_back(new SurfaceReaction(this, species, stoichiometry, energy, preexp, immobilized));
     pIO->writeLogOutput("...Done initializing reaction."); 
   }
   

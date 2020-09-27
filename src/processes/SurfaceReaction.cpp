@@ -29,14 +29,16 @@ SurfaceReaction::SurfaceReaction
   vector<Species*> species,
 	vector<double> stoichiometry,
 	double energy,
-	double preExpFactor
+	double preExpFactor,
+  bool immobilized
 )
 :
 m_sName("SurfaceReaction"),
 m_iNeighNum(0), 
 m_stoichiometry(stoichiometry),
 m_energy(energy),
-m_preExpFactor(preExpFactor)
+m_preExpFactor(preExpFactor),
+m_immobilized(immobilized)
 {
   // Variable to check if the input file is configured properly
   bool readPositive = false;
@@ -191,6 +193,11 @@ bool SurfaceReaction::canReact(Site* site)
     }
   }
   return true;
+}
+
+void SurfaceReaction::setProcessMap(map< Process*, list<Site* >* >* procMap )
+{
+  
 }
 
 }
