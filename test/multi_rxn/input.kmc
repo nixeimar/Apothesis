@@ -41,7 +41,8 @@
        "Species": ["CuAMD", "H2", "Cu", "HAMD2"],
        "Stoichiometry": [-2, -1, 2, 1],
        "Energy": 66,
-       "PreExp": 1e-10
+       "PreExp": 1e-10,
+       "Immobilized": "true"
      }
   },
   "config":
