@@ -31,6 +31,7 @@
 #include "apothesis.h"
 #include "lattice.h"
 #include "FCC.h"
+#include "BCC.h"
 #include "species.h"
 
 #include "errorhandler.h"
