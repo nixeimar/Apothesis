@@ -23,196 +23,199 @@
 namespace SurfaceTiles
 {
 
-Site::Site():
-m_phantom(false)
-{;}
-
-Site::~Site(){;}
-
-vector<Site* > Site::getNeighs() 
-{ 
-  return m_vNeigh; 
-}
-
-void Site::setNeigh( Site* s)
-{
-  m_vNeigh.push_back( s);
-}
-
-void Site::setID(int id) 
-{ 
-  m_iID = id;
-}
-
-int Site::getID() 
-{ 
-  return m_iID;
-}
-
-void Site::setHeight(int h)
-{ 
-  m_iHeight = h;
-}
-
-int Site::getHeight() 
-{ 
-  return m_iHeight; 
-}
-
-
-// TODO: redundance in ability to set neighboursnum and getNeighboursNum
-int Site::getNeighboursNum()
-{
-  return m_vNeigh.size();
-}
-  
-void Site::setNeighPosition(Site* s, NeighPoisition np)
-{ 
-  m_mapNeigh[np] = s; 
-}
-
-Site* Site::getNeighPosition(NeighPoisition np)
-{ 
-  return m_mapNeigh[np];
-}
-
-void Site::storeActivationSite(Site* s, ActivationSite as)
-{
-  m_mapAct[as] = s;
-}
-
-Site* Site::getActivationSite(ActivationSite as)
-{ 
-  return m_mapAct[as];
-}
-
-void Site::addSpecies(Species* s)
-{
-  m_species.push_back(s);
-}
-
-void Site::removeSpecies(Species* s)
-{
-  // TODO: Is this better to do by species pointer or by string?. I think pointer is easier
-  // Search through species list until we've found the specific one to remove
-
-  // Store previous state to ensure that we remove the desired species
-  int numIter = 0;
-  int m_species_prevSize = m_species.size();
-
-  for (vector<Species*>::iterator itr = m_species.begin(); itr != m_species.end(); ++itr)
+  Site::Site() : m_phantom(false)
   {
-    if (*itr == s)
+    ;
+  }
+
+  Site::~Site() { ; }
+
+  vector<Site *> Site::getNeighs()
+  {
+    return m_vNeigh;
+  }
+
+  void Site::setNeigh(Site *s)
+  {
+    m_vNeigh.push_back(s);
+  }
+
+  void Site::setID(int id)
+  {
+    m_iID = id;
+  }
+
+  int Site::getID()
+  {
+    return m_iID;
+  }
+
+  void Site::setHeight(int h)
+  {
+    m_iHeight = h;
+  }
+
+  int Site::getHeight()
+  {
+    return m_iHeight;
+  }
+
+  void Site::setLatticeType(LatticeType type)
+  {
+    m_LatticeType = type;
+  }
+
+  // TODO: redundance in ability to set neighboursnum and getNeighboursNum
+  int Site::getNeighboursNum()
+  {
+    return m_vNeigh.size();
+  }
+
+  void Site::setNeighPosition(Site *s, NeighPoisition np)
+  {
+    m_mapNeigh[np] = s;
+  }
+
+  Site *Site::getNeighPosition(NeighPoisition np)
+  {
+    return m_mapNeigh[np];
+  }
+
+  void Site::storeActivationSite(Site *s, ActivationSite as)
+  {
+    m_mapAct[as] = s;
+  }
+
+  Site *Site::getActivationSite(ActivationSite as)
+  {
+    return m_mapAct[as];
+  }
+
+  void Site::addSpecies(Species *s)
+  {
+    m_species.push_back(s);
+  }
+
+  void Site::removeSpecies(Species *s)
+  {
+    // TODO: Is this better to do by species pointer or by string?. I think pointer is easier
+    // Search through species list until we've found the specific one to remove
+
+    // Store previous state to ensure that we remove the desired species
+    int numIter = 0;
+    int m_species_prevSize = m_species.size();
+
+    for (vector<Species *>::iterator itr = m_species.begin(); itr != m_species.end(); ++itr)
     {
+      if (*itr == s)
+      {
         m_species.erase(itr);
         break;
+      }
+      ++numIter;
     }
-    ++numIter;
+
+    // Output warning message if we didn't remove anything
+    if (numIter == m_species_prevSize)
+    {
+      cout << "Warning: did not find an instance of " << s->getName() << "in site " << getID() << endl;
+    }
   }
-  
-  // Output warning message if we didn't remove anything
-  if (numIter == m_species_prevSize)
+
+  vector<Species *> Site::getSpecies()
   {
-    cout<<"Warning: did not find an instance of " << s->getName() << "in site " << getID()<<endl;
+    return m_species;
   }
-}
 
-vector<Species*> Site::getSpecies()
-{
-  return m_species;
-}
-
-vector<string> Site::getSpeciesName()
-{
-  vector<string> names;
-  for (vector<Species*>::iterator itr = m_species.begin(); itr != m_species.end(); ++itr)
+  vector<string> Site::getSpeciesName()
   {
-    names.push_back((*itr)->getName());
+    vector<string> names;
+    for (vector<Species *>::iterator itr = m_species.begin(); itr != m_species.end(); ++itr)
+    {
+      names.push_back((*itr)->getName());
+    }
+    return names;
   }
-  return names;
-}
 
-void Site::addProcess(Process* process) 
-{ 
-  m_lProcs.push_back(process); 
-}
-
-void Site::removeProcess(Process* process) 
-{
-  m_lProcs.remove(process); 
-}
-
-list<Process*> Site::getProcesses()
-{
-  return m_lProcs;
-}
-
-void Site::setPhantom(bool phantom)
-{
-  m_phantom = phantom;
-}
-
-bool Site::isPhantom()
-{
-  return m_phantom;
-}
-
-int Site::m_updateNeighbours()
-{
-  int siteHeight = getHeight();
-  int totalNeigh = 0;
-
-
-  // TODO (?) Only care about atoms at the same height -- NESW
-  // Check NESW sites, see if the heights are the same. If same, add to list of neighbours. 
-  bool isActiveEAST = false;
-  isActiveEAST = ( siteHeight == getNeighPosition( Site::EAST )->getHeight()  && \
-                   siteHeight == getNeighPosition( Site::EAST_DOWN)->getHeight() && \
-                   siteHeight == getNeighPosition( Site::EAST_UP)->getHeight() );
-  if (isActiveEAST)
+  void Site::addProcess(Process *process)
   {
-    totalNeigh++;
+    m_lProcs.push_back(process);
   }
 
-  bool isActiveWEST = false;
-  isActiveWEST = ( siteHeight == getNeighPosition( Site::WEST )->getHeight() && \
-                   siteHeight == getNeighPosition( Site::WEST_DOWN)->getHeight() && \
-                   siteHeight == getNeighPosition( Site::WEST_UP)->getHeight() );
-  if (isActiveWEST)
+  void Site::removeProcess(Process *process)
   {
-    totalNeigh++;
+    m_lProcs.remove(process);
   }
 
-  bool isActiveNORTH = false;
-  isActiveNORTH = ( siteHeight == getNeighPosition( Site::WEST_UP )->getHeight() && \
-                    siteHeight == getNeighPosition( Site::EAST_UP)->getHeight() && \
-                    siteHeight == getNeighPosition( Site::NORTH)->getHeight() );
-  if (isActiveNORTH)
+  list<Process *> Site::getProcesses()
   {
-    totalNeigh++;
+    return m_lProcs;
   }
 
-  bool isActiveSOUTH = false;
-  isActiveSOUTH = ( siteHeight == getNeighPosition( Site::WEST_DOWN )->getHeight() && \
-                    siteHeight == getNeighPosition( Site::EAST_DOWN)->getHeight() &&  \
-                    siteHeight == getNeighPosition( Site::SOUTH)->getHeight() );
-  if (isActiveSOUTH)
+  void Site::setPhantom(bool phantom)
   {
-    totalNeigh++;
+    m_phantom = phantom;
   }
-}
 
-int Site::m_updateNeighbours(Site* s)
-{
-  // If called on a different site, simply call the respective site's m_updateNeighbours() function
-  s->m_updateNeighbours();
-}
+  bool Site::isPhantom()
+  {
+    return m_phantom;
+  }
 
-void Site::removeDuplicates()
-{
- //TODO
-}
-}
+  int Site::m_updateNeighbours()
+  {
+    int siteHeight = getHeight();
+    int totalNeigh = 0;
 
+    // TODO (?) Only care about atoms at the same height -- NESW
+    // Check NESW sites, see if the heights are the same. If same, add to list of neighbours.
+    bool isActiveEAST = false;
+    isActiveEAST = (siteHeight == getNeighPosition(Site::EAST)->getHeight() &&
+                    siteHeight == getNeighPosition(Site::EAST_DOWN)->getHeight() &&
+                    siteHeight == getNeighPosition(Site::EAST_UP)->getHeight());
+    if (isActiveEAST)
+    {
+      totalNeigh++;
+    }
+
+    bool isActiveWEST = false;
+    isActiveWEST = (siteHeight == getNeighPosition(Site::WEST)->getHeight() &&
+                    siteHeight == getNeighPosition(Site::WEST_DOWN)->getHeight() &&
+                    siteHeight == getNeighPosition(Site::WEST_UP)->getHeight());
+    if (isActiveWEST)
+    {
+      totalNeigh++;
+    }
+
+    bool isActiveNORTH = false;
+    isActiveNORTH = (siteHeight == getNeighPosition(Site::WEST_UP)->getHeight() &&
+                     siteHeight == getNeighPosition(Site::EAST_UP)->getHeight() &&
+                     siteHeight == getNeighPosition(Site::NORTH)->getHeight());
+    if (isActiveNORTH)
+    {
+      totalNeigh++;
+    }
+
+    bool isActiveSOUTH = false;
+    isActiveSOUTH = (siteHeight == getNeighPosition(Site::WEST_DOWN)->getHeight() &&
+                     siteHeight == getNeighPosition(Site::EAST_DOWN)->getHeight() &&
+                     siteHeight == getNeighPosition(Site::SOUTH)->getHeight());
+    if (isActiveSOUTH)
+    {
+      totalNeigh++;
+    }
+  }
+
+  int Site::m_updateNeighbours(Site *s)
+  {
+    // If called on a different site, simply call the respective site's m_updateNeighbours() function
+    s->m_updateNeighbours();
+  }
+
+  void Site::removeDuplicates()
+  {
+    //TODO
+  }
+} // namespace SurfaceTiles
 
 #endif

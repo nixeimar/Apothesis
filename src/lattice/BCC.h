@@ -26,58 +26,69 @@
 
 #include "lattice.h"
 
-using namespace std; 
+using namespace std;
 using namespace SurfaceTiles;
 using namespace Utils;
 
-class BCC: public Lattice
-  {
-  public:
+class BCC : public Lattice
+{
+public:
+  /// Constructor
+  BCC(Apothesis *apothesis);
 
-    /// Constructor
-    BCC( Apothesis* apothesis );
+  /// Constructor
+  BCC(Apothesis *apothesis, bool step, vector<int> stepInfo);
 
-    /// Distructor.
-    virtual ~BCC();
+  /// Distructor.
+  virtual ~BCC();
 
-    /// Sets the type of the lattice.
-    void setType( string );
+  void setSteps(bool hasSteps);
 
-    /// Returns the x dimension of the lattice.
-    inline int getX(){return m_iSizeX;}
+  void setStepInfo(int sizeX, int sizeY, int sizeZ);
 
-    /// Returns the y dimension of the lattice.
-    inline int getY(){return m_iSizeY;}
+  void mf_buildSteps();
 
-    /// Returns the size of the lattice.
-    inline int getSize(){return  m_iSizeX*m_iSizeY;}
+  /// Sets the type of the lattice.
+  void setType(string);
 
-    /// Returns a site with a specific id.
-    Site* getSite( int id);
+  /// Returns the x dimension of the lattice.
+  inline int getX() { return m_iSizeX; }
 
-    /// Various checks if the lattice has been constucted correctly. Partially implemented.
-    void check();
+  /// Returns the y dimension of the lattice.
+  inline int getY() { return m_iSizeY; }
 
-    /// Init the lattice.
-    void init();
+  /// Returns the size of the lattice.
+  inline int getSize() { return m_iSizeX * m_iSizeY; }
 
-    /// Build the lattice with an intitial height.
-    void build();
+  /// Returns a site with a specific id.
+  Site *getSite(int id);
 
-    /// Sets the minimun initial height for the lattice.
-    void setInitialHeight( int  height );
+  /// Various checks if the lattice has been constucted correctly. Partially implemented.
+  void check();
 
-    /// Returns random site
-    Site* randomSite();
+  /// Init the lattice.
+  void init();
 
-  protected:
-   
-	/// Build the neighbours for the BCC lattice.
-	void mf_neigh();
+  /// Build the lattice with an intitial height.
+  void build();
 
-    /// Build the neighbours of each site depending on the type of the.
-    void mf_buildNeighbours();
+  /// Sets the minimun initial height for the lattice.
+  void setInitialHeight(int height);
 
-  };
+  /// Returns random site
+  Site *randomSite();
+
+protected:
+  /// Build the neighbours for the BCC lattice.
+  void mf_neigh();
+
+  /// Build the neighbours of each site depending on the type of the.
+  void mf_buildNeighbours();
+
+private:
+  bool m_hasSteps = false;
+
+  vector<int> m_stepInfo;
+};
 
 #endif // LATTICE_H
