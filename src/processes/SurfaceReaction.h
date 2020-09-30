@@ -56,6 +56,9 @@ class SurfaceReaction: public Process
 
     	/// Returns the name of the process.
     	string getName();
+		
+		/// Returns copy of m_stoichiometry
+		const vector<double> getStoichiometry();
 
     	/// Set the instance of Apothesis.
     	/// This allows to have access to all other functionalities of the KMC class.

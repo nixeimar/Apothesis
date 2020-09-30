@@ -154,7 +154,6 @@ void SurfaceReaction::mf_addToList(Site *s) { m_lAdsSites.push_back( s); }
 double SurfaceReaction::getProbability()
 {
   //TODO fill in probability here  
-
   double prob = 100000;
   return prob;
 }
@@ -164,9 +163,14 @@ list<Site* > SurfaceReaction::getActiveList()
   return m_lAdsSites;
 }
 
+const vector<double> SurfaceReaction::getStoichiometry()
+{
+  return m_stoichiometry;
+}
+
 void SurfaceReaction::test()
 {
-  cout << m_lAdsSites.size() << endl;
+  cout << "size in test is " << m_stoichiometry.size()<<endl;
 }
 
 bool SurfaceReaction::canReact(Site* site)
