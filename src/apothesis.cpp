@@ -381,7 +381,7 @@ void Apothesis::init()
       immobilized = pRxn["Immobilize"].GetBool();
     }
 
-    SurfaceReaction *s = new SurfaceReaction(this, species, stoichiometry, energy, preexp, immobilized);
+    SurfaceReaction* s = new SurfaceReaction(this, species, stoichiometry, energy, preexp, immobilized);
     m_vProcesses.push_back(s);
     m_vSurfaceReaction.push_back(s);
     pIO->writeLogOutput("...Done initializing reaction.");
