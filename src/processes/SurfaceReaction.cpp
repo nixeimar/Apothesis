@@ -43,18 +43,10 @@ m_immobilized(immobilized)
   // Variable to check if the input file is configured properly
   bool readPositive = false;
 
-/*
-  for (vector<double> :: const_iterator itr = stoichiometry.begin(); itr != stoichiometry.end(); ++ itr)
-  {
-    m_stoichiometry.push_back(*itr);
-  }
-*/
-
   if (m_stoichiometry[0] >= 0)
   {
     m_apothesis->pErrorHandler->error_simple_msg("First stoichiometric input is positive or 0.");
   }
-
   double previousValue = m_stoichiometry[0];
   int counter = 0;
   for (vector<double> :: const_iterator itr = m_stoichiometry.begin(); itr != m_stoichiometry.end(); ++itr)
@@ -106,7 +98,6 @@ void SurfaceReaction::activeSites( Lattice* lattice){
 
   for ( int i = 0; i < m_pLattice->getSize(); i++)
     if ( vSites[ i ]->getID()%2 != 0 ) {
-      m_lAdsSites.push_back( vSites[ i ] );
       vSites[ i ]->addProcess( this );
     }
 }
