@@ -23,17 +23,16 @@ typedef rapidjson::FileReadStream FileReadStream;
 typedef rapidjson::Value Value;
 
 Read::Read(Apothesis *apothesis)
-:
-Pointers(apothesis),
-m_sLatticeType("NONE"),
-m_sProcess("process"),
-m_sLattice("lattice"),
-m_sTemperature("temperature"),
-m_sPressure("pressure"),
-m_sIterations("num_iterations"),
-m_sCommentLine("#"),
-m_input(readInputFile("input.kmc")),
-m_dimensions(3)
+    : Pointers(apothesis),
+      m_sLatticeType("NONE"),
+      m_sProcess("process"),
+      m_sLattice("lattice"),
+      m_sTemperature("temperature"),
+      m_sPressure("pressure"),
+      m_sIterations("num_iterations"),
+      m_sCommentLine("#"),
+      m_input(readInputFile("input.kmc")),
+      m_dimensions(3)
 {
   //Initialize the map for the lattice
   m_LatticeType["NONE"] = Lattice::NONE;
@@ -42,7 +41,6 @@ m_dimensions(3)
 
   string lattice_type = m_input["Lattice"]["Type"].GetString();
   std::cout << "lattice_type " << lattice_type << std::endl;
-  m_lattice->setType(lattice_type);
 
   Value &pLattice = m_input["Lattice"];
 
@@ -61,9 +59,10 @@ m_dimensions(3)
   {
   case Lattice::FCC:
   {
-    // TODO I think STEPS parameter needs to be incorporated along with the lattice 
+    // TODO I think STEPS parameter needs to be incorporated along with the lattice
     FCC *lattice = new FCC(apothesis);
     apothesis->pLattice = lattice;
+    m_lattice->setType("FCC");
     break;
   }
   case Lattice::BCC:
@@ -78,8 +77,8 @@ m_dimensions(3)
       BCC *lattice = new BCC(apothesis);
       apothesis->pLattice = lattice;
     }
-    
-    
+    m_lattice->setType("BCC");
+
     break;
   }
   //case Lattice::FCC: apothesis->pLattice = new BCC(apothesis);
