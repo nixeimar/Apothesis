@@ -33,7 +33,7 @@ using namespace std;
 using namespace SurfaceTiles;
 
 /** The pure virtual class from which every other process is generated.*/
-
+//TODO: how to access pIO from children of this class?
 namespace MicroProcesses{
 
 class Process

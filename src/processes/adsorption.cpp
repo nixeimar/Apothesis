@@ -123,26 +123,36 @@ namespace MicroProcesses
     }
 
     // TODO: check surface reactions class to see if the site needs to be added
-    for (int i = 0; i < m_apothesis->getReactionPointers().size(); ++i)
-    {
-      SurfaceReaction *pSR = m_apothesis->getReactionPointers()[i];
-      pSR->canReact(m_site);
-    }
+  //  for (int i = 0; i < m_apothesis->getReactionPointers().size(); ++i)
+  //  {
+  //    SurfaceReaction *pSR = m_apothesis->getReactionPointers()[i];
+  //    pSR->canReact(m_site);
+  //  }
 
     // Check to see which other species CANNOT adsorb when this is present, and remove site from their ads lists.
     vector<Adsorption *> pAdsVectors = m_apothesis->getAdsorptionPointers();
     vector<Adsorption *>::iterator itr = pAdsVectors.begin();
+
+    // For each of the possible adsorbed molecules, check to see if current molecule needs to be removed from its site
     for (itr; itr != pAdsVectors.end(); ++itr)
     {
       Adsorption *pAds = *itr;
       vector<Species *> possibleInteractions = pAds->getInteractions();
-      if (std::find(possibleInteractions.begin(), possibleInteractions.end(), m_adsorptionSpecies) == possibleInteractions.end())
+      bool found = false;
+      //TODO: this is clunky: check why we can't compare by pointer reference
+      for (int i = 0; i < possibleInteractions.size(); ++i)
       {
-        cout << "Removing site from " << pAds->getSpeciesName() << endl;
-        // pAds->mf_removeFromList(m_site);
+        if ((possibleInteractions[i]->getName().compare(m_adsorptionSpeciesName)) == 0)
+        {
+          found = true;
+          break;
+        }
       }
+      if (found == false)
+      {
+        pAds->mf_removeFromList(m_site);
+      } 
     }
-
     /// Check if there are available sites that it can be performed
     if (m_lAdsSites.size() == 0)
     {
@@ -210,7 +220,10 @@ namespace MicroProcesses
     if (m_lAdsSites.size() != 0)
       return m_lAdsSites.size() * dflux;
     else
+    {
+      cout<<"Size is 0" << endl;
       return 0.0;
+    }
   }
 
   Desorption *Adsorption::getDesorption()
@@ -261,7 +274,6 @@ namespace MicroProcesses
 
   void Adsorption::addInteraction(Species *s)
   {
-    // Add species to possible interaction list if it does not currently exist
     vector<Species *>::iterator itr = std::find(m_interactions.begin(), m_interactions.end(), s);
     if (itr == m_interactions.end())
     {

@@ -381,7 +381,7 @@ void Apothesis::init()
       immobilized = pRxn["Immobilize"].GetBool();
     }
 
-    SurfaceReaction* s = new SurfaceReaction(this, species, stoichiometry, energy, preexp, immobilized);
+    SurfaceReaction *s = new SurfaceReaction(this, species, stoichiometry, energy, preexp, immobilized);
     m_vProcesses.push_back(s);
     m_vSurfaceReaction.push_back(s);
     pIO->writeLogOutput("...Done initializing reaction.");
@@ -404,9 +404,21 @@ void Apothesis::init()
     pAdsorption1->addInteraction(s2);
 
     Adsorption *pAdsorption2 = findAdsorption(spec2);
-    pAdsorption1->addInteraction(s1);
+    pAdsorption2->addInteraction(s1);
   }
-
+  vector<Adsorption*> adsorptionpointers = getAdsorptionPointers();
+  for (vector<Adsorption *>::iterator iter = adsorptionpointers.begin(); iter != adsorptionpointers.end(); ++iter)
+  {
+    Adsorption *pAds = *iter;
+    vector<Species *> possibleInteractions = pAds->getInteractions();
+    bool found = false;
+    for (int i = 0; i < possibleInteractions.size(); ++i)
+    {
+      cout<< possibleInteractions[i]->getName() << ", ";
+    }
+  }
+  cout<<endl;
+  cout<<endl;
   /// First the processes that participate in the simulation
 
   /// that were read from the file input and the I/O functionality
@@ -443,7 +455,6 @@ void Apothesis::exec()
     vector<Process *> processes = m_vProcesses;
     /// Find probability of each process
     vector<double> probabilities = calculateProbabilities(m_vProcesses);
-
     /// Pick random number with 3 digits
     double random = (double)rand() / RAND_MAX;
 
@@ -466,6 +477,7 @@ void Apothesis::exec()
     {
       cout << m_vProcesses[0]->getName() << " process is being performed..." << endl;
     }
+    // TODO: check if all processes are 0
   }
 }
 
