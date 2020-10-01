@@ -148,7 +148,6 @@ namespace MicroProcesses
     {
       cout << "No more " << getName() << " site is available. Exiting..." << endl;
       m_apothesis->pErrorHandler->error_simple_msg("No " + getName() + " site is available.");
-      EXIT;
     }
   }
 
