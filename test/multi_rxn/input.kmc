@@ -4,7 +4,7 @@
     "Type": "FCC",
     "dims": [4, 4, 10]
   },
-  "Iterations": 100,
+  "Iterations": 15,
   "Temperature": 400,
   "Pressure": 101325,
   "Species":
@@ -12,12 +12,12 @@
     "CuAMD":
     {
       "mw": 145,
-      "Interactions": ["H2"]
-
+      "Interactions": ["CuAMD", "H2"]
     },
     "H2":
     {
-      "mw": 2
+      "mw": 2,
+      "Interactions": []
     },
     "Cu":
     {
@@ -34,7 +34,7 @@
     {
       "Species": ["CuAMD", "H2"],
       "Sticking": [0.5, 0.5],
-      "MassFraction": [0.5, 0.5]
+      "MassFraction": [0.67, 0.33]
     },
     "Reaction":
      {

@@ -2,7 +2,7 @@
   "Lattice":
   {
     "Type": "FCC",
-    "dims": [10, 10, 10]
+    "dims": [4, 4, 4]
   },
   "Iterations": 100,
   "Temperature": 400,
