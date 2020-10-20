@@ -21,7 +21,8 @@
 #include <map>
 #include <list>
 #include <vector>
-#include<string>
+#include <string>
+#include <functional>
 #include "species.h"
 
 #define EXIT { printf("Apothesis terminated. \n"); exit( EXIT_FAILURE ); }
@@ -118,6 +119,8 @@ private:
     vector< MicroProcesses::Desorption*> m_vDesorption;
 
     vector< MicroProcesses::SurfaceReaction*> m_vSurfaceReaction;
+
+    vector <reference_wrapper<MicroProcesses::SurfaceReaction>> m_refSurfaceReaction;
 
     /// Vector holding the name of the processes (string)
     vector<string> m_processes;

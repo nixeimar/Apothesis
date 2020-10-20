@@ -123,11 +123,11 @@ namespace MicroProcesses
     }
 
     // TODO: check surface reactions class to see if the site needs to be added
-  //  for (int i = 0; i < m_apothesis->getReactionPointers().size(); ++i)
-  //  {
-  //    SurfaceReaction *pSR = m_apothesis->getReactionPointers()[i];
-  //    pSR->canReact(m_site);
-  //  }
+    for (int i = 0; i < m_apothesis->getReactionPointers().size(); ++i)
+    {
+      SurfaceReaction *pSR = m_apothesis->getReactionPointers()[i];
+      pSR->canReact(m_site);
+    }
 
     // Check to see which other species CANNOT adsorb when this is present, and remove site from their ads lists.
     vector<Adsorption *> pAdsVectors = m_apothesis->getAdsorptionPointers();

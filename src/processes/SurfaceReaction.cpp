@@ -67,14 +67,14 @@ m_immobilized(immobilized)
       m_stoichReactants.push_back(-1 * stoichiometry);
       m_reactants.push_back(species[counter]);
       // Add species, index to map
-      m_speciesIndex[species[counter]];
+      m_speciesIndex[species[counter]->getName()];
     }
     else if (stoichiometry > 0)
     {
       m_stoichProducts.push_back(stoichiometry);
       m_products.push_back(species[counter]);
       // Add species, index to map
-      m_speciesIndex[species[counter]];
+      m_speciesIndex[species[counter]->getName()];
     }
     else
     {
@@ -176,18 +176,15 @@ void SurfaceReaction::test()
 bool SurfaceReaction::canReact(Site* site)
 {
 
-  cout<<"Size of stoich is: " << m_stoichiometry.size()<<endl;
   vector<Species*> species = site->getSpecies();
   vector<Species*> :: iterator sItr = species.begin();
 
-  cout<<"size: " << m_reactants.size()<<endl;
-  
   vector<int> counter(m_reactants.size(), 0);
 
   for (; sItr != species.end(); ++sItr)
   {
     //TODO: Find out what happens if this is out of bounds or doesnt exist
-    int mappedIndex = m_speciesIndex.at(*sItr);
+    int mappedIndex = m_speciesIndex.at((*sItr)->getName());
     counter.at(mappedIndex)++;
   }
 
@@ -197,13 +194,14 @@ bool SurfaceReaction::canReact(Site* site)
   // Needs double checking! How to avoid re-computation at every itr?
   for(vector<int> :: iterator itr = counter.begin(); itr != counter.end(); ++itr)
   {
-    if (*itr < m_stoichReactants.at(m_speciesIndex[species[count]]))
+    if (*itr < m_stoichReactants.at(m_speciesIndex[species[count]->getName()]))
     {
       return false;
     }
   }
   m_activeSites++;
   mf_addToList(site);
+  cout<<"can react!"<<endl;
   return true;
 }
 

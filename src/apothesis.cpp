@@ -345,7 +345,6 @@ void Apothesis::init()
 
       // Push values to corresponding vectors
       Species *s = getSpecies(vSpecie[i].GetString());
-      species.push_back(s);
       stoichiometry.push_back(vStoich[i].GetDouble());
 
       string name = vSpecie[i].GetString();
@@ -354,7 +353,14 @@ void Apothesis::init()
       {
         Species *s = new Species(name, mws[i], vStoich[i].GetDouble());
         m_species[name] = s;
+        species.push_back(s);
       }
+      else
+      {
+        species.push_back(m_species[name]);
+      }
+      
+
     }
 
     // Store value for energy and pre-exponential factor
@@ -363,6 +369,7 @@ void Apothesis::init()
 
     // Check mass balance on reaction
     double cumulativemass = 0;
+    // TODO: check: iterate through m_species?
     for (map<string, Species *>::iterator itr = m_species.begin(); itr != m_species.end(); ++itr)
     {
       Species *s = itr->second;
@@ -386,6 +393,7 @@ void Apothesis::init()
     m_vSurfaceReaction.push_back(s);
     pIO->writeLogOutput("...Done initializing reaction.");
   }
+  
 
   // Initialize interactions between adsorption species and classes
   vector<tuple<string, string>>::iterator itr = m_interactions.begin();
