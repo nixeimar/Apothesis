@@ -31,13 +31,15 @@ public:
     (
         string name,
         double mw,
-        double stoicCoeff
+        double stoicCoeff,
+        int id
     );
 
     Species
     (
         string name,
-        double mw
+        double mw,
+        int id
     );
     
     virtual ~Species();
@@ -47,6 +49,8 @@ public:
     double getMW();
 
     double getStoicCoeff();
+
+    const int getId();
 
 protected:
 
@@ -58,6 +62,9 @@ protected:
 
     // Stoichiometric coefficient
     double m_stoicCoeff;
+
+    // Species id
+    int m_id;
 };
 
 #endif // SPECIES_H

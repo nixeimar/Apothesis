@@ -139,6 +139,9 @@ private:
 
     // Set debug mode
     bool m_debugMode;
+
+    /// number of species
+    int m_nSpecies;
 };
 
 #endif // KMC_H

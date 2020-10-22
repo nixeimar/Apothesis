@@ -21,12 +21,14 @@ Species::Species
 (
     string name,
     double mw,
-    double stoicCoeff
+    double stoicCoeff,
+    int id
 )
 :
 m_name(name),
 m_mw(mw),
-m_stoicCoeff(stoicCoeff)
+m_stoicCoeff(stoicCoeff),
+m_id(id)
 {  
     ;
 }
@@ -34,11 +36,13 @@ m_stoicCoeff(stoicCoeff)
 Species::Species
 (
     string name,
-    double mw
+    double mw,
+    int id
 )
 :
 m_name(name),
-m_mw(mw)
+m_mw(mw),
+m_id(id)
 {  
     ;
 }
@@ -62,4 +66,9 @@ double Species::getMW()
 double Species::getStoicCoeff()
 {
     return m_stoicCoeff;
+}
+
+const int Species::getId()
+{
+    return m_id;
 }

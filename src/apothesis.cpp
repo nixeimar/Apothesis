@@ -64,6 +64,9 @@ Apothesis::Apothesis(int argc, char *argv[])
   std::cout << "Building the lattice" << std::endl;
   pLattice->build();
   std::cout << "Finished building the lattice" << std::endl;
+
+  // initialize number of species
+  m_nSpecies = 0;
 }
 
 Apothesis::~Apothesis()
@@ -105,7 +108,8 @@ void Apothesis::init()
 
     for (int i = 0; i < mws.size(); ++i)
     {
-      Species *s = new Species(names[i], mws[i]);
+      Species *s = new Species(names[i], mws[i], m_nSpecies);
+      m_nSpecies++;
       m_species[names[i]] = s;
     }
   }
@@ -351,7 +355,8 @@ void Apothesis::init()
       // If the species is not already defined, push new member onto maps
       if (m_species[name] == NULL)
       {
-        Species *s = new Species(name, mws[i], vStoich[i].GetDouble());
+        Species *s = new Species(name, mws[i], vStoich[i].GetDouble(), m_nSpecies);
+        m_nSpecies++;
         m_species[name] = s;
         species.push_back(s);
       }
@@ -435,6 +440,12 @@ void Apothesis::init()
   {
     Process *p = *itr;
     p->activeSites(pLattice);
+  }
+
+  // Initialize species list in sites
+  for (vector<Site*>::iterator itr = pLattice->getSites().begin(); itr != pLattice->getSites().end(); ++itr)
+  {
+    (*itr)->initMap(m_nSpecies);
   }
 }
 

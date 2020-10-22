@@ -66,15 +66,11 @@ m_immobilized(immobilized)
     {
       m_stoichReactants.push_back(-1 * stoichiometry);
       m_reactants.push_back(species[counter]);
-      // Add species, index to map
-      m_speciesIndex[species[counter]->getName()];
     }
     else if (stoichiometry > 0)
     {
       m_stoichProducts.push_back(stoichiometry);
       m_products.push_back(species[counter]);
-      // Add species, index to map
-      m_speciesIndex[species[counter]->getName()];
     }
     else
     {
@@ -179,22 +175,14 @@ bool SurfaceReaction::canReact(Site* site)
   vector<Species*> species = site->getSpecies();
   vector<Species*> :: iterator sItr = species.begin();
 
-  vector<int> counter(m_reactants.size(), 0);
-
-  for (; sItr != species.end(); ++sItr)
-  {
-    //TODO: Find out what happens if this is out of bounds or doesnt exist
-    int mappedIndex = m_speciesIndex.at((*sItr)->getName());
-    counter.at(mappedIndex)++;
-  }
-
+  map<int, int> map_species = site->getSpeciesMap();
+  
   bool canReact = false;
-  int count = 0;
 
   // Needs double checking! How to avoid re-computation at every itr?
-  for(vector<int> :: iterator itr = counter.begin(); itr != counter.end(); ++itr)
+  for(int i = 0; i < m_reactants.size(); ++i)
   {
-    if (*itr < m_stoichReactants.at(m_speciesIndex[species[count]->getName()]))
+    if (map_species.at(m_reactants[i]->getId()) < m_stoichReactants[i])
     {
       return false;
     }

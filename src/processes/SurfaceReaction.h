@@ -144,9 +144,6 @@ class SurfaceReaction: public Process
 	    /** Pointer to the process map */
 	    map< Process*, list<Site*>* >* m_pProcessMap;
 
-		/// map between species and index
-		map<string, int> m_speciesIndex;
-
 		/// can you further adsorb after required elements
 		bool m_immobilized;
 
