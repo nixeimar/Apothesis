@@ -142,9 +142,6 @@ public:
     /// Return boolean of current state of site
     bool isPhantom();
 
-    /// Initialize the map. Only called once
-    void initMap(int numSpecies);
-
     /// Return pointer to map
     map<int, int> getSpeciesMap();
 

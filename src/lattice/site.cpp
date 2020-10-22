@@ -175,14 +175,6 @@ namespace SurfaceTiles
     return m_phantom;
   }
 
-  void Site::initMap(int numSpecies)
-  {
-    for (int i = 0; i < numSpecies; ++i)
-    {
-      m_mapSpecies.insert(make_pair(i, 0)); 
-    }
-  }
-
   map<int, int> Site::getSpeciesMap()
   {
     return m_mapSpecies;

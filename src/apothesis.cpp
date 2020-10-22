@@ -442,11 +442,6 @@ void Apothesis::init()
     p->activeSites(pLattice);
   }
 
-  // Initialize species list in sites
-  for (vector<Site*>::iterator itr = pLattice->getSites().begin(); itr != pLattice->getSites().end(); ++itr)
-  {
-    (*itr)->initMap(m_nSpecies);
-  }
 }
 
 void Apothesis::exec()

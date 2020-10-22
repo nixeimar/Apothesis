@@ -118,27 +118,37 @@ void SurfaceReaction::perform()
   vector<Species*> :: iterator pItr = m_products.begin();
   for (; rItr != m_reactants.end(); ++rItr)
   {
-    // Call desorption, or simply remove?
-    m_site->removeSpecies(*rItr);
+    for (int i = 0; i < (*rItr)->getStoicCoeff()*-1; ++i)
+    {
+      // TODO Call desorption, or simply remove?
+      m_site->removeSpecies(*rItr);
+    }
   }
   for (; pItr != m_products.end(); ++pItr)
   {
-    // Add species to site. Need to do anything else?
-    m_site->addSpecies(*pItr);
+    for (int i = 0; i < (*pItr)->getStoicCoeff(); ++i)
+    {
+      // Add species to site. Need to do anything else?
+      m_site->addSpecies(*pItr);
+    }
     m_site->setHeight(m_site->getHeight()+2); //TODO generalize
   }
 
-  m_activeSites--;
-  if (m_immobilized)
+  if (!canReact(m_site))
   {
-    vector<Adsorption*> pAds = m_apothesis->getAdsorptionPointers();
-    for (vector<Adsorption*> :: iterator itr = pAds.begin(); itr != pAds.end(); ++itr)
-    {
-      // Allow adsorption once more
-      Adsorption* a = *itr;
-      a->mf_addToList(m_site);
-    }
+    m_activeSites--;
   }
+  //TODO 
+  //if (m_immobilized)
+  //{
+  //  vector<Adsorption*> pAds = m_apothesis->getAdsorptionPointers();
+  //  for (vector<Adsorption*> :: iterator itr = pAds.begin(); itr != pAds.end(); ++itr)
+  //  {
+  //    // Allow adsorption once more
+  //    Adsorption* a = *itr;
+  //    a->mf_addToList(m_site);
+  //  }
+  //}
 }
 
 void SurfaceReaction::mf_removeFromList() { m_lAdsSites.remove( m_site); m_site->removeProcess( this ); }
@@ -149,8 +159,13 @@ void SurfaceReaction::mf_addToList(Site *s) { m_lAdsSites.push_back( s); }
 //this process is not complete.
 double SurfaceReaction::getProbability()
 {
+  if (m_lAdsSites.size() < 1)
+  {
+    return 0;
+  }
+
   //TODO fill in probability here  
-  double prob = 100000;
+  double prob = 1000000000;
   return prob;
 }
 
