@@ -63,7 +63,7 @@ class Lattice: public Pointers
     Lattice::Type getType();
 
     ///Returns the lattice
-    Site* getLattice();
+    Lattice* getLattice();
 
     /// Returns a site with a specific id.
     Site* getSite( int id);

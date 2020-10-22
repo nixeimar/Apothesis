@@ -23,9 +23,14 @@
 namespace SurfaceTiles
 {
 
-  Site::Site() : m_phantom(false)
+  Site::Site() : 
+  m_phantom(false)
   {
-    ;
+    //TODO remove
+    m_mapSpecies[0] = 0;
+    m_mapSpecies[1] = 0;
+    m_mapSpecies[2] = 0;
+    m_mapSpecies[3] = 0;
   }
 
   Site::~Site() { ; }
@@ -94,6 +99,7 @@ namespace SurfaceTiles
   void Site::addSpecies(Species *s)
   {
     m_species.push_back(s);
+    m_mapSpecies[s->getId()]++;
   }
 
   void Site::removeSpecies(Species *s)
@@ -160,6 +166,19 @@ namespace SurfaceTiles
   bool Site::isPhantom()
   {
     return m_phantom;
+  }
+
+  void Site::initMap(int numSpecies)
+  {
+    for (int i = 0; i < numSpecies; ++i)
+    {
+      m_mapSpecies.insert(make_pair(i, 0)); 
+    }
+  }
+
+  map<int, int> Site::getSpeciesMap()
+  {
+    return m_mapSpecies;
   }
 
   int Site::m_updateNeighbours()

@@ -142,6 +142,12 @@ public:
     /// Return boolean of current state of site
     bool isPhantom();
 
+    /// Initialize the map. Only called once
+    void initMap(int numSpecies);
+
+    /// Return pointer to map
+    map<int, int> getSpeciesMap();
+
 protected:
     //The lattice type that this site belongs to
     LatticeType m_LatticeType;
@@ -180,6 +186,9 @@ protected:
 
     /// A list of active sites for each process
     map< Process*, vector<Site*>> activeSites;
+
+    /// A map counting the species that are present
+    map<int, int> m_mapSpecies;
 
     /// To check if a site is occupied or not.
     bool m_bIsOccupied;
