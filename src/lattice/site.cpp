@@ -110,19 +110,26 @@ namespace SurfaceTiles
     // Store previous state to ensure that we remove the desired species
     int numIter = 0;
     int m_species_prevSize = m_species.size();
-
-    for (vector<Species *>::iterator itr = m_species.begin(); itr != m_species.end(); ++itr)
+    
+    int numOfSpecies = m_mapSpecies[s->getId()];
+    
+    if (numOfSpecies > 0)
     {
-      if (*itr == s)
+      for (vector<Species *>::iterator itr = m_species.begin(); itr != m_species.end(); ++itr)
       {
-        m_species.erase(itr);
-        break;
+        if (*itr == s)
+        {
+          m_species.erase(itr);
+          break;
+        }
+        ++numIter;
       }
-      ++numIter;
+      // Decrement number of said species
+      m_mapSpecies[s->getId()]--;
     }
 
     // Output warning message if we didn't remove anything
-    if (numIter == m_species_prevSize)
+    if (numOfSpecies < 1)
     {
       cout << "Warning: did not find an instance of " << s->getName() << "in site " << getID() << endl;
     }

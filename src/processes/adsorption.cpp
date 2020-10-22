@@ -122,7 +122,6 @@ namespace MicroProcesses
       getDiffusion()->mf_addToList(m_site);
     }
 
-    // TODO: check surface reactions class to see if the site needs to be added
     for (int i = 0; i < m_apothesis->getReactionPointers().size(); ++i)
     {
       SurfaceReaction *pSR = m_apothesis->getReactionPointers()[i];
