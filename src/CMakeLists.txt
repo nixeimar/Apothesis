@@ -43,6 +43,7 @@ set(process_files
     processes/io.cpp
     processes/desorption.cpp
     processes/SurfaceReaction.cpp
+    processes/process.cpp
 )
 set(error_files
     error/errorhandler.cpp 
