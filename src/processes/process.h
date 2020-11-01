@@ -74,6 +74,13 @@ class Process
 
     /// Set the instance of kmc that this process will be performed.
     virtual void setInstance( Apothesis* apothesis ) = 0;
+
+    int getSite();
+
+    protected:
+    
+    /// The site that desorption is performed
+    Site* m_site;
   };
 
 }

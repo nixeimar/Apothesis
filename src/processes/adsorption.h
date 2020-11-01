@@ -135,9 +135,6 @@ class Adsorption: public Process
 
     const double getMassFraction();
 
-    /// The site that adsorption is performed
-    Site* m_site;
-
     /// The value of the probability of the process is stored here
     double m_dProbability;
 

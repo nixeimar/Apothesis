@@ -112,9 +112,6 @@ public:
     // Update the counts of all neighbours
     Site* chooseNeighbour(vector<Site*> neighbours);
 
-    /// The site that diffusion is performed
-    Site* m_site;
-
     /// The value of the probability of the process is stored here
     double m_dProbability;
 

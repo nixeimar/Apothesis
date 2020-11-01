@@ -128,9 +128,6 @@ class Desorption: public Process
     /// adsroption in a BCC lattice.
     void mf_updateNeighNum();
 
-    /// The site that desorption is performed
-    Site* m_site;
-
     /// The value of the probability of the process is stored here
     double m_dProbability;
 

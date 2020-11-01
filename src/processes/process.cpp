@@ -14,3 +14,20 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
+
+
+#ifndef PROCESS_CPP
+#define PROCESS_CPP
+
+#include "process.h"
+
+namespace MicroProcesses
+{
+    int Process::getSite()
+    {
+        return m_site->getID();
+    }
+}
+
+
+#endif
