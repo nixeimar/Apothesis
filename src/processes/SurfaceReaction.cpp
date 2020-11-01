@@ -25,7 +25,7 @@ namespace MicroProcesses{
 /// Constructor
 SurfaceReaction::SurfaceReaction
 (
-  Apothesis* apothesis,
+  Apothesis* instance,
   vector<Species*> species,
 	vector<double> const& stoichiometry,
 	double energy,
@@ -35,6 +35,7 @@ SurfaceReaction::SurfaceReaction
 :
 m_sName("SurfaceReaction"),
 m_iNeighNum(0), 
+m_apothesis(instance),
 m_stoichiometry(stoichiometry),
 m_energy(energy),
 m_preExpFactor(preExpFactor),

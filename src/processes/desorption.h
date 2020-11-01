@@ -56,7 +56,7 @@ class Desorption: public Process
     /// The name of the process.
     void setName(string s){ m_sName = s;}
 
-    //To be deleted
+    //Todo be deleted, move instance of apothesis to base process class
     void setInstance( Apothesis* apothesis ){}
     
     /// Compute the overall probabilities of this processus and return it.
