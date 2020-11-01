@@ -84,10 +84,10 @@ m_dimensions(3)
     break;
   }
   //case Lattice::FCC: apothesis->pLattice = new BCC(apothesis);
-  //TODO: In case of default, create error
   default:
   {
-    ;
+    cout<<"Unresolvable lattice type found. Exiting..."<<endl;
+    EXIT;
   }
   }
 
@@ -149,7 +149,10 @@ m_dimensions(3)
     const char *name = (*itr).c_str();
     apothesis->logSuccessfulRead(speciesName.HasMember(name), name);
 
-    // TODO: Include a map with default values in case nothing is specified
+    Value &pName = m_input["Species"][name];
+    string output = "molecular weight of " + (*itr);
+    apothesis->logSuccessfulRead(pName.HasMember("mw"), output);
+    (pName.HasMember("mw"), "molecular weight");
     double mw = m_input["Species"][name]["mw"].GetDouble();
     m_MWs.push_back(mw);
   }

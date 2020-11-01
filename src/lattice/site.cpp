@@ -26,7 +26,7 @@ namespace SurfaceTiles
   Site::Site() : 
   m_phantom(false)
   {
-    //TODO remove
+    //TODO create fix
     m_mapSpecies[0] = 0;
     m_mapSpecies[1] = 0;
     m_mapSpecies[2] = 0;

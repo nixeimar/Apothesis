@@ -125,13 +125,14 @@ void Apothesis::init()
     {
       Value &interactions = singleSpecies["Interactions"];
 
-      //TODO better logging function
-      logSuccessfulRead(interactions.IsArray(), "Interactions");
+      pIO->writeLogOutput("Initializing interactions between species...");
 
       int numInters = interactions.Size();
       for (int i = 0; i < numInters; i++)
       {
         m_interactions.push_back(make_tuple(name, interactions[i].GetString()));
+        pIO->writeLogOutput("(" + get<0>(m_interactions.back()) + ", " + get<1>(m_interactions.back()) + ")");
+        
       }
     }
   }
@@ -374,7 +375,6 @@ void Apothesis::init()
 
     // Check mass balance on reaction
     double cumulativemass = 0;
-    // TODO: check: iterate through m_species?
     for (map<string, Species *>::iterator itr = m_species.begin(); itr != m_species.end(); ++itr)
     {
       Species *s = itr->second;
@@ -412,7 +412,6 @@ void Apothesis::init()
     Species *s1 = m_species[spec1];
     Species *s2 = m_species[spec2];
 
-    //TODO: Add error catch statements and more comments here
     Adsorption *pAdsorption1 = findAdsorption(spec1);
     pAdsorption1->addInteraction(s2);
 
@@ -465,7 +464,6 @@ void Apothesis::exec()
     /// Print to output
     pIO->writeLogOutput("Time step: " + to_string(i));
 
-    //TODO: If (debug) print out the id of the lattice site
     vector<Process *> processes = m_vProcesses;
     /// Find probability of each process
     vector<double> probabilities = calculateProbabilities(m_vProcesses);
@@ -478,6 +476,10 @@ void Apothesis::exec()
     // Site should be picked here
     p->selectSite();
 
+    if (getDebugMode())
+    {
+      pIO->writeLogOutput("Current site: " + p->getSite());
+    }
     /// Perform process on that site
     p->perform();
 
@@ -580,7 +582,7 @@ Adsorption *Apothesis::findAdsorption(string species)
     }
     // find name of adsorption species
   }
-  cout << "Warning! Could not find instance of Adsorption class for desorbed species " << species << endl;
+  pErrorHandler->warningSimple_msg("Warning! Could not find instance of Adsorption class for desorbed species " + species);
 }
 
 Desorption *Apothesis::findDesorption(string species)
