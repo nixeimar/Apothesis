@@ -65,6 +65,9 @@ class Parameters: public Pointers
     /// Pi.
     const double dPi = 3.14159265;
 
+    /// R value (J/molK)
+    const double dR = 8.3145;
+
     /// Store the processes to be created by the factory method.
     void setProcess(string, vector<double> );
 

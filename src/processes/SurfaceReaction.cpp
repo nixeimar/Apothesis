@@ -164,9 +164,10 @@ double SurfaceReaction::getProbability()
     return 0;
   }
 
-  //TODO fill in probability here  
-  double prob = 1000000000;
-  return prob;
+  Parameters* parameters = m_apothesis->pParameters;
+  double rate = m_preExpFactor * exp(-m_energy/parameters->getTemperature()/parameters->dR);
+  delete parameters;
+  return rate * m_activeSites;
 }
 
 list<Site* > SurfaceReaction::getActiveList()
