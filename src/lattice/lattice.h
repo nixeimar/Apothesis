@@ -92,9 +92,6 @@ class Lattice: public Pointers
     /// Sets the minimun initial height for the lattice.
     void setInitialHeight( int  height );
 
-    /// Returns random site
-    Site* randomSite();
-    
     //Set true if the lattice has steps
     void setSteps(bool hasSteps = false);
 

@@ -92,7 +92,7 @@ public:
     /// Set an ID for this site.
     void setID( int );
 
-    /// Get the ID of this lattice.
+    /// Get the ID of this lattice site.
     int getID();
 
     /// Set the number of the neighbours according to the height of its neighbour sites
