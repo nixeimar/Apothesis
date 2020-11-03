@@ -100,7 +100,7 @@ namespace MicroProcesses
     // Adsorb the species by adding the name to the site
     m_site->addSpecies(m_apothesis->getSpecies(m_adsorptionSpeciesName));
     // update the number of neighbours this site has
-    int newNeighbours = mf_updateNeighNum();
+    m_site->m_updateNeighbourList();
     //m_site->setNeighboursNum(newNeighbours);
 
     // Add desorption site to Desorption class
@@ -220,7 +220,6 @@ namespace MicroProcesses
       return m_lAdsSites.size() * dflux;
     else
     {
-      cout<<"Size is 0" << endl;
       return 0.0;
     }
   }

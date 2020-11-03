@@ -25,7 +25,7 @@ namespace SurfaceTiles
 
   Site::Site() : m_phantom(false)
   {
-    //TODO create fix
+   
   }
 
   Site::~Site() { ; }
@@ -65,7 +65,6 @@ namespace SurfaceTiles
     m_LatticeType = type;
   }
 
-  // TODO: redundance in ability to set neighboursnum and getNeighboursNum
   int Site::getNeighboursNum()
   {
     return m_vNeigh.size();
@@ -179,8 +178,8 @@ namespace SurfaceTiles
   {
     int siteHeight = getHeight();
     int totalNeigh = 0;
+    m_vNeigh.clear();
 
-    // TODO (?) Only care about atoms at the same height -- NESW
     // Check NESW sites, see if the heights are the same. If same, add to list of neighbours.
     bool isActiveEAST = false;
     isActiveEAST = (siteHeight == getNeighPosition(Site::EAST)->getHeight() &&
@@ -188,6 +187,7 @@ namespace SurfaceTiles
                     siteHeight == getNeighPosition(Site::EAST_UP)->getHeight());
     if (isActiveEAST)
     {
+      m_vNeigh.push_back(Site::EAST);
       totalNeigh++;
     }
 
@@ -197,6 +197,7 @@ namespace SurfaceTiles
                     siteHeight == getNeighPosition(Site::WEST_UP)->getHeight());
     if (isActiveWEST)
     {
+      m_vNeigh.push_back(Site::WEST);
       totalNeigh++;
     }
 
@@ -206,6 +207,7 @@ namespace SurfaceTiles
                      siteHeight == getNeighPosition(Site::NORTH)->getHeight());
     if (isActiveNORTH)
     {
+      m_vNeigh.push_back(Site::NORTH);
       totalNeigh++;
     }
 
@@ -215,14 +217,19 @@ namespace SurfaceTiles
                      siteHeight == getNeighPosition(Site::SOUTH)->getHeight());
     if (isActiveSOUTH)
     {
+      m_vNeigh.push_back(Site::SOUTH);
       totalNeigh++;
     }
   }
 
-  int Site::m_updateNeighbours(Site *s)
+  int Site::m_updateNeighbourList()
   {
     // If called on a different site, simply call the respective site's m_updateNeighbours() function
-    s->m_updateNeighbours();
+    vector<Site*> neighbours = {Site::EAST, Site::WEST, Site::NORTH, Site::SOUTH};
+    for (int neigh = 0; neigh < neighbours.size(); ++neigh)
+    {
+      s->m_updateNeighbours();
+    }
   }
 
   void Site::initSpeciesMap(int numSpecies)

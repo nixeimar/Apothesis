@@ -148,6 +148,12 @@ public:
     /// Return pointer to map
     map<int, int> getSpeciesMap();
 
+     // Update neighbour list
+    int m_updateNeighbours();
+
+    // Call updateneighbours on another site
+    int m_updateNeighbourList();
+
 protected:
     //The lattice type that this site belongs to
     LatticeType m_LatticeType;
@@ -165,19 +171,10 @@ protected:
     /// The neighbours at the same level - We do not need this because we have the map (see below).
     vector< Site*> m_vNeigh;
 
-    // Update neighbour list
-    int m_updateNeighbours();
-
-    // Call updateneighbours on another site
-    int m_updateNeighbours(Site* s);
-
-    /// Function to remove duplicate neighbours
-    //TODO
-    void removeDuplicates();
-
     /// Holds the number of the neighbours of the particular site according to each height/
     int m_iNumNeighs;
 
+    //TODO: get rid of map?
     /// A map that holds the neighbour sites according to their orientation.
     map< NeighPoisition, Site*> m_mapNeigh;
 
