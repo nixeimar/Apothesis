@@ -441,6 +441,14 @@ void Apothesis::init()
     p->activeSites(pLattice);
   }
 
+  // Initialize species map in lattice
+  vector<Site*> sites = pLattice->getSites();
+  for (int site = 0; site < sites.size(); ++site)
+  {
+    Site* pSite = sites[site];
+    pSite->initSpeciesMap(m_nSpecies);
+  }
+
 }
 
 void Apothesis::exec()

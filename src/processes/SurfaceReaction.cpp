@@ -167,7 +167,6 @@ double SurfaceReaction::getProbability()
 
   Parameters* parameters = m_apothesis->pParameters;
   double rate = m_preExpFactor * exp(-m_energy/parameters->getTemperature()/parameters->dR);
-  delete parameters;
   return rate * m_activeSites;
 }
 

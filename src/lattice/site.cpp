@@ -23,14 +23,9 @@
 namespace SurfaceTiles
 {
 
-  Site::Site() : 
-  m_phantom(false)
+  Site::Site() : m_phantom(false)
   {
     //TODO create fix
-    m_mapSpecies[0] = 0;
-    m_mapSpecies[1] = 0;
-    m_mapSpecies[2] = 0;
-    m_mapSpecies[3] = 0;
   }
 
   Site::~Site() { ; }
@@ -110,9 +105,9 @@ namespace SurfaceTiles
     // Store previous state to ensure that we remove the desired species
     int numIter = 0;
     int m_species_prevSize = m_species.size();
-    
+
     int numOfSpecies = m_mapSpecies[s->getId()];
-    
+
     if (numOfSpecies > 0)
     {
       for (vector<Species *>::iterator itr = m_species.begin(); itr != m_species.end(); ++itr)
@@ -230,10 +225,14 @@ namespace SurfaceTiles
     s->m_updateNeighbours();
   }
 
-  void Site::removeDuplicates()
+  void Site::initSpeciesMap(int numSpecies)
   {
-    //TODO
+    for (int i = 0; i < numSpecies; ++i)
+    {
+      m_mapSpecies[i] = 0;
+    }
   }
+
 } // namespace SurfaceTiles
 
 #endif

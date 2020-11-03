@@ -83,6 +83,9 @@ public:
     /// Set the neigbours.
     void setNeigh( Site*);
 
+    /// Initialize map
+    void initSpeciesMap(int numSpecies);
+
     /// Get the neigbours at the same level.
     vector< Site* > getNeighs();
 
