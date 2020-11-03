@@ -174,14 +174,6 @@ namespace MicroProcesses
 
   void Adsorption::mf_addToList(Site *s) { m_lAdsSites.push_back(s); }
 
-  int Adsorption::mf_updateNeighNum()
-  {
-    // TODO fill in function (or delete)
-    int totalNeigh = 0;
-
-    return totalNeigh;
-  }
-
   const double Adsorption::getMassFraction()
   {
     return m_massfraction;

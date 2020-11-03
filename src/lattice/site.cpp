@@ -174,7 +174,7 @@ namespace SurfaceTiles
     return m_mapSpecies;
   }
 
-  int Site::m_updateNeighbours()
+  void Site::m_updateNeighbours()
   {
     int siteHeight = getHeight();
     int totalNeigh = 0;
@@ -187,7 +187,7 @@ namespace SurfaceTiles
                     siteHeight == getNeighPosition(Site::EAST_UP)->getHeight());
     if (isActiveEAST)
     {
-      m_vNeigh.push_back(Site::EAST);
+      m_vNeigh.push_back(getNeighPosition(Site::EAST));
       totalNeigh++;
     }
 
@@ -197,7 +197,7 @@ namespace SurfaceTiles
                     siteHeight == getNeighPosition(Site::WEST_UP)->getHeight());
     if (isActiveWEST)
     {
-      m_vNeigh.push_back(Site::WEST);
+      m_vNeigh.push_back(getNeighPosition(Site::WEST));
       totalNeigh++;
     }
 
@@ -207,7 +207,7 @@ namespace SurfaceTiles
                      siteHeight == getNeighPosition(Site::NORTH)->getHeight());
     if (isActiveNORTH)
     {
-      m_vNeigh.push_back(Site::NORTH);
+      m_vNeigh.push_back(getNeighPosition(Site::NORTH));
       totalNeigh++;
     }
 
@@ -217,18 +217,18 @@ namespace SurfaceTiles
                      siteHeight == getNeighPosition(Site::SOUTH)->getHeight());
     if (isActiveSOUTH)
     {
-      m_vNeigh.push_back(Site::SOUTH);
+      m_vNeigh.push_back(getNeighPosition(Site::SOUTH));
       totalNeigh++;
     }
   }
 
-  int Site::m_updateNeighbourList()
+  void Site::m_updateNeighbourList()
   {
     // If called on a different site, simply call the respective site's m_updateNeighbours() function
-    vector<Site*> neighbours = {Site::EAST, Site::WEST, Site::NORTH, Site::SOUTH};
+    vector<Site*> neighbours {getNeighPosition(Site::EAST), getNeighPosition(Site::WEST), getNeighPosition(Site::NORTH), getNeighPosition(Site::SOUTH)};
     for (int neigh = 0; neigh < neighbours.size(); ++neigh)
     {
-      s->m_updateNeighbours();
+      neighbours[neigh]->m_updateNeighbours();
     }
   }
 

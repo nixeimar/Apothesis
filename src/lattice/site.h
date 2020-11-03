@@ -149,10 +149,10 @@ public:
     map<int, int> getSpeciesMap();
 
      // Update neighbour list
-    int m_updateNeighbours();
+    void m_updateNeighbours();
 
     // Call updateneighbours on another site
-    int m_updateNeighbourList();
+    void m_updateNeighbourList();
 
 protected:
     //The lattice type that this site belongs to
