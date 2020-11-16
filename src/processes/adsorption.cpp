@@ -28,7 +28,8 @@ namespace MicroProcesses
       string speciesName,
       Species *species,
       double stickingCoeffs,
-      double massFraction)
+      double massFraction,
+      bool direct)
       : m_sName("Adsorption"),
         m_iNeighNum(0),
         m_apothesis(instance),
@@ -37,7 +38,8 @@ namespace MicroProcesses
         m_stickingCoeffs(stickingCoeffs),
         m_massfraction(massFraction),
         m_canDesorb(false),
-        m_canDiffuse(false) //TODO: Do I need to initialize m_interactions?
+        m_canDiffuse(false), //TODO: Do I need to initialize m_interactions?
+        m_direct(direct)
   {
     ;
   }
@@ -91,7 +93,7 @@ namespace MicroProcesses
     // ie if this is the first molecule being added to this site
     if (m_site->getSpecies().size() == 0)
     {
-      m_site->setPhantom(true);
+      m_site->setPhantom(true); //TODO: exclude phantom site from diffusion, cannot adsorb more than stoich. coeff
       int height = m_site->getHeight();
       height = height + 2;
       m_site->setHeight(height);
@@ -150,7 +152,7 @@ namespace MicroProcesses
       if (found == false)
       {
         pAds->mf_removeFromList(m_site);
-      } 
+      }
     }
     /// Check if there are available sites that it can be performed
     if (m_lAdsSites.size() == 0)

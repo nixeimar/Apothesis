@@ -147,6 +147,7 @@ void Apothesis::init()
     Value &specie = doc["Process"]["Adsorption"]["Species"];
     Value &stick = doc["Process"]["Adsorption"]["Sticking"];
     Value &mFrac = doc["Process"]["Adsorption"]["MassFraction"];
+    Value &ads = doc["Process"]["Adsorption"];
 
     // Verify presence of each parameter in input file
     logSuccessfulRead(specie.IsArray(), "Adsorption species");
@@ -186,7 +187,22 @@ void Apothesis::init()
 
     for (int i = 0; i < species.size(); ++i)
     {
-      Adsorption *a = new Adsorption(this, species[i], m_species[species[i]], sticking[i], massFraction[i]);
+      bool direct = false;
+      if (ads.HasMember("Direct"))
+      {
+        string dir = ads["Direct"].GetString();
+        if (dir.compare("Yes") == 0)
+        {
+          direct = true;
+        }
+        else
+        {
+          // Set as warning, in case an unexpected result is received. Default value is false.
+          pErrorHandler->warningSimple_msg("The adsorption of species " + species[i] + " has direct value " + dir);
+        }
+
+      }
+      Adsorption* a = new Adsorption(this, species[i], m_species[species[i]], sticking[i], massFraction[i], direct);
 
       // Keep two separate vectors: one for all processes, one for adsorption processes only
       m_vAdsorption.push_back(a);

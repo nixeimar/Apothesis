@@ -48,7 +48,8 @@ class Adsorption: public Process
       string speciesName,
       Species* species,
       double stickingCoeffs,
-      double massFraction
+      double massFraction,
+      bool direct
     );
 
     /// Destructor
@@ -182,6 +183,9 @@ class Adsorption: public Process
     Diffusion* m_pDiffusion;
 
     vector<Species*> m_interactions;
+
+    /// Variable to see if this is a direct product species
+    bool m_direct = false; 
 
 
   };
