@@ -121,18 +121,17 @@ void SurfaceReaction::perform()
   {
     for (int i = 0; i < (*rItr)->getStoicCoeff()*-1; ++i)
     {
-      // TODO Call desorption, or simply remove?
       m_site->removeSpecies(*rItr);
     }
   }
-  for (; pItr != m_products.end(); ++pItr)
+  
+  m_site->setHeight(m_site->getHeight()+2); //TODO generalize + clear species?
+
+  // After performing, add site to adsorption list again
+  vector<Adsorption*> pAds = m_apothesis->getAdsorptionPointers();
+  for (vector<Adsorption*>::iterator itr = pAds.begin(); itr != pAds.end(); ++itr)
   {
-    for (int i = 0; i < (*pItr)->getStoicCoeff(); ++i)
-    {
-      // Add species to site. Need to do anything else?
-      m_site->addSpecies(*pItr);
-    }
-    m_site->setHeight(m_site->getHeight()+2); //TODO generalize
+    (*itr)->mf_addToList(m_site);
   }
 
   if (!canReact(m_site))
@@ -152,12 +151,13 @@ void SurfaceReaction::perform()
   //}
 }
 
-void SurfaceReaction::mf_removeFromList() { m_lAdsSites.remove( m_site); m_site->removeProcess( this ); }
+void SurfaceReaction::mf_removeFromList() { m_lAdsSites.remove( m_site); }
+
+void SurfaceReaction::mf_removeFromList(Site *s) { m_lAdsSites.remove(s); }
 
 void SurfaceReaction::mf_addToList(Site *s) { m_lAdsSites.push_back( s); }
 
 
-//this process is not complete.
 double SurfaceReaction::getProbability()
 {
   if (m_lAdsSites.size() < 1)
@@ -200,12 +200,12 @@ bool SurfaceReaction::canReact(Site* site)
   {
     if (map_species.at(m_reactants[i]->getId()) < m_stoichReactants[i])
     {
+      mf_removeFromList(site);
       return false;
     }
   }
   m_activeSites++;
   mf_addToList(site);
-  cout<<"can react!"<<endl;
   return true;
 }
 

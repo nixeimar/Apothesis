@@ -82,6 +82,16 @@ namespace MicroProcesses
 
   void Adsorption::perform()
   {
+
+    if (m_direct)
+    {
+      // If this is direct, simply increase the height, don't add any other parameters, update the neighbours, and return
+      int height = m_site->getHeight();
+      height = height + 2;
+      m_site->setHeight(height);
+      m_site->m_updateNeighbourList();
+      return;
+    }
     // If you can desorb, pre-empt the desorption update by removing n neighbours from desorption list
     if (canDesorb())
     {

@@ -100,6 +100,9 @@ class SurfaceReaction: public Process
 	    /// Remove a site from a list
 	    void mf_removeFromList();
 
+		/// Overloaded: remove specific site from list
+		void mf_removeFromList(Site* s);
+
 	    /// Add a site to a list
 	    void mf_addToList(Site* s);
 
