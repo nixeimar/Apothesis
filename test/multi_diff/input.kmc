@@ -53,5 +53,9 @@
       "Energy": 66,
       "PreExp": 1e-10
     }
+  },
+  "config":
+  {
+    "debug": "Off"
   }
 }

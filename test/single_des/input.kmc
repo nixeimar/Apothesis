@@ -1,0 +1,36 @@
+{
+  "Lattice":
+  {
+    "Type": "FCC",
+    "dims": [10, 10, 10]
+  },
+  "Iterations": 100,
+  "Temperature": 400,
+  "Pressure": 101325,
+  "Species":
+  {
+    "CuAMD":
+    {
+      "mw": 145
+    }
+  },
+  "Process":
+  {
+    "Adsorption":
+    {
+      "Species": ["CuAMD"],
+      "Sticking": [0.2],
+      "MassFraction": [1.0]
+    },
+    "Desorption":
+    {
+      "Species": ["H2"],
+      "Energy": [10],
+      "Frequency": [1e-12]
+    }
+  },
+  "config":
+  {
+    "debug": "Off"
+  }
+}
