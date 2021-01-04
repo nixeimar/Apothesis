@@ -76,7 +76,7 @@ public:
   void setInitialHeight(int height);
 
 protected:
-  /// Build the neighbours for the BCC lattice.
+  /// Build the neighbours for the BCC lattice for each site.
   void mf_neigh();
 
   /// Build the neighbours of each site depending on the type of the.

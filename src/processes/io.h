@@ -189,8 +189,8 @@ class IO: public Pointers
     /// Comment
     string m_sCommentLine;
 
-    ///  Num of iterations keyword.
-    string m_sIterations;
+    /// End time keyword.
+    string m_sTime;
 
   };
 

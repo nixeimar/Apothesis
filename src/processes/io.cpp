@@ -24,7 +24,7 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
                  m_sLattice("lattice"),
                  m_sTemperature("temperature"),
                  m_sPressure("pressure"),
-                 m_sIterations("num_iterations"),
+                 m_sTime("Time"),
                  m_sCommentLine("#")
   {
   //Initialize the map for the lattice
@@ -48,7 +48,7 @@ string IO::getInputPath() const {;}
 void IO::readInputFile()
 {
 
-  list< string > lKeywords{ m_sLattice, m_sProcess, m_sPressure, m_sTemperature, m_sIterations };
+  list< string > lKeywords{ m_sLattice, m_sProcess, m_sPressure, m_sTemperature, m_sTime };
 
   string sLine;
   while ( getline( m_InputFile, sLine ) ) {
@@ -136,9 +136,9 @@ void IO::readInputFile()
         }
       }
 
-    if ( vsTokens[ 0].compare( m_sIterations ) == 0 ){
+    if ( vsTokens[ 0].compare( m_sTime ) == 0 ){
       if ( isNumber( vsTokens[ 1 ] ) ){
-        m_parameters->setIterations( toInt( vsTokens[ 1] ) );
+        m_parameters->setEndTime( toDouble( vsTokens[ 1] ) );
         }
       else {
         m_errorHandler->error_simple_msg("Could not read number of KMC iterations from input file. Is it a number?");

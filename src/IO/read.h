@@ -134,8 +134,8 @@ class Read: public Pointers
     /// Comment
     string m_sCommentLine;
 
-    ///  Num of iterations keyword.
-    string m_sIterations;
+    ///  Time  keyword.
+    string m_sTime;
 
     // Dimensions in the lattice
     int m_dimensions;

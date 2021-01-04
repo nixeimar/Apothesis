@@ -297,7 +297,7 @@ void BCC::mf_neigh()
 	}*/
 }
 
-Site *BCC::getSite(int id) { return m_vSites[id]; }
+Site* BCC::getSite(int id) { return m_vSites[id]; }
 
 void BCC::check()
 {
@@ -308,18 +308,8 @@ void BCC::check()
 	int test = 2;
 	cout << test << ": ";
 	cout << "W:" << getSite(test)->getNeighPosition(Site::WEST)->getID() << " ";
-	cout << "Wu:" << getSite(test)->getNeighPosition(Site::WEST_UP)->getID() << " ";
-	cout << "WD:" << getSite(test)->getNeighPosition(Site::WEST_DOWN)->getID() << " ";
 	cout << "E:" << getSite(test)->getNeighPosition(Site::EAST)->getID() << " ";
-	cout << "EU:" << getSite(test)->getNeighPosition(Site::EAST_UP)->getID() << " ";
-	cout << "ED:" << getSite(test)->getNeighPosition(Site::EAST_DOWN)->getID() << " ";
 	cout << "N:" << getSite(test)->getNeighPosition(Site::NORTH)->getID() << " ";
 	cout << "S:" << getSite(test)->getNeighPosition(Site::SOUTH)->getID() << endl;
 
-	cout << "Activation: " << endl;
-
-	cout << "N:" << getSite(test)->getActivationSite(Site::ACTV_NORTH)->getID() << " ";
-	cout << "S:" << getSite(test)->getActivationSite(Site::ACTV_SOUTH)->getID() << " ";
-	cout << "E:" << getSite(test)->getActivationSite(Site::ACTV_EAST)->getID() << " ";
-	cout << "W:" << getSite(test)->getActivationSite(Site::ACTV_WEST)->getID() << endl;
 }

@@ -1,5 +1,5 @@
 #!/bin/bash
 
 cd ../test/
-../src/Apothesis
+../src/apothesis
 cd ../

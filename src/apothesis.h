@@ -23,7 +23,7 @@
 #include <vector>
 #include <string>
 #include <functional>
-#include "species.h"
+#include "species/species.h"
 
 #define EXIT { printf("Apothesis terminated. \n"); exit( EXIT_FAILURE ); }
 
@@ -45,7 +45,6 @@ public:
     virtual ~Apothesis();
 
     /// Pointers to the classes that will share the common space i.e. the "pointer"
-
     /// Ponter to the input/output class
     IO* pIO;
 
@@ -135,7 +134,7 @@ private:
     map<string, Species*> m_species;
 
     // map of interactions
-    vector<tuple<string, string>> m_interactions;
+    vector< tuple<string, string> > m_interactions;
 
     // Set debug mode
     bool m_debugMode;

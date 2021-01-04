@@ -17,7 +17,7 @@
 
 #include "pointers.h"
 #include "apothesis.h"
-#include "lattice.h"
+#include "lattice/lattice.h"
 #include "FCC.h"
 #include "io.h"
 #include "read.h"
@@ -54,7 +54,6 @@ Apothesis::Apothesis(int argc, char *argv[])
 
   // Create input instance
   pIO = new IO(this);
-
   pRead = new Read(this);
 
   vector<string> pName = pRead->getSpeciesNames();
@@ -470,21 +469,40 @@ void Apothesis::init()
 void Apothesis::exec()
 {
   ///Perform the number of KMC steps read from the input.
-  int iterations = pParameters->getIterations();
+//  int iterations = pParameters->getIterations();
+    double dTime = pParameters->getEndTime();
 
-  if (iterations == 0)
-  {
-    pErrorHandler->error_simple_msg("Zero iterations found.");
-    EXIT;
-  }
-  else
-  {
-    pIO->writeLogOutput("Running " + to_string(iterations) + " iterations");
-  }
+    if (dTime == 0.0){
+        pErrorHandler->error_simple_msg("Zero iterations found.");
+        exit(0);
+    }
+    else {
+        pIO->writeLogOutput("Running " + to_string( dTime ) + " sec");
+    }
 
-  /// Get list of possible processes
-  for (int i = 0; i < iterations; ++i)
-  {
+    /// Get list of possible processes
+
+    double time = 0.0;
+
+    while ( time < dTime ){
+
+        //1. Get a random number
+
+        //2. Pick a process according to the rates.
+        //ToDo Store all the process rates in a Map
+
+        //3. From this process pick a random site with id and perform it
+        // i.e. m_processMap[ "selected process" ]->getSite( id )->perform.
+
+        //4. Re-compute the processes rates and re-compute Rtot (see ppt).
+
+        //5. Compute dt = -ln(ksi)/Rtot
+
+        //6. advance time: time += dt;
+
+    }
+
+  /*  for (int i = 0; i < iterations; ++i){
     /// Print to output
     pIO->writeLogOutput("Time step: " + to_string(i));
 
@@ -518,7 +536,7 @@ void Apothesis::exec()
       cout << m_vProcesses[0]->getName() << " process is being performed..." << endl;
     }
     // TODO: check if all processes are 0
-  }
+  }*/
 }
 
 void Apothesis::addProcess(string process)

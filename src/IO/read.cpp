@@ -30,8 +30,9 @@ m_sProcess("process"),
 m_sLattice("lattice"),
 m_sTemperature("temperature"),
 m_sPressure("pressure"),
-m_sIterations("num_iterations"),
+//m_sIterations("num_iterations"),
 m_sCommentLine("#"),
+m_sTime("Time"),
 m_input(readInputFile("input.kmc")),
 m_dimensions(3)
 {
@@ -72,7 +73,6 @@ m_dimensions(3)
     {
       BCC *lattice = new BCC(apothesis, true, vStepInfo);
       apothesis->pLattice = lattice;
-      
     }
     else
     {
@@ -113,8 +113,8 @@ m_dimensions(3)
   m_lattice->setInitialHeight(latticeDimensions[2]);
 
   // Set the iterations, temperature, and pressure
-  apothesis->logSuccessfulRead(m_input.HasMember("Iterations"), "Iterations");
-  m_parameters->setIterations(m_input["Iterations"].GetInt());
+  apothesis->logSuccessfulRead(m_input.HasMember("Time"), "Time");
+  m_parameters->setEndTime(m_input["Time"].GetDouble());
 
   apothesis->logSuccessfulRead(m_input.HasMember("Temperature"), "Temperature");
   m_parameters->setTemperature(m_input["Temperature"].GetDouble());

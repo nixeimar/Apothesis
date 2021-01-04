@@ -68,11 +68,11 @@ class Lattice: public Pointers
     /// Returns a site with a specific id.
     Site* getSite( int id);
 
+    /// Returns a site with a specific id as in 2D space.
+    Site* getSite( int i, int j);
+
     /// Returns all the sites of the lattice.
     vector<Site*> getSites();
-
-    /// Various checks if the lattice has been constucted correctly. Partially implemented.
-    void check();
 
     /// Init the lattice.
     void init();
@@ -114,13 +114,13 @@ class Lattice: public Pointers
     /// The sites that consist the lattice.
     vector<Site* > m_vSites;
 
-    /// The neighbours for the FCC lattice.
+    /// The neighbours of this lattice (different if e.g. is BCC or FCC)
     virtual void mf_neigh() = 0;
 
     /// True if the lattice has steps (comes from the input file if the Step keyword is found).
     bool m_bHasSteps;
 
-    ///Build the steps id m_bHasSteps is true. 
+    ///Build the steps id m_bHasSteps is true.
     void mf_buildSteps();
 
     //The info for the step surface i.e. [1 20 10]

@@ -86,7 +86,6 @@ SurfaceReaction::~SurfaceReaction(){;}
 
 void SurfaceReaction::init(){;}
 
-
 string SurfaceReaction::getName(){ return m_sName; }
 
 void SurfaceReaction::activeSites( Lattice* lattice){

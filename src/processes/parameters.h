@@ -51,10 +51,13 @@ class Parameters: public Pointers
     inline double getPressure() { return m_dP; }
 
     /// Set the total number of KMC iterations
-    inline void setIterations( int iter ) { m_iIter = iter; }
+   // inline void setIterations( int iter ) { m_iIter = iter; }
 
-    /// Set the total number of KMC iterations
-    inline int getIterations() { return m_iIter; }
+    /// Set the total time for KMC
+    inline void setEndTime( double time ) { m_dTime = time; }
+
+    /// Get the total time
+    inline double getEndTime() { return m_dTime; }
 
     /// The Avogadro number.
     const double dAvogadroNum = 6.022141793e+23;
@@ -83,6 +86,9 @@ class Parameters: public Pointers
 
     /// The number of iterations to be performed.
     int m_iIter;
+
+    /// The time to run kmc.
+    int m_dTime;
 
     /// Stores the processes as read from the input file allong with their parameters.
     map< string,  vector< double> > m_mProcs;

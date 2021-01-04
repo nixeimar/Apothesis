@@ -174,6 +174,7 @@ namespace SurfaceTiles
     return m_mapSpecies;
   }
 
+  //NIKOS: This should not be here. This should be in the lattice since the lattice has the neighbours
   void Site::m_updateNeighbours()
   {
     int siteHeight = getHeight();
