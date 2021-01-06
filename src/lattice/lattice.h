@@ -28,6 +28,8 @@
 #include "site.h"
 #include "errorhandler.h"
 
+#include "species_new.h"
+
 using namespace std;
 using namespace SurfaceTiles;
 using namespace Utils;
@@ -51,13 +53,13 @@ class Lattice: public Pointers
     void setType( string );
 
     /// Returns the x dimension of the lattice.
-    virtual int getX() = 0;
+    inline int getX() { return m_iSizeX;} // = 0;
 
     /// Returns the y dimension of the lattice.
-    virtual int getY() = 0;
+    inline int getY(){ return m_iSizeY;}// = 0;
 
     /// Returns the size of the lattice.
-    virtual int getSize() = 0;
+    inline int getSize(){ return m_iSizeX*m_iSizeY; } // = 0;
 
     /// Returns the type of the lattice
     Lattice::Type getType();
@@ -97,6 +99,15 @@ class Lattice: public Pointers
 
     /// Store the surface step info
     void setStepInfo(int, int, int);
+
+    /// The process of adsorption
+    virtual void adsorp( int siteID, species_new* chemSpecies ) = 0;
+
+    /// The process of desorption
+    virtual void desorp( int siteID, species_new* chemSpecies ) = 0;
+
+    /// The process of reaction
+    virtual void react( int siteID ) = 0;
 
   protected:
     /// The size of the lattice in the x-dimension.

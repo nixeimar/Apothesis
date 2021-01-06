@@ -20,6 +20,9 @@ INCLUDEPATH += . \
 # Input
 HEADERS += apothesis.h \
            pointers.h \
+           processes/adsorption_new.h \
+           processes/process_new.h \
+           processes/reaction_new.h \
            register.h \
            error/errorhandler.h \
            IO/read.h \
@@ -36,10 +39,14 @@ HEADERS += apothesis.h \
            processes/parameters.h \
            processes/process.h \
            processes/SurfaceReaction.h \
-           species/species.h
+           species/species.h \
+           species/species_new.h
 SOURCES += apothesis.cpp \
            lattice/lattice.cpp \
            main.cpp \
+           processes/adsorption_new.cpp \
+           processes/process_new.cpp \
+           processes/reaction_new.cpp \
            register.cpp \
            error/errorhandler.cpp \
            IO/read.cpp \
@@ -54,4 +61,5 @@ SOURCES += apothesis.cpp \
            processes/parameters.cpp \
            processes/process.cpp \
            processes/SurfaceReaction.cpp \
-           species/species.cpp
+           species/species.cpp \
+           species/species_new.cpp

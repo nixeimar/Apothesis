@@ -35,7 +35,7 @@ class Pointers
 
 public:
     /// Contructor
-    Pointers( Apothesis* apothesis):m_apothesis( apothesis),
+    Pointers( Apothesis* apothesis):m_apothesis(apothesis),
                         m_lattice( apothesis->pLattice),
                         m_io(apothesis->pIO),
                         m_read(apothesis->pRead),
@@ -44,19 +44,19 @@ public:
     {}
 
 protected:
-    /// Pointers to the classes of kmc.cpp
+    /// Pointers to the classes of apothesis.cpp
     Apothesis*& m_apothesis;
 
-    /// Pointers to the classes of kmc.cpp
+    /// Pointers to the classes of apothesis.cpp
     Lattice*& m_lattice;
 
-    /// Pointers to the classes of kmc.cpp
+    /// Pointers to the classes of apothesis.cpp
     IO*& m_io;
 
-    /// Pointers to the classes of kmc.cpp
+    /// Pointers to the classes of apothesis.cpp
     Read*& m_read;
 
-    /// Pointers to the classes of kmc.cpp
+    /// Pointers to the classes of apothesis.cpp
     Utils::ErrorHandler*& m_errorHandler;
 
     /// Pointers to the classes of kmc.cpp

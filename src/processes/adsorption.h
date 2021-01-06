@@ -186,8 +186,6 @@ class Adsorption: public Process
 
     /// Variable to see if this is a direct product species
     bool m_direct = false; 
-
-
   };
 }
 

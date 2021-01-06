@@ -39,16 +39,16 @@ For the simplest case e.g. BCC lattices all the sites are available for depositi
 
 class Desorption: public Process
 {
-  public:
+public:
     /// Constructor
     Desorption
     (
-      Apothesis* instance,
-      string speciesName,
-      Species* species,
-      double energy,
-      double frequency
-    );
+            Apothesis* instance,
+            string speciesName,
+            Species* species,
+            double energy,
+            double frequency
+            );
 
     /// Destructor
     virtual ~Desorption();
@@ -113,7 +113,7 @@ class Desorption: public Process
     /// Set site
     void setSite(Site* s);
     
-  protected:
+protected:
     /// The kmc instance.
     Apothesis* m_apothesis;
 
@@ -139,7 +139,7 @@ class Desorption: public Process
 
     /// Return array of desorption energy
     const double getDesorptionEnergy();
-   
+
     /// Return array of desorption frequency
     const double getDesorptionFrequency();
 
@@ -153,8 +153,8 @@ class Desorption: public Process
 
     bool canDiffuse();
 
-  private:
-  
+private:
+
     /** The lattice of the process */
     Lattice* m_pLattice;
 
@@ -179,11 +179,11 @@ class Desorption: public Process
     /// Pointer to associated diffusion class
     Diffusion* m_pDiffusion;
 
-    // Build probability table 
+    // Build probability table
     vector<double> generateProbabilities();
     
     // Vector to hold the probabilities. Number of neighbour - 1 = index of list
-    // TODO: How to initialize this as a const vector? The value should not change 
+    // TODO: How to initialize this as a const vector? The value should not change
     vector<double> m_probabilities;
 
     // Number of sites with n number of neighbours

@@ -23,206 +23,205 @@ typedef rapidjson::FileReadStream FileReadStream;
 typedef rapidjson::Value Value;
 
 Read::Read(Apothesis *apothesis)
-:
-Pointers(apothesis),
-m_sLatticeType("NONE"),
-m_sProcess("process"),
-m_sLattice("lattice"),
-m_sTemperature("temperature"),
-m_sPressure("pressure"),
-//m_sIterations("num_iterations"),
-m_sCommentLine("#"),
-m_sTime("Time"),
-m_input(readInputFile("input.kmc")),
-m_dimensions(3)
+    :
+      Pointers(apothesis),
+      m_sLatticeType("NONE"),
+      m_sProcess("process"),
+      m_sLattice("lattice"),
+      m_sTemperature("temperature"),
+      m_sPressure("pressure"),
+      //m_sIterations("num_iterations"),
+      m_sCommentLine("#"),
+      m_sTime("Time"),
+      m_input(readInputFile("input.kmc")),
+      m_dimensions(3)
 {
-  //Initialize the map for the lattice
-  m_LatticeType["NONE"] = Lattice::NONE;
-  m_LatticeType["BCC"] = Lattice::BCC;
-  m_LatticeType["FCC"] = Lattice::FCC;
+    //Initialize the map for the lattice
+    m_LatticeType["NONE"] = Lattice::NONE;
+    m_LatticeType["BCC"] = Lattice::BCC;
+    m_LatticeType["FCC"] = Lattice::FCC;
 
-  string lattice_type = m_input["Lattice"]["Type"].GetString();
-  std::cout << "lattice_type " << lattice_type << std::endl;
+    string lattice_type = m_input["Lattice"]["Type"].GetString();
+    std::cout << "lattice_type " << lattice_type << std::endl;
 
-  Value &pLattice = m_input["Lattice"];
+    Value &pLattice = m_input["Lattice"];
 
-  bool steps = false;
-  vector<int> vStepInfo = {0, 0, 0};
-  if (pLattice.HasMember("Step"))
-  {
-    steps = true;
-    const Value &stepInfo = m_input["Lattice"]["Step"];
-    assert(stepInfo.IsArray());
-    vStepInfo.clear();
-    vStepInfo = {stepInfo[0].GetInt(), stepInfo[1].GetInt(), stepInfo[2].GetInt()};
-  }
-
-  switch (m_LatticeType[lattice_type])
-  {
-  case Lattice::FCC:
-  {
-    // TODO I think STEPS parameter needs to be incorporated along with the lattice 
-    FCC *lattice = new FCC(apothesis);
-    apothesis->pLattice = lattice;
-    m_lattice->setType("FCC");
-    break;
-  }
-  case Lattice::BCC:
-  {
-    if (steps)
+    bool steps = false;
+    vector<int> vStepInfo = {0, 0, 0};
+    if (pLattice.HasMember("Step"))
     {
-      BCC *lattice = new BCC(apothesis, true, vStepInfo);
-      apothesis->pLattice = lattice;
+        steps = true;
+        const Value &stepInfo = m_input["Lattice"]["Step"];
+        assert(stepInfo.IsArray());
+        vStepInfo.clear();
+        vStepInfo = {stepInfo[0].GetInt(), stepInfo[1].GetInt(), stepInfo[2].GetInt()};
     }
-    else
+
+    switch (m_LatticeType[lattice_type])
     {
-      BCC *lattice = new BCC(apothesis);
-      apothesis->pLattice = lattice;
-    }
-    m_lattice->setType("BCC");
-    
-    break;
-  }
-  //case Lattice::FCC: apothesis->pLattice = new BCC(apothesis);
-  default:
-  {
-    cout<<"Unresolvable lattice type found. Exiting..."<<endl;
-    EXIT;
-  }
-  }
-
-  m_lattice = apothesis->pLattice;
-  m_lattice->setType(lattice_type);
-
-  // Initialize the vector holding dimensions of the lattice
-  vector<int> latticeDimensions;
-
-  // Read the elements in the input file
-  Value &dimensions = m_input["Lattice"]["dims"];
-  apothesis->logSuccessfulRead(dimensions.IsArray(), "Lattice dimensions");
-  for (int i = 0; i < m_dimensions; i++)
-  {
-    if (!dimensions[i].IsInt())
-      apothesis->pErrorHandler->error_simple_msg("Lattice dimension is not a number");
-    latticeDimensions.push_back((int)dimensions[i].GetDouble());
-  }
-
-  //    std::cout<<"Setting lattice dimensions " << std::endl;
-  m_lattice->setX(latticeDimensions[0]);
-  m_lattice->setY(latticeDimensions[1]);
-  m_lattice->setInitialHeight(latticeDimensions[2]);
-
-  // Set the iterations, temperature, and pressure
-  apothesis->logSuccessfulRead(m_input.HasMember("Time"), "Time");
-  m_parameters->setEndTime(m_input["Time"].GetDouble());
-
-  apothesis->logSuccessfulRead(m_input.HasMember("Temperature"), "Temperature");
-  m_parameters->setTemperature(m_input["Temperature"].GetDouble());
-
-  apothesis->logSuccessfulRead(m_input.HasMember("Pressure"), "Pressure");
-  m_parameters->setPressure(m_input["Pressure"].GetDouble());
-
-  // Storing all processes names into apothesis class
-  apothesis->logSuccessfulRead(m_input.HasMember("Process"), "Process");
-  Value &process = m_input["Process"];
-
-  // Add processes into a vector, stored under apothesis
-  for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
-  {
-    apothesis->addProcess(itr->name.GetString());
-  }
-
-  // Storing all species into apothesis class
-  apothesis->logSuccessfulRead(m_input.HasMember("Species"), "Species");
-  Value &speciesName = m_input["Species"];
-
-  // Push names of existing species
-  for (Value::ConstMemberIterator itr = speciesName.MemberBegin(); itr != speciesName.MemberEnd(); ++itr)
-  {
-    if (itr->name.IsString())
-      m_speciesName.push_back(itr->name.GetString());
-  }
-
-  // Read species and corresponding molecular weights into member vars within apothesis
-  for (vector<string>::const_iterator itr = m_speciesName.begin(); itr != m_speciesName.end(); ++itr)
-  {
-    const char *name = (*itr).c_str();
-    apothesis->logSuccessfulRead(speciesName.HasMember(name), name);
-
-    Value &pName = m_input["Species"][name];
-    string output = "molecular weight of " + (*itr);
-    apothesis->logSuccessfulRead(pName.HasMember("mw"), output);
-    (pName.HasMember("mw"), "molecular weight");
-    double mw = m_input["Species"][name]["mw"].GetDouble();
-    m_MWs.push_back(mw);
-  }
-
-  // Read special configuration settings
-  // Storing all processes names into apothesis class
-
-  try
-  {
-    Value &configPtr = m_input["config"];
-    apothesis->logSuccessfulRead(configPtr.HasMember("debug"), "debug");
-    string debugMode = configPtr["debug"].GetString();
-    if (!debugMode.compare("On") || !debugMode.compare("on") || !debugMode.compare("True") || !debugMode.compare("true") || !debugMode.compare("debug"))
+    case Lattice::FCC:
     {
-      apothesis->setDebugMode(true);
+        // TODO I think STEPS parameter needs to be incorporated along with the lattice
+        FCC *lattice = new FCC(apothesis);
+        apothesis->pLattice = lattice;
+        m_lattice->setType("FCC");
+        break;
     }
-  }
-  catch (const std::exception &e)
-  {
-    // do nothing
-  }
+    case Lattice::BCC:
+    {
+        if (steps)
+        {
+            BCC *lattice = new BCC(apothesis, true, vStepInfo);
+            apothesis->pLattice = lattice;
+        }
+        else
+        {
+            BCC *lattice = new BCC(apothesis);
+            apothesis->pLattice = lattice;
+        }
+        m_lattice->setType("BCC");
 
-  // Add processes into a vector, stored under apothesis
-  for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
-  {
-    apothesis->addProcess(itr->name.GetString());
-  }
+        break;
+    }
+        //case Lattice::FCC: apothesis->pLattice = new BCC(apothesis);
+    default:
+    {
+        cout<<"Unresolvable lattice type found. Exiting..."<<endl;
+        EXIT;
+    }
+    }
+
+    m_lattice = apothesis->pLattice;
+    m_lattice->setType(lattice_type);
+
+    // Initialize the vector holding dimensions of the lattice
+    vector<int> latticeDimensions;
+
+    // Read the elements in the input file
+    Value &dimensions = m_input["Lattice"]["dims"];
+    apothesis->logSuccessfulRead(dimensions.IsArray(), "Lattice dimensions");
+    for (int i = 0; i < m_dimensions; i++)
+    {
+        if (!dimensions[i].IsInt())
+            apothesis->pErrorHandler->error_simple_msg("Lattice dimension is not a number");
+        latticeDimensions.push_back((int)dimensions[i].GetDouble());
+    }
+
+    //    std::cout<<"Setting lattice dimensions " << std::endl;
+    m_lattice->setX(latticeDimensions[0]);
+    m_lattice->setY(latticeDimensions[1]);
+    m_lattice->setInitialHeight(latticeDimensions[2]);
+
+    // Set the iterations, temperature, and pressure
+    apothesis->logSuccessfulRead(m_input.HasMember("Time"), "Time");
+    m_parameters->setEndTime(m_input["Time"].GetDouble());
+
+    apothesis->logSuccessfulRead(m_input.HasMember("Temperature"), "Temperature");
+    m_parameters->setTemperature(m_input["Temperature"].GetDouble());
+
+    apothesis->logSuccessfulRead(m_input.HasMember("Pressure"), "Pressure");
+    m_parameters->setPressure(m_input["Pressure"].GetDouble());
+
+    // Storing all processes names into apothesis class
+    apothesis->logSuccessfulRead(m_input.HasMember("Process"), "Process");
+    Value &process = m_input["Process"];
+
+    // Add processes into a vector, stored under apothesis
+    for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
+    {
+        apothesis->addProcess(itr->name.GetString());
+    }
+
+    // Storing all species into apothesis class
+    apothesis->logSuccessfulRead(m_input.HasMember("Species"), "Species");
+    Value &speciesName = m_input["Species"];
+
+    // Push names of existing species
+    for (Value::ConstMemberIterator itr = speciesName.MemberBegin(); itr != speciesName.MemberEnd(); ++itr)
+    {
+        if (itr->name.IsString())
+            m_speciesName.push_back(itr->name.GetString());
+    }
+
+    // Read species and corresponding molecular weights into member vars within apothesis
+    for (vector<string>::const_iterator itr = m_speciesName.begin(); itr != m_speciesName.end(); ++itr)
+    {
+        const char *name = (*itr).c_str();
+        apothesis->logSuccessfulRead(speciesName.HasMember(name), name);
+
+        Value &pName = m_input["Species"][name];
+        string output = "molecular weight of " + (*itr);
+        apothesis->logSuccessfulRead(pName.HasMember("mw"), output);
+        (pName.HasMember("mw"), "molecular weight");
+        double mw = m_input["Species"][name]["mw"].GetDouble();
+        m_MWs.push_back(mw);
+    }
+
+    // Read special configuration settings
+    // Storing all processes names into apothesis class
+
+    try
+    {
+        Value &configPtr = m_input["config"];
+        apothesis->logSuccessfulRead(configPtr.HasMember("debug"), "debug");
+        string debugMode = configPtr["debug"].GetString();
+        if (!debugMode.compare("On") || !debugMode.compare("on") || !debugMode.compare("True") || !debugMode.compare("true") || !debugMode.compare("debug"))
+        {
+            apothesis->setDebugMode(true);
+        }
+    }
+    catch (const std::exception &e)
+    {
+        // do nothing
+    }
+
+    // Add processes into a vector, stored under apothesis
+    for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
+    {
+        apothesis->addProcess(itr->name.GetString());
+    }
 }
 
 Read::~Read() {}
 
 Document Read::readInputFile(string filename)
 {
-  FILE *fp = fopen(filename.c_str(), "r");
+    FILE *fp = fopen(filename.c_str(), "r");
 
-  // Throws an error if the file cannot be opened
-  if (fp == NULL)
-  {
-    throw std::runtime_error(std::strerror(errno));
-  }
-  else
-  {
-    std::cout << filename << " successfully opened." << std::endl;
-  }
+    // Throws an error if the file cannot be opened
+    if (fp == NULL)
+    {
+        throw std::runtime_error(std::strerror(errno));
+    }
+    else
+    {
+        std::cout << filename << " successfully opened." << std::endl;
+    }
 
-  char readBuffer[65536];
-  FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+    char readBuffer[65536];
+    FileReadStream is(fp, readBuffer, sizeof(readBuffer));
 
-  Document doc;
-  doc.ParseStream(is);
+    Document doc;
+    doc.ParseStream(is);
 
-  doc.IsObject() ? std::cout << "Successfully parsed input file" << std::endl
-                 : std::cout << "Error in format of input file" << std::endl;
+    doc.IsObject() ? std::cout << "Successfully parsed input file" << std::endl
+                                  : std::cout << "Error in format of input file" << std::endl;
 
-  fclose(fp);
-
-  return doc;
+    fclose(fp);
+    return doc;
 }
 
 Document &Read::getDoc()
 {
-  return m_input;
+    return m_input;
 }
 
 vector<string> Read::getSpeciesNames()
 {
-  return m_speciesName;
+    return m_speciesName;
 }
 
 vector<double> Read::getMWs()
 {
-  return m_MWs;
+    return m_MWs;
 }

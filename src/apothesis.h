@@ -45,7 +45,7 @@ public:
     virtual ~Apothesis();
 
     /// Pointers to the classes that will share the common space i.e. the "pointer"
-    /// Ponter to the input/output class
+    /// Pointer to the input/output class
     IO* pIO;
 
     /// Ponter to the read class
@@ -59,6 +59,9 @@ public:
 
     /// Pointer to the paramters class
     Utils::Parameters* pParameters;
+
+    /// Holds chemical and processes data that are needed
+//    Utils::pChemAndProcData;
 
     /// Intialization of the KMC method. For example here the processes to be performed
     /// as these are written in the input file are constcucted through the factory method
@@ -109,6 +112,10 @@ private:
     /// The process map which holds all the processes and the sites that each can be performed.
     // Not to handy. Re-think... I have found another way... Implement it
     map< MicroProcesses::Process*, list< SurfaceTiles::Site* >* > m_processMap;
+
+    //This holds the process and the list of sites that can be performed.
+    //The id is a unique number for every process
+    map< int, list< SurfaceTiles::Site* >* > m_processM;
 
     /// Vector holding the processes to be performed.
     vector< MicroProcesses::Process*> m_vProcesses;

@@ -60,10 +60,10 @@ namespace SurfaceTiles
     return m_iHeight;
   }
 
-  void Site::setLatticeType(LatticeType type)
-  {
-    m_LatticeType = type;
-  }
+  //void Site::setLatticeType(LatticeType type)
+  //{
+   // m_LatticeType = type;
+  //}
 
   int Site::getNeighboursNum()
   {

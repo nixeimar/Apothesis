@@ -45,10 +45,12 @@ public:
     /// Destructor.
     virtual ~Site();
 
-    enum LatticeType {
+    //This should be on the Lattice
+    //and every lattice build their own Neghbours
+/*    enum LatticeType {
                         BCC,
                         FCC
-                     };
+                     };*/
 
     /// The position of the neighbour.
     enum NeighPoisition{
@@ -137,7 +139,7 @@ public:
     list< Process* > getProcesses();
 
     // Set the lattice type that this site belongs to
-    void setLatticeType(LatticeType);
+    //void setLatticeType(LatticeType);
 
     /// Set the site as phantom (or not)
     void setPhantom(bool phantom);
@@ -156,7 +158,7 @@ public:
 
 protected:
     //The lattice type that this site belongs to
-    LatticeType m_LatticeType;
+    //LatticeType m_LatticeType;
 
     /// The ID of the site.
     int m_iID;

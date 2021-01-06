@@ -25,6 +25,7 @@
 #include <fstream>
 
 #include "lattice.h"
+#include "species_new.h"
 
 using namespace std;
 using namespace SurfaceTiles;
@@ -51,18 +52,6 @@ public:
   /// Sets the type of the lattice.
   void setType(string);
 
-  /// Returns the x dimension of the lattice.
-  inline int getX() { return m_iSizeX; }
-
-  /// Returns the y dimension of the lattice.
-  inline int getY() { return m_iSizeY; }
-
-  /// Returns the size of the lattice.
-  inline int getSize() { return m_iSizeX * m_iSizeY; }
-
-  /// Returns a site with a specific id.
-  Site *getSite(int id);
-
   /// Various checks if the lattice has been constucted correctly. Partially implemented.
   void check();
 
@@ -70,10 +59,14 @@ public:
   void init();
 
   /// Build the lattice with an intitial height.
-  void build();
+  void build() override;
 
   /// Sets the minimun initial height for the lattice.
   void setInitialHeight(int height);
+
+  void adsorp(int siteID, species_new* chemSpecies) override;
+  void desorp(int siteID, species_new* chemSpecies) override;
+  void react(int siteID) override;
 
 protected:
   /// Build the neighbours for the BCC lattice for each site.

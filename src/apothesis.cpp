@@ -30,6 +30,7 @@
 #include "desorption.h"
 #include "diffusion.h"
 #include "SurfaceReaction.h"
+#include "reaction_new.h"
 #include <numeric>
 
 using namespace MicroProcesses;
@@ -491,8 +492,10 @@ void Apothesis::exec()
         //2. Pick a process according to the rates.
         //ToDo Store all the process rates in a Map
 
-        //3. From this process pick a random site with id and perform it
-        // i.e. m_processMap[ "selected process" ]->getSite( id )->perform.
+        //3. From this process pick a random site with id and perform it like this:
+
+        // i.e. randomSite = m_processMap[ "selected process" ]->getSite(randomID);
+        // i.e. m_processMap[ "selected process" ]->perform( randomSite ).
 
         //4. Re-compute the processes rates and re-compute Rtot (see ppt).
 

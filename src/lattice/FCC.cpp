@@ -615,8 +615,6 @@ void FCC::mf_neigh()
     }
   }
 
-Site* FCC::getSite( int id){ return m_vSites[ id]; }
-
 void FCC::check()
   {
   int k = 0;

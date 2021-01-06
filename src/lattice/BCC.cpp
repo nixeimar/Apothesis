@@ -20,7 +20,7 @@
 
 BCC::BCC(Apothesis *apothesis) : Lattice(apothesis)
 {
-	;
+    ;
 }
 
 BCC::BCC(Apothesis *apothesis, bool step, vector<int> stepInfo) : Lattice(apothesis),
@@ -52,7 +52,7 @@ void BCC::build()
 	}
 
 	// The sites of the lattice.
-	m_vSites.resize(getSize());
+    m_vSites.resize( getSize() );
 	for (int i = 0; i < m_vSites.size(); i++)
 		m_vSites[i] = new Site();
 
@@ -64,7 +64,6 @@ void BCC::build()
 		{
 			m_vSites[j]->setID(j);
 			m_vSites[j]->setHeight(m_iHeight - 1);
-			m_vSites[j]->setLatticeType(Site::LatticeType::BCC);
 		}
 	}
 
@@ -297,7 +296,7 @@ void BCC::mf_neigh()
 	}*/
 }
 
-Site* BCC::getSite(int id) { return m_vSites[id]; }
+//Site* BCC::getSite(int id) { return m_vSites[ id ]; }
 
 void BCC::check()
 {
@@ -307,9 +306,31 @@ void BCC::check()
 
 	int test = 2;
 	cout << test << ": ";
-	cout << "W:" << getSite(test)->getNeighPosition(Site::WEST)->getID() << " ";
+    cout << "W:" << getSite(test)->getNeighPosition(Site::WEST)->getID() << " ";
 	cout << "E:" << getSite(test)->getNeighPosition(Site::EAST)->getID() << " ";
 	cout << "N:" << getSite(test)->getNeighPosition(Site::NORTH)->getID() << " ";
 	cout << "S:" << getSite(test)->getNeighPosition(Site::SOUTH)->getID() << endl;
 
+}
+
+
+void BCC::adsorp( int siteID, species_new* chemSpec )
+{
+    //1.Add to this site species the new adroped species
+    //2.Check if this site can react (according to the reactio matrix) and put it in the appropriate process map classes.
+    // 2a. If a reaction with the max coeff has been completed. Remove it from adsoprtion and wait to react.
+    //3.Check if this site (according to the reactio matrix) can accept diffused species from the neighbour sites or be a donor.
+    // 3a. Do that for the neighbour sites and remove/add them accordingly in the process map.
+}
+
+void BCC::desorp(int siteID, species_new *chemSpecies)
+{
+    //The same as adsoprtion
+}
+
+void BCC::react(int siteID)
+{
+    //1.React means increase the sites height by one.
+    //2.Remove every species from this site (that means that the site is occupied by a lattice site).
+    //3.Update neighbours and process map according to the new height.
 }
