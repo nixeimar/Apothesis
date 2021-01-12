@@ -60,11 +60,19 @@ m_dimensions(3)
   {
   case Lattice::FCC:
   {
-    // TODO I think STEPS parameter needs to be incorporated along with the lattice 
-    FCC *lattice = new FCC(apothesis);
-    apothesis->pLattice = lattice;
-    m_lattice->setType("FCC");
-    break;
+    if (steps)
+    {
+      FCC *lattice = new FCC(apothesis, true, vStepInfo);
+      apothesis->pLattice = lattice;
+    }
+    else
+    {
+      FCC *lattice = new FCC(apothesis);
+      apothesis->pLattice = lattice;
+      m_lattice->setType("FCC");
+      break;
+    }
+    
   }
   case Lattice::BCC:
   {
@@ -83,7 +91,6 @@ m_dimensions(3)
     
     break;
   }
-  //case Lattice::FCC: apothesis->pLattice = new BCC(apothesis);
   default:
   {
     cout<<"Unresolvable lattice type found. Exiting..."<<endl;

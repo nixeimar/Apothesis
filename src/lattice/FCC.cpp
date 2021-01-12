@@ -23,6 +23,13 @@ FCC::FCC(Apothesis* apothesis):Lattice(apothesis)
     ;
 }
 
+FCC::FCC(Apothesis *apothesis, bool step, vector<int> stepInfo) : Lattice(apothesis),
+m_hasSteps(step),
+m_stepInfo(stepInfo)
+{
+  ;
+}
+
 void FCC::setInitialHeight( int  height ) { m_iHeight = height; }
 
 void FCC::build()

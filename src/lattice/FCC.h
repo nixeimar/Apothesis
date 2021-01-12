@@ -37,6 +37,8 @@ class FCC: public Lattice
     /// Constructor
     FCC( Apothesis* apothesis );
 
+    FCC(Apothesis *apothesis, bool step, vector<int> stepInfo);
+
     /// Distructor.
     virtual ~FCC();
 
@@ -71,6 +73,11 @@ class FCC: public Lattice
 
     /// The neighbours for the FCC lattice.
     void mf_neigh();
+
+  private:
+    bool m_hasSteps = false;
+  
+    vector<int> m_stepInfo;
 
   };
 

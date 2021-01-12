@@ -84,8 +84,8 @@ void BCC::build()
 		cout << " " << endl;
 	}
 
-	//		if (m_bHasSteps)
-	//			mf_buildsteps();
+	if (m_bHasSteps)
+		mf_buildSteps();
 
 	mf_neigh();
 }

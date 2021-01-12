@@ -5,7 +5,7 @@
     "dims": [160, 120, 10],
     "step": true
   },
-  "Time": 0.05
+  "Time": 0.05,
   "Temperature": 1100,
   "Pressure": 101325,
   "Species":
@@ -22,6 +22,12 @@
       "Species": ["Cu"],
       "Sticking": [0.1],
       "MassFraction": [1]
+    },
+    "Desorption":
+    {
+      "Species": ["Cu"],
+      "Energy": [17],
+      "Frequency": [10e13]
     },
     "Diffusion":
     {
