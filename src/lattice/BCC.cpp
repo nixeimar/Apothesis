@@ -54,7 +54,7 @@ void BCC::build()
 	// The sites of the lattice.
 	m_vSites.resize(getSize());
 	for (int i = 0; i < m_vSites.size(); i++)
-		m_vSites[i] = new Site();
+		m_vSites[i] = new Site(this);
 
 	//  m_pSites = new Site[ m_iSizeX*m_iSizeY];
 

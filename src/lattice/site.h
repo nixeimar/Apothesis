@@ -40,7 +40,7 @@ class Site
 public:
 
     /// Contructor.
-    Site();
+    Site(Lattice* lattice);
 
     /// Destructor.
     virtual ~Site();
@@ -196,6 +196,8 @@ protected:
     vector<Species*> m_species;
 
     bool m_phantom;
+
+    Lattice* m_lattice;
 };
 
 }

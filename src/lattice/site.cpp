@@ -23,9 +23,9 @@
 namespace SurfaceTiles
 {
 
-  Site::Site() : m_phantom(false)
+  Site::Site(Lattice *lattice) : m_phantom(false),
+                                 m_lattice(lattice)
   {
-   
   }
 
   Site::~Site() { ; }
@@ -180,6 +180,7 @@ namespace SurfaceTiles
     int totalNeigh = 0;
     m_vNeigh.clear();
 
+    
     // Check NESW sites, see if the heights are the same. If same, add to list of neighbours.
     bool isActiveEAST = false;
     isActiveEAST = (siteHeight == getNeighPosition(Site::EAST)->getHeight() &&
@@ -225,7 +226,7 @@ namespace SurfaceTiles
   void Site::m_updateNeighbourList()
   {
     // If called on a different site, simply call the respective site's m_updateNeighbours() function
-    vector<Site*> neighbours {getNeighPosition(Site::EAST), getNeighPosition(Site::WEST), getNeighPosition(Site::NORTH), getNeighPosition(Site::SOUTH)};
+    vector<Site *> neighbours{getNeighPosition(Site::EAST), getNeighPosition(Site::WEST), getNeighPosition(Site::NORTH), getNeighPosition(Site::SOUTH)};
     for (int neigh = 0; neigh < neighbours.size(); ++neigh)
     {
       neighbours[neigh]->m_updateNeighbours();
