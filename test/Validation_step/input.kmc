@@ -1,0 +1,37 @@
+{
+  "Lattice":
+  {
+    "Type": "FCC",
+    "dims": [160, 120, 10],
+    "step": true
+  },
+  "Time": 0.05
+  "Temperature": 1100,
+  "Pressure": 101325,
+  "Species":
+  {
+    "Cu":
+    {
+      "mw": 145
+    }
+  },
+  "Process":
+  {
+    "Adsorption":
+    {
+      "Species": ["Cu"],
+      "Sticking": [0.1],
+      "MassFraction": [1]
+    },
+    "Diffusion":
+    {
+      "Species": ["Cu"],
+      "Energy": [17],
+      "Frequency": [10e13]
+    }
+  },
+  "config":
+  {
+    "debug": "On"
+  }
+}
