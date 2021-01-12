@@ -138,10 +138,10 @@ void IO::readInputFile()
 
     if ( vsTokens[ 0].compare( m_sIterations ) == 0 ){
       if ( isNumber( vsTokens[ 1 ] ) ){
-        m_parameters->setIterations( toInt( vsTokens[ 1] ) );
+        m_parameters->setTime( toInt( vsTokens[ 1] ) );
         }
       else {
-        m_errorHandler->error_simple_msg("Could not read number of KMC iterations from input file. Is it a number?");
+        m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
         EXIT;
         }
       }

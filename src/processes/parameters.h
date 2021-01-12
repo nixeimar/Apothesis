@@ -20,6 +20,7 @@
 
 #include "pointers.h"
 #include "apothesis.h"
+#include <iostream>
 
 using namespace std;
 
@@ -51,10 +52,18 @@ class Parameters: public Pointers
     inline double getPressure() { return m_dP; }
 
     /// Set the total number of KMC iterations
-    inline void setIterations( int iter ) { m_iIter = iter; }
+    inline void setTime( double time ) 
+    {
+      m_time = time; 
+      std::cout<<"set m_time: "<<m_time<<std::endl;  
+    }
 
     /// Set the total number of KMC iterations
-    inline int getIterations() { return m_iIter; }
+    inline double getTime() 
+    {
+      std::cout<<"m_time: "<<m_time<<std::endl; 
+      return m_time; 
+    }
 
     /// The Avogadro number.
     const double dAvogadroNum = 6.022141793e+23;
@@ -82,7 +91,7 @@ class Parameters: public Pointers
     double m_dP;
 
     /// The number of iterations to be performed.
-    int m_iIter;
+    double m_time;
 
     /// Stores the processes as read from the input file allong with their parameters.
     map< string,  vector< double> > m_mProcs;

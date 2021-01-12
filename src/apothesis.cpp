@@ -43,7 +43,8 @@ typedef rapidjson::SizeType SizeType;
 Apothesis::Apothesis(int argc, char *argv[])
     : pLattice(0),
       pRead(0),
-      m_debugMode(false)
+      m_debugMode(false),
+      m_time(0)
 {
   m_iArgc = argc;
   m_vcArgv = argv;
@@ -470,24 +471,22 @@ void Apothesis::init()
 void Apothesis::exec()
 {
   ///Perform the number of KMC steps read from the input.
-  int iterations = pParameters->getIterations();
+  double simulationTime = pParameters->getTime();
 
-  if (iterations == 0)
+  if (simulationTime == 0)
   {
-    pErrorHandler->error_simple_msg("Zero iterations found.");
+    pErrorHandler->error_simple_msg("Simulation time found to be zero.");
     EXIT;
   }
   else
   {
-    pIO->writeLogOutput("Running " + to_string(iterations) + " iterations");
+    pIO->writeLogOutput("Running simulation for " + to_string(simulationTime) + " seconds");
   }
 
   /// Get list of possible processes
-  for (int i = 0; i < iterations; ++i)
+  for (int i = 0; i < simulationTime; ++i)
   {
-    /// Print to output
-    pIO->writeLogOutput("Time step: " + to_string(i));
-
+    
     vector<Process *> processes = m_vProcesses;
     /// Find probability of each process
     vector<double> probabilities = calculateProbabilities(m_vProcesses);
@@ -571,6 +570,14 @@ vector<double> Apothesis::calculateProbabilities(vector<Process *> pProcesses)
   {
     *itr = *itr / total;
   }
+
+  // Increment time
+  double random = (double)rand() / RAND_MAX;
+
+  m_time += -log(random)/total;
+  
+  /// Print to output
+  pIO->writeLogOutput("Time step: " + to_string(m_time));
 
   return probability;
 }

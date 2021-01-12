@@ -113,8 +113,8 @@ m_dimensions(3)
   m_lattice->setInitialHeight(latticeDimensions[2]);
 
   // Set the iterations, temperature, and pressure
-  apothesis->logSuccessfulRead(m_input.HasMember("Iterations"), "Iterations");
-  m_parameters->setIterations(m_input["Iterations"].GetInt());
+  apothesis->logSuccessfulRead(m_input.HasMember("Time"), "Time");
+  m_parameters->setTime(m_input["Time"].GetDouble());
 
   apothesis->logSuccessfulRead(m_input.HasMember("Temperature"), "Temperature");
   m_parameters->setTemperature(m_input["Temperature"].GetDouble());
@@ -125,6 +125,7 @@ m_dimensions(3)
   // Storing all processes names into apothesis class
   apothesis->logSuccessfulRead(m_input.HasMember("Process"), "Process");
   Value &process = m_input["Process"];
+
 
   // Add processes into a vector, stored under apothesis
   for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
