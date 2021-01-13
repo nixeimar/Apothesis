@@ -186,54 +186,7 @@ namespace SurfaceTiles
 
   void Site::m_updateNeighbours()
   {
-    
     m_lattice->updateNeighbours(this);
-
-    int siteHeight = getHeight();
-    int totalNeigh = 0;
-    m_vNeigh.clear();
-
-    
-    // Check NESW sites, see if the heights are the same. If same, add to list of neighbours.
-    bool isActiveEAST = false;
-    isActiveEAST = (siteHeight == getNeighPosition(Site::EAST)->getHeight() &&
-                    siteHeight == getNeighPosition(Site::EAST_DOWN)->getHeight() &&
-                    siteHeight == getNeighPosition(Site::EAST_UP)->getHeight());
-    if (isActiveEAST)
-    {
-      m_vNeigh.push_back(getNeighPosition(Site::EAST));
-      totalNeigh++;
-    }
-
-    bool isActiveWEST = false;
-    isActiveWEST = (siteHeight == getNeighPosition(Site::WEST)->getHeight() &&
-                    siteHeight == getNeighPosition(Site::WEST_DOWN)->getHeight() &&
-                    siteHeight == getNeighPosition(Site::WEST_UP)->getHeight());
-    if (isActiveWEST)
-    {
-      m_vNeigh.push_back(getNeighPosition(Site::WEST));
-      totalNeigh++;
-    }
-
-    bool isActiveNORTH = false;
-    isActiveNORTH = (siteHeight == getNeighPosition(Site::WEST_UP)->getHeight() &&
-                     siteHeight == getNeighPosition(Site::EAST_UP)->getHeight() &&
-                     siteHeight == getNeighPosition(Site::NORTH)->getHeight());
-    if (isActiveNORTH)
-    {
-      m_vNeigh.push_back(getNeighPosition(Site::NORTH));
-      totalNeigh++;
-    }
-
-    bool isActiveSOUTH = false;
-    isActiveSOUTH = (siteHeight == getNeighPosition(Site::WEST_DOWN)->getHeight() &&
-                     siteHeight == getNeighPosition(Site::EAST_DOWN)->getHeight() &&
-                     siteHeight == getNeighPosition(Site::SOUTH)->getHeight());
-    if (isActiveSOUTH)
-    {
-      m_vNeigh.push_back(getNeighPosition(Site::SOUTH));
-      totalNeigh++;
-    }
   }
 
   void Site::m_updateNeighbourList()

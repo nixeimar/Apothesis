@@ -341,7 +341,7 @@ void BCC::updateNeighbours(Site* site)
     }
 
     bool isActiveWEST = false;
-    isActiveWEST = siteHeight == site->getNeighPosition(Site::WEST)->getHeight();
+    isActiveWEST = siteHeight <= site->getNeighPosition(Site::WEST)->getHeight();
     if (isActiveWEST)
     {
       site->m_addSite(site->getNeighPosition(Site::WEST));
@@ -349,7 +349,7 @@ void BCC::updateNeighbours(Site* site)
     }
 
     bool isActiveNORTH = false;
-    isActiveNORTH = siteHeight == site->getNeighPosition(Site::WEST_UP)->getHeight();
+    isActiveNORTH = siteHeight <= site->getNeighPosition(Site::NORTH)->getHeight();
     if (isActiveNORTH)
     {
       site->m_addSite(site->getNeighPosition(Site::NORTH));
@@ -357,7 +357,7 @@ void BCC::updateNeighbours(Site* site)
     }
 
     bool isActiveSOUTH = false;
-    isActiveSOUTH = siteHeight == site->getNeighPosition(Site::WEST_DOWN)->getHeight();
+    isActiveSOUTH = siteHeight <= site->getNeighPosition(Site::SOUTH)->getHeight();
     if (isActiveSOUTH)
     {
       site->m_addSite(site->getNeighPosition(Site::SOUTH));

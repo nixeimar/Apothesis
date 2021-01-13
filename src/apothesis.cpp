@@ -484,7 +484,7 @@ void Apothesis::exec()
   }
 
   /// Get list of possible processes
-  for (int i = 0; i < simulationTime; ++i)
+  while (m_time < simulationTime)
   {
     
     vector<Process *> processes = m_vProcesses;
@@ -511,11 +511,7 @@ void Apothesis::exec()
     // The user should also check if the messages are written on the terminal or not.
     pIO->writeLogOutput(p->getName() + " ");
     pIO->writeLatticeHeights();
-
-    if (i == 0)
-    {
-      cout << m_vProcesses[0]->getName() << " process is being performed..." << endl;
-    }
+    
     // TODO: check if all processes are 0
   }
 }
