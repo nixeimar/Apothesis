@@ -326,5 +326,41 @@ void BCC::check()
 
 void BCC::updateNeighbours(Site* site)
 {
-	;
+	int siteHeight = site->getHeight();
+
+  	int totalNeigh = 0;
+  	site->m_clearNeighbourList();
+
+	// Check NESW sites, see if the heights are the same. If same, add to list of neighbours.
+    bool isActiveEAST = false;
+    isActiveEAST = siteHeight <= site->getNeighPosition(Site::EAST)->getHeight();
+    if (isActiveEAST)
+    {
+      site->m_addSite(site->getNeighPosition(Site::EAST));
+      totalNeigh++;
+    }
+
+    bool isActiveWEST = false;
+    isActiveWEST = siteHeight == site->getNeighPosition(Site::WEST)->getHeight();
+    if (isActiveWEST)
+    {
+      site->m_addSite(site->getNeighPosition(Site::WEST));
+      totalNeigh++;
+    }
+
+    bool isActiveNORTH = false;
+    isActiveNORTH = siteHeight == site->getNeighPosition(Site::WEST_UP)->getHeight();
+    if (isActiveNORTH)
+    {
+      site->m_addSite(site->getNeighPosition(Site::NORTH));
+      totalNeigh++;
+    }
+
+    bool isActiveSOUTH = false;
+    isActiveSOUTH = siteHeight == site->getNeighPosition(Site::WEST_DOWN)->getHeight();
+    if (isActiveSOUTH)
+    {
+      site->m_addSite(site->getNeighPosition(Site::SOUTH));
+      totalNeigh++;
+    }
 }
