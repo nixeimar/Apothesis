@@ -75,6 +75,9 @@ public:
   /// Sets the minimun initial height for the lattice.
   void setInitialHeight(int height);
 
+  /// Update neighbours
+  void updateNeighbours(Site* s);
+
 protected:
   /// Build the neighbours for the BCC lattice.
   void mf_neigh();

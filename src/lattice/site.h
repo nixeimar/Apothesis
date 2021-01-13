@@ -154,6 +154,11 @@ public:
     // Call updateneighbours on another site
     void m_updateNeighbourList();
 
+    /// Clear neighbour list
+    void m_clearNeighbourList();
+
+    void m_addSite(Site* site);
+
 protected:
     //The lattice type that this site belongs to
     LatticeType m_LatticeType;

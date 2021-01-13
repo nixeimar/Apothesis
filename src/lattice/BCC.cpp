@@ -323,3 +323,8 @@ void BCC::check()
 	cout << "E:" << getSite(test)->getActivationSite(Site::ACTV_EAST)->getID() << " ";
 	cout << "W:" << getSite(test)->getActivationSite(Site::ACTV_WEST)->getID() << endl;
 }
+
+void BCC::updateNeighbours(Site* site)
+{
+	;
+}

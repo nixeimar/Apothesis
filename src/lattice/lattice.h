@@ -59,6 +59,9 @@ class Lattice: public Pointers
     /// Returns the size of the lattice.
     virtual int getSize() = 0;
 
+    /// Call update neighbours function;
+    virtual void updateNeighbours(Site* site) = 0;
+
     /// Returns the type of the lattice
     Lattice::Type getType();
 

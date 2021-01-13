@@ -69,6 +69,8 @@ class FCC: public Lattice
     /// Sets the minimun initial height for the lattice.
     void setInitialHeight( int  height );
 
+    void updateNeighbours(Site* s);
+
   protected:
 
     /// The neighbours for the FCC lattice.
