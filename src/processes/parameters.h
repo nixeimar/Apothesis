@@ -55,13 +55,11 @@ class Parameters: public Pointers
     inline void setTime( double time ) 
     {
       m_time = time; 
-      std::cout<<"set m_time: "<<m_time<<std::endl;  
     }
 
     /// Set the total number of KMC iterations
     inline double getTime() 
     {
-      std::cout<<"m_time: "<<m_time<<std::endl; 
       return m_time; 
     }
 

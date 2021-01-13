@@ -123,11 +123,6 @@ class Desorption: public Process
     /// Remove a site from a list
     void mf_removeFromList();
 
-    /// Update the neighbour sites of this site. This is performed here since depending on the process
-    /// this changes. E.g. fotr adsortpion in a FCC lattice the first neighbors are different compared to the
-    /// adsroption in a BCC lattice.
-    void mf_updateNeighNum();
-
     /// The value of the probability of the process is stored here
     double m_dProbability;
 

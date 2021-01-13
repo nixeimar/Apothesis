@@ -110,7 +110,7 @@ void Desorption::perform()
     getDiffusion()->mf_removeFromList(m_site);
   }
   
-  mf_updateNeighNum();
+  m_site->m_updateNeighbours();
 
   // Remove count from list of sites that have n number of neighbours
   updateSiteCounter(numNeighbours, false);
@@ -129,48 +129,6 @@ void Desorption::mf_addToList(Site *s)
   m_lDesSites.push_back(s); 
 }
 
-void Desorption::mf_updateNeighNum()
-{
-  //pLattice->updateNeighNum();
-
-  bool isActiveEAST = false;
-  isActiveEAST = ( m_site->getHeight() == m_site->getNeighPosition( Site::EAST )->getHeight()  && \
-                   m_site->getHeight() == m_site->getNeighPosition( Site::EAST_DOWN)->getHeight() && \
-                   m_site->getHeight() == m_site->getNeighPosition( Site::EAST_UP)->getHeight() );
-
-  bool isActiveWEST = false;
-  isActiveWEST = ( m_site->getHeight() == m_site->getNeighPosition( Site::WEST )->getHeight() && \
-                   m_site->getHeight() == m_site->getNeighPosition( Site::WEST_DOWN)->getHeight() && \
-                   m_site->getHeight() == m_site->getNeighPosition( Site::WEST_UP)->getHeight() );
-
-  bool isActiveNORTH = false;
-  isActiveNORTH = ( m_site->getHeight() == m_site->getNeighPosition( Site::WEST_UP )->getHeight() && \
-                    m_site->getHeight() == m_site->getNeighPosition( Site::EAST_UP)->getHeight() && \
-                    m_site->getHeight() == m_site->getNeighPosition( Site::NORTH)->getHeight() );
-
-  bool isActiveSOUTH = false;
-  isActiveSOUTH = ( m_site->getHeight() == m_site->getNeighPosition( Site::WEST_DOWN )->getHeight() && \
-                    m_site->getHeight() == m_site->getNeighPosition( Site::EAST_DOWN)->getHeight() &&  \
-                    m_site->getHeight() == m_site->getNeighPosition( Site::SOUTH)->getHeight() );
-
-  // Store the activated sites
-  if ( isActiveEAST )
-    mf_addToList( m_site->getActivationSite( Site::ACTV_EAST ));
-
-  if ( isActiveWEST )
-    mf_addToList( m_site->getActivationSite( Site::ACTV_WEST ));
-
-  if ( isActiveNORTH )
-    mf_addToList( m_site->getActivationSite( Site::ACTV_NORTH ));
-
-  if ( isActiveSOUTH )
-    mf_addToList( m_site->getActivationSite( Site::ACTV_SOUTH ));
-
-  // Clear all non-unique elements in list
-  m_lDesSites.sort();
-  m_lDesSites.unique();
-  m_iNeighNum = m_lDesSites.size();
-}
 
 list<Site*> Desorption::getActiveList()
 {
@@ -294,7 +252,7 @@ void Desorption::updateNeighbours(Site* s)
     updateSiteCounter(site->getNeighboursNum(), false);
     m_site = site;
     // Recalculate the number of sites
-    mf_updateNeighNum();
+    s->m_updateNeighbours();
     updateSiteCounter(m_site->getNeighboursNum(), true);
   }
 }

@@ -414,15 +414,17 @@ void IO::writeLatticeHeights()
 
   // This must be formatted output.
   m_OutFile << " --------------------------------------- " << endl;
-  for ( int i = 0; i < m_lattice->getX(); i++) 
+  for ( int i = 0; i < m_lattice->getY()-1; i++) 
   {
-    for (int j = 0;  j < m_lattice->getY(); j++)
+    for (int j = 0;  j < m_lattice->getX(); j++)
     {
+      int index = j + i*m_lattice->getX();
       m_OutFile 
       << "( " 
-      << m_lattice->getSites()[ j + i*m_lattice->getX() ]->getHeight() 
+      << m_lattice->getSites()[ index ]->getHeight() 
       << ", [ ";
-      
+
+  // TODO: assign default species to each site
       vector<string> speciesList = m_lattice->getSite(j+i*m_lattice->getX())->getSpeciesName();
       if (speciesList.size() > 0)
       {
