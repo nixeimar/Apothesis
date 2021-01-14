@@ -96,7 +96,7 @@ class Lattice: public Pointers
     void setInitialHeight( int  height );
 
     //Set true if the lattice has steps
-    void setSteps(bool hasSteps = false);
+    void setSteps(bool hasSteps);
 
     /// Store the surface step info
     void setStepInfo(int, int, int);
@@ -121,9 +121,9 @@ class Lattice: public Pointers
     virtual void mf_neigh() = 0;
 
     /// True if the lattice has steps (comes from the input file if the Step keyword is found).
-    bool m_bHasSteps;
+    bool m_hasSteps = false;
 
-    ///Build the steps id m_bHasSteps is true. 
+    ///Build the steps id m_hasSteps is true. 
     void mf_buildSteps();
 
     //The info for the step surface i.e. [1 20 10]

@@ -64,6 +64,7 @@ Apothesis::Apothesis(int argc, char *argv[])
 
   std::cout << "Building the lattice" << std::endl;
   pLattice->build();
+  pIO->writeLatticeHeights();
   std::cout << "Finished building the lattice" << std::endl;
 
   // initialize number of species

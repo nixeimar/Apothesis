@@ -35,106 +35,111 @@ using namespace MicroProcesses;
 namespace SurfaceTiles
 {
 
-class Site
-{
-public:
-
+  class Site
+  {
+  public:
     /// Contructor.
-    Site(Lattice* lattice);
+    Site(Lattice *lattice);
 
     /// Destructor.
     virtual ~Site();
 
-    enum LatticeType {
-                        BCC,
-                        FCC
-                     };
+    enum LatticeType
+    {
+      BCC,
+      FCC
+    };
 
     /// The position of the neighbour.
-    enum NeighPoisition{
-                         WEST,
-                         WEST_UP,
-                         WEST_DOWN,
-                         EAST,
-                         EAST_UP,
-                         EAST_DOWN,
-                         NORTH,
-                         SOUTH
-                       };
+    enum NeighPoisition
+    {
+      WEST,
+      WEST_UP,
+      WEST_DOWN,
+      EAST,
+      EAST_UP,
+      EAST_DOWN,
+      NORTH,
+      SOUTH
+    };
 
     /// The site that is activated if the neighbours are all occupied.
-    enum ActivationSite{
-                         ACTV_WEST,
-                         ACTV_WEST_UP,
-                         ACTV_WEST_DOWN,
-                         ACTV_EAST,
-                         ACTV_EAST_UP,
-                         ACTV_EAST_DOWN,
-                         ACTV_NORTH,
-                         ACTV_SOUTH
-                       };
+    enum ActivationSite
+    {
+      ACTV_WEST,
+      ACTV_WEST_UP,
+      ACTV_WEST_DOWN,
+      ACTV_EAST,
+      ACTV_EAST_UP,
+      ACTV_EAST_DOWN,
+      ACTV_NORTH,
+      ACTV_SOUTH
+    };
 
     /// Set the height of the particular site.
-    void setHeight( int );
+    void setHeight(int height);
 
     /// Get the height of the particular site.
     int getHeight();
 
+    /// Increase the height by a certain amount.
+    void increaseHeight(int height);
+
     /// Set the neigbours.
-    void setNeigh( Site*);
+    void setNeigh(Site *);
 
     /// Initialize map
     void initSpeciesMap(int numSpecies);
 
     /// Get the neigbours at the same level.
-    vector< Site* > getNeighs();
+    vector<Site *> getNeighs();
 
     /// Check if this site is active and can absorb.
     bool isActive();
 
     /// Set an ID for this site.
-    void setID( int );
+    void setID(int);
 
     /// Get the ID of this lattice site.
     int getID();
 
     /// Set the number of the neighbours according to the height of its neighbour sites
-    void setNeighboursNum( int );
+    void setNeighboursNum(int);
 
     /// Returns the number of the neighbours according to the height of its neighbour sites.
     int getNeighboursNum();
 
     /// Set the neihbour position for this site.
-    void setNeighPosition( Site*, NeighPoisition  );
+    void setNeighPosition(Site *, NeighPoisition);
 
     /// Get the neihbour position for this site.
-    Site* getNeighPosition( NeighPoisition );
+    Site *getNeighPosition(NeighPoisition);
 
     /// Stores the sites that are activated.
-    void storeActivationSite( Site* s, ActivationSite as);
+    void storeActivationSite(Site *s, ActivationSite as);
 
     /// Returns the sites that are activated.
-    Site* getActivationSite( ActivationSite as);
+    Site *getActivationSite(ActivationSite as);
 
     /// This will holds all the elements that can interact with the surfaces.
     /// Important when we talk about surface reactions.
     /// Element class has not implement yet for that we use forward decleration.
-    void addSpecies( Species* s);
+    void addSpecies(Species *s);
 
-    void removeSpecies( Species* s);
+    void removeSpecies(Species *s);
 
-    vector<Species*> getSpecies();
+    vector<Species *> getSpecies();
 
     vector<string> getSpeciesName();
 
     /// Add a processes in the list of processes that this site can participate in.
-    void addProcess( Process* );
+    void addProcess(Process *);
 
     /// Remove a processes from the list of processes that this site can participate in.
-    void removeProcess( Process* );
+    void removeProcess(Process *);
 
     /// Get pointer to possible processes that can occur on this site
-    list< Process* > getProcesses();
+    list<Process *> getProcesses();
 
     // Set the lattice type that this site belongs to
     void setLatticeType(LatticeType);
@@ -148,7 +153,7 @@ public:
     /// Return pointer to map
     map<int, int> getSpeciesMap();
 
-     // Update neighbour list
+    // Update neighbour list
     void m_updateNeighbours();
 
     // Call updateneighbours on another site
@@ -157,9 +162,9 @@ public:
     /// Clear neighbour list
     void m_clearNeighbourList();
 
-    void m_addSite(Site* site);
+    void m_addSite(Site *site);
 
-protected:
+  protected:
     //The lattice type that this site belongs to
     LatticeType m_LatticeType;
 
@@ -174,20 +179,20 @@ protected:
     int m_iHeight;
 
     /// The neighbours at the same level - We do not need this because we have the map (see below).
-    vector< Site*> m_vNeigh;
+    vector<Site *> m_vNeigh;
 
     /// Holds the number of the neighbours of the particular site according to each height/
     int m_iNumNeighs;
 
     //TODO: get rid of map?
     /// A map that holds the neighbour sites according to their orientation.
-    map< NeighPoisition, Site*> m_mapNeigh;
+    map<NeighPoisition, Site *> m_mapNeigh;
 
     /// A map that hold the sites that this site can activate if it has all the its neighbours occupied.
-    map< ActivationSite, Site* > m_mapAct;
+    map<ActivationSite, Site *> m_mapAct;
 
     /// A list of active sites for each process
-    map< Process*, vector<Site*>> activeSites;
+    map<Process *, vector<Site *>> activeSites;
 
     /// A map counting the species that are present
     map<int, int> m_mapSpecies;
@@ -196,15 +201,15 @@ protected:
     bool m_bIsOccupied;
 
     /// The list of processes that this site can participate in.
-    list< Process* > m_lProcs;
+    list<Process *> m_lProcs;
 
-    vector<Species*> m_species;
+    vector<Species *> m_species;
 
     bool m_phantom;
 
-    Lattice* m_lattice;
-};
+    Lattice *m_lattice;
+  };
 
-}
+} // namespace SurfaceTiles
 
 #endif

@@ -60,6 +60,11 @@ namespace SurfaceTiles
     return m_iHeight;
   }
 
+  void Site::increaseHeight(int height)
+  {
+    m_iHeight += height;
+  }
+
   void Site::setLatticeType(LatticeType type)
   {
     m_LatticeType = type;

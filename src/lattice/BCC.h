@@ -76,7 +76,7 @@ public:
   void setInitialHeight(int height);
 
   /// Update neighbours
-  void updateNeighbours(Site* s);
+  void updateNeighbours(Site *s);
 
 protected:
   /// Build the neighbours for the BCC lattice.
@@ -86,7 +86,7 @@ protected:
   void mf_buildNeighbours();
 
 private:
-  bool m_hasSteps = false;
+  bool m_hasSteps;
 
   vector<int> m_stepInfo;
 };

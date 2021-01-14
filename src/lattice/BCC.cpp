@@ -23,6 +23,7 @@ BCC::BCC(Apothesis *apothesis) : Lattice(apothesis)
 	;
 }
 
+// TODO: Should "hasSteps" be migrated to lattice base class?
 BCC::BCC(Apothesis *apothesis, bool step, vector<int> stepInfo) : Lattice(apothesis),
 m_hasSteps(step),
 m_stepInfo(stepInfo)
@@ -84,7 +85,7 @@ void BCC::build()
 		cout << " " << endl;
 	}
 
-	if (m_bHasSteps)
+	if (m_hasSteps)
 		mf_buildSteps();
 
 	mf_neigh();
@@ -98,7 +99,7 @@ BCC::~BCC()
 
 void BCC::setSteps(bool hasSteps)
 {
-	m_bHasSteps = hasSteps;
+	m_hasSteps = hasSteps;
 }
 
 void BCC::setStepInfo(int sizeX, int sizeY, int sizeZ)
@@ -110,22 +111,66 @@ void BCC::setStepInfo(int sizeX, int sizeY, int sizeZ)
 
 void BCC::mf_buildSteps()
 {
+	// Pick dimension of step
+	// TODO: Can we assume that the largest value is the dimension of stepping?
+	// Find the initial height from arbitrary site
+	int initialHeight = m_vSites[0]->getHeight();
+	vector<int> currentDimensions{m_iSizeX, m_iSizeY, initialHeight};
 
-	if (m_iSizeX % m_iStepX != 0)
+	int iteration = 0;
+	int stepDimension = 0, stepSoFar = 0, growthDimension = 0, growthSoFar = 0, latentDimension = 0;
+	for (auto& dim : m_stepInfo)
+	{
+		// If the step information is the same value as lattice dim, this will not be the step/growth dimension
+		if (dim != currentDimensions[iteration])
+		{
+			// The step dimension will be the largest value
+		    if (dim > stepSoFar) 
+			{
+				stepDimension = iteration;
+				stepSoFar = dim;
+			}
+			else
+			{
+				growthDimension = iteration;	
+			}
+		}
+		else
+		{
+			latentDimension = iteration;
+		}
+		
+		iteration++;
+	}
+
+	for (unsigned int firstDim = 0; firstDim < currentDimensions[latentDimension]; ++firstDim)
+	{
+		for (unsigned int secondDim = 0; secondDim < currentDimensions[stepDimension]; ++secondDim)
+		{
+			// Calculate how much we increase the step by.
+			// Calculation is split up to ensure we have proper integer division in the first step.
+			int growth = secondDim/m_stepInfo[stepDimension];
+			growth *= m_stepInfo[growthDimension];
+			int index = firstDim * currentDimensions[stepDimension] + secondDim;
+			m_vSites[index]->increaseHeight(growth);
+		}
+	}
+
+	/* if (m_iSizeX % m_iStepX != 0)
 	{
 		m_errorHandler->error_simple_msg("ERROR: The number of steps you provided doesn't conform with the lattice size ");
 		exit(0);
-	}
-	if (m_iStepY != 0) // Be sure that we do have steps. If indi_y = 0 (1 0 0) then we have an initial flat surface
-	{
-		unsigned int steps = m_iSizeX / m_iStepX;
-		for (unsigned int step = 1; step < steps; step++)
-			for (unsigned int i = step * m_iStepX; i < (step + 1) * m_iStepX; i++)
-				for (unsigned int j = 0; j < m_iSizeY; j++)
-					m_vSites[i * m_iStepY + j] += m_iStepY * step;
-		//(*mesh)[i][j] += m_iStepY * step;///
-		cout << "Number of steps:" << steps << endl;
-	}
+	} */
+	//if (m_iStepY != 0) // Be sure that we do have steps. If indi_y = 0 (1 0 0) then we have an initial flat surface
+	//{
+	//	unsigned int steps = m_iSizeX / m_iStepX;
+	//	for (unsigned int step = 1; step < steps; step++)
+	//		for (unsigned int i = step * m_iStepX; i < (step + 1) * m_iStepX; i++)
+	//			for (unsigned int j = 0; j < m_iSizeY; j++)
+	//				m_vSites[i * m_iStepY + j] += m_iStepY * step;
+	//	//(*mesh)[i][j] += m_iStepY * step;///
+	//	cout << "Number of steps:" << steps << endl;
+	//}
 }
 
 void BCC::mf_neigh()
