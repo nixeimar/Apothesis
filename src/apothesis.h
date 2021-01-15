@@ -23,7 +23,12 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <set>
+#include <valarray>
+#include "species_new.h"
+
 #include "species/species.h"
+
 
 #define EXIT { printf("Apothesis terminated. \n"); exit( EXIT_FAILURE ); }
 
@@ -110,12 +115,40 @@ public:
 
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
-    // Not to handy. Re-think... I have found another way... Implement it
+    //Not to handy. Re-think... I have found another way... Implement it
     map< MicroProcesses::Process*, list< SurfaceTiles::Site* >* > m_processMap;
 
     //This holds the process and the list of sites that can be performed.
-    //The id is a unique number for every process
-    map< int, list< SurfaceTiles::Site* >* > m_processM;
+    //This should replace m_processMap.
+    //Have to check if string is the name of the process or should we put
+    //set is log(n) in insert and delete and log(1) for delete
+    // "Adsorption:CuAMD" must be a name of a process because we want to be able to do
+    // m_procMap["Adsorption:CuAMD"]->addSite(Site);
+    map< string, set< int > > m_procMap;
+
+    //The map holding all tbe species. The int is the same as the ID of the species.
+    // e.g Assuming the user has procided CuAMD, H2, SiH4, SiH2
+    // then m_speciesMAP[ 0 ]= > CuAMD
+    //      m_speciesMAP[ 1 ]= > H2
+    //      m_speciesMAP[ 2 ]= > SiH4
+    //      m_speciesMAP[ 3 ]= > SiH2
+    map< int, species_new* > m_speciesMap;
+
+    // Hold the name and the stichiometric coeficient of the reactants in the surface reactions
+    // The elements of the vector can be accessed through thr id of the species.
+
+    // e.g. 2CuAMD + 2H2 => ...
+    // e.g. CuAMD + S => ...
+    // CuAMD: 0
+    // H2: 1
+    // S: 2
+    // e.g. Reaction_0: 2 2 0 0 0 0 0 0 etc.
+    //      Reaction_1: 1 0 1 0 0 0 0 0 etc.
+    // m_surfReactionsMap[ 0 ] -> will return the stoichiometric coeff for this reactions.
+    map< string, valarray<int> > m_surfReacMap;
+
+    // Same as m_surfReacMap holding the procudts. The string should be the same.
+    map< string, valarray<int> > m_surfProdMap;
 
     /// Vector holding the processes to be performed.
     vector< MicroProcesses::Process*> m_vProcesses;

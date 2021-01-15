@@ -300,8 +300,6 @@ void BCC::mf_neigh()
 
 void BCC::check()
 {
-	int k = 0;
-
 	cout << "Checking lattice..." << endl;
 
 	int test = 2;
@@ -313,14 +311,21 @@ void BCC::check()
 
 }
 
-
 void BCC::adsorp( int siteID, species_new* chemSpec )
 {
+
+    //For Vlachos results
+    m_vSites[ siteID ]->increaseHeight();
+
+
     //1.Add to this site species the new adroped species
+    //m_vSites[ siteID ]->getReactSpecies()[ chemSpec->getID() ]++;
+
     //2.Check if this site can react (according to the reactio matrix) and put it in the appropriate process map classes.
-    // 2a. If a reaction with the max coeff has been completed. Remove it from adsoprtion and wait to react.
+    //  2a. If a reaction with the max coeff has been completed. Remove it from adsoprtion and wait to react.
+
     //3.Check if this site (according to the reactio matrix) can accept diffused species from the neighbour sites or be a donor.
-    // 3a. Do that for the neighbour sites and remove/add them accordingly in the process map.
+    //  3a. Do that for the neighbour sites and remove/add them accordingly in the process map.
 }
 
 void BCC::desorp(int siteID, species_new *chemSpecies)
@@ -331,6 +336,8 @@ void BCC::desorp(int siteID, species_new *chemSpecies)
 void BCC::react(int siteID)
 {
     //1.React means increase the sites height by one.
+
     //2.Remove every species from this site (that means that the site is occupied by a lattice site).
-    //3.Update neighbours and process map according to the new height.
+
+    //3.Update neighbours and process map according to the new height as we would do in PVD.
 }

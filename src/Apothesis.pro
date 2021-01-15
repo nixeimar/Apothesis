@@ -21,6 +21,8 @@ INCLUDEPATH += . \
 HEADERS += apothesis.h \
            pointers.h \
            processes/adsorption_new.h \
+           processes/desorption_new.h \
+           processes/diffusion_new.h \
            processes/process_new.h \
            processes/reaction_new.h \
            register.h \
@@ -44,8 +46,10 @@ HEADERS += apothesis.h \
 SOURCES += apothesis.cpp \
            lattice/lattice.cpp \
            main.cpp \
-           processes/adsorption_new.cpp \
-           processes/process_new.cpp \
+           processes/Adsorption_new.cpp \
+           processes/Desorption_new.cpp \
+           processes/Diffusion_new.cpp \
+           processes/Process_new.cpp \
            processes/reaction_new.cpp \
            register.cpp \
            error/errorhandler.cpp \

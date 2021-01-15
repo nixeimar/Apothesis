@@ -60,10 +60,9 @@ namespace SurfaceTiles
     return m_iHeight;
   }
 
-  //void Site::setLatticeType(LatticeType type)
-  //{
-   // m_LatticeType = type;
-  //}
+  void Site::increaseHeight(){
+    m_iHeight++;
+  }
 
   int Site::getNeighboursNum()
   {
@@ -72,7 +71,7 @@ namespace SurfaceTiles
 
   void Site::setNeighPosition(Site *s, NeighPoisition np)
   {
-    m_mapNeigh[np] = s;
+    m_mapNeigh[ np ] = s;
   }
 
   Site *Site::getNeighPosition(NeighPoisition np)
@@ -239,6 +238,13 @@ namespace SurfaceTiles
     {
       m_mapSpecies[i] = 0;
     }
+  }
+
+  void Site::initSpecies( int totalSpecies )
+  {
+    m_vReacSpecies.resize( totalSpecies );
+    for (int i = 0; i < totalSpecies; i++)
+        m_vReacSpecies[ i ]  = 0;
   }
 
 } // namespace SurfaceTiles

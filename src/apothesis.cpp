@@ -469,6 +469,9 @@ void Apothesis::init()
 
 void Apothesis::exec()
 {
+    //Adsorption_new ads = new
+
+
   ///Perform the number of KMC steps read from the input.
 //  int iterations = pParameters->getIterations();
     double dTime = pParameters->getEndTime();
@@ -502,7 +505,6 @@ void Apothesis::exec()
         //5. Compute dt = -ln(ksi)/Rtot
 
         //6. advance time: time += dt;
-
     }
 
   /*  for (int i = 0; i < iterations; ++i){

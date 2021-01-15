@@ -22,6 +22,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <valarray>
 
 #include "process.h"
 #include "species.h"
@@ -156,6 +157,15 @@ public:
     // Call updateneighbours on another site
     void m_updateNeighbourList();
 
+    // Reserve memory for the vector holding the species indexes for this site
+    void initSpecies( int );
+
+    // Get the react species
+    inline valarray< int > getReactSpecies() { return m_vReacSpecies; }
+
+    //Increase the height of the site by one
+    void increaseHeight();
+
 protected:
     //The lattice type that this site belongs to
     //LatticeType m_LatticeType;
@@ -198,6 +208,10 @@ protected:
     vector<Species*> m_species;
 
     bool m_phantom;
+
+    //Holds the number of the reactants species in this site.
+    // m_vReacSpecies has size the number of ALL reactants species
+    valarray< int > m_vReacSpecies;
 };
 
 }

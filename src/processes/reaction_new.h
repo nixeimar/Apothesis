@@ -11,7 +11,7 @@ using namespace std;
 
 class species_new;
 
-class reaction_new: public process_new
+class reaction_new: public Process_new
 {
 public:
     reaction_new();

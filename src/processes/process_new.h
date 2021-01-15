@@ -9,11 +9,11 @@
 
 using namespace std;
 
-class process_new
+class Process_new
 {
 public:
-    process_new();
-    ~process_new();
+    Process_new();
+    ~Process_new();
 
     inline void setName( string procName ){ m_sProcName = procName; }
     inline string getName(){ return  m_sProcName; }
