@@ -131,6 +131,9 @@ class Lattice: public Pointers
     int m_iStepY;
     int m_iStepZ;
 
+    // Calculate the roughness of the lattice
+    double mf_roughness();
+
   };
 
 #endif // LATTICE_H

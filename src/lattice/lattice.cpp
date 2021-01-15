@@ -62,12 +62,22 @@ Lattice::Type Lattice::getType()
   }
 }
 
-void Lattice::mf_neigh()
-{
-
-}
-
 Site *Lattice::getSite(int id) { return m_vSites[id]; }
+
+double Lattice::mf_roughness()
+{
+  double roughness = 0;
+
+  for (auto& site:m_vSites)
+  {
+    for (auto& neighbour: site->getNeighs())
+    {
+      roughness += abs(site->getHeight() - neighbour->getHeight());
+    }
+  }
+
+  return 1 + roughness / (2*m_vSites.size());
+}
 
 void Lattice::check()
 {
