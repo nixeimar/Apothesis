@@ -1,9 +1,9 @@
 {
   "Lattice":
   {
-    "Type": "FCC",
-    "dims": [160, 120, 10],
-    "step": true
+    "Type": "BCC",
+    "dims": [20, 10, 10],
+    "Step": [20, 4, 2]
   },
   "Time": 0.05,
   "Temperature": 1100,
@@ -26,13 +26,13 @@
     "Desorption":
     {
       "Species": ["Cu"],
-      "Energy": [17],
+      "Energy": [1.1811e-19],
       "Frequency": [10e13]
     },
     "Diffusion":
     {
       "Species": ["Cu"],
-      "Energy": [17],
+      "Energy": [1.1811e-19],
       "Frequency": [10e13]
     }
   },
