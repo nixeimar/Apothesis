@@ -143,6 +143,8 @@ void BCC::mf_buildSteps()
 		iteration++;
 	}
 
+	// steps [160, 20, 1]
+
 	for (unsigned int firstDim = 0; firstDim < currentDimensions[latentDimension]; ++firstDim)
 	{
 		for (unsigned int secondDim = 0; secondDim < currentDimensions[stepDimension]; ++secondDim)
@@ -155,6 +157,7 @@ void BCC::mf_buildSteps()
 			m_vSites[index]->increaseHeight(growth);
 		}
 	}
+	// TODO: Update neighbour calculation at boundaries
 
 	/* if (m_iSizeX % m_iStepX != 0)
 	{
