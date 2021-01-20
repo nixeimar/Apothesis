@@ -69,22 +69,6 @@ void BCC::build()
 		}
 	}
 
-	for (int i = 0; i < m_iSizeX; i++)
-	{
-		for (int j = i * m_iSizeY; j < (m_iSizeY + i * m_iSizeY); j++)
-			cout << m_vSites[j]->getHeight() << " ";
-
-		cout << " " << endl;
-	}
-
-	for (int i = 0; i < m_iSizeX; i++)
-	{
-		for (int j = i * m_iSizeY; j < (m_iSizeY + i * m_iSizeY); j++)
-			cout << m_vSites[j]->getID() << " ";
-
-		cout << " " << endl;
-	}
-
 	if (m_hasSteps)
 		mf_buildSteps();
 

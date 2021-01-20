@@ -248,11 +248,15 @@ void Desorption::updateNeighbours(Site* s)
   for(vector<Site*> :: iterator itr = sites.begin(); itr != sites.end(); ++itr)
   {
     Site* site = *itr;
-    updateSiteCounter(site->getNeighboursNum(), false);
+    int currentNeighbours = site->getNeighboursNum();
+    if (currentNeighbours != 0)
+      updateSiteCounter(currentNeighbours, false);
     m_site = site;
     // Recalculate the number of sites
     s->m_updateNeighbours();
-    updateSiteCounter(m_site->getNeighboursNum(), true);
+    int updateNeighbours = m_site->getNeighboursNum();
+    if (updateNeighbours != 0)
+      updateSiteCounter(updateNeighbours, true);
   }
 }
 
