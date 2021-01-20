@@ -58,7 +58,7 @@ class Parameters: public Pointers
     }
 
     /// Set the total number of KMC iterations
-    inline double getTime() 
+    inline long double getTime() 
     {
       return m_time; 
     }

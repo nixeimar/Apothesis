@@ -144,7 +144,7 @@ private:
     int m_nSpecies;
 
     /// Simulation time
-    double m_time;
+    long double m_time;
 };
 
 #endif // KMC_H

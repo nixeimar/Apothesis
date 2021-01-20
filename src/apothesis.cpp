@@ -472,7 +472,7 @@ void Apothesis::init()
 void Apothesis::exec()
 {
   ///Perform the number of KMC steps read from the input.
-  double simulationTime = pParameters->getTime();
+  long double simulationTime = pParameters->getTime();
 
   if (simulationTime == 0)
   {
@@ -573,7 +573,7 @@ vector<double> Apothesis::calculateProbabilities(vector<Process *> pProcesses)
   }
 
   // Increment time
-  double random = (double)rand() / RAND_MAX;
+  double random = (double) rand() / RAND_MAX;
 
   m_time += -log(random)/total;
   
