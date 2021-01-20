@@ -407,6 +407,8 @@ void IO::writeLatticeInfo()
 
   if ( m_lattice->getType() == Lattice::FCC )
     m_OutFile << "Lattice type: " << "FCC";
+  else if (m_lattice->getType() == Lattice::BCC)
+    m_OutFile << "Lattice type: " << "BCC";
 }
 
 void IO::writeLatticeHeights()
@@ -414,28 +416,28 @@ void IO::writeLatticeHeights()
 
   // This must be formatted output.
   m_OutFile << " --------------------------------------- " << endl;
-  for ( int i = 0; i < m_lattice->getY()-1; i++) 
+  for ( int i = 0; i < m_lattice->getX(); i++) 
   {
-    for (int j = 0;  j < m_lattice->getX(); j++)
+    for (int j = 0;  j < m_lattice->getY(); j++)
     {
-      int index = j + i*m_lattice->getX();
+      int index = j + i*m_lattice->getY();
       m_OutFile 
       << "( " 
       << m_lattice->getSites()[ index ]->getHeight() 
       << ", [ ";
 
   // TODO: assign default species to each site
-      vector<string> speciesList = m_lattice->getSite(j+i*m_lattice->getX())->getSpeciesName();
-      if (speciesList.size() > 0)
-      {
-        for (vector<string> :: iterator itr = speciesList.begin(); itr != speciesList.end(); ++itr)
-        {
-          string s = *itr;
-
-          m_OutFile << s << " ";
-        }
-      }
-      
+  //    vector<string> speciesList = m_lattice->getSite(j+i*m_lattice->getX())->getSpeciesName();
+  //    if (speciesList.size() > 0)
+  //    {
+  //      for (vector<string> :: iterator itr = speciesList.begin(); itr != speciesList.end(); ++itr)
+  //      {
+  //        string s = *itr;
+//
+  //        m_OutFile << s << " ";
+  //      }
+  //    }
+  //    
       m_OutFile << "] ) ";
     }
     m_OutFile << endl;

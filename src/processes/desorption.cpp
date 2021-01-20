@@ -233,7 +233,6 @@ void Desorption::updateSiteCounter(int neighbours, bool addOrRemove)
   }
   else
   {
-    cout<<"neighbours: " << neighbours << endl;
     if (m_numNeighbours[neighbours-1] > 0)
     {
       m_numNeighbours[neighbours-1]--;

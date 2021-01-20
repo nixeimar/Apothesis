@@ -513,7 +513,6 @@ void Apothesis::exec()
     pIO->writeLogOutput(p->getName() + " ");
     pIO->writeLatticeHeights();
     
-    // TODO: check if all processes are 0
   }
 }
 
@@ -560,6 +559,11 @@ vector<double> Apothesis::calculateProbabilities(vector<Process *> pProcesses)
     double prob = process->getProbability();
     probability.push_back(prob + total);
     total += prob;
+  }
+
+  if (total == 0)
+  {
+    EXIT;
   }
 
   // Normalize all values

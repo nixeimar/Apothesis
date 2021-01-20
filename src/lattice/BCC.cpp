@@ -191,31 +191,31 @@ void BCC::mf_neigh()
 			if (m_vSites[southIndex]->getHeight() >= currentHeight)
 			{
 				m_vSites[currentIndex]->setNeigh(m_vSites[southIndex]);
-				m_vSites[currentIndex]->setNeighPosition(m_vSites[southIndex], Site::SOUTH);
 			}
+			m_vSites[currentIndex]->setNeighPosition(m_vSites[southIndex], Site::SOUTH);
 
 			int northIndex = ((i + 1) % m_iSizeY) * m_iSizeX + j;
 			if (m_vSites[northIndex]->getHeight() >= currentHeight)
 			{
 				m_vSites[currentIndex]->setNeigh(m_vSites[northIndex]);
-				m_vSites[currentIndex]->setNeighPosition(m_vSites[northIndex], Site::NORTH);
 			}
+			m_vSites[currentIndex]->setNeighPosition(m_vSites[northIndex], Site::NORTH);
 
 			int eastIndex = (i * m_iSizeX) + (j + 1) % m_iSizeY;
 			if (m_vSites[eastIndex]->getHeight() >= currentHeight)
 			{
 				m_vSites[currentIndex]->setNeigh(m_vSites[eastIndex]);
-				m_vSites[currentIndex]->setNeighPosition(m_vSites[eastIndex], Site::EAST);
 			}
+			m_vSites[currentIndex]->setNeighPosition(m_vSites[eastIndex], Site::EAST);
 
 			int westIndex = i * m_iSizeX + j - 1;
 			if (j == 0)
 				westIndex = i * m_iSizeX + (m_iSizeY - 1);
 			if (m_vSites[westIndex]->getHeight() >= currentHeight)
 			{
-				m_vSites[currentIndex]->setNeighPosition(m_vSites[westIndex], Site::WEST);
 				m_vSites[currentIndex]->setNeigh(m_vSites[westIndex]);
 			}
+			m_vSites[currentIndex]->setNeighPosition(m_vSites[westIndex], Site::WEST);
 		}
 	}
 

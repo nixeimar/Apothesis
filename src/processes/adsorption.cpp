@@ -82,7 +82,6 @@ namespace MicroProcesses
 
   void Adsorption::perform()
   {
-
     if (m_direct)
     {
       // If this is direct, simply increase the height, don't add any other parameters, update the neighbours, and return
