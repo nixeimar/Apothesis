@@ -102,7 +102,11 @@ void Desorption::perform()
 
   
   // If there are no longer any species that can be desorbed, remove from list
-  if (m_site->getSpecies().size() == 0)
+  if (m_apothesis->getNumSpecies() == 1)
+  {
+    return;
+  }
+  else if (m_site->getSpecies().size() == 0)
   {
     mf_removeFromList();  
 
@@ -171,7 +175,7 @@ vector<double> Desorption::generateProbabilities()
   double dkBoltz = m_apothesis->pParameters->dkBoltz;
 
   double freq = m_desorptionFrequency;
-  double energy = m_desorptionEnergy;
+  double energy = m_desorptionEnergy/m_apothesis->pParameters->dAvogadroNum;
 
   vector<double> prob;
   /* Desorption probability see Lam and Vlachos  */
@@ -225,7 +229,11 @@ void Desorption::setDiffusion(bool canDiffuse)
 
 void Desorption::updateSiteCounter(int neighbours, bool addOrRemove)
 {
-  //TODO: better bound checking  
+  //TODO: better bound checking 
+  if (neighbours < 1)
+  {
+    return;
+  } 
   // Updates list of number of neighbours each possible site has
   if (addOrRemove)
   {

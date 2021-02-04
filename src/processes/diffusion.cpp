@@ -160,10 +160,19 @@ namespace MicroProcesses
 
   void Diffusion::mf_addToList(Site *s)
   {
+    if (s->getNeighboursNum() == 0)
+    {
+      return;
+    }
     //TODO: Will this be better with a hashmap/map of some kind? for now, just do a search
     // If the site doesn't already exist, add
     if (find(m_lDiffSites.begin(), m_lDiffSites.end(), s) == m_lDiffSites.end())
+    {
       m_lDiffSites.push_back(s);
+      int numNeighbours = s->getNeighboursNum();
+      if (numNeighbours != 0)
+        updateSiteCounter(numNeighbours, true);
+    }
 
     // If we are in debugging more, print neighbours of the site
     if (m_apothesis->getDebugMode())
@@ -185,10 +194,7 @@ namespace MicroProcesses
 
     // Clears all non-unique elements in the list
 
-    //site->setNeighboursNum(total);
-    cout << "total: " << total << endl;
-
-    return total;
+    return site->getNeighboursNum();
   }
 
   void Diffusion::mf_updateNeighNum(Site *site)
@@ -240,14 +246,14 @@ namespace MicroProcesses
     //these parameters are now given constant values for now.
     //later they will be taken from the input file.
     double v0 = m_diffusionFrequency;
-    double E = m_diffusionEnergy;
-    double Em = 0;
+    double E = m_diffusionEnergy/m_apothesis->pParameters->dAvogadroNum;
+    double Em = 7.14e4/m_apothesis->pParameters->dAvogadroNum;
 
     vector<double> prob;
     /* Desorption probability see Lam and Vlachos  */
     for (int n = 1; n <= m_maxNeighbours; ++n)
     {
-      prob.push_back(-v0 * exp((E - Em) / (dkBoltz * dTemp)) * exp(-n * E / (dkBoltz * dTemp)));
+      prob.push_back(v0 * exp((E - Em) / (dkBoltz * dTemp)) * exp(-n * E / (dkBoltz * dTemp)));
     }
 
     return prob;
@@ -275,6 +281,8 @@ namespace MicroProcesses
 
   void Diffusion::updateSiteCounter(int neighbours, bool addOrRemove)
   {
+    if (neighbours == 0)
+      return;
     // Updates list of number of neighbours each possible site has
     if (addOrRemove)
     {

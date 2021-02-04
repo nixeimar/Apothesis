@@ -144,12 +144,16 @@ namespace MicroProcesses
     vector<Adsorption *>::iterator itr = pAdsVectors.begin();
 
     // For each of the possible adsorbed molecules, check to see if current molecule needs to be removed from its site
+
+    if (pAdsVectors.size() == 1)
+    {
+      return;
+    }
     for (itr; itr != pAdsVectors.end(); ++itr)
     {
       Adsorption *pAds = *itr;
       vector<Species *> possibleInteractions = pAds->getInteractions();
       bool found = false;
-      //TODO: this is clunky: check why we can't compare by pointer reference
       for (int i = 0; i < possibleInteractions.size(); ++i)
       {
         if ((possibleInteractions[i]->getName().compare(m_adsorptionSpeciesName)) == 0)
@@ -174,7 +178,6 @@ namespace MicroProcesses
   void Adsorption::mf_removeFromList(Site *s)
   {
     m_lAdsSites.remove(s);
-    ;
   }
 
   void Adsorption::mf_removeFromList()
@@ -209,11 +212,11 @@ namespace MicroProcesses
     double dkBoltz = m_apothesis->pParameters->dkBoltz;
 
     //TODO: Is dmass from input file?
-    double dmass = 27e-3 / dNavogadro;
+    double dmass = 32e-3 / dNavogadro;
     double dpi = 3.14159265;
     double dstick = m_stickingCoeffs;
     //TODO: Is dCites from input file?
-    double dCites = 1.4e+19;
+    double dCites = 1e+19;
     double dy = getMassFraction();
 
     /* Adsorption probability see Lam and Vlachos */
