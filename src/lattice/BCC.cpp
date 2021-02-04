@@ -59,11 +59,15 @@ void BCC::build()
 
 	//  m_pSites = new Site[ m_iSizeX*m_iSizeY];
 
+// if m_iSizeX = 120
 	for (int i = 0; i < m_iSizeX; i++)
 	{
+		// m_iSizeY = 160
 		for (int j = i * m_iSizeY; j < (m_iSizeY + i * m_iSizeY); j++)
 		{
 			m_vSites[j]->setID(j);
+			m_vSites[j]->setIID(i);
+			m_vSites[j]->setJID(j%m_iSizeY);
 			m_vSites[j]->setHeight(m_iHeight - 1);
 			m_vSites[j]->setLatticeType(Site::LatticeType::BCC);
 		}
@@ -141,7 +145,6 @@ void BCC::mf_buildSteps()
 			m_vSites[index]->increaseHeight(growth);
 		}
 	}
-	// TODO: Update neighbour calculation at boundaries
 
 	/* if (m_iSizeX % m_iStepX != 0)
 	{
@@ -200,6 +203,11 @@ void BCC::mf_neigh()
 				m_vSites[currentIndex]->setNeigh(m_vSites[westIndex]);
 			}
 			m_vSites[currentIndex]->setNeighPosition(m_vSites[westIndex], Site::WEST);
+			if (m_vSites[currentIndex]->getID() == 3581)
+			{
+				cout<<"Num neighbours: "<<m_vSites[currentIndex]->getNeighboursNum();
+				cout<<"No neighbours"<<endl;
+			}
 		}
 	}
 

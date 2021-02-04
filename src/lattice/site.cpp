@@ -45,6 +45,26 @@ namespace SurfaceTiles
     m_iID = id;
   }
 
+  void Site::setIID(int IID)
+  {
+    m_iIIndex = IID;
+  }
+
+  int Site::getIID()
+  {
+    return m_iIIndex;
+  }
+
+  void Site::setJID(int JID)
+  {
+    m_iJIndex = JID;
+  }
+
+  int Site::getJID()
+  {
+    return m_iJIndex;
+  }
+
   int Site::getID()
   {
     return m_iID;

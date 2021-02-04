@@ -101,6 +101,9 @@ class Lattice: public Pointers
     /// Store the surface step info
     void setStepInfo(int, int, int);
 
+    /// Get the roughness (public function)
+    double getRoughness();
+
   protected:
     /// The size of the lattice in the x-dimension.
     int m_iSizeX;

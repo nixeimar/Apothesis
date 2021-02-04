@@ -100,6 +100,16 @@ namespace SurfaceTiles
     /// Set an ID for this site.
     void setID(int);
 
+    /// Set a value for I index
+    void setIID(int);
+
+    int getIID();
+
+    /// Set a value for the J index
+    void setJID(int);
+
+    int getJID();
+
     /// Get the ID of this lattice site.
     int getID();
 

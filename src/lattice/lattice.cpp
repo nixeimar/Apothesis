@@ -79,6 +79,11 @@ double Lattice::mf_roughness()
   return 1 + roughness / (2*m_vSites.size());
 }
 
+double Lattice::getRoughness()
+{
+  return mf_roughness();
+}
+
 void Lattice::check()
 {
   int k = 0;
