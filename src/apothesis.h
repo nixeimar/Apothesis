@@ -106,6 +106,9 @@ public:
     /// Return access to adsorption
     vector<MicroProcesses::SurfaceReaction*> getReactionPointers();
 
+    /// Return number of species
+    int getNumSpecies();
+
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
     // Not to handy. Re-think... I have found another way... Implement it
@@ -145,6 +148,12 @@ private:
 
     /// Simulation time
     long double m_time;
+
+    /// Iterations 
+    unsigned int m_iter;
+
+    /// Write frequency
+    int m_writeFrequency;
 };
 
 #endif // KMC_H

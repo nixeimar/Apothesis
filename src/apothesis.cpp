@@ -44,7 +44,9 @@ Apothesis::Apothesis(int argc, char *argv[])
     : pLattice(0),
       pRead(0),
       m_debugMode(false),
-      m_time(0)
+      m_time(0),
+      m_writeFrequency(500),
+      m_iter(0)
 {
   m_iArgc = argc;
   m_vcArgv = argv;
@@ -134,7 +136,6 @@ void Apothesis::init()
       {
         m_interactions.push_back(make_tuple(name, interactions[i].GetString()));
         pIO->writeLogOutput("(" + get<0>(m_interactions.back()) + ", " + get<1>(m_interactions.back()) + ")");
-        
       }
     }
   }
@@ -202,9 +203,8 @@ void Apothesis::init()
           // Set as warning, in case an unexpected result is received. Default value is false.
           pErrorHandler->warningSimple_msg("The adsorption of species " + species[i] + " has direct value " + dir);
         }
-
       }
-      Adsorption* a = new Adsorption(this, species[i], m_species[species[i]], sticking[i], massFraction[i], direct);
+      Adsorption *a = new Adsorption(this, species[i], m_species[species[i]], sticking[i], massFraction[i], direct);
 
       // Keep two separate vectors: one for all processes, one for adsorption processes only
       m_vAdsorption.push_back(a);
@@ -383,8 +383,6 @@ void Apothesis::init()
       {
         species.push_back(m_species[name]);
       }
-      
-
     }
 
     // Store value for energy and pre-exponential factor
@@ -416,7 +414,6 @@ void Apothesis::init()
     m_vSurfaceReaction.push_back(s);
     pIO->writeLogOutput("...Done initializing reaction.");
   }
-  
 
   // Initialize interactions between adsorption species and classes
   vector<tuple<string, string>>::iterator itr = m_interactions.begin();
@@ -436,7 +433,7 @@ void Apothesis::init()
     Adsorption *pAdsorption2 = findAdsorption(spec2);
     pAdsorption2->addInteraction(s1);
   }
-  vector<Adsorption*> adsorptionpointers = getAdsorptionPointers();
+  vector<Adsorption *> adsorptionpointers = getAdsorptionPointers();
   for (vector<Adsorption *>::iterator iter = adsorptionpointers.begin(); iter != adsorptionpointers.end(); ++iter)
   {
     Adsorption *pAds = *iter;
@@ -444,11 +441,11 @@ void Apothesis::init()
     bool found = false;
     for (int i = 0; i < possibleInteractions.size(); ++i)
     {
-      cout<< possibleInteractions[i]->getName() << ", ";
+      cout << possibleInteractions[i]->getName() << ", ";
     }
   }
-  cout<<endl;
-  cout<<endl;
+  cout << endl;
+  cout << endl;
   /// First the processes that participate in the simulation
 
   /// that were read from the file input and the I/O functionality
@@ -460,13 +457,12 @@ void Apothesis::init()
   }
 
   // Initialize species map in lattice
-  vector<Site*> sites = pLattice->getSites();
+  vector<Site *> sites = pLattice->getSites();
   for (int site = 0; site < sites.size(); ++site)
   {
-    Site* pSite = sites[site];
+    Site *pSite = sites[site];
     pSite->initSpeciesMap(m_nSpecies);
   }
-
 }
 
 void Apothesis::exec()
@@ -487,7 +483,9 @@ void Apothesis::exec()
   /// Get list of possible processes
   while (m_time < simulationTime)
   {
-    
+    // Increment number of iterations
+    m_iter++;
+
     vector<Process *> processes = m_vProcesses;
     /// Find probability of each process
     vector<double> probabilities = calculateProbabilities(m_vProcesses);
@@ -507,12 +505,20 @@ void Apothesis::exec()
     /// Perform process on that site
     p->perform();
 
+    double roughness = pLattice->getRoughness();
+
     // The frequency that the various information are written in the file
     // must befined by the user. Fix it ...
     // The user should also check if the messages are written on the terminal or not.
     pIO->writeLogOutput(p->getName() + " ");
-    pIO->writeLatticeHeights();
-    
+    //pIO->writeLogOutput("Roughness " + roughness);
+
+    if (m_iter % m_writeFrequency == 0)
+    {
+      pIO->writeLogOutput("Iterations: " + m_iter);
+      pIO->writeLatticeHeights(); 
+    }
+    //pIO->writeLogOutput()
   }
 }
 
@@ -573,10 +579,10 @@ vector<double> Apothesis::calculateProbabilities(vector<Process *> pProcesses)
   }
 
   // Increment time
-  double random = (double) rand() / RAND_MAX;
+  double random = (double)rand() / RAND_MAX;
 
-  m_time += -log(random)/total;
-  
+  m_time += -log(random) / total;
+
   /// Print to output
   pIO->writeLogOutput("Time step: " + to_string(m_time));
 
@@ -634,6 +640,11 @@ Desorption *Apothesis::findDesorption(string species)
 IO *Apothesis::getIOPointer()
 {
   return pIO;
+}
+
+int Apothesis::getNumSpecies()
+{
+  return m_nSpecies;
 }
 
 void Apothesis::setDebugMode(bool ifDebug)
