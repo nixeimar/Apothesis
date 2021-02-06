@@ -29,6 +29,7 @@
 #include "errorhandler.h"
 
 #include "species_new.h"
+#include <set>
 
 using namespace std;
 using namespace SurfaceTiles;
@@ -109,6 +110,9 @@ class Lattice: public Pointers
     /// The process of reaction
     virtual void react( int siteID ) = 0;
 
+    //Set the pointer to the process map
+    void setProcMap( map<string, set<int> >* );
+
   protected:
     /// The size of the lattice in the x-dimension.
     int m_iSizeX;
@@ -138,6 +142,9 @@ class Lattice: public Pointers
     int m_iStepX;
     int m_iStepY;
     int m_iStepZ;
+
+
+    map< string, set<int > >* m_pProcMap;
 
   };
 

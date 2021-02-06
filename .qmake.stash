@@ -22,3 +22,27 @@ QMAKE_CXX.COMPILER_MACROS = \
     QMAKE_GCC_MAJOR_VERSION \
     QMAKE_GCC_MINOR_VERSION \
     QMAKE_GCC_PATCH_VERSION
+QMAKE_LICHECK_TIMESTAMP = "Tue Dec 1"
+QMAKE_DEFAULT_INCDIRS = \
+    /usr/include/c++/7 \
+    /usr/include/c++/7/x86_64-suse-linux \
+    /usr/include/c++/7/backward \
+    /usr/lib64/gcc/x86_64-suse-linux/7/include \
+    /usr/local/include \
+    /usr/lib64/gcc/x86_64-suse-linux/7/include-fixed \
+    /usr/x86_64-suse-linux/include \
+    /usr/include
+QMAKE_DEFAULT_LIBDIRS = \
+    /usr/lib64/gcc/x86_64-suse-linux/7 \
+    /usr/lib64 \
+    /lib64 \
+    /usr/x86_64-suse-linux/lib \
+    /lib \
+    /usr/lib
+QMAKE_LICHECK_TIMESTAMP = "Mon Jan 4"
+QMAKE_LICHECK_TIMESTAMP = "Tue Jan 5"
+QMAKE_LICHECK_TIMESTAMP = "Wed Jan 6"
+QMAKE_LICHECK_TIMESTAMP = "Thu Jan 14"
+QMAKE_LICHECK_TIMESTAMP = "Fri Jan 15"
+QMAKE_LICHECK_TIMESTAMP = "Tue Feb 2"
+QMAKE_LICHECK_TIMESTAMP = "Wed Feb 3"

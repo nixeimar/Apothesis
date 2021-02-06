@@ -18,6 +18,8 @@
 #include "BCC.h"
 #include "read.h"
 
+#include <map>
+
 BCC::BCC(Apothesis *apothesis) : Lattice(apothesis)
 {
     ;
@@ -308,15 +310,34 @@ void BCC::check()
 	cout << "E:" << getSite(test)->getNeighPosition(Site::EAST)->getID() << " ";
 	cout << "N:" << getSite(test)->getNeighPosition(Site::NORTH)->getID() << " ";
 	cout << "S:" << getSite(test)->getNeighPosition(Site::SOUTH)->getID() << endl;
-
 }
+
+
+// We have to define the processes e.g. Adsorption Simple, Asorption MultipleSites, Diffusion 1s Neighbors,
+// Desorption 1st Neighbors, Reaction Decomposition etc...
 
 void BCC::adsorp( int siteID, species_new* chemSpec )
 {
+    //Remove site from its previous positin in diffusion and desorption classes
+    for ( pair<string, set<int> > p:*m_pProcMap ){
+//        if ()
+    }
 
-    //For Vlachos results
+
+    //For PVD results
     m_vSites[ siteID ]->increaseHeight();
 
+//    m_pProcMap[ "Desorption " +  ]
+
+    //Count the neighbors and put in the appropriate class
+//    m_vSites.counteNeights();
+
+    m_pProcMap->at("Test").insert( 100 );
+
+
+
+    cout << "Found test" << m_pProcMap->at("Test").size() << endl;
+    cout <<  endl;
 
     //1.Add to this site species the new adroped species
     //m_vSites[ siteID ]->getReactSpecies()[ chemSpec->getID() ]++;

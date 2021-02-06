@@ -18,7 +18,10 @@ public:
     inline void setSpecies( species_new* s ){ m_Species = s; }
     inline species_new* getSpecies(){ return m_Species; }
 
-    void perform() override;
+    inline void setNumNeigh( int n ){ m_iNeigh = n; }
+
+    double getProbability();
+    void perform( int siteID  ) override;
 
 private:
     ///The activation energy of the adsoprtion process
@@ -29,6 +32,9 @@ private:
 
     ///The species that must be removed from the site
     species_new* m_Species;
+
+    ///The neighbours of this diffusion process
+    int m_iNeigh;
 };
 
 #endif // DESORPTION_NEW_H

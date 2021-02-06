@@ -4,8 +4,9 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include <site.h>
-#include <species.h>
+#include "lattice.h"
+#include "site.h"
+#include "species_new.h"
 
 using namespace std;
 
@@ -24,8 +25,13 @@ public:
     inline void setType( int id ){ m_iID = id; }
     inline string getType( int id ){ return m_sType; }
 
+    inline void setTargetSite( int id );
+
+    ///Get probability
+    virtual double getProbability() = 0;
+
     /// Perform this process in the site
-    virtual void perform() = 0;
+    virtual void perform( int siteID ) = 0;
 
     inline void setLattice( Lattice* lattice ){ m_pLattice = lattice; }
 

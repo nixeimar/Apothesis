@@ -24,6 +24,7 @@ HEADERS += apothesis.h \
            processes/desorption_new.h \
            processes/diffusion_new.h \
            processes/process_new.h \
+           processes/processpool.h \
            processes/reaction_new.h \
            register.h \
            error/errorhandler.h \
@@ -43,13 +44,15 @@ HEADERS += apothesis.h \
            processes/SurfaceReaction.h \
            species/species.h \
            species/species_new.h
+
 SOURCES += apothesis.cpp \
            lattice/lattice.cpp \
            main.cpp \
-           processes/Adsorption_new.cpp \
-           processes/Desorption_new.cpp \
-           processes/Diffusion_new.cpp \
-           processes/Process_new.cpp \
+           processes/adsorption_new.cpp \
+           processes/desorption_new.cpp \
+           processes/diffusion_new.cpp \
+           processes/process_new.cpp \
+           processes/processpool.cpp \
            processes/reaction_new.cpp \
            register.cpp \
            error/errorhandler.cpp \

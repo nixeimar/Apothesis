@@ -28,7 +28,9 @@ public:
     inline void setSpecies( species_new* s ){ m_Species = s; }
     inline species_new* getSpecies(){ return m_Species; }
 
-    void perform() override;
+    double getProbability();
+
+    void perform( int siteID  ) override;
 
 private:
     ///The activation energy of the adsoprtion process
