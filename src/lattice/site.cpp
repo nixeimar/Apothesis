@@ -64,6 +64,10 @@ namespace SurfaceTiles
     m_iHeight++;
   }
 
+  void Site::decreaseHight(){
+    m_iHeight--;
+  }
+
   int Site::getNeighboursNum()
   {
     return m_vNeigh.size();

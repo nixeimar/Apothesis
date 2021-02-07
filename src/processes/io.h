@@ -102,7 +102,7 @@ class IO: public Pointers
     int toInt( string );
 
     /// Check if a string contains another string. TODO: This should be transferred to a generic string class).
-    bool contains( string, string, CASE cas = Insensitive );
+    static bool contains( string, string, CASE cas = Insensitive );
 
     /// Splits a string to a vector of strings. TODO: This should be transferred to a generic string class).
     vector<string> split( string , string );

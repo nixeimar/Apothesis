@@ -318,26 +318,29 @@ void BCC::check()
 
 void BCC::adsorp( int siteID, species_new* chemSpec )
 {
-    //Remove site from its previous positin in diffusion and desorption classes
-    for ( pair<string, set<int> > p:*m_pProcMap ){
-//        if ()
-    }
 
+    // <--------  For Lam & Vlachos (2000) ------------------------------------//
+    //Remove site from its previous positin in diffusion and desorption classes
+    for ( auto &p:*m_pProcMap ) {
+        if ( !IO::contains( p.first, "Adsoprtion" ) )
+            p.second.erase( siteID );
+    }
 
     //For PVD results
     m_vSites[ siteID ]->increaseHeight();
 
-//    m_pProcMap[ "Desorption " +  ]
+    int neighs = 1;
+    for ( Site* s:m_vSites[ siteID ]->getNeighs() )
+        if ( s->getHeight() >= m_vSites[ siteID ]->getHeight() )
+            neighs++;
 
-    //Count the neighbors and put in the appropriate class
-//    m_vSites.counteNeights();
+    string strProc = "Desorption " + to_string( neighs ) + "N";
+    m_pProcMap->at( strProc ).insert( siteID );
 
-    m_pProcMap->at("Test").insert( 100 );
+    strProc = "Diffusion " + to_string( neighs ) + "N";
+    m_pProcMap->at( strProc ).insert( siteID );
+    // ---------  For Lam & Vlachos (2000) ------------------------------------>//
 
-
-
-    cout << "Found test" << m_pProcMap->at("Test").size() << endl;
-    cout <<  endl;
 
     //1.Add to this site species the new adroped species
     //m_vSites[ siteID ]->getReactSpecies()[ chemSpec->getID() ]++;
@@ -351,7 +354,28 @@ void BCC::adsorp( int siteID, species_new* chemSpec )
 
 void BCC::desorp(int siteID, species_new *chemSpecies)
 {
-    //The same as adsoprtion
+    // <--------  For Lam & Vlachos (2000) ------------------------------------//
+    //Remove site from its previous positin in diffusion and desorption classes
+    for ( auto &p:*m_pProcMap ) {
+        if ( !IO::contains( p.first, "Adsoprtion" ) )
+            p.second.erase( siteID );
+    }
+
+    //For PVD results
+    m_vSites[ siteID ]->decreaseHight();
+
+    int neighs = 1;
+    for ( Site* s:m_vSites[ siteID ]->getNeighs() )
+        if ( s->getHeight() >= m_vSites[ siteID ]->getHeight() )
+            neighs++;
+
+    string strProc = "Desorption " + to_string( neighs ) + "N";
+    m_pProcMap->at( strProc ).insert( siteID );
+
+    strProc = "Diffusion " + to_string( neighs ) + "N";
+    m_pProcMap->at( strProc ).insert( siteID );
+
+    // ---------  For Lam & Vlachos (2000) ------------------------------------>//
 }
 
 void BCC::react(int siteID)

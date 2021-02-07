@@ -24,6 +24,7 @@
 #include <list>
 #include <fstream>
 
+#include "io.h"
 #include "lattice.h"
 #include "species_new.h"
 

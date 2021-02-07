@@ -166,6 +166,9 @@ public:
     //Increase the height of the site by one
     void increaseHeight();
 
+    //Decrease the height of the site by one
+    void decreaseHight();
+
 protected:
     //The lattice type that this site belongs to
     //LatticeType m_LatticeType;

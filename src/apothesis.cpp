@@ -479,7 +479,7 @@ void Apothesis::exec()
     //---------------------- Creation of the process map & initialization (must be transferred to init) ------------------------------>//
     Adsorption_new* adsosption = new Adsorption_new();
     adsosption->setActivationEnergy( 12.0 );
-    adsosption->setName("Simple adsoprtion");
+    adsosption->setName("Adsoprtion");
     adsosption->setID( 0 );
 
     pair<string, set<int> > p;
@@ -490,12 +490,11 @@ void Apothesis::exec()
     procPool->addProcess( adsosption->getName(), adsosption );
     procPool->addProcess( adsosption->getID(),  adsosption);
 
-    int i = 0;
     for (Site* s:pLattice->getSites() )
-        m_procMap[ adsosption->getName() ].insert( i++);
+        m_procMap[ adsosption->getName() ].insert( s->getID() );
 
     Desorption_new* desorption_1N = new Desorption_new();
-    desorption_1N->setName("Dessorption 1N");
+    desorption_1N->setName("Desorption 1N");
     desorption_1N->setNumNeigh( 1 );
     desorption_1N->setID( 1 );
 
@@ -505,7 +504,7 @@ void Apothesis::exec()
     procPool->addProcess( desorption_1N->getID(), desorption_1N );
 
     Desorption_new* desorption_2N = new Desorption_new();
-    desorption_2N->setName("Dessorption 2N");
+    desorption_2N->setName("Desorption 2N");
     desorption_2N->setNumNeigh( 2 );
     desorption_2N->setID( 2 );
 
@@ -515,7 +514,7 @@ void Apothesis::exec()
     procPool->addProcess( desorption_2N->getID(), desorption_2N );
 
     Desorption_new* desorption_3N = new Desorption_new();
-    desorption_3N->setName("Dessorption 3N");
+    desorption_3N->setName("Desorption 3N");
     desorption_3N->setNumNeigh( 3 );
     desorption_3N->setID( 3 );
 
@@ -525,7 +524,7 @@ void Apothesis::exec()
     procPool->addProcess( desorption_3N->getID(), desorption_3N );
 
     Desorption_new* desorption_4N = new Desorption_new();
-    desorption_4N->setName("Dessorption 4N");
+    desorption_4N->setName("Desorption 4N");
     desorption_4N->setNumNeigh( 4 );
     desorption_4N->setID( 4 );
 
@@ -535,7 +534,7 @@ void Apothesis::exec()
     procPool->addProcess( desorption_4N->getID(), desorption_4N );
 
     Desorption_new* desorption_5N = new Desorption_new();
-    desorption_5N->setName("Dessorption 5N");
+    desorption_5N->setName("Desorption 5N");
     desorption_5N->setNumNeigh( 5 );
     desorption_5N->setID( 5 );
 
@@ -544,10 +543,8 @@ void Apothesis::exec()
     procPool->addProcess( desorption_5N->getName(), desorption_5N );
     procPool->addProcess( desorption_5N->getID(), desorption_5N );
 
-    i = 0;
     for (Site* s:pLattice->getSites() )
-        m_procMap[ desorption_5N->getName() ].insert( i++);
-
+        m_procMap[ desorption_5N->getName() ].insert( s->getID() );
 
     Diffusion_new* diffusion_1N = new Diffusion_new();
     diffusion_1N->setName("Diffusion 1N");
@@ -598,9 +595,12 @@ void Apothesis::exec()
     procPool->addProcess( diffusion_5N->getName(), diffusion_5N );
     procPool->addProcess( diffusion_5N->getID(), diffusion_5N );
 
-    i = 0;
     for (Site* s:pLattice->getSites() )
-        m_procMap[ diffusion_5N->getName() ].insert( i++);
+        m_procMap[ diffusion_5N->getName() ].insert( s->getID() );
+
+    //Set reference to each process5
+    for (pair<string, set<int> > p:m_procMap)
+        procPool->getProcessByName( p.first )->setLattice( pLattice );
 
     //<---------------------- End creation of the process map & initialization  ------------------------------//
 
@@ -626,7 +626,7 @@ void Apothesis::exec()
     double dProcRate = 0.0;
     double r = 0;
     double sum = 0.0;
-    int iSiteID = 0;
+    int iSiteNum = 0;
     int n;
 
     //Calculate the total probability (R) --------------------------//
@@ -652,15 +652,16 @@ void Apothesis::exec()
 
                 //Get a random site that this process can performed site
                 //iSiteID -> is one site from the list that this process can performed
-                procPool->getProcessByName( p.first )->perform( pLattice->getSite( *next(m_procMap[ p.first ].begin(), iSiteID) )->getID() );
+
+                //Something is wrong here with the selection - FIX IT !!!!
+                iSiteNum = (rand() % static_cast<int>( m_procMap[ p.first ].size() -  2 ));
+                //                iSiteNum = 1 + (rand() % static_cast<int>(p.second.size() ));
+
+                cout << "selected site: " << iSiteNum << endl;
 
                 //3. From this process pick a random site with id and perform it like this:
-                // i.e. randomSite = m_processMap[ "selected process" ]->getSite(randomID);
-                // i.e. m_processMap[ "selected process" ]->setTargetSite( randomSite )
-                // i.e. m_processMap[ "selected process" ]->perform().
-
+                procPool->getProcessByName( p.first )->perform( *next(m_procMap[ p.first ].begin(), iSiteNum) );
                 //m_procMap is recomputed inside the lattice!
-
 
                 //4. Re-compute the processes rates and re-compute Rtot (see ppt).
                 dR = 0.0;
