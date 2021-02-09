@@ -40,7 +40,8 @@ public:
                         m_io(apothesis->pIO),
                         m_read(apothesis->pRead),
                         m_errorHandler(apothesis->pErrorHandler),
-                        m_parameters(apothesis->pParameters)
+                        m_parameters(apothesis->pParameters),
+                        m_randomGen( apothesis->pRandomGen )
     {}
 
 protected:
@@ -61,6 +62,10 @@ protected:
 
     /// Pointers to the classes of kmc.cpp
     Utils::Parameters*& m_parameters;
+
+    /// Random generator
+    RandomGen::RandomGenerator *&m_randomGen;
+
 };
 
 #endif // POINTERS_H

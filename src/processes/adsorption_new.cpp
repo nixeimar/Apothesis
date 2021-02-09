@@ -6,7 +6,6 @@ Adsorption_new::~Adsorption_new(){}
 
 void Adsorption_new::perform( int siteID )
 {
-    m_Species = new species_new();
     m_pLattice->adsorp( siteID, m_Species );
 }
 

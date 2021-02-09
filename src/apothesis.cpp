@@ -31,6 +31,7 @@
 #include "diffusion.h"
 #include "SurfaceReaction.h"
 #include "reaction_new.h"
+#include "aux/random_generator.h"
 
 #include "processpool.h"
 
@@ -57,6 +58,7 @@ Apothesis::Apothesis(int argc, char *argv[])
     m_vcArgv = argv;
 
     pParameters = new Utils::Parameters(this);
+    pRandomGen = new RandomGen::RandomGenerator( this );
 
     /* This must be constructed before the input */
 
@@ -474,6 +476,9 @@ void Apothesis::init()
 
 void Apothesis::exec()
 {
+
+    // Initialize Random generator.
+    pRandomGen->init( 1123123123213 );
     newDesign::ProrcessPool* procPool = new newDesign::ProrcessPool();
 
     //---------------------- Creation of the process map & initialization (must be transferred to init) ------------------------------>//
@@ -639,8 +644,7 @@ void Apothesis::exec()
     while ( time < dTime ){
         //1. Get a random numberss
         // Replace this with Mersenne twister from Chameleon
-        r = (double) rand()/RAND_MAX;
-
+        r = pRandomGen->getDoubleRandom();
         sum = 0.0;
         for (pair<string, set<int> > p:m_procMap) {
             dProcRate = (double)procPool->getProcessByName( p.first )->getProbability()*p.second.size();
@@ -648,16 +652,13 @@ void Apothesis::exec()
 
             //2. Pick a process according to the rates
             if ( r <= sum ){
-                //do the process
+                //do the processs
 
                 //Get a random site that this process can performed site
                 //iSiteID -> is one site from the list that this process can performed
+                iSiteNum = pRandomGen->getIntRandom(0, m_procMap[ p.first ].size() - 1 );
 
-                //Something is wrong here with the selection - FIX IT !!!!
-                iSiteNum = (rand() % static_cast<int>( m_procMap[ p.first ].size() -  2 ));
-                //                iSiteNum = 1 + (rand() % static_cast<int>(p.second.size() ));
-
-                cout << "selected site: " << iSiteNum << endl;
+                cout << p.first << " " <<  "selected site: " << iSiteNum << endl;
 
                 //3. From this process pick a random site with id and perform it like this:
                 procPool->getProcessByName( p.first )->perform( *next(m_procMap[ p.first ].begin(), iSiteNum) );
@@ -668,12 +669,13 @@ void Apothesis::exec()
                 for (pair<string, set<int> > p:m_procMap)
                     dR += (double)procPool->getProcessByName( p.first )->getProbability()*p.second.size();
 
+
+                //5. Compute dt = -ln(ksi)/Rtot
+                dt = -log( (double) rand()/RAND_MAX )/dR;
+
                 break;
             }
         }
-
-        //5. Compute dt = -ln(ksi)/Rtot
-        dt = -log( (double) rand()/RAND_MAX )/dR;
 
         //6. advance time: time += dt;
         time += dt;

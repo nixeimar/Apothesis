@@ -38,6 +38,8 @@ using namespace std;
 namespace Utils{ class ErrorHandler; class Parameters;}
 namespace SurfaceTiles{ class Site; }
 namespace MicroProcesses { class Process; class Adsorption; class Desorption; class Diffusion; class SurfaceReaction;}
+namespace RandomGen { class RandomGenerator; }
+
 class Lattice;
 class IO;
 class Read;
@@ -63,6 +65,9 @@ public:
 
     /// Pointer to the paramters class
     Utils::Parameters* pParameters;
+
+    /// Random generator
+    RandomGen::RandomGenerator *pRandomGen;
 
     /// Holds chemical and processes data that are needed
 //    Utils::pChemAndProcData;

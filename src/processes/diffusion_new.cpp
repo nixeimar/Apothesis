@@ -7,9 +7,7 @@ void Diffusion_new::perform( int siteID )
 {
     m_pLattice->desorp( siteID, m_Species );
 
-    int iNeigh = (rand() % 3 );
-
-    int targetID = m_pLattice->getSite( siteID )->getNeighs().at( iNeigh )->getID();
+    int targetID = m_pLattice->getSite( siteID )->getNeighs().at(  rand()%4  )->getID();
 
     //From this site get the neighobours id and peformt it.
     m_pLattice->adsorp( targetID, m_Species );
@@ -37,6 +35,6 @@ double Diffusion_new::getProbability(){
     double A = exp( (E_d-E_m)/(k*T) );
 
     //--------------------- Transitions probability ----------------------------------------//
-    return  A*v0*exp( -m_iNeighNum*E/(k*T) );
+    return  0.0; // A*v0*exp( -m_iNeighNum*E/(k*T) );
     //----------------------------------------------------------------------------------------//
 }
