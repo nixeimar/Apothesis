@@ -247,7 +247,7 @@ namespace MicroProcesses
     //later they will be taken from the input file.
     double v0 = m_diffusionFrequency;
     double E = m_diffusionEnergy/m_apothesis->pParameters->dAvogadroNum;
-    double Em = 7.14e4/m_apothesis->pParameters->dAvogadroNum;
+    double Em = 4.28e4/m_apothesis->pParameters->dAvogadroNum;
 
     vector<double> prob;
     /* Desorption probability see Lam and Vlachos  */

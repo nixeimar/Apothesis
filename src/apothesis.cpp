@@ -95,7 +95,7 @@ void Apothesis::init()
   /// Now both are hard copied.
 
   if (!pIO->outputOpen())
-    pIO->openOutputFile("Output");
+    pIO->openOutputFile("Output-700K");
 
   // Processes in this case
   vector<string> pProc = m_processes;
@@ -505,7 +505,6 @@ void Apothesis::exec()
     /// Perform process on that site
     p->perform();
 
-    double roughness = pLattice->getRoughness();
 
     // The frequency that the various information are written in the file
     // must befined by the user. Fix it ...
@@ -515,7 +514,10 @@ void Apothesis::exec()
 
     if (m_iter % m_writeFrequency == 0)
     {
-      pIO->writeLogOutput("Iterations: " + m_iter);
+      string iterations = std::to_string(m_iter);
+      double roughness = pLattice->getRoughness();
+      pIO->writeLogOutput("Roughness: " + std::to_string(roughness));
+      pIO->writeLogOutput("Iterations: " + iterations);
       pIO->writeLatticeHeights(); 
     }
     //pIO->writeLogOutput()
@@ -531,7 +533,7 @@ void Apothesis::logSuccessfulRead(bool read, string parameter)
 {
   if (!pIO->outputOpen())
   {
-    pIO->openOutputFile("Output");
+    pIO->openOutputFile("Output-700K");
   }
 
   read ? pIO->writeLogOutput("Reading " + parameter)
