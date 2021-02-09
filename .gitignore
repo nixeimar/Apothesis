@@ -3,7 +3,8 @@
 Makefile*
 Apothesis
 .vs*
- 
+*.csv
+*.ipynb
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles/
