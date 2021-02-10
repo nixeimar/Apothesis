@@ -6,7 +6,7 @@ Desorption_new::~Desorption_new(){}
 
 void Desorption_new::perform( int siteID  )
 {
-    m_pLattice->desorp( siteID, m_Species );
+    m_pLattice->desorp( siteID , m_Species );
 }
 
 double Desorption_new::getProbability(){

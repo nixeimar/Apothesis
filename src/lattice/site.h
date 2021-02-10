@@ -102,7 +102,7 @@ public:
     int getID();
 
     /// Set the number of the neighbours according to the height of its neighbour sites
-    void setNeighboursNum( int );
+    inline void setNeighboursNum( int n ) { m_iNumNeighs = n; }
 
     /// Returns the number of the neighbours according to the height of its neighbour sites.
     int getNeighboursNum();
@@ -167,7 +167,13 @@ public:
     void increaseHeight();
 
     //Decrease the height of the site by one
-    void decreaseHight();
+    void decreaseHeight();
+
+    //Increase the number of neighs
+    void increaseNeighsNum();
+
+    //Decrease the number of neighs
+    void decreaseNeighsNum();
 
 protected:
     //The lattice type that this site belongs to
@@ -214,7 +220,7 @@ protected:
 
     //Holds the number of the reactants species in this site.
     // m_vReacSpecies has size the number of ALL reactants species
-    valarray< int > m_vReacSpecies;
+    valarray< int > m_vReacSpecies;    
 };
 
 }

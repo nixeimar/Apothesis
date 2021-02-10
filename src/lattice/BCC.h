@@ -65,6 +65,9 @@ public:
   /// Sets the minimun initial height for the lattice.
   void setInitialHeight(int height);
 
+  /// Calculate the number of neighbor based on the height
+  int calculateNeighNum( int id );
+
   void adsorp(int siteID, species_new* chemSpecies) override;
   void desorp(int siteID, species_new* chemSpecies) override;
   void react(int siteID) override;
@@ -80,6 +83,9 @@ private:
   bool m_hasSteps = false;
 
   vector<int> m_stepInfo;
+
+  int m_iMinNeigs;
+  int m_iSiteNeighsNum;
 };
 
 #endif // LATTICE_H

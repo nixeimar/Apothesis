@@ -113,6 +113,9 @@ class Lattice: public Pointers
     //Set the pointer to the process map
     void setProcMap( map<string, set<int> >* );
 
+    //Prints the lattice heights
+    void print();
+
   protected:
     /// The size of the lattice in the x-dimension.
     int m_iSizeX;

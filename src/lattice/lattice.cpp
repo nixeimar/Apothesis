@@ -88,3 +88,15 @@ void Lattice::setProcMap( map<string, set< int > >* procMap )
         exit(-1);
     }
 }
+
+void Lattice::print()
+{
+    for (int i = 0; i < m_iSizeX; i++){
+        for (int j = 0; j < m_iSizeY; j++)
+            cout << m_vSites[ i*m_iSizeY + j ]->getHeight() << " ";
+
+        cout  << endl;
+    }
+
+
+}

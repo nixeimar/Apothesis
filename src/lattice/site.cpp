@@ -64,13 +64,34 @@ namespace SurfaceTiles
     m_iHeight++;
   }
 
-  void Site::decreaseHight(){
+  void Site::decreaseHeight(){
     m_iHeight--;
   }
 
   int Site::getNeighboursNum()
   {
-    return m_vNeigh.size();
+    return m_iNumNeighs;
+  }
+
+  void Site::increaseNeighsNum()
+  {
+      m_iNumNeighs++;
+
+      if ( m_iNumNeighs > 5 ){
+          cout << "Problem with the number of neighbors. Number larger than 5. " + m_iID << endl;
+          exit(-1);
+      }
+  }
+
+  //Decrease the number of neighs
+  void Site::decreaseNeighsNum()
+  {
+      m_iNumNeighs--;
+
+      if ( m_iNumNeighs <= 0 ){
+          cout << "Problem with the number of neighbors. Number less than 1. " + m_iID << endl;
+          exit(-1);
+      }
   }
 
   void Site::setNeighPosition(Site *s, NeighPoisition np)

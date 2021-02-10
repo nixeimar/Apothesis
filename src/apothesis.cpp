@@ -607,6 +607,10 @@ void Apothesis::exec()
     for (pair<string, set<int> > p:m_procMap)
         procPool->getProcessByName( p.first )->setLattice( pLattice );
 
+
+    //If starting from a flat surface - the easy way
+    for (Site* s:pLattice->getSites() )
+        s->setNeighboursNum( 5 );
     //<---------------------- End creation of the process map & initialization  ------------------------------//
 
     // Here we set the process map to the lattice in order for the lattice to be able to modified according to the structural properties of the lattice.
@@ -625,7 +629,7 @@ void Apothesis::exec()
         pIO->writeLogOutput("Running " + to_string( dTime ) + " sec");
 
     double dR = 0.0;
-    double time = 0.0;
+    double time = 0.01;
     double dt = 0.0;
     int iCount = 0;
     double dProcRate = 0.0;
@@ -636,10 +640,8 @@ void Apothesis::exec()
 
     //Calculate the total probability (R) --------------------------//
     dR = 0.0;
-    for (pair<string, set<int> > p:m_procMap) {
+    for (pair<string, set<int> > p:m_procMap)
         dR += (double)procPool->getProcessByName( p.first )->getProbability()*p.second.size();
-        cout << dR << endl;        //Calculate the total probability (R) --------------------------//
-    }
 
     while ( time < dTime ){
         //1. Get a random numberss
@@ -658,10 +660,13 @@ void Apothesis::exec()
                 //iSiteID -> is one site from the list that this process can performed
                 iSiteNum = pRandomGen->getIntRandom(0, m_procMap[ p.first ].size() - 1 );
 
-                cout << p.first << " " <<  "selected site: " << iSiteNum << endl;
+                cout << p.first << " " <<  "selected Num site: " << iSiteNum << endl;
+                cout << p.first << " " <<  "selected site: " << *next(m_procMap[ p.first ].begin(), iSiteNum) << endl;
 
                 //3. From this process pick a random site with id and perform it like this:
                 procPool->getProcessByName( p.first )->perform( *next(m_procMap[ p.first ].begin(), iSiteNum) );
+
+
                 //m_procMap is recomputed inside the lattice!
 
                 //4. Re-compute the processes rates and re-compute Rtot (see ppt).
@@ -676,6 +681,9 @@ void Apothesis::exec()
                 break;
             }
         }
+
+        pLattice->print();
+        cout << endl;
 
         //6. advance time: time += dt;
         time += dt;
