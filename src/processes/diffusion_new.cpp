@@ -35,6 +35,6 @@ double Diffusion_new::getProbability(){
     double A = exp( (E_d-E_m)/(k*T) );
 
     //--------------------- Transitions probability ----------------------------------------//
-    return  0.0; // A*v0*exp( -m_iNeighNum*E/(k*T) );
+    return  A*v0*exp( -m_iNeighNum*E/(k*T) );
     //----------------------------------------------------------------------------------------//
 }

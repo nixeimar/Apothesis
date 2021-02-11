@@ -29,6 +29,7 @@ HEADERS += apothesis.h \
            processes/process_new.h \
            processes/processpool.h \
            processes/reaction_new.h \
+           properties.h \
            register.h \
            error/errorhandler.h \
            IO/read.h \
@@ -60,6 +61,7 @@ SOURCES += apothesis.cpp \
            processes/process_new.cpp \
            processes/processpool.cpp \
            processes/reaction_new.cpp \
+           properties.cpp \
            register.cpp \
            error/errorhandler.cpp \
            IO/read.cpp \

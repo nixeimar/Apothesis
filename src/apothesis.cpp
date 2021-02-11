@@ -23,6 +23,7 @@
 #include "read.h"
 #include "errorhandler.h"
 #include "parameters.h"
+#include "properties.h"
 #include "process.h"
 #include "species.h"
 #include "string.h"
@@ -58,6 +59,7 @@ Apothesis::Apothesis(int argc, char *argv[])
     m_vcArgv = argv;
 
     pParameters = new Utils::Parameters(this);
+    pProperties = new Utils::Properties(this);
     pRandomGen = new RandomGen::RandomGenerator( this );
 
     /* This must be constructed before the input */
@@ -608,9 +610,6 @@ void Apothesis::exec()
         procPool->getProcessByName( p.first )->setLattice( pLattice );
 
 
-    //If starting from a flat surface - the easy way
-    for (Site* s:pLattice->getSites() )
-        s->setNeighboursNum( 5 );
     //<---------------------- End creation of the process map & initialization  ------------------------------//
 
     // Here we set the process map to the lattice in order for the lattice to be able to modified according to the structural properties of the lattice.
@@ -634,9 +633,10 @@ void Apothesis::exec()
         m_dRTot += (double)procPool->getProcessByName( p.first )->getProbability()*p.second.size();
 
     while ( m_dProcTime < m_dEndTime ){
-        //1. Get a random numberss
-        // Replace this with Mersenne twister from Chameleon
+
+        //1. Get a random numbers
         m_dRandom = pRandomGen->getDoubleRandom();
+
         m_dSum = 0.0;
         for (pair<string, set<int> > p:m_procMap) {
             m_dProcRate = (double)procPool->getProcessByName( p.first )->getProbability()*p.second.size();

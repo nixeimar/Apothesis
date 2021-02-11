@@ -41,7 +41,8 @@ public:
                         m_read(apothesis->pRead),
                         m_errorHandler(apothesis->pErrorHandler),
                         m_parameters(apothesis->pParameters),
-                        m_randomGen( apothesis->pRandomGen )
+                        m_randomGen( apothesis->pRandomGen ),
+                        m_properties( apothesis->pProperties )
     {}
 
 protected:
@@ -66,6 +67,8 @@ protected:
     /// Random generator
     RandomGen::RandomGenerator *&m_randomGen;
 
+    /// Random generator
+    Utils::Properties *&m_properties;
 };
 
 #endif // POINTERS_H

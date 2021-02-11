@@ -35,9 +35,9 @@ using namespace std;
 
 /** The basic class of the kinetic monte carlo code. */
 
-namespace Utils{ class ErrorHandler; class Parameters;}
+namespace Utils{ class ErrorHandler; class Parameters; class Properties; }
 namespace SurfaceTiles{ class Site; }
-namespace MicroProcesses { class Process; class Adsorption; class Desorption; class Diffusion; class SurfaceReaction;}
+namespace MicroProcesses { class Process; class Adsorption; class Desorption; class Diffusion; class SurfaceReaction; }
 namespace RandomGen { class RandomGenerator; }
 
 class Lattice;
@@ -65,6 +65,9 @@ public:
 
     /// Pointer to the paramters class
     Utils::Parameters* pParameters;
+
+    /// Pointer to the properties class
+    Utils::Properties* pProperties;
 
     /// Random generator
     RandomGen::RandomGenerator *pRandomGen;
