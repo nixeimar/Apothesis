@@ -185,6 +185,18 @@ private:
 
     /// number of species
     int m_nSpecies;
+
+    //
+    double m_dRTot;
+    double m_dEndTime; // = 0.01;
+    double m_dProcTime;
+    double m_dProcRate; // = 0.0;
+    double m_dt; // = 0.0;
+    double m_dRandom; // = 0;
+    double m_dSum; // = 0.0;
+    int m_iSiteNum; // = 0;
+    int n;
+
 };
 
 #endif // KMC_H

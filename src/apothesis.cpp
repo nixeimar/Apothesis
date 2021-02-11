@@ -619,65 +619,47 @@ void Apothesis::exec()
 
     ///Perform the number of KMC steps read from the input.
     //  int iterations = pParameters->getIterations();
-    double dTime = pParameters->getEndTime();
+    m_dEndTime = pParameters->getEndTime();
 
-    if (dTime == 0.0){
+    if (m_dEndTime == 0.0){
         pErrorHandler->error_simple_msg("Zero iterations found.");
         exit(0);
     }
     else
-        pIO->writeLogOutput("Running " + to_string( dTime ) + " sec");
-
-    double dR = 0.0;
-    double time = 0.01;
-    double dt = 0.0;
-    int iCount = 0;
-    double dProcRate = 0.0;
-    double r = 0;
-    double sum = 0.0;
-    int iSiteNum = 0;
-    int n;
+        pIO->writeLogOutput("Running " + to_string( m_dEndTime ) + " sec");
 
     //Calculate the total probability (R) --------------------------//
-    dR = 0.0;
+    m_dRTot = 0.0;
     for (pair<string, set<int> > p:m_procMap)
-        dR += (double)procPool->getProcessByName( p.first )->getProbability()*p.second.size();
+        m_dRTot += (double)procPool->getProcessByName( p.first )->getProbability()*p.second.size();
 
-    while ( time < dTime ){
+    while ( m_dProcTime < m_dEndTime ){
         //1. Get a random numberss
         // Replace this with Mersenne twister from Chameleon
-        r = pRandomGen->getDoubleRandom();
-        sum = 0.0;
+        m_dRandom = pRandomGen->getDoubleRandom();
+        m_dSum = 0.0;
         for (pair<string, set<int> > p:m_procMap) {
-            dProcRate = (double)procPool->getProcessByName( p.first )->getProbability()*p.second.size();
-            sum += dProcRate/dR;
+            m_dProcRate = (double)procPool->getProcessByName( p.first )->getProbability()*p.second.size();
+            m_dSum += m_dProcRate/m_dRTot;
 
             //2. Pick a process according to the rates
-            if ( r <= sum ){
+            if ( m_dRandom <= m_dSum ){
                 //do the processs
 
                 //Get a random site that this process can performed site
                 //iSiteID -> is one site from the list that this process can performed
-                iSiteNum = pRandomGen->getIntRandom(0, m_procMap[ p.first ].size() - 1 );
-
-                cout << p.first << " " <<  "selected Num site: " << iSiteNum << endl;
-                cout << p.first << " " <<  "selected site: " << *next(m_procMap[ p.first ].begin(), iSiteNum) << endl;
+                m_iSiteNum = pRandomGen->getIntRandom(0, m_procMap[ p.first ].size() - 1 );
 
                 //3. From this process pick a random site with id and perform it like this:
-                procPool->getProcessByName( p.first )->perform( *next(m_procMap[ p.first ].begin(), iSiteNum) );
-
-
-                //m_procMap is recomputed inside the lattice!
+                procPool->getProcessByName( p.first )->perform( *next(m_procMap[ p.first ].begin(), m_iSiteNum) );
 
                 //4. Re-compute the processes rates and re-compute Rtot (see ppt).
-                dR = 0.0;
+                m_dRTot = 0.0;
                 for (pair<string, set<int> > p:m_procMap)
-                    dR += (double)procPool->getProcessByName( p.first )->getProbability()*p.second.size();
-
+                    m_dRTot += (double)procPool->getProcessByName( p.first )->getProbability()*p.second.size();
 
                 //5. Compute dt = -ln(ksi)/Rtot
-                dt = -log( (double) rand()/RAND_MAX )/dR;
-
+                m_dt = -log( pRandomGen->getDoubleRandom() )/m_dRTot;
                 break;
             }
         }
@@ -686,47 +668,10 @@ void Apothesis::exec()
         cout << endl;
 
         //6. advance time: time += dt;
-        time += dt;
+        m_dProcTime += m_dt;
     }
-
 
     delete procPool;
-
-    /*  for (int i = 0; i < iterations; ++i){
-    /// Print to output
-    pIO->writeLogOutput("Time step: " + to_string(i));
-
-    vector<Process *> processes = m_vProcesses;
-    /// Find probability of each process
-    vector<double> probabilities = calculateProbabilities(m_vProcesses);
-    /// Pick random number with 3 digits
-    double random = (double)rand() / RAND_MAX;
-
-    /// Pick Process
-    Process *p = pickProcess(probabilities, random, processes);
-
-    // Site should be picked here
-    p->selectSite();
-
-    if (getDebugMode())
-    {
-      pIO->writeLogOutput("Current site: " + p->getSite());
-    }
-    /// Perform process on that site
-    p->perform();
-
-    // The frequency that the various information are written in the file
-    // must befined by the user. Fix it ...
-    // The user should also check if the messages are written on the terminal or not.
-    pIO->writeLogOutput(p->getName() + " ");
-    pIO->writeLatticeHeights();
-
-    if (i == 0)
-    {
-      cout << m_vProcesses[0]->getName() << " process is being performed..." << endl;
-    }
-    // TODO: check if all processes are 0
-  }*/
 }
 
 void Apothesis::addProcess(string process)

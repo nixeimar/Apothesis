@@ -17,7 +17,6 @@
 
 #include "io.h"
 
-
 IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sLatticeType("NONE"),
     m_sProcess("process"),
@@ -31,8 +30,6 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_mLatticeType[ "NONE" ] = Lattice::NONE;
     m_mLatticeType[ "BCC" ] = Lattice::BCC;
     m_mLatticeType[ "FCC" ] = Lattice::FCC;
-
-
 }
 
 IO::~IO(){}
