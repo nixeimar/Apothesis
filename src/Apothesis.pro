@@ -19,6 +19,7 @@ INCLUDEPATH += . \
 
 # Input
 HEADERS += apothesis.h \
+           IO/io.h \
            aux/random_generator.h \
            aux/randomc.h \
            pointers.h \
@@ -48,6 +49,7 @@ HEADERS += apothesis.h \
            species/species_new.h
 
 SOURCES += apothesis.cpp \
+           IO/io.cpp \
            aux/mersenne.cpp \
            aux/random_generator.cpp \
            lattice/lattice.cpp \
@@ -68,7 +70,6 @@ SOURCES += apothesis.cpp \
            processes/desorption.cpp \
            processes/diffusion.cpp \
            processes/factory_process.cpp \
-           processes/io.cpp \
            processes/parameters.cpp \
            processes/process.cpp \
            processes/SurfaceReaction.cpp \
