@@ -64,7 +64,7 @@ Lattice::Type Lattice::getType()
 
 Site* Lattice::getSite(int id) { return m_vSites[id]; }
 
-inline Site* Lattice::getSite(int i, int j)
+Site* Lattice::getSite(int i, int j)
 {
     if ( i >= m_iSizeX ){
         m_errorHandler->error_simple_msg("ERROR: The site's index exceeds the size of the x-dimension of the lattice. ");

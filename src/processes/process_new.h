@@ -35,6 +35,12 @@ public:
 
     inline void setLattice( Lattice* lattice ){ m_pLattice = lattice; }
 
+    /// Counts how many times this process happens
+    inline void eventHappened(){ m_iHappened++; }
+
+    /// Returns how many times this process happens
+    int getNumEventHappened(){ return m_iHappened; }
+
 protected:
     /** Pointer to the lattice of the process */
     Lattice* m_pLattice;
@@ -49,6 +55,8 @@ private:
     ///The type of the process
     string m_sType;
 
+    /// Counts the times that this processes happened
+    int m_iHappened;
 };
 
 #endif // PROCESS_NEW_H

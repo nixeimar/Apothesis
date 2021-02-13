@@ -53,6 +53,9 @@ typedef rapidjson::SizeType SizeType;
 Apothesis::Apothesis(int argc, char *argv[])
     : pLattice(0),
       pRead(0),
+      m_dProcTime(0.0),
+      m_dRTot(0.0),
+      m_dProcRate(0.0),
       m_debugMode(false)
 {
     m_iArgc = argc;
@@ -478,9 +481,8 @@ void Apothesis::init()
 
 void Apothesis::exec()
 {
-
     // Initialize Random generator.
-    pRandomGen->init( 1123123123213 );
+    pRandomGen->init( 0 );
     newDesign::ProrcessPool* procPool = new newDesign::ProrcessPool();
 
     //---------------------- Creation of the process map & initialization (must be transferred to init) ------------------------------>//
@@ -608,16 +610,17 @@ void Apothesis::exec()
     //Set reference to each process5
     for (pair<string, set<int> > p:m_procMap)
         procPool->getProcessByName( p.first )->setLattice( pLattice );
-
-
     //<---------------------- End creation of the process map & initialization  ------------------------------//
+
+
+    //--------------- Open files for writting ---------------------->
+    pIO->openRoughnessFile( "testRough" );
 
     // Here we set the process map to the lattice in order for the lattice to be able to modified according to the structural properties of the lattice.
     //(must be transferred to init)
     pLattice->setProcMap( &m_procMap );
 
-    ///Perform the number of KMC steps read from the input.
-    //  int iterations = pParameters->getIterations();
+    //Perform the number of KMC steps read from the input.
     m_dEndTime = pParameters->getEndTime();
 
     if (m_dEndTime == 0.0){
@@ -632,8 +635,12 @@ void Apothesis::exec()
     for (pair<string, set<int> > p:m_procMap)
         m_dRTot += (double)procPool->getProcessByName( p.first )->getProbability()*p.second.size();
 
-    while ( m_dProcTime < m_dEndTime ){
+    m_dEndTime = 0.01;
 
+    pProperties->calculateRoughness();
+    pIO->writeRoughness( m_dProcTime, pProperties->getRoughness() );
+
+    while ( m_dProcTime <= m_dEndTime ){
         //1. Get a random numbers
         m_dRandom = pRandomGen->getDoubleRandom();
 
@@ -644,14 +651,13 @@ void Apothesis::exec()
 
             //2. Pick a process according to the rates
             if ( m_dRandom <= m_dSum ){
-                //do the processs
 
-                //Get a random site that this process can performed site
-                //iSiteID -> is one site from the list that this process can performed
+                //Get a random number which is the ID of the site where this process can performed
                 m_iSiteNum = pRandomGen->getIntRandom(0, m_procMap[ p.first ].size() - 1 );
 
-                //3. From this process pick a random site with id and perform it like this:
+                //3. From this process pick the random site with id and perform it:
                 procPool->getProcessByName( p.first )->perform( *next(m_procMap[ p.first ].begin(), m_iSiteNum) );
+                procPool->getProcessByName( p.first )->eventHappened();
 
                 //4. Re-compute the processes rates and re-compute Rtot (see ppt).
                 m_dRTot = 0.0;
@@ -659,17 +665,23 @@ void Apothesis::exec()
                     m_dRTot += (double)procPool->getProcessByName( p.first )->getProbability()*p.second.size();
 
                 //5. Compute dt = -ln(ksi)/Rtot
-                m_dt = -log( pRandomGen->getDoubleRandom() )/m_dRTot;
+                m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
                 break;
             }
         }
-
-        pLattice->print();
-        cout << endl;
-
         //6. advance time: time += dt;
         m_dProcTime += m_dt;
+
+        //Calulate the roughness
+        pProperties->calculateRoughness();
+
+        //Then write it
+        pIO->writeRoughness( m_dProcTime, pProperties->getRoughness() );
     }
+
+    for (pair<string, set<int> > p:m_procMap)
+        cout << p.first << " " << procPool->getProcessByName( p.first )->getNumEventHappened() << endl;
+
 
     delete procPool;
 }

@@ -83,6 +83,8 @@ class IO: public Pointers
     /// Returns the name of the output file if it is user defined.
     const string& getOutputFilename() const;
 
+    void writeRoughness( double t, double r);
+
     /// Opens the input file.
     void openInputFile(string file);
 
@@ -91,6 +93,9 @@ class IO: public Pointers
 
     /// Closes the output file.
     void closeOutputFile();
+
+    /// Closes the roughness file.
+    void closeRoughnessFile();
 
     /// Reads the input file " .kmc".
     void readInputFile();
@@ -157,6 +162,9 @@ class IO: public Pointers
     /// Check if Output file is open
     bool outputOpen();
 
+    /// Open roughness file for writting the roughness
+    void openRoughnessFile( string );
+
   protected:
     /// The type of lattice
     string m_sLatticeType;
@@ -172,6 +180,9 @@ class IO: public Pointers
 
     /// The output file
     ofstream m_OutFile;
+
+    /// The rpughness file
+    ofstream m_RoughnessFile;
 
     /// Keywords:
     /// Process keyword

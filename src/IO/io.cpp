@@ -158,12 +158,22 @@ void IO::readInputFile()
     }//Reading the lines
 }
 
-void IO::openInputFile(string file)
+void IO::openInputFile( string file )
 {
     m_InputFile.open(file, ios::in );
 
     if ( !m_InputFile.is_open() ) {
         m_errorHandler->error_simple_msg( "Cannot open file input.kmc" ) ;
+        EXIT;
+    }
+}
+
+void IO::openRoughnessFile( string file )
+{
+    m_RoughnessFile.open(file, ios::out );
+
+    if ( !m_RoughnessFile.is_open() ) {
+        m_errorHandler->error_simple_msg( "Cannot open file " + file ) ;
         EXIT;
     }
 }
@@ -398,6 +408,11 @@ void IO::writeLogOutput( string str )
     m_OutFile << str << endl;
 }
 
+void IO::writeRoughness( double t, double r)
+{
+    m_RoughnessFile <<  t  << "\t" << r << endl;
+}
+
 void IO::writeLatticeInfo()
 {
     m_OutFile << "Lattice size: " << m_lattice->getX() << "x" << m_lattice->getY();
@@ -459,5 +474,10 @@ bool IO::outputOpen()
     return m_OutFile.is_open();
 }
 
+void IO::closeRoughnessFile()
+{
+    if ( m_RoughnessFile.is_open( ) )
+        m_RoughnessFile.close();
+}
 
 

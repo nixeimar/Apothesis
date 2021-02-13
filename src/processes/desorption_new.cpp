@@ -30,5 +30,5 @@ double Desorption_new::getProbability(){
     double v0 = k_d; //*exp(-E/(k*T));
     double A = 0.0e0; //exp((E_d-E_m)/(k*T));
 
-    return v0*exp(-m_iNeigh*E/(k*T));			//Desorption 1 neigh
+    return v0*exp(-(double)m_iNeigh*E/(k*T));			//Desorption 1 neigh
 }

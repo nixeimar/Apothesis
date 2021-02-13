@@ -21,6 +21,8 @@
 #include "pointers.h"
 #include "apothesis.h"
 
+#include "lattice/lattice.h"
+
 using namespace std;
 
 namespace Utils {
@@ -30,9 +32,11 @@ class Properties: public Pointers
 public:
     Properties(Apothesis* apothesis );
 
-    void calculateRoughnes();
+    void calculateRoughness();
     void RMS();
     void eventCountingGrowthRate();
+
+    inline double getRoughness(){ return m_dRoughness; }
 
 private:
     //The roughness of the surface
@@ -43,6 +47,7 @@ private:
 
     //The event counting growth rate
     double m_dEvGrRate;
+
 };
 
 }
