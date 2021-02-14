@@ -679,10 +679,6 @@ void Apothesis::exec()
         pIO->writeRoughness( m_dProcTime, pProperties->getRoughness() );
     }
 
-    for (pair<string, set<int> > p:m_procMap)
-        cout << p.first << " " << procPool->getProcessByName( p.first )->getNumEventHappened() << endl;
-
-
     delete procPool;
 }
 

@@ -72,7 +72,6 @@ void FCC::build()
             }
       }
       
-
   mf_neigh();
 }
 

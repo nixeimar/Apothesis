@@ -255,7 +255,7 @@ int BCC::calculateNeighNum( int id )
 
 void BCC::adsorp( int siteID, species_new* chemSpec )
 {
-    // <--------  For Lam & Vlachos (2000) ------------------------------------//
+    // >--------  For Lam & Vlachos (2000) ------------------------------------//
     //Remove site and its neihbors from its previous position in diffusion and desorption classes
     for ( auto &p:*m_pProcMap ) {
         if ( !IO::contains( p.first, "Adsoprtion" ) ){
@@ -292,10 +292,9 @@ void BCC::adsorp( int siteID, species_new* chemSpec )
             m_pProcMap->at( strProc ).insert( firstNeigh->getID() );
             strProc = "Diffusion " + to_string( m_iSiteNeighsNum ) + "N";
             m_pProcMap->at( strProc ).insert( firstNeigh->getID()  );
-
         }
     }
-    // ---------  For Lam & Vlachos (2000) ------------------------------------>//
+    // ---------  For Lam & Vlachos (2000) ------------------------------------<//
 
 
     //1.Add to this site species the new adroped species
@@ -310,7 +309,6 @@ void BCC::adsorp( int siteID, species_new* chemSpec )
 
 void BCC::desorp(int siteID, species_new *chemSpecies)
 {
-
     // <--------  For Lam & Vlachos (2000) ------------------------------------//
     //Remove site and its neihbors from its previous position in diffusion and desorption classes
     for ( auto &p:*m_pProcMap ) {
