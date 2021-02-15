@@ -30,6 +30,8 @@ using namespace std;
 using namespace SurfaceTiles;
 using namespace Utils;
 
+//Comment this is the FCC(110) surface which is a hexagonal packed structure
+
 class FCC: public Lattice
   {
   public:
@@ -63,7 +65,6 @@ class FCC: public Lattice
 
     /// The neighbours for the FCC lattice.
     void mf_neigh();
-
   };
 
 #endif // LATTICE_H

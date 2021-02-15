@@ -20,7 +20,9 @@ public:
 
     inline void setNumNeigh( int n ){ m_iNeigh = n; }
 
-    double getProbability();
+    double getProbability() override;
+
+    void rules(set<string, std::any>) override {}
     void perform( int siteID  ) override;
 
 private:

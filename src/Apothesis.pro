@@ -6,7 +6,8 @@ TEMPLATE = app
 TARGET = apothesis
 
 QT-=gui core
-CONFIG += c++11
+#CONFIG += c++11
+QMAKE_CXXFLAGS += -std=c++17
 CONFIG += debug_and_release
 CONFING -= qt
 

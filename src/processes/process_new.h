@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <any>
 #include "lattice.h"
 #include "site.h"
 #include "species_new.h"
@@ -40,6 +41,9 @@ public:
 
     /// Returns how many times this process happens
     int getNumEventHappened(){ return m_iHappened; }
+
+    /// The rules for this type of process e.g. diffusion from the site 1 to site 2 etc.
+    virtual void rules( set< string, std::any > ) = 0;
 
 protected:
     /** Pointer to the lattice of the process */
