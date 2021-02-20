@@ -3,7 +3,7 @@
 Makefile*
 Apothesis
 .vs*
- 
+*.csv 
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles/
