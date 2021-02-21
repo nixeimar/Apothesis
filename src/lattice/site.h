@@ -48,34 +48,35 @@ public:
 
     //This should be on the Lattice
     //and every lattice build their own Neghbours
-/*    enum LatticeType {
+    /*    enum LatticeType {
                         BCC,
                         FCC
                      };*/
 
     /// The position of the neighbour.
+    // This should be SOUTH_EAST, SOUTH_WEST etc ..
     enum NeighPoisition{
-                         WEST,
-                         WEST_UP,
-                         WEST_DOWN,
-                         EAST,
-                         EAST_UP,
-                         EAST_DOWN,
-                         NORTH,
-                         SOUTH
-                       };
+        WEST,
+        WEST_UP,
+        WEST_DOWN,
+        EAST,
+        EAST_UP,
+        EAST_DOWN,
+        NORTH,
+        SOUTH
+    };
 
     /// The site that is activated if the neighbours are all occupied.
     enum ActivationSite{
-                         ACTV_WEST,
-                         ACTV_WEST_UP,
-                         ACTV_WEST_DOWN,
-                         ACTV_EAST,
-                         ACTV_EAST_UP,
-                         ACTV_EAST_DOWN,
-                         ACTV_NORTH,
-                         ACTV_SOUTH
-                       };
+        ACTV_WEST,
+        ACTV_WEST_UP,
+        ACTV_WEST_DOWN,
+        ACTV_EAST,
+        ACTV_EAST_UP,
+        ACTV_EAST_DOWN,
+        ACTV_NORTH,
+        ACTV_SOUTH
+    };
 
     /// Set the height of the particular site.
     void setHeight( int );
@@ -151,7 +152,7 @@ public:
     /// Return pointer to map
     map<int, int> getSpeciesMap();
 
-     // Update neighbour list
+    // Update neighbour list
     void m_updateNeighbours();
 
     // Call updateneighbours on another site
@@ -172,8 +173,11 @@ public:
     //Increase the number of neighs
     void increaseNeighsNum();
 
-    //Decrease the number of neighs
-    void decreaseNeighsNum();
+    /// Set the first negihbors of this site
+    void set1stNeibors( int level, Site* );
+
+    /// Returns the 1st neigbors
+    inline map<int, vector<Site* > > get1stNeihbors() const { return m_m1stNeighs; }
 
 protected:
     //The lattice type that this site belongs to
@@ -214,13 +218,38 @@ protected:
     /// The list of processes that this site can participate in.
     list< Process* > m_lProcs;
 
-    vector<Species*> m_species;
+    vector<Species* > m_species;
 
     bool m_phantom;
 
     //Holds the number of the reactants species in this site.
     // m_vReacSpecies has size the number of ALL reactants species
-    valarray< int > m_vReacSpecies;    
+    valarray< int > m_vReacSpecies;
+
+    /// The number of first neighs
+    int m_iFirstNeighs;
+
+    /// The number of second neighs
+    int m_iSecondNeighs;
+
+private:
+    /// Orientation of the lattice
+    string m_sOrint;
+
+    /// The species that are in this site
+    vector<species_new* > m_vSpecies;
+
+    /// The 1st neighbors in the different levels
+    /// below level
+    /// same level
+    /// upper level
+    map< int, vector <Site* > > m_m1stNeighs;
+
+    /// The 2nd nearest neighbors in the different levels
+    /// below level
+    /// same level
+    /// upper level
+    map< int, vector <Site* > > m_m2ndNeighs;
 };
 
 }

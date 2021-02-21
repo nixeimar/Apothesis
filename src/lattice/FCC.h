@@ -33,8 +33,9 @@ using namespace Utils;
 //Comment this is the FCC(110) surface which is a hexagonal packed structure
 
 class FCC: public Lattice
-  {
-  public:
+{
+public:
+    /// The type of the lattice.
 
     /// Constructor
     FCC( Apothesis* apothesis );
@@ -57,14 +58,20 @@ class FCC: public Lattice
     /// Sets the minimun initial height for the lattice.
     void setInitialHeight( int  height );
 
+
     void adsorp(int siteID, species_new* chemSpecies) override {}
     void desorp(int siteID, species_new* chemSpecies) override {}
     void react(int siteID) override{}
 
-  protected:
+protected:
+    /// Build the first neighbours for the FCC(100) lattice.
+    void mf_neigh_100();
 
-    /// The neighbours for the FCC lattice.
-    void mf_neigh();
-  };
+    /// Build the first neighbours for the FCC(110) lattice.
+    void mf_neigh_110();
+
+    /// Build the first neighbours for the FCC(111) lattice.
+    void mf_neigh_111();
+};
 
 #endif // LATTICE_H

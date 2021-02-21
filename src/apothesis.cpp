@@ -76,6 +76,7 @@ Apothesis::Apothesis(int argc, char *argv[])
     // Build the lattice. This should always follow the read input
 
     std::cout << "Building the lattice" << std::endl;
+    pLattice->setOrientation("110");
     pLattice->build();
     std::cout << "Finished building the lattice" << std::endl;
 

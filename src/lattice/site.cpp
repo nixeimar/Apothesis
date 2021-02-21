@@ -23,12 +23,15 @@
 namespace SurfaceTiles
 {
 
-  Site::Site() : m_phantom(false)
+  Site::Site():m_phantom(false)
   {
-   
+      vector<Site* > vec;
+      m_m1stNeighs = { {-1, vec}, { 0, vec }, {1, vec }, };
   }
 
   Site::~Site() { ; }
+
+  void setLatticeInfo( Lattice::Type, string orient );
 
   vector<Site *> Site::getNeighs()
   {
@@ -79,17 +82,6 @@ namespace SurfaceTiles
 
       if ( m_iNumNeighs > 5 ){
           cout << "Problem with the number of neighbors. Number larger than 5. " + m_iID << endl;
-          exit(-1);
-      }
-  }
-
-  //Decrease the number of neighs
-  void Site::decreaseNeighsNum()
-  {
-      m_iNumNeighs--;
-
-      if ( m_iNumNeighs <= 0 ){
-          cout << "Problem with the number of neighbors. Number less than 1. " + m_iID << endl;
           exit(-1);
       }
   }
@@ -270,6 +262,12 @@ namespace SurfaceTiles
     m_vReacSpecies.resize( totalSpecies );
     for (int i = 0; i < totalSpecies; i++)
         m_vReacSpecies[ i ]  = 0;
+  }
+
+
+  void Site::set1stNeibors(int level, Site* s)
+  {
+      m_m1stNeighs.at( level ).push_back( s );
   }
 
 } // namespace SurfaceTiles

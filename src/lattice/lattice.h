@@ -39,7 +39,8 @@ class Lattice: public Pointers
   {
   public:
     /// The type of the lattice.
-       enum Type{ NONE,
+       enum Type{
+               NONE,
                BCC,
                FCC
                };
@@ -98,6 +99,9 @@ class Lattice: public Pointers
     //Set true if the lattice has steps
     void setSteps(bool hasSteps = false);
 
+    /// Set the "cut" of the surface
+    void setOrientation(string s){ m_sOrient = s; }
+
     /// Store the surface step info
     void setStepInfo(int, int, int);
 
@@ -116,6 +120,9 @@ class Lattice: public Pointers
     //Prints the lattice heights
     void print();
 
+    //Prints the neighbors
+    void printNeighs(int);
+
   protected:
     /// The size of the lattice in the x-dimension.
     int m_iSizeX;
@@ -133,7 +140,7 @@ class Lattice: public Pointers
     vector<Site* > m_vSites;
 
     /// The neighbours of this lattice (different if e.g. is BCC or FCC)
-    virtual void mf_neigh() = 0;
+//    virtual void mf_neigh() = 0;
 
     /// True if the lattice has steps (comes from the input file if the Step keyword is found).
     bool m_bHasSteps;
@@ -148,6 +155,9 @@ class Lattice: public Pointers
 
 
     map< string, set<int > >* m_pProcMap;
+
+    /// The cut of the lattice [ 100, 110, 111 ]
+    string m_sOrient;
 
   };
 
