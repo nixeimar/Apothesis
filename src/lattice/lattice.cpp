@@ -25,12 +25,12 @@ Lattice::Lattice(Apothesis *apothesis) : Pointers(apothesis)
 
 void Lattice::setType(string sType)
 {
-  if (sType == "FCC")
-    m_Type = FCC;
-  else if (sType == "BCC")
-    m_Type = BCC;
-  else
-    m_Type = NONE;
+    if (sType == "FCC")
+        m_Type = FCC;
+    else if (sType == "BCC")
+        m_Type = BCC;
+    else
+        m_Type = NONE;
 }
 
 void Lattice::setX(int x) { m_iSizeX = x; }
@@ -46,20 +46,20 @@ Lattice::~Lattice()
 
 vector<Site *> Lattice::getSites()
 {
-  return m_vSites;
+    return m_vSites;
 }
 
 Lattice::Type Lattice::getType()
 {
-  switch (m_Type)
-  {
-  case FCC:
-    return FCC;
-  case BCC:
-    return BCC;
-  default:
-    return NONE;
-  }
+    switch (m_Type)
+    {
+    case FCC:
+        return FCC;
+    case BCC:
+        return BCC;
+    default:
+        return NONE;
+    }
 }
 
 Site* Lattice::getSite(int id) { return m_vSites[id]; }
@@ -91,12 +91,38 @@ void Lattice::setProcMap( map<string, set< int > >* procMap )
 
 void Lattice::print()
 {
-    for (int i = 0; i < m_iSizeX; i++){
-        for (int j = 0; j < m_iSizeY; j++)
-            cout << m_vSites[ i*m_iSizeY + j ]->getHeight() << " ";
+    for (int i = 0; i < m_iSizeY; i++){
+        for (int j = 0; j < m_iSizeX; j++)
+            cout << m_vSites[ i*m_iSizeX + j ]->getID() << " ";
 
         cout  << endl;
     }
+}
 
+
+void Lattice::printNeighs( int ID )
+{
+    cout << "======= Printing neigbors ============ " << endl;
+
+    if ( ID < getSize() ){
+        cout << "Level 0 neighs: ";
+        for ( int i = 0; i< m_vSites[ ID ]->get1stNeihbors()[ 0 ].size(); i++ )
+            cout << m_vSites[ ID ]->get1stNeihbors()[ 0 ].at( i )->getID() << " ";
+
+        cout << endl;
+
+        cout << "Level -1 neighs: ";
+        for ( int i = 0; i< m_vSites[ ID ]->get1stNeihbors()[ -1 ].size(); i++ )
+            cout << m_vSites[ ID ]->get1stNeihbors()[ -1 ].at( i )->getID() << " ";
+
+        cout << endl;
+
+        cout << "======= end printing neigbors ============ " << endl;
+
+    }
+    else {
+        cout << "Cannot print neighs because ID exceeds the available number of sites." << endl;
+        EXIT;
+    }
 
 }
