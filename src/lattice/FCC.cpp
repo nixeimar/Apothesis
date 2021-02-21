@@ -80,7 +80,7 @@ void FCC::build()
             cout << "Error:The size of the lattice in the x-direciton must be an even number." << endl;
             for ( int i = 0; i < m_vSites.size(); i++)
                 delete m_vSites[ i ];
-            EXIT;
+            EXIT
         }
 
 
@@ -119,7 +119,6 @@ void FCC::mf_neigh_100()
 
 void FCC::mf_neigh_110()
 {
-
     //Nikos: FCC(110) must be an even number because there are differences in the level(-1,1) neighbors.
 
     //Example of a 6x6 lattice. Note that it the end row must always be a height below the frist one in order to have periodic conditions
