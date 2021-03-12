@@ -25,7 +25,7 @@ public:
 
 
     double getProbability() override;
-    void rules(set<string, std::any>) override {}
+ //   void rules(set<string, std::any>) override {}
     void perform( int siteID ) override;
 
 private:

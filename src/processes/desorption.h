@@ -14,185 +14,50 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
-
 #ifndef DESORPTION_H
 #define DESORPTION_H
 
 #include "process.h"
 
-#include <iostream>
-#include <list>
-#include <math.h>
+namespace MicroProcesses
+{
 
-#include "apothesis.h"
-#include "adsorption.h"
-#include "diffusion.h"
-#include "site.h"
-
-using namespace std;
-using namespace SurfaceTiles;
-
-namespace MicroProcesses{
-
-/** The adsorption class. Adsoprtion depending on the type of lattice can be performed in different sites.
-For the simplest case e.g. BCC lattices all the sites are available for deposition. */
-
-class Desorption: public Process
+class Desorption:public Process
 {
 public:
-    /// Constructor
-    Desorption
-    (
-            Apothesis* instance,
-            string speciesName,
-            Species* species,
-            double energy,
-            double frequency
-            );
+    Desorption();
+    ~Desorption() override;
 
-    /// Destructor
-    virtual ~Desorption();
+    inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
+    inline double getActivationEnergy(){ return m_dActNrg; }
 
-    /// The name of the process.
-    void setName(string s){ m_sName = s;}
+    inline void setTargetSite( Site* site ){ m_Site = site;}
+    inline Site* getTargetSite(){ return m_Site; }
 
-    //Todo be deleted, move instance of apothesis to base process class
-    void setInstance( Apothesis* apothesis ){}
-    
-    /// Compute the overall probabilities of this processus and return it.
-    double getProbability();
+    inline void setSpecies( species_new* s ){ m_Species = s; }
+    inline species_new* getSpecies(){ return m_Species; }
 
-    /// Returns the name of the process.
-    string getName();
+    inline void setNumNeigh( int n ){ m_iNeigh = n; }
 
-    /// Returns name of species
-    const string getSpeciesName();
-
-    /// Returns instance of species class
-    const Species* getSpecies();
-
-    /// Constructs the sites that adsorption can be performed.
-    void activeSites( Lattice* );
-
-    /// Slect the site that the adsorption will be performed from the available sites.
-    void selectSite();
-
-    void setProcessMap( map< Process*, list<Site* >* >* );
-
-    /// Perform the process. This is what actually is called by the main KMC instance.
-    void perform();
-
-    /// The list of active sites for adsorption.
-    list<Site*> getActiveList();
-
-    /// Here various tests should be putted in order to check for the validity of the process e.g.
-    /// the number of the particles in the active surface must be constant (mass is constant).
-    void test();
-
-    /// Returns true if the process can be performed in the site that callls it.
-    bool controltRules( Site* site );
-
-    /// Set associated adsorption pointer
-    void setAdsorptionPointer(Adsorption* a);
-
-    /// Set associated diffusion pointer
-    void setDiffusionPointer(Diffusion* d);
-
-    /// Set Diffusion switch
-    void setDiffusion(bool canDiffuse);
-
-    /// Add a site to a list
-    void mf_addToList(Site* s);
-
-    /// Update counter on number of sites with n neighbours
-    void updateSiteCounter(int neighbours, bool addOrRemove);
-
-    /// Update counts on neighbours
-    void updateNeighbours(Site* s);
-
-    /// Set site
-    void setSite(Site* s);
-    
-protected:
-    /// The kmc instance.
-    Apothesis* m_apothesis;
-
-    /// The name of the process
-    string m_sName;
-
-    /// Remove a site from a list
-    void mf_removeFromList();
-
-    /// Update the neighbour sites of this site. This is performed here since depending on the process
-    /// this changes. E.g. fotr adsortpion in a FCC lattice the first neighbors are different compared to the
-    /// adsroption in a BCC lattice.
-    void mf_updateNeighNum();
-
-    /// The value of the probability of the process is stored here
-    double m_dProbability;
-
-    /// The number of neighs of this site
-    int m_iNeighNum;
-
-    /// Return names of desorption species
-    const string getDesorptionSpecies();
-
-    /// Return array of desorption energy
-    const double getDesorptionEnergy();
-
-    /// Return array of desorption frequency
-    const double getDesorptionFrequency();
-
-    /// Return pointer to corresponding adsorption class
-    Adsorption* getAdsorption();
-
-    /// Return pointer to corresponding diffusion class
-    Diffusion* getDiffusion();
-
-    bool m_canDiffuse;
-
-    bool canDiffuse();
+    double getProbability() override;
+    bool rules( Site* s) override;
+    void perform( int siteID  ) override;
 
 private:
+    ///The activation energy of the adsoprtion process
+    double m_dActNrg;
 
-    /** The lattice of the process */
-    Lattice* m_pLattice;
+    ///The site that adsorption will be performed
+    Site* m_Site;
 
-    /// The desorption list which hold all the available sites for deposition
-    list<Site* > m_lDesSites;
+    ///The species that must be removed from the site
+    species_new* m_Species;
 
-    /// Species name that can desorb
-    string m_desorptionSpeciesName;
+    ///The neighbours of this diffusion process
+    int m_iNeigh;
 
-    /// Species instance that can desorb
-    Species* m_desorptionSpecies;
-
-    /// Energy coefficients
-    double m_desorptionEnergy;
-
-    /// Frequency
-    double m_desorptionFrequency;
-
-    /// Pointer to associated adsorption class
-    Adsorption* m_pAdsorption;
-
-    /// Pointer to associated diffusion class
-    Diffusion* m_pDiffusion;
-
-    // Build probability table
-    vector<double> generateProbabilities();
-    
-    // Vector to hold the probabilities. Number of neighbour - 1 = index of list
-    // TODO: How to initialize this as a const vector? The value should not change
-    vector<double> m_probabilities;
-
-    // Number of sites with n number of neighbours
-    vector<double> m_numNeighbours;
-
-    // Maximum number of neighbours possible
-    const int m_maxNeighbours;
-
+    REGISTER_PROCESS( Desorption )
 };
 }
 
-#endif // ADSORPTION_H
+#endif // Desorption_H

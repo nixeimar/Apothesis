@@ -30,11 +30,12 @@
 #include "adsorption.h"
 #include "desorption.h"
 #include "diffusion.h"
-#include "SurfaceReaction.h"
 #include "reaction_new.h"
 #include "aux/random_generator.h"
 
 #include "processpool.h"
+
+#include "factory_process.h"
 
 #include "adsorption_new.h"
 #include "desorption_new.h"
@@ -109,7 +110,7 @@ void Apothesis::init()
         pIO->openOutputFile("Output");
 
     // Processes in this case
-    vector<string> pProc = m_processes;
+/*    vector<string> pProc = m_processes;
 
     cout << pProc[0] << endl;
 
@@ -217,11 +218,18 @@ void Apothesis::init()
                 }
 
             }
-            Adsorption* a = new Adsorption(this, species[i], m_species[species[i]], sticking[i], massFraction[i], direct);
+
+            Process* apo = FactoryProcess::createProcess("AdsorptionFFC110"); //NIKOS
+            apo->getName();
+            delete apo;
+
+
+
+//            Adsorption* a = new Adsorption(this, species[i], m_species[species[i]], sticking[i], massFraction[i], direct);
 
             // Keep two separate vectors: one for all processes, one for adsorption processes only
-            m_vAdsorption.push_back(a);
-            m_vProcesses.push_back(a);
+//            m_vAdsorption.push_back(a);
+ //           m_vProcesses.push_back(a);
         }
 
         // Resolving Conflicts
@@ -476,18 +484,66 @@ void Apothesis::init()
     {
         Site* pSite = sites[site];
         pSite->initSpeciesMap(m_nSpecies);
-    }
+    }*/
 
 }
 
 void Apothesis::exec()
 {
+
+
+    Process* des = FactoryProcess::createProcess("Desorption");
+    des->setName("Nikos");
+    cout << "HERE " << des->getName() << endl;
+
     // Initialize Random generator.
     pRandomGen->init( 0 );
     newDesign::ProrcessPool* procPool = new newDesign::ProrcessPool();
 
-    //---------------------- Creation of the process map & initialization (must be transferred to init) ------------------------------>//
-    Adsorption_new* adsosption = new Adsorption_new();
+    for ( Site* s:pLattice->getSites() )
+        if ( s->getID()%2 != 0)
+            s->setHeight( 9 );
+        else
+            s->setHeight( 10 );
+
+    pLattice->print();
+
+    //-------------------- This is an example for FCC(110) lattice  ------------------//
+
+    Process* adsosption = FactoryProcess::createProcess("Adsorption");
+    //    Adsorption* adsosption = new Adsorption_new();
+    adsosption->setName("Simple_FCC_110");
+    adsosption->setID( 0 );
+
+    pair<string, set<int> > p;
+    p.first = adsosption->getName();
+    set< int > ids;
+
+    m_procMap.insert(  p );
+//    procPool->addProcess( adsosption->getName(), adsosption );
+ //   procPool->addProcess( adsosption->getID(),  adsosption);
+
+    //We always start from the even numbers in FCC 110
+    for (Site* s:pLattice->getSites() )
+        if ( s->getID()%2 == 0)
+            m_procMap[ adsosption->getName() ].insert( s->getID() );
+
+    // Here we set the process map to the lattice in order for the lattice to be able to modified according to the structural properties of the lattice.
+    //(must be transferred to init)
+    pLattice->setProcMap( &m_procMap );
+
+    for (pair<string, set<int> > p:m_procMap)
+        procPool->getProcessByName( p.first )->setLattice( pLattice );
+
+    adsosption->perform( 15 );
+
+    EXIT;
+
+    //-------------------- This is an example for FCC(110) lattice  ------------------//
+
+
+    //---------------------- Creation of the process map & initialization (must be transferred to init) - These are to reproduce Lam & Vlachos (2000) results  ------------------------------>//
+/*    Adsorption_new* adsosption = new Adsorption_new();
     adsosption->setActivationEnergy( 12.0 );
     adsosption->setName("Adsoprtion");
     adsosption->setID( 0 );
@@ -496,7 +552,7 @@ void Apothesis::exec()
     p.first = adsosption->getName();
     set< int > ids;
 
-    m_procMap.insert( p );
+    m_procMap.insert(    p );
     procPool->addProcess( adsosption->getName(), adsosption );
     procPool->addProcess( adsosption->getID(),  adsosption);
 
@@ -608,10 +664,10 @@ void Apothesis::exec()
     for (Site* s:pLattice->getSites() )
         m_procMap[ diffusion_5N->getName() ].insert( s->getID() );
 
-    //Set reference to each process5
+    //Set reference lattice to each process
     for (pair<string, set<int> > p:m_procMap)
-        procPool->getProcessByName( p.first )->setLattice( pLattice );
-    //<---------------------- End creation of the process map & initialization  ------------------------------//
+        procPool->getProcessByName( p.first )->setLattice( pLattice ); */
+    //<---------------------- End creation of the process map & initialization for Lam & Vlachos (2000) resutls  ------------------------------//
 
 
     //--------------- Open files for writting ---------------------->
@@ -757,7 +813,7 @@ Process *Apothesis::pickProcess(vector<double> probabilities, double random, vec
     return pProcesses[probabilities.size() - 1];
 }
 
-Adsorption *Apothesis::findAdsorption(string species)
+/*Adsorption *Apothesis::findAdsorption(string species)
 {
     for (vector<Adsorption *>::iterator itr = m_vAdsorption.begin(); itr != m_vAdsorption.end(); ++itr)
     {
@@ -769,11 +825,11 @@ Adsorption *Apothesis::findAdsorption(string species)
         // find name of adsorption species
     }
     pErrorHandler->warningSimple_msg("Warning! Could not find instance of Adsorption class for desorbed species " + species);
-}
+}*/
 
 Desorption *Apothesis::findDesorption(string species)
 {
-    for (vector<Desorption *>::iterator itr = m_vDesorption.begin(); itr != m_vDesorption.end(); ++itr)
+/*    for (vector<Desorption *>::iterator itr = m_vDesorption.begin(); itr != m_vDesorption.end(); ++itr)
     {
         Desorption *d = *itr;
         if (!species.compare(d->getSpeciesName()))
@@ -782,7 +838,7 @@ Desorption *Apothesis::findDesorption(string species)
         }
         // find name of adsorption species
     }
-    cout << "Warning! Could not find instance of Adsorption class for desorbed species " << species << endl;
+    cout << "Warning! Could not find instance of Adsorption class for desorbed species " << species << endl;*/
 }
 
 IO *Apothesis::getIOPointer()

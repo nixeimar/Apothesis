@@ -18,153 +18,54 @@
 #ifndef DIFFUSION_H
 #define DIFFUSION_H
 
-#include "process.h"
+#include <process.h>
 
-/** The diffusion process. Performs the movement
- * of a particle to diffrent positions on the surface. */
+namespace MicroProcesses
+{
 
-namespace MicroProcesses{
-
-class Diffusion: public Process
+class Diffusion:public Process
 {
 public:
-     /// Constructor
-    Diffusion
-    (
-      Apothesis* instance,
-      string species,
-      double energy,
-      double frequency
-    );
-    /// Destructor
-    virtual ~Diffusion();
+    Diffusion();
+    ~Diffusion() override;
 
-    /// Here everyhing needed for initialization of the process should be put
-    void init();
+    inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
+    inline double getActivationEnergy(){ return m_dActNrg; }
 
-    /// The name of the process.
-    void setName(string s){ m_sName = s;}
+    inline void setOriginSite( Site* site ){ m_originSite = site;}
+    inline Site* getOriginSite(){ return m_originSite; }
 
-    /// Compute the overall probabilities of this process and return it.
-    double getProbability();
+    inline void setTargetSite( Site* site ){ m_targetSite = site;}
+    inline Site* getTargetSite(){ return m_targetSite; }
 
-    /// Returns the name of the process.
-    string getName();
+    inline void setSpecies( species_new* s ){ m_Species = s; }
+    inline species_new* getSpecies(){ return m_Species; }
 
-    /// Set the instance of Apothesis.
-    /// This allows to have access to all other functionalities of the KMC class.
-    void setInstance( Apothesis* apothesis ){;}
+    inline void setNeigh(int n ){ m_iNeighNum = n; }
 
-    /// Set the lattice uppon which diffusion will be performed.
-    void activeSites( Lattice* );
-
-    /// The initial site that the diffusion will begin.
-    void selectSite();
-
-    /// Perform the process. This is what actually is called by the main KMC instance.
-    void perform();
-
-    /// A process map which is used between the different processes.
-    /// This need to be evaluated since it is not so handy.
-    void setProcessMap( map< Process*, list<Site* >* >* );
-
-    /// The list of active sites for diffusion.
-    list<Site* > getActiveList();
-
-    /// Remove a site from a list
-    void mf_removeFromList();
-
-    /// Remove specific site from list
-    void mf_removeFromList(Site* s);
-
-    /// Add a site to a list
-    void mf_addToList(Site* s);
-
-    /// Here various tests should be putted in order to check for the validity of the process e.g.
-    /// the number of the particles in the active surface must be constant (mass is constant).
-    void test();
-
-    /// Returns true if the process can be performed in the site that callls it.
-    bool controltRules( Site* site );
-
-    void updateSiteCounter(int neighbours, bool addOrRemove);
-
-    // Set adsorption pointer
-    void setAdsorptionPointer(Adsorption* a);
-
-    // Set desorption pointer
-    void setDesorptionPointer(Desorption* d);
-
-  protected:
-    /// The kmc instance.
-    Apothesis* m_apothesis;
-
-    /// The name of the process
-    string m_sName;
-
-    /// Update the neighbour sites of this site. This is performed here since depending on the process
-    /// this changes. E.g. fotr adsortpion in a FCC lattice the first neighbors are different compared to the
-    /// adsroption in a BCC lattice.
-    void mf_updateNeighNum(Site* s);
-
-    int mf_getNumNeighbours(Site* site);
-
-    // Update the counts of all neighbours
-    Site* chooseNeighbour(vector<Site*> neighbours);
-
-    /// The value of the probability of the process is stored here
-    double m_dProbability;
-
-    /// The number of neighs of this site
-    int m_iNeighNum;
-
-     /// Species that can diffuse
-    string m_diffusionSpecies;
-
-    /// Energy coefficients
-    double m_diffusionEnergy;
-
-    /// Frequency
-    double m_diffusionFrequency;
-
-    // Get access to the adsorption pointer
-    Adsorption* getAdsorption();
-
-    // Get access to the desorption pointer
-    Desorption* getDesorption();
-
-
+    double getProbability() override;
+    bool rules( Site* ) override {}
+    void perform( int siteID ) override;
 
 private:
+    ///The activation energy of the adsoprtion process
+    double m_dActNrg;
 
-    /** The lattice of the process */
-    Lattice* m_pLattice;
+    ///The site to for the adsorption to be removed
+    Site* m_originSite;
 
-    /// The diffusion list which hold all the available sites for diffusion
-    list<Site* > m_lDiffSites;
+    ///The site that adsorption will be performed
+    Site* m_targetSite;
 
-    /** Pointer to the process map */
-    map< Process*, list<Site*>* >* m_pProcessMap;
+    ///The species that must be removed from the site
+    species_new* m_Species;
 
-    // Build probability table 
-    vector<double> generateProbabilities();
-    
-    // Vector to hold the probabilities. Number of neighbour - 1 = index of list
-    vector<double> m_probabilities;
+    /// The number of neighbours for calculating the probability
+    int m_iNeighNum;
 
-    // Number of sites with n number of neighbours
-    // TODO: How to initialize this as a const vector? The value should not change 
-    vector<double> m_numNeighbours;
-
-    // Maximum number of neighbours possible
-    const int m_maxNeighbours;
-
-    // Pointer to associated adsorption class
-    Adsorption* m_pAdsorption;
-
-    // Pointer to associated adsorption class
-    Desorption* m_pDesorption;
+    REGISTER_PROCESS(Diffusion)
 };
 
 }
-#endif // DIFFUSION_H
+
+#endif // Diffusion_H

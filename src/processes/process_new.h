@@ -1,3 +1,20 @@
+//============================================================================
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//============================================================================
+
 #ifndef PROCESS_NEW_H
 #define PROCESS_NEW_H
 
@@ -42,8 +59,8 @@ public:
     /// Returns how many times this process happens
     int getNumEventHappened(){ return m_iHappened; }
 
-    /// The rules for this type of process e.g. diffusion from the site 1 to site 2 etc.
-    virtual void rules( set< string, std::any > ) = 0;
+    /// The rules for this type of process e.g. the neighbour of site Site.
+    virtual bool rules( string, Site* ) = 0;
 
 protected:
     /** Pointer to the lattice of the process */

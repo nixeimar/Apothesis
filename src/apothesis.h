@@ -1,4 +1,4 @@
-//============================================================================
+    //============================================================================
 //    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
@@ -101,7 +101,7 @@ public:
 
     MicroProcesses::Process* pickProcess(vector<double> probabilities, double random, vector<MicroProcesses::Process*> pProcesses);
 
-    MicroProcesses::Adsorption* findAdsorption(string species);
+//    MicroProcesses::Adsorption* findAdsorption(string species);
 
     MicroProcesses::Desorption* findDesorption(string species);
 
@@ -161,7 +161,7 @@ private:
     vector< MicroProcesses::Process*> m_vProcesses;
 
     vector< MicroProcesses::Adsorption*> m_vAdsorption;
-    
+
     vector< MicroProcesses::Desorption*> m_vDesorption;
 
     vector< MicroProcesses::SurfaceReaction*> m_vSurfaceReaction;

@@ -39,7 +39,6 @@ void Lattice::setY(int y) { m_iSizeY = y; }
 
 void Lattice::setInitialHeight(int height) { m_iHeight = height; }
 
-
 Lattice::~Lattice()
 {
 }
@@ -93,7 +92,7 @@ void Lattice::print()
 {
     for (int i = 0; i < m_iSizeY; i++){
         for (int j = 0; j < m_iSizeX; j++)
-            cout << m_vSites[ i*m_iSizeX + j ]->getID() << " ";
+            cout << m_vSites[ i*m_iSizeX + j ]->getID() << "( " << m_vSites[ i*m_iSizeX + j ]->getHeight() << " )" ;
 
         cout  << endl;
     }

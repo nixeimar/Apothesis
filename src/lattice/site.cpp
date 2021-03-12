@@ -63,12 +63,12 @@ namespace SurfaceTiles
     return m_iHeight;
   }
 
-  void Site::increaseHeight(){
-    m_iHeight++;
+  void Site::increaseHeight( int i ){
+    m_iHeight += i;
   }
 
-  void Site::decreaseHeight(){
-    m_iHeight--;
+  void Site::decreaseHeight( int i ){
+    m_iHeight -= i;
   }
 
   int Site::getNeighboursNum()

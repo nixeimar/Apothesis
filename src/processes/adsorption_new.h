@@ -30,8 +30,7 @@ public:
 
     double getProbability();
 
-    void rules(set<string, std::any>) override {}
-
+    bool rules( string, Site* ) override;
     void perform( int siteID  ) override;
 
 private:
@@ -46,6 +45,7 @@ private:
 
     ///The species that must adsopt
     species_new* m_Species;
+
 };
 
 #endif // ADSORPTION_NEW_H

@@ -16,276 +16,79 @@
 //============================================================================
 
 #include "adsorption.h"
-#include "register.cpp"
-#include "parameters.h"
-#include <algorithm>
 
 namespace MicroProcesses
 {
 
-  Adsorption::Adsorption(
-      Apothesis *instance,
-      string speciesName,
-      Species *species,
-      double stickingCoeffs,
-      double massFraction,
-      bool direct)
-      : m_sName("Adsorption"),
-        m_iNeighNum(0),
-        m_apothesis(instance),
-        m_adsorptionSpeciesName(speciesName),
-        m_adsorptionSpecies(species),
-        m_stickingCoeffs(stickingCoeffs),
-        m_massfraction(massFraction),
-        m_canDesorb(false),
-        m_canDiffuse(false), //TODO: Do I need to initialize m_interactions?
-        m_direct(direct)
-  {
-    ;
-  }
+REGISTER_PROCESS_IMPL( Adsorption )
 
-  Adsorption::~Adsorption() {}
+Adsorption::Adsorption():m_Species(0){}
 
-  string Adsorption::getName() { return m_sName; }
+Adsorption::~Adsorption(){}
 
-  string Adsorption::getSpeciesName() { return m_adsorptionSpeciesName; }
+bool Adsorption::rules( Site* s )
+{
+    //You can always adsorb as is
+    return true;
+}
 
-  //This should be called only once in the initialization
-  void Adsorption::activeSites(Lattice *lattice)
-  {
-    m_pLattice = lattice;
-    vector<Site *> vSites = m_pLattice->getSites();
+void Adsorption::perform( int siteID )
+{
+    m_pLattice->adsorp( siteID, m_Species );
+}
 
-    for (int i = 0; i < m_pLattice->getSize(); i++)
-      if (vSites[i]->getID() % 2 != 0)
-      {
-        m_lAdsSites.push_back(vSites[i]);
-        vSites[i]->addProcess(this);
-      }
-  }
+//--------------------- Transitions probabilities ----------------------------------------//
+/*        (*prob)[0] = pa*Nx*Ny;									//Adsorption
+        (*prob)[1] = group[0].size()*v0*exp(-1.0e0*E/(k*T));			//Desorption 1 neigh
+        (*prob)[3] = group[1].size()*v0*exp(-2.0e0*E/(k*T));        //Desorption 2 neigh
+        (*prob)[5] = group[2].size()*v0*exp(-3.0e0*E/(k*T));		//Desorption 3 neigh
+        (*prob)[7] = group[3].size()*v0*exp(-4.0e0*E/(k*T));		//Desorption 4 neigh
+        (*prob)[9] = group[4].size()*v0*exp(-5.0e0*E/(k*T));		//Desorption 5 neigh
+        (*prob)[2] = A*(*prob)[1];	  							//Diffusion  1 neisgh
+        (*prob)[4] = A*(*prob)[3];								//Diffusion  2 neisgh
+        (*prob)[6] = A*(*prob)[5];								//Diffusion  3 neisgh
+        (*prob)[8] = A*(*prob)[7];								//Diffusion  4 neisgh
+        (*prob)[10] = A*(*prob)[9];								//Diffusion  5 neisgh */
+//----------------------------------------------------------------------------------------//
 
-  void Adsorption::selectSite()
-  {
-    /* This comes from random i.e. picking from the available list for adsorption randomly */
-    int y = rand() % getActiveList().size();
-    int counter = 0;
-    list<Site *>::iterator site = m_lAdsSites.begin();
-    for (; site != m_lAdsSites.end(); site++)
-    {
-      if (counter == y)
-        m_site = (*site);
-      counter++;
-    }
-  }
+/*        (*p_tot) = 0;
+        for (unsigned int i=0; i<nof_trans_prob; i++)
+                 *p_tot += (*prob)[i];
 
-  void Adsorption::setProcessMap(map<Process *, list<Site *> *> *) {}
+        for (unsigned int i=0; i<nof_trans_prob; i++)
+                cout<< "NO"<< "\t" <<(*prob)[i] << endl;
 
-  void Adsorption::perform()
-  {
+        cout<<"***************"<< endl;*/
 
-    if (m_direct)
-    {
-      // If this is direct, simply increase the height, don't add any other parameters, update the neighbours, and return
-      int height = m_site->getHeight();
-      height = height + 2;
-      m_site->setHeight(height);
-      m_site->m_updateNeighbourList();
-      return;
-    }
-    // If you can desorb, pre-empt the desorption update by removing n neighbours from desorption list
-    if (canDesorb())
-    {
-      int initNeighbours = m_site->getNeighboursNum();
-      getDesorption()->updateSiteCounter(initNeighbours, false);
-    }
+//---------Canonical-form--------------//
+//       for (unsigned int i=0; i<nof_trans_prob; i++)
+//               (*prob)[i] /= (*p_tot);
+//-------------------------------------//
 
-    // Set height to increase if the site is not phantom
-    // ie if this is the first molecule being added to this site
-    if (m_site->getSpecies().size() == 0)
-    {
-      m_site->setPhantom(true); //TODO: exclude phantom site from diffusion, cannot adsorb more than stoich. coeff
-      int height = m_site->getHeight();
-      height = height + 2;
-      m_site->setHeight(height);
-    }
+/*	for (unsigned int i=0; i<nof_trans_prob; i++)
+                cout<<"CAN"<< "\t" <<(*prob)[i] << endl;
+        cout<<"***************"<< endl;
+        cout<<"PROBS"<<endl;
+        system("pause");
+--------------------------------------------------*/
 
-    // Adsorb the species by adding the name to the site
-    m_site->addSpecies(m_apothesis->getSpecies(m_adsorptionSpeciesName));
-    // update the number of neighbours this site has
-    m_site->m_updateNeighbourList();
-    //m_site->setNeighboursNum(newNeighbours);
+double Adsorption::getProbability(){
 
-    // Add desorption site to Desorption class
-    if (canDesorb())
-    {
-      // Add site as possible desorption site
-      getDesorption()->mf_addToList(m_site);
-      int neighbours = m_site->getNeighboursNum();
+    //These must trenafered in the global definitions
+    double Na = 6.0221417930e+23;		// Avogadro's number [1/mol]
+    double P = 101325;					// [Pa]
+    double T = 500;						// [K]
+    double k = 1.3806503e-23;			// Boltzmann's constant [j/K]
+    double s0 = 0.1;
+    double C_tot = 1.0e+19;				// [sites/m^2] Vlachos code says [moles sites/m^2]
+    double E_d = (7.14e+4)/Na;			// [j]
+    double E = 71128/Na;   //(7.14e+4)/Na;			// [j]
+    double m = 32e-3/Na;				// [kg]
+    double E_m = (4.28e+4)/Na;			// [j]
+    double k_d = 1.0e+13;				// [s^-1]
+    double y = 2.0e-3;					// Mole fraction of the precursor on the wafer
 
-      // Updates the list of neighbours in desorption class
-      getDesorption()->updateSiteCounter(neighbours, true);
+    return s0*y*P/(C_tot*sqrt(2.0e0*3.14159265*m*k*T) );
+}
 
-      getDesorption()->updateNeighbours(m_site);
-    }
-
-    if (canDiffuse())
-    {
-      // If you do not find the site on the list already, add to site
-      getDiffusion()->mf_addToList(m_site);
-    }
-
-    for (int i = 0; i < m_apothesis->getReactionPointers().size(); ++i)
-    {
-      SurfaceReaction *pSR = m_apothesis->getReactionPointers()[i];
-      pSR->canReact(m_site);
-    }
-
-    // Check to see which other species CANNOT adsorb when this is present, and remove site from their ads lists.
-    vector<Adsorption *> pAdsVectors = m_apothesis->getAdsorptionPointers();
-    vector<Adsorption *>::iterator itr = pAdsVectors.begin();
-
-    // For each of the possible adsorbed molecules, check to see if current molecule needs to be removed from its site
-    for (itr; itr != pAdsVectors.end(); ++itr)
-    {
-      Adsorption *pAds = *itr;
-      vector<Species *> possibleInteractions = pAds->getInteractions();
-      bool found = false;
-      //TODO: this is clunky: check why we can't compare by pointer reference
-      for (int i = 0; i < possibleInteractions.size(); ++i)
-      {
-        if ((possibleInteractions[i]->getName().compare(m_adsorptionSpeciesName)) == 0)
-        {
-          found = true;
-          break;
-        }
-      }
-      if (found == false)
-      {
-        pAds->mf_removeFromList(m_site);
-      }
-    }
-    /// Check if there are available sites that it can be performed
-    if (m_lAdsSites.size() == 0)
-    {
-      cout << "No more " << getName() << " site is available. Exiting..." << endl;
-      m_apothesis->pErrorHandler->error_simple_msg("No " + getName() + " site is available.");
-    }
-  }
-
-  void Adsorption::mf_removeFromList(Site *s)
-  {
-    m_lAdsSites.remove(s);
-    ;
-  }
-
-  void Adsorption::mf_removeFromList()
-  {
-    m_lAdsSites.remove(m_site);
-    m_site->removeProcess(this);
-  }
-
-  void Adsorption::mf_addToList(Site *s) { m_lAdsSites.push_back(s); }
-
-  const double Adsorption::getMassFraction()
-  {
-    return m_massfraction;
-  }
-
-  list<Site *> Adsorption::getActiveList()
-  {
-    return m_lAdsSites;
-  }
-
-  void Adsorption::test()
-  {
-    cout << m_lAdsSites.size() << endl;
-  }
-
-  double Adsorption::getProbability()
-  {
-    /* These are parameters values (I/O) */
-    double dNavogadro = m_apothesis->pParameters->dAvogadroNum;
-    double dPres = m_apothesis->pParameters->getPressure();
-    double dTemp = m_apothesis->pParameters->getTemperature();
-    double dkBoltz = m_apothesis->pParameters->dkBoltz;
-
-    //TODO: Is dmass from input file?
-    double dmass = 27e-3 / dNavogadro;
-    double dpi = 3.14159265;
-    double dstick = m_stickingCoeffs;
-    //TODO: Is dCites from input file?
-    double dCites = 1.4e+19;
-    double dy = getMassFraction();
-
-    /* Adsorption probability see Lam and Vlachos */
-    double dflux = dstick * dPres * dy / (dCites * sqrt(2.0 * dpi * dmass * dkBoltz * dTemp));
-
-    if (m_lAdsSites.size() != 0)
-      return m_lAdsSites.size() * dflux;
-    else
-    {
-      return 0.0;
-    }
-  }
-
-  Desorption *Adsorption::getDesorption()
-  {
-    return m_pDesorption;
-  }
-
-  void Adsorption::setDesorptionPointer(Desorption *d)
-  {
-    m_pDesorption = d;
-  }
-
-  bool Adsorption::canDesorb()
-  {
-    return m_canDesorb;
-  }
-
-  // Set desorption boolean variable to be true
-  void Adsorption::setDesorption(bool canDesorb)
-  {
-    m_canDesorb = canDesorb;
-  }
-
-  Diffusion *Adsorption::getDiffusion()
-  {
-    return m_pDiffusion;
-  }
-
-  void Adsorption::setDiffusionPointer(Diffusion *d)
-  {
-    m_pDiffusion = d;
-  }
-
-  bool Adsorption::canDiffuse()
-  {
-    return m_canDiffuse;
-  }
-
-  void Adsorption::setDiffusion(bool canDiffuse)
-  {
-    m_canDiffuse = canDiffuse;
-  }
-
-  void Adsorption::setSite(Site *s)
-  {
-    m_site = s;
-  }
-
-  void Adsorption::addInteraction(Species *s)
-  {
-    vector<Species *>::iterator itr = std::find(m_interactions.begin(), m_interactions.end(), s);
-    if (itr == m_interactions.end())
-    {
-      m_interactions.push_back(s);
-    }
-  }
-
-  vector<Species *> Adsorption::getInteractions()
-  {
-    return m_interactions;
-  }
-
-} // namespace MicroProcesses
+}

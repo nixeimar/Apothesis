@@ -23,6 +23,7 @@ HEADERS += apothesis.h \
            IO/io.h \
            aux/random_generator.h \
            aux/randomc.h \
+           lattice/adsorption_fcc_110.h \
            pointers.h \
            processes/adsorption_new.h \
            processes/desorption_new.h \
@@ -46,7 +47,6 @@ HEADERS += apothesis.h \
            processes/io.h \
            processes/parameters.h \
            processes/process.h \
-           processes/SurfaceReaction.h \
            species/species.h \
            species/species_new.h
 
@@ -54,8 +54,10 @@ SOURCES += apothesis.cpp \
            IO/io.cpp \
            aux/mersenne.cpp \
            aux/random_generator.cpp \
+           lattice/adsorption_fcc_110.cpp \
            lattice/lattice.cpp \
            main.cpp \
+           processes/abstract_process.cpp \
            processes/adsorption_new.cpp \
            processes/desorption_new.cpp \
            processes/diffusion_new.cpp \
@@ -63,7 +65,6 @@ SOURCES += apothesis.cpp \
            processes/processpool.cpp \
            processes/reaction_new.cpp \
            properties.cpp \
-           register.cpp \
            error/errorhandler.cpp \
            IO/read.cpp \
            lattice/BCC.cpp \
@@ -75,6 +76,5 @@ SOURCES += apothesis.cpp \
            processes/factory_process.cpp \
            processes/parameters.cpp \
            processes/process.cpp \
-           processes/SurfaceReaction.cpp \
            species/species.cpp \
            species/species_new.cpp

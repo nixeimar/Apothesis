@@ -29,11 +29,15 @@
 #include "errorhandler.h"
 
 #include "species_new.h"
+//#include "event.h"
 #include <set>
 
+namespace LatticeEvent {class Event;}
+
 using namespace std;
-using namespace SurfaceTiles;
 using namespace Utils;
+using namespace SurfaceTiles;
+
 
 class Lattice: public Pointers
   {
@@ -153,11 +157,13 @@ class Lattice: public Pointers
     int m_iStepY;
     int m_iStepZ;
 
-
     map< string, set<int > >* m_pProcMap;
 
     /// The cut of the lattice [ 100, 110, 111 ]
     string m_sOrient;
+
+    /// Holds the events defined by the user lattice wise
+    map< string, LatticeEvent::Event* > m_mEventsRegistry;
 
   };
 

@@ -15,19 +15,7 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-
-#ifndef PROCESS_CPP
-#define PROCESS_CPP
-
 #include "process.h"
 
-namespace MicroProcesses
-{
-    int Process::getSite()
-    {
-        return m_site->getID();
-    }
-}
-
-
-#endif
+Process::Process():m_iHappened(0){}
+Process::~Process(){}

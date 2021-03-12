@@ -249,7 +249,6 @@ int BCC::calculateNeighNum( int id )
     return neighs;
 }
 
-
 // We have to define the processes e.g. Adsorption Simple, Asorption MultipleSites, Diffusion 1s Neighbors,
 // Desorption 1st Neighbors, Reaction Decomposition etc...
 
@@ -270,7 +269,7 @@ void BCC::adsorp( int siteID, species_new* chemSpec )
     }
 
     //For PVD results
-    m_vSites[ siteID ]->increaseHeight();
+    m_vSites[ siteID ]->increaseHeight( 1 );
     m_iSiteNeighsNum = calculateNeighNum( siteID );
 
     string strProc = "Desorption " + to_string( m_iSiteNeighsNum ) + "N";
@@ -324,7 +323,7 @@ void BCC::desorp(int siteID, species_new *chemSpecies)
     }
 
     //For PVD results
-    m_vSites[ siteID ]->decreaseHeight();
+    m_vSites[ siteID ]->decreaseHeight( 1 );
     m_iSiteNeighsNum = calculateNeighNum( siteID );
 
     string strProc = "Desorption " + to_string( m_iSiteNeighsNum ) + "N";

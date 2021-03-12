@@ -26,6 +26,9 @@
 
 #include "lattice.h"
 
+#include "adsorption_fcc_110.h"
+
+
 using namespace std;
 using namespace SurfaceTiles;
 using namespace Utils;
@@ -59,8 +62,11 @@ public:
     void setInitialHeight( int  height );
 
 
-    void adsorp(int siteID, species_new* chemSpecies) override {}
-    void desorp(int siteID, species_new* chemSpecies) override {}
+    /// Count the neighbors in the different levels
+    int calculateNeighNum( int id,  int level );
+
+    void adsorp(int siteID, species_new* chemSpecies) override;
+    void desorp(int siteID, species_new* chemSpecies) override;
     void react(int siteID) override{}
 
 protected:

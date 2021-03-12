@@ -16,72 +16,76 @@
 //============================================================================
 
 #ifndef PROCESS_H
-
 #define PROCESS_H
 
-#include <string>
-#include <vector>
-#include <list>
 #include <iostream>
+#include <string>
 #include <map>
-
+#include <any>
 #include "lattice.h"
-#include "factory_process.h"
 #include "site.h"
+#include "species_new.h"
+
+#include "factory_process.h"
 
 using namespace std;
 using namespace SurfaceTiles;
 
 /** The pure virtual class from which every other process is generated.*/
-//TODO: how to access pIO from children of this class?
-namespace MicroProcesses{
+namespace MicroProcesses
+{
 
 class Process
-  {
-  public:
-    /// Constructor of the interface.
-    Process(){}
+{
 
-    /// Destructor.
-    virtual ~Process(){}
+public:
+    Process();
+    virtual ~Process();
 
-    /// Set the name of the process.
-    virtual void setName( string s) =0;
-
-    /// Get the name of the process.
-    virtual string getName() =0;
-
-    /// Constructs the sites that a process can be performed
-    virtual void activeSites( Lattice* ) =0;
-
-    /// The site that this process will be performed.
-    /// The site is selected from the available sites that have been constructed in activeSites
-    virtual void selectSite() = 0;
-
-    /// The process map which holds all the processes and the sites that each can be performed.
-    // Not to handy. Re-think...
-    virtual void setProcessMap( map< Process*, list<Site* >* >* ) =0;
-
-    /// Perform the process.
-    virtual void perform() = 0;
-
-    /// Calculate and get the Probability of this process.
+    ///Get probability
     virtual double getProbability() = 0;
 
-    /// Get the list of active sites where the process can be performed.
-    /// This is updated after a process is performed.
-    virtual list<Site* > getActiveList() =0;
+    /// Perform this process in the site
+    virtual void perform( int siteID ) = 0;
 
-    /// Set the instance of kmc that this process will be performed.
-    virtual void setInstance( Apothesis* apothesis ) = 0;
+    /// The rules for this type of process e.g. the neighbour of site Site.
+    virtual bool rules( Site* ) = 0;
 
-    int getSite();
+    inline void setName( string procName ){ m_sProcName = procName; }
+    inline string getName(){ return  m_sProcName; }
 
-    protected:
-    
-    /// The site that desorption is performed
-    Site* m_site;
-  };
+    inline void setID( int id ){ m_iID = id; }
+    inline int getID(){ return m_iID; }
 
+    inline void setTargetSite( int id );
+
+    inline void setLattice( Lattice* lattice ){ m_pLattice = lattice; }
+
+    /// Counts how many times this process happens
+    inline void eventHappened(){ m_iHappened++; }
+
+    /// Returns how many times this process happens
+    int getNumEventHappened(){ return m_iHappened; }
+
+protected:
+    /** Pointer to the lattice of the process */
+    Lattice* m_pLattice;
+
+private:
+    /// The name of this prcess
+    string m_sProcName;
+
+    /// The id of the process
+    int m_iID;
+
+    ///The type of the process
+    string m_sType;
+
+    /// Counts the times that this processes happened
+    int m_iHappened;
+
+};
 }
-#endif // PROCESS_H
+
+#endif // Process_H
+

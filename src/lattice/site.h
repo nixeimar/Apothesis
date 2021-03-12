@@ -165,10 +165,10 @@ public:
     inline valarray< int > getReactSpecies() { return m_vReacSpecies; }
 
     //Increase the height of the site by one
-    void increaseHeight();
+    void increaseHeight( int );
 
     //Decrease the height of the site by one
-    void decreaseHeight();
+    void decreaseHeight( int );
 
     //Increase the number of neighs
     void increaseNeighsNum();

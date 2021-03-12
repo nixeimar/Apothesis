@@ -20,7 +20,7 @@
 
 FCC::FCC(Apothesis* apothesis):Lattice(apothesis)
 { 
-    ;
+//   m_mEventsRegistry.insert("Simple", new LatticeEvent::AdsorptionFCC110() );
 }
 
 void FCC::setInitialHeight( int  height ) { m_iHeight = height; }
@@ -415,7 +415,6 @@ void FCC::mf_neigh_110()
             m_vSites[ i ]->setNeighPosition( m_vSites[ iCount - 1 ],  Site::EAST_UP );
         }
     }
-
 
     //First column
     for (int i = ( N1 + m_iSizeX ); i < N3;  i += m_iSizeX ){
@@ -1041,6 +1040,67 @@ void FCC::mf_neigh_111()
         m_vSites[ i ]->setNeighPosition( m_vSites[ i - 2*m_iSizeY  ], Site::NORTH);
         m_vSites[ i ]->setNeighPosition( m_vSites[ i + 2*m_iSizeY ], Site::SOUTH);
     }
+}
+
+int FCC::calculateNeighNum( int id,  const int level )
+{
+    int neighs = 0;
+    vector<Site* > sites = m_vSites[ id ]->get1stNeihbors()[ level ];
+
+    switch (level){
+    case -1:
+        for ( Site* s:sites) {
+            if ( s->getHeight() == m_vSites[ id ]->getHeight() - 1 ){
+                cout << s->getID() << " " << s->getHeight()  << endl;
+                neighs++;
+            }
+        }
+        break;
+    case 0:
+        for ( Site* s:sites ) {
+            if ( s->getHeight() == m_vSites[ id ]->getHeight() )
+                neighs++;
+        }
+        break;
+    }
+
+
+    return neighs;
+}
+
+//void FCC::adsorp(string processName, int siteID, species_new* chemSpecies )
+void FCC::adsorp(int siteID, species_new* chemSpecies )
+{
+    //Here a registered event must be called
+    //This must be the name of  the event e.g. Adsorption Simple
+    //So the event name should be Simple_FCC_110 etc
+    if ( m_sOrient == "111"){
+
+
+    }
+    else if ( m_sOrient == "110" ) {
+        //Remove site and its neihbors from its previous position
+        for ( auto &p:*m_pProcMap )
+            p.second.erase( siteID );
+
+
+        //Here execute the event m_pEvents->getEvent(eventName)->perform();
+
+        // Check if this site must be added in this process
+        //    for ( auto &p:*m_pProcMap )
+        //       if ( p.first.rules( site ) )
+        //      p.second.add( site);
+        //
+
+        //Update the neighbours for this case if the height has changed
+
+    }
+}
+
+void FCC::desorp(int siteID, species_new *chemSpecies)
+{
+
+
 }
 
 void FCC::check()
