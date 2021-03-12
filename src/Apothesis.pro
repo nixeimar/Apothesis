@@ -25,10 +25,6 @@ HEADERS += apothesis.h \
            aux/randomc.h \
            lattice/adsorption_fcc_110.h \
            pointers.h \
-           processes/adsorption_new.h \
-           processes/desorption_new.h \
-           processes/diffusion_new.h \
-           processes/process_new.h \
            processes/processpool.h \
            processes/reaction_new.h \
            properties.h \
@@ -58,10 +54,6 @@ SOURCES += apothesis.cpp \
            lattice/lattice.cpp \
            main.cpp \
            processes/abstract_process.cpp \
-           processes/adsorption_new.cpp \
-           processes/desorption_new.cpp \
-           processes/diffusion_new.cpp \
-           processes/process_new.cpp \
            processes/processpool.cpp \
            processes/reaction_new.cpp \
            properties.cpp \

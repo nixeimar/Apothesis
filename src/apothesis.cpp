@@ -490,8 +490,6 @@ void Apothesis::init()
 
 void Apothesis::exec()
 {
-
-
     Process* des = FactoryProcess::createProcess("Desorption");
     des->setName("Nikos");
     cout << "HERE " << des->getName() << endl;
