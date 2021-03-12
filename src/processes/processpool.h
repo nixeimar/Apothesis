@@ -21,11 +21,11 @@
 #include <string>
 #include <map>
 
-#include "process_new.h"
+#include "process.h"
 
 using namespace std;
 
-namespace newDesign
+namespace MicroProcesses
 {
 
 class ProrcessPool
@@ -33,16 +33,16 @@ class ProrcessPool
 public:
     ProrcessPool();
 
-    inline Process_new* getProcessByName(string name) { return m_mapProcs[ name ]; }
-    inline Process_new* getProcessByID( int id ){ return m_mapProcsIDs[ id ]; }
+    inline Process* getProcessByName(string name) { return m_mapProcs[ name ]; }
+    inline Process* getProcessByID( int id ){ return m_mapProcsIDs[ id ]; }
 
-    void addProcess( string name, Process_new* proc);
-    void addProcess( int id, Process_new* proc);
+    void addProcess( string name, Process* proc);
+    void addProcess( int id, Process* proc);
     inline int getProcessNum() { return m_mapProcs.size(); }
 
 private:
-    map<string, Process_new*> m_mapProcs;
-    map<int, Process_new*> m_mapProcsIDs;
+    map<string, Process*> m_mapProcs;
+    map<int, Process*> m_mapProcsIDs;
 };
 
 }

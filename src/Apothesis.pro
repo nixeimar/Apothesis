@@ -21,6 +21,7 @@ INCLUDEPATH += . \
 # Input
 HEADERS += apothesis.h \
            IO/io.h \
+           processes/adsorption_simple_cubic.h \
            aux/random_generator.h \
            aux/randomc.h \
            lattice/adsorption_fcc_110.h \
@@ -48,6 +49,7 @@ HEADERS += apothesis.h \
 
 SOURCES += apothesis.cpp \
            IO/io.cpp \
+           processes/adsorption_simple_cubic.cpp \
            aux/mersenne.cpp \
            aux/random_generator.cpp \
            lattice/adsorption_fcc_110.cpp \

@@ -1,7 +1,7 @@
 #ifndef ADSORPTIONFCC110_H
 #define ADSORPTIONFCC110_H
 
-#include "process_new.h"
+#include "process.h"
 
 namespace LatticeEvent
 {

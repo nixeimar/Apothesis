@@ -17,23 +17,23 @@
 
 #include "processpool.h"
 
-namespace newDesign
+namespace MicroProcesses
 {
 
 ProrcessPool::ProrcessPool(){}
 
-void ProrcessPool::addProcess( string name, Process_new* proc)
+void ProrcessPool::addProcess( string name, Process* proc)
 {
-    pair<string, Process_new* > p;
+    pair<string, Process* > p;
     p.first = name;
     p.second = proc;
 
     m_mapProcs.insert( p );
 }
 
-void ProrcessPool::addProcess( int id, Process_new* proc)
+void ProrcessPool::addProcess( int id, Process* proc)
 {
-    pair<int, Process_new* > p;
+    pair<int, Process* > p;
     p.first = id;
     p.second = proc;
 

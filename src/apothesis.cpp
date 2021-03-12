@@ -37,10 +37,6 @@
 
 #include "factory_process.h"
 
-#include "adsorption_new.h"
-#include "desorption_new.h"
-#include "diffusion_new.h"
-
 #include <numeric>
 
 using namespace MicroProcesses;
@@ -492,11 +488,14 @@ void Apothesis::exec()
 {
     Process* des = FactoryProcess::createProcess("Desorption");
     des->setName("Nikos");
-    cout << "HERE " << des->getName() << endl;
+
+    Process* adsSimpleCubic = FactoryProcess::createProcess("AdsorptionSimpleCubic");
+    adsSimpleCubic->setName("Yes");
+    cout << "HERE " << adsSimpleCubic->getName() << endl;
 
     // Initialize Random generator.
     pRandomGen->init( 0 );
-    newDesign::ProrcessPool* procPool = new newDesign::ProrcessPool();
+    MicroProcesses::ProrcessPool* procPool = new MicroProcesses::ProrcessPool();
 
     for ( Site* s:pLattice->getSites() )
         if ( s->getID()%2 != 0)

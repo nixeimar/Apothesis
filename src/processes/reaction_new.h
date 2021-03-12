@@ -22,13 +22,13 @@
 #include <string>
 #include <vector>
 
-#include "process_new.h"
+#include "process.h"
 
 using namespace std;
 
 class species_new;
 
-class reaction_new: public Process_new
+class reaction_new: public Process
 {
 public:
     reaction_new();
