@@ -39,6 +39,8 @@ public:
 
     inline void setNumNeigh( int n ){ m_iNeigh = n; }
 
+    virtual list<Site*> getAffectedSites( Site* ) override {}
+
     double getProbability() override;
     bool rules( Site* s) override;
     void perform( int siteID  ) override;

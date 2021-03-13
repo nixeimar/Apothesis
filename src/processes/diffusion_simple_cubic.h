@@ -14,53 +14,59 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
-#ifndef ADSORPTIONSIMPLECUBIC_H
-#define ADSORPTIONSIMPLECUBIC_H
 
-#include "process.h"
+#ifndef DIFFUSIONSIMPLECUBIC_H
+#define DIFFUSIONSIMPLECUBIC_H
+
+#include <process.h>
 
 namespace MicroProcesses
 {
 
-class AdsorptionSimpleCubic: public Process
+class DiffusionSimpleCubic:public Process
 {
 public:
-    AdsorptionSimpleCubic();
-    ~AdsorptionSimpleCubic() override;
-
-    double getProbability() override;
-    bool rules( Site* ) override;
-    void perform( int siteID  ) override;
+    DiffusionSimpleCubic();
+    ~DiffusionSimpleCubic() override;
 
     inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
     inline double getActivationEnergy(){ return m_dActNrg; }
 
-    inline void setMolFrac( double val ){ m_dMolFrac = val; }
-    inline double getMolFrac(){ return m_dMolFrac; }
+    inline void setOriginSite( Site* site ){ m_originSite = site;}
+    inline Site* getOriginSite(){ return m_originSite; }
 
-    inline void setTargetSite( Site* site ){ m_Site = site;}
-    inline Site* getTargetSite(){ return m_Site; }
+    inline void setTargetSite( Site* site ){ m_targetSite = site;}
+    inline Site* getTargetSite(){ return m_targetSite; }
 
     inline void setSpecies( species_new* s ){ m_Species = s; }
     inline species_new* getSpecies(){ return m_Species; }
 
+    inline void setNeigh(int n ){ m_iNeighNum = n; }
+
+    double getProbability() override;
+    bool rules( Site* ) override {}
+    void perform( int siteID ) override;
     virtual list<Site*> getAffectedSites( Site* ) override {}
 
 private:
     ///The activation energy of the adsoprtion process
     double m_dActNrg;
 
-    ///The mole fraction of the AdsorptionSimpleCubic process
-    double m_dMolFrac;
+    ///The site to for the adsorption to be removed
+    Site* m_originSite;
 
-    ///The site that AdsorptionSimpleCubic will be performed
-    Site* m_Site;
+    ///The site that adsorption will be performed
+    Site* m_targetSite;
 
-    ///The species that must adsopt
+    ///The species that must be removed from the site
     species_new* m_Species;
 
-    REGISTER_PROCESS(AdsorptionSimpleCubic)
+    /// The number of neighbours for calculating the probability
+    int m_iNeighNum;
+
+    REGISTER_PROCESS(DiffusionSimpleCubic)
 };
+
 }
 
-#endif // AdsorptionSimpleCubic_H
+#endif // DiffusionSimpleCubic_H

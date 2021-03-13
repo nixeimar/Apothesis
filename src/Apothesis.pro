@@ -21,11 +21,14 @@ INCLUDEPATH += . \
 # Input
 HEADERS += apothesis.h \
            IO/io.h \
+           processes/adsorption.h \
            processes/adsorption_simple_cubic.h \
            aux/random_generator.h \
            aux/randomc.h \
            lattice/adsorption_fcc_110.h \
            pointers.h \
+           processes/desorption_simple_cubic.h \
+           processes/diffusion_simple_cubic.h \
            processes/processpool.h \
            processes/reaction_new.h \
            properties.h \
@@ -37,7 +40,6 @@ HEADERS += apothesis.h \
            lattice/lattice.h \
            lattice/site.h \
            processes/abstract_process.h \
-           processes/adsorption.h \
            processes/desorption.h \
            processes/diffusion.h \
            processes/factory_process.h \
@@ -56,6 +58,8 @@ SOURCES += apothesis.cpp \
            lattice/lattice.cpp \
            main.cpp \
            processes/abstract_process.cpp \
+           processes/desorption_simple_cubic.cpp \
+           processes/diffusion_simple_cubic.cpp \
            processes/processpool.cpp \
            processes/reaction_new.cpp \
            properties.cpp \

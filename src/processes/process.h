@@ -51,6 +51,9 @@ public:
     /// The rules for this type of process e.g. the neighbour of site Site.
     virtual bool rules( Site* ) = 0;
 
+    /// Returns the sites that are affected by this process including the site that this process is  performed.
+    virtual list<Site*> getAffectedSites( Site* ) = 0;
+
     inline void setName( string procName ){ m_sProcName = procName; }
     inline string getName(){ return  m_sProcName; }
 
