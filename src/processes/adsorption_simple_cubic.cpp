@@ -27,7 +27,7 @@ AdsorptionSimpleCubic::~AdsorptionSimpleCubic(){}
 
 bool AdsorptionSimpleCubic::rules( Site* s )
 {
-    //You can always adsorb as is
+    //You can always adsorb in simple cubic lattices
     return true;
 }
 
@@ -50,7 +50,7 @@ void AdsorptionSimpleCubic::perform( int siteID )
         (*prob)[10] = A*(*prob)[9];								//Diffusion  5 neisgh */
 //----------------------------------------------------------------------------------------//
 
-/*        (*p_tot) = 0;
+/*        (*p_tot) = 0;s
         for (unsigned int i=0; i<nof_trans_prob; i++)
                  *p_tot += (*prob)[i];
 
@@ -76,15 +76,11 @@ double AdsorptionSimpleCubic::getProbability(){
     //These must trenafered in the global definitions
     double Na = 6.0221417930e+23;		// Avogadro's number [1/mol]
     double P = 101325;					// [Pa]
-    double T = 500;						// [K]
-    double k = 1.3806503e-23;			// Boltzmann's constant [j/K]
-    double s0 = 0.1;
-    double C_tot = 1.0e+19;				// [sites/m^2] Vlachos code says [moles sites/m^2]
-    double E_d = (7.14e+4)/Na;			// [j]
-    double E = 71128/Na;   //(7.14e+4)/Na;			// [j]
-    double m = 32e-3/Na;				// [kg]
-    double E_m = (4.28e+4)/Na;			// [j]
-    double k_d = 1.0e+13;				// [s^-1]
+    double T = any_cast<double>(m_mParams["T"]); //500;						// [K]
+    double k = any_cast<double>(m_mParams["k"]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
+    double s0 = any_cast<double>(m_mParams["s0"]); //0.1;
+    double C_tot = any_cast<double>(m_mParams["C_tot"]);			// [sites/m^2] Vlachos code says [moles sites/m^2]
+    double m = 32e-3/Na;				// [kg/mol] this is the molecular wei
     double y = 2.0e-3;					// Mole fraction of the precursor on the wafer
 
     return s0*y*P/(C_tot*sqrt(2.0e0*3.14159265*m*k*T) );

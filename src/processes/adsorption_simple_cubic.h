@@ -31,6 +31,8 @@ public:
     double getProbability() override;
     bool rules( Site* ) override;
     void perform( int siteID  ) override;
+    list<Site*> getAffectedSites( Site* ) override {}
+
 
     inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
     inline double getActivationEnergy(){ return m_dActNrg; }
@@ -44,7 +46,6 @@ public:
     inline void setSpecies( species_new* s ){ m_Species = s; }
     inline species_new* getSpecies(){ return m_Species; }
 
-    virtual list<Site*> getAffectedSites( Site* ) override {}
 
 private:
     ///The activation energy of the adsoprtion process

@@ -54,6 +54,9 @@ public:
     /// Returns the sites that are affected by this process including the site that this process is  performed.
     virtual list<Site*> getAffectedSites( Site* ) = 0;
 
+    /// Sets the parameters for this process (e.g. temperature, pressure, mole fraction etc.)
+    void setParams( map<string, any> params ){ m_mParams = params; };
+
     inline void setName( string procName ){ m_sProcName = procName; }
     inline string getName(){ return  m_sProcName; }
 
@@ -70,9 +73,15 @@ public:
     /// Returns how many times this process happens
     int getNumEventHappened(){ return m_iHappened; }
 
+    /// Return a parameter of this process
+    any getParameter( string str ) { return m_mParams[ str ]; }
+
 protected:
     /** Pointer to the lattice of the process */
     Lattice* m_pLattice;
+
+    /// Map for storing the variables for this processs
+    map<string, any> m_mParams;
 
 private:
     /// The name of this prcess
@@ -86,7 +95,6 @@ private:
 
     /// Counts the times that this processes happened
     int m_iHappened;
-
 };
 }
 

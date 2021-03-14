@@ -534,11 +534,11 @@ void FCC::mf_neigh_111()
             m_vSites[ j]->setNeigh( m_vSites[ j - m_iSizeY + 1]);
             m_vSites[ j]->setNeighPosition( m_vSites[ j - m_iSizeY + 1 ], Site::WEST_UP);
 
-            m_vSites[ j]->storeActivationSite( m_vSites[ j - 1 ], Site::ACTV_EAST );
-            m_vSites[ j]->storeActivationSite( m_vSites[ j + 1], Site::ACTV_WEST );
+    //        m_vSites[ j]->storeActivationSite( m_vSites[ j - 1 ], Site::ACTV_EAST );
+    //       m_vSites[ j]->storeActivationSite( m_vSites[ j + 1], Site::ACTV_WEST );
 
-            m_vSites[ j]->storeActivationSite( m_vSites[ j + m_iSizeY ], Site::ACTV_SOUTH );
-            m_vSites[ j]->storeActivationSite( m_vSites[ j - m_iSizeY ], Site::ACTV_NORTH );
+     //       m_vSites[ j]->storeActivationSite( m_vSites[ j + m_iSizeY ], Site::ACTV_SOUTH );
+    //       m_vSites[ j]->storeActivationSite( m_vSites[ j - m_iSizeY ], Site::ACTV_NORTH );
 
             m_vSites[ j]->setNeighPosition( m_vSites[ j - 2*m_iSizeY  ], Site::NORTH);
             m_vSites[ j]->setNeighPosition( m_vSites[ j + 2*m_iSizeY ], Site::SOUTH);
@@ -569,11 +569,6 @@ void FCC::mf_neigh_111()
 
             m_vSites[ i ]->setNeighPosition( m_vSites[  getSize() - 2*m_iSizeY], Site::NORTH);
             m_vSites[ i ]->setNeighPosition( m_vSites[  2*m_iSizeY ], Site::SOUTH);
-
-            m_vSites[ i ]->storeActivationSite( m_vSites[ m_iSizeY - 1], Site::ACTV_EAST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ 1], Site::ACTV_WEST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ m_iSizeY ], Site::ACTV_SOUTH );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ getSize() - m_iSizeY ], Site::ACTV_NORTH );
         }
         /* Second site */
         else if ( i == 1){
@@ -597,11 +592,6 @@ void FCC::mf_neigh_111()
 
             m_vSites[ i ]->setNeighPosition(m_vSites[ getSize() - 2*m_iSizeY + 1], Site::NORTH);
             m_vSites[ i ]->setNeighPosition(m_vSites[ 2*m_iSizeY + 1 ], Site::SOUTH);
-
-            m_vSites[ i ]->storeActivationSite( m_vSites[ 0], Site::ACTV_EAST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ 2], Site::ACTV_WEST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ m_iSizeY + 1 ], Site::ACTV_SOUTH );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ getSize() - m_iSizeY + 1 ], Site::ACTV_NORTH );
         }
         /* Before last site */
         else if (i == m_iSizeY - 2){
@@ -625,11 +615,6 @@ void FCC::mf_neigh_111()
 
             m_vSites[ i ]->setNeighPosition(m_vSites[ getSize() - m_iSizeY - 2], Site::NORTH);
             m_vSites[ i ]->setNeighPosition(m_vSites[ 3*m_iSizeY - 2], Site::SOUTH);
-
-            m_vSites[ i ]->storeActivationSite( m_vSites[ i - 1], Site::ACTV_EAST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ i + 1], Site::ACTV_WEST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ m_iSizeY + i ], Site::ACTV_SOUTH );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ getSize() - 2 ], Site::ACTV_NORTH );
         }
         /* End site */
         else if( i == m_iSizeY-1){
@@ -653,11 +638,6 @@ void FCC::mf_neigh_111()
 
             m_vSites[ i ]->setNeighPosition(m_vSites[ getSize() - m_iSizeY - 1], Site::NORTH);
             m_vSites[ i ]->setNeighPosition(m_vSites[ 3*m_iSizeY - 1], Site::SOUTH);
-
-            m_vSites[ i ]->storeActivationSite( m_vSites[ i - 1], Site::ACTV_EAST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ 0], Site::ACTV_WEST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ m_iSizeY + i ], Site::ACTV_SOUTH );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ getSize() - 1 ], Site::ACTV_NORTH );
         }
         else {
             m_vSites[ i ]->setNeigh( m_vSites[ i+m_iSizeY-1]);
@@ -679,13 +659,7 @@ void FCC::mf_neigh_111()
             m_vSites[ i ]->setNeighPosition(m_vSites[ i+getSize()-m_iSizeY+1], Site::WEST_UP);
 
             m_vSites[ i ]->setNeighPosition(m_vSites[ getSize() - 2*m_iSizeY + i], Site::NORTH);
-            m_vSites[ i ]->setNeighPosition(m_vSites[ i + 2*m_iSizeY ], Site::SOUTH);
-
-            m_vSites[ i ]->storeActivationSite( m_vSites[ i - 1], Site::ACTV_EAST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ i + 1], Site::ACTV_WEST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ m_iSizeY + i ], Site::ACTV_SOUTH );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ getSize() - m_iSizeY + i ], Site::ACTV_NORTH );
-        }
+            m_vSites[ i ]->setNeighPosition(m_vSites[ i + 2*m_iSizeY ], Site::SOUTH);        }
     }
 
     /* Last row */
@@ -711,11 +685,6 @@ void FCC::mf_neigh_111()
 
             m_vSites[ i ]->setNeighPosition( m_vSites[ i - 2*m_iSizeY ], Site::NORTH );
             m_vSites[ i ]->setNeighPosition( m_vSites[ m_iSizeY ], Site::SOUTH );
-
-            m_vSites[ i ]->storeActivationSite( m_vSites[ getSize() - 1 ], Site::ACTV_EAST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ i + 1], Site::ACTV_WEST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ 0 ], Site::ACTV_SOUTH );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ i - m_iSizeY ], Site::ACTV_NORTH );
         }
         else if ( i == ( getSize() - 1 ) ){ //bottom right site
             m_vSites[ i ]->setNeigh( m_vSites[  m_iSizeY - 2 ] );
@@ -738,20 +707,10 @@ void FCC::mf_neigh_111()
 
             m_vSites[ i ]->setNeighPosition( m_vSites[ getSize() - 2*m_iSizeY - 1 ], Site::NORTH );
             m_vSites[ i ]->setNeighPosition( m_vSites[ 2*m_iSizeY - 1  ], Site::SOUTH );
-
-            m_vSites[ i ]->storeActivationSite( m_vSites[ i - 1 ], Site::ACTV_EAST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ getSize() - m_iSizeY ], Site::ACTV_WEST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ m_iSizeY  - 1 ], Site::ACTV_SOUTH );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ getSize() - m_iSizeY - 1 ], Site::ACTV_NORTH );
         }
         else{
             m_vSites[ i ]->setNeighPosition( m_vSites[ i - 2*m_iSizeY ], Site::NORTH );
             m_vSites[ i ]->setNeighPosition( m_vSites[ i - (m_iSizeX-2)*m_iSizeY ], Site::SOUTH );
-
-            m_vSites[ i ]->storeActivationSite( m_vSites[ i - 1 ], Site::ACTV_EAST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ i + 1], Site::ACTV_WEST );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ i - (m_iSizeX-1)*m_iSizeY ], Site::ACTV_SOUTH );
-            m_vSites[ i ]->storeActivationSite( m_vSites[ i - m_iSizeY ], Site::ACTV_NORTH );
 
             if ( i == (getSize() - m_iSizeY + 1 ) ){
                 m_vSites[ i ]->setNeigh( m_vSites[ getSize() - 1 ]);
@@ -833,11 +792,6 @@ void FCC::mf_neigh_111()
         m_vSites[ i ]->setNeigh( m_vSites[ i - m_iSizeY + 1]);
         m_vSites[ i ]->setNeighPosition( m_vSites[ i - m_iSizeY + 1 ], Site::WEST_UP);
 
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i + m_iSizeY - 1 ], Site::ACTV_EAST );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i + 1], Site::ACTV_WEST );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i + m_iSizeY ], Site::ACTV_SOUTH );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i - m_iSizeY ], Site::ACTV_NORTH );
-
         if ( i == m_iSizeY ){
             m_vSites[ i ]->setNeighPosition( m_vSites[ getSize() - m_iSizeY ], Site::NORTH);
             m_vSites[ i ]->setNeighPosition( m_vSites[ i + 2*m_iSizeY ], Site::SOUTH);
@@ -872,11 +826,6 @@ void FCC::mf_neigh_111()
         m_vSites[ i ]->setNeigh( m_vSites[ i - 2*m_iSizeY + 1]);
         m_vSites[ i ]->setNeighPosition( m_vSites[ i - 2*m_iSizeY + 1 ], Site::WEST_UP);
 
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i - 1 ], Site::ACTV_EAST );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i - m_iSizeY + 1], Site::ACTV_WEST );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i + m_iSizeY ], Site::ACTV_SOUTH );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i - m_iSizeY ], Site::ACTV_NORTH );
-
         if ( i == 2*m_iSizeY - 1 ){
             m_vSites[ i ]->setNeighPosition( m_vSites[ getSize() - 1 ], Site::NORTH);
             m_vSites[ i ]->setNeighPosition( m_vSites[ i + 2*m_iSizeY ], Site::SOUTH);
@@ -904,11 +853,6 @@ void FCC::mf_neigh_111()
 
         m_vSites[ i ]->setNeigh( m_vSites[ i - m_iSizeY + 1]);
         m_vSites[ i ]->setNeighPosition( m_vSites[ i - m_iSizeY + 1 ], Site::WEST_UP);
-
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i - 1 ], Site::ACTV_EAST );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i + 1], Site::ACTV_WEST );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i + m_iSizeY ], Site::ACTV_SOUTH );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i - m_iSizeY ], Site::ACTV_NORTH );
 
         m_vSites[ i ]->setNeighPosition( m_vSites[ i + (m_iSizeX - 2)*m_iSizeY ], Site::NORTH);
         m_vSites[ i ]->setNeighPosition( m_vSites[ i + 2*m_iSizeY ], Site::SOUTH);
@@ -949,11 +893,6 @@ void FCC::mf_neigh_111()
 
         m_vSites[ i ]->setNeigh( m_vSites[ i - m_iSizeY + 1]);
         m_vSites[ i ]->setNeighPosition( m_vSites[ i - m_iSizeY + 1 ], Site::WEST_UP);
-
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i - 1 ], Site::ACTV_EAST );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i + 1], Site::ACTV_WEST );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i + m_iSizeY ], Site::ACTV_SOUTH );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i - m_iSizeY ], Site::ACTV_NORTH );
 
         m_vSites[ i ]->setNeighPosition( m_vSites[ i - 2*m_iSizeY  ], Site::NORTH);
         m_vSites[ i ]->setNeighPosition( m_vSites[ i - (m_iSizeX - 2)*m_iSizeY ], Site::SOUTH);
@@ -1002,11 +941,6 @@ void FCC::mf_neigh_111()
         m_vSites[ i ]->setNeigh( m_vSites[ i - m_iSizeY + 1]);
         m_vSites[ i ]->setNeighPosition( m_vSites[ i - m_iSizeY + 1 ], Site::WEST_UP);
 
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i - 1 ], Site::ACTV_EAST );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i + 1], Site::ACTV_WEST );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i + m_iSizeY ], Site::ACTV_SOUTH );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i - m_iSizeY ], Site::ACTV_NORTH );
-
         m_vSites[ i ]->setNeighPosition( m_vSites[ i - 2*m_iSizeY  ], Site::NORTH);
         m_vSites[ i ]->setNeighPosition( m_vSites[ i + 2*m_iSizeY ], Site::SOUTH);
     }
@@ -1031,11 +965,6 @@ void FCC::mf_neigh_111()
 
         m_vSites[ i ]->setNeigh( m_vSites[ i - m_iSizeY + 1]);
         m_vSites[ i ]->setNeighPosition( m_vSites[ i - m_iSizeY + 1 ], Site::WEST_UP);
-
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i - 1 ], Site::ACTV_EAST );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i + 1], Site::ACTV_WEST );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i + m_iSizeY ], Site::ACTV_SOUTH );
-        m_vSites[ i ]->storeActivationSite( m_vSites[ i - m_iSizeY ], Site::ACTV_NORTH );
 
         m_vSites[ i ]->setNeighPosition( m_vSites[ i - 2*m_iSizeY  ], Site::NORTH);
         m_vSites[ i ]->setNeighPosition( m_vSites[ i + 2*m_iSizeY ], Site::SOUTH);
@@ -1121,9 +1050,4 @@ void FCC::check()
     cout << "S:" <<getSite( test )->getNeighPosition( Site::SOUTH)->getID() << endl;
 
     cout << "Activation: " << endl;
-
-    cout << "N:" <<  getSite( test )->getActivationSite(Site::ACTV_NORTH)->getID() << " ";
-    cout << "S:" << getSite( test )->getActivationSite(Site::ACTV_SOUTH)->getID() << " ";
-    cout << "E:" << getSite( test )->getActivationSite(Site::ACTV_EAST)->getID() << " ";
-    cout << "W:" << getSite( test )->getActivationSite(Site::ACTV_WEST)->getID() << endl;
 }

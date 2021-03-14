@@ -19,6 +19,9 @@
 #define DIFFUSIONSIMPLECUBIC_H
 
 #include <process.h>
+#include <any>
+
+using namespace std;
 
 namespace MicroProcesses
 {

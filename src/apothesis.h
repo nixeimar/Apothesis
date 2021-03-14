@@ -72,18 +72,12 @@ public:
     /// Random generator
     RandomGen::RandomGenerator *pRandomGen;
 
-    /// Holds chemical and processes data that are needed
-//    Utils::pChemAndProcData;
-
     /// Intialization of the KMC method. For example here the processes to be performed
     /// as these are written in the input file are constcucted through the factory method
     void init();
 
     /// Perform the KMC iteratios
     void exec();
-
-    /// Add a process
-    void addProcess(string process);
 
     /// Function to log to output file whether a parameter is properly read
     void logSuccessfulRead(bool read, string parameter);
@@ -97,33 +91,15 @@ public:
     /// Return normalized probabilities of each process
     vector<double> calculateProbabilities(vector<MicroProcesses::Process*>);
 
-    MicroProcesses::Process* getProcessAt(int index, vector<MicroProcesses::Process*> pProcesses);
-
-    MicroProcesses::Process* pickProcess(vector<double> probabilities, double random, vector<MicroProcesses::Process*> pProcesses);
-
-//    MicroProcesses::Adsorption* findAdsorption(string species);
-
-    MicroProcesses::Desorption* findDesorption(string species);
-
     /// Return access to IO pointer
-    IO* getIOPointer();
+    inline IO* getIOPointer() { return pIO; }
 
-    void setDebugMode(bool);
-
-    bool getDebugMode();
-
-    void setLatticePointer(Lattice* pLattice);
-
-    /// Return access to adsorption
-    vector<MicroProcesses::Adsorption*> getAdsorptionPointers();
-
-    /// Return access to adsorption
-    vector<MicroProcesses::SurfaceReaction*> getReactionPointers();
+    inline void setDebugMode(bool ifDebug) { m_debugMode = ifDebug;}
+    bool getDebugMode() { return m_debugMode; }
 
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
-    //Not to handy. Re-think... I have found another way... Implement it
-    map< MicroProcesses::Process*, list< SurfaceTiles::Site* >* > m_processMap;
+    map< MicroProcesses::Process*, set< SurfaceTiles::Site* > > m_processMap;
 
     //This holds the process and the list of sites that can be performed.
     //This should replace m_processMap.
@@ -157,20 +133,6 @@ private:
     // Same as m_surfReacMap holding the procudts. The string should be the same.
     map< string, valarray<int> > m_surfProdMap;
 
-    /// Vector holding the processes to be performed.
-    vector< MicroProcesses::Process*> m_vProcesses;
-
-    vector< MicroProcesses::Adsorption*> m_vAdsorption;
-
-    vector< MicroProcesses::Desorption*> m_vDesorption;
-
-    vector< MicroProcesses::SurfaceReaction*> m_vSurfaceReaction;
-
-    vector <reference_wrapper<MicroProcesses::SurfaceReaction>> m_refSurfaceReaction;
-
-    /// Vector holding the name of the processes (string)
-    vector<string> m_processes;
-
     /// The number of flags given by the user
     int m_iArgc;
 
@@ -179,9 +141,6 @@ private:
 
     // map of species
     map<string, Species*> m_species;
-
-    // map of interactions
-    vector< tuple<string, string> > m_interactions;
 
     // Set debug mode
     bool m_debugMode;

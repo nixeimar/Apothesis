@@ -127,10 +127,10 @@ Read::Read(Apothesis *apothesis)
     Value &process = m_input["Process"];
 
     // Add processes into a vector, stored under apothesis
-    for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
-    {
-        apothesis->addProcess(itr->name.GetString());
-    }
+    //    for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
+    //    {
+    //       apothesis->addProcess(itr->name.GetString());
+    //   }
 
     // Storing all species into apothesis class
     apothesis->logSuccessfulRead(m_input.HasMember("Species"), "Species");
@@ -176,10 +176,10 @@ Read::Read(Apothesis *apothesis)
     }
 
     // Add processes into a vector, stored under apothesis
-    for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
-    {
-        apothesis->addProcess(itr->name.GetString());
-    }
+    //    for (Value::ConstMemberIterator itr = process.MemberBegin(); itr != process.MemberEnd(); ++itr)
+    //    {
+    //        apothesis->addProcess(itr->name.GetString());
+    //    }
 }
 
 Read::~Read() {}

@@ -79,102 +79,58 @@ public:
     };
 
     /// Set the height of the particular site.
-    void setHeight( int );
+    inline void setHeight( int h ) { m_iHeight = h; }
 
     /// Get the height of the particular site.
-    int getHeight();
+    inline int getHeight() { return m_iHeight; }
 
     /// Set the neigbours.
-    void setNeigh( Site*);
-
-    /// Initialize map
-    void initSpeciesMap(int numSpecies);
+    inline void setNeigh(Site *s){ m_vNeigh.push_back(s); }
 
     /// Get the neigbours at the same level.
-    vector< Site* > getNeighs();
-
-    /// Check if this site is active and can absorb.
-    bool isActive();
+    inline vector<Site *> getNeighs() { return m_vNeigh; }
 
     /// Set an ID for this site.
-    void setID( int );
+    inline void setID(int id) { m_iID = id; }
 
     /// Get the ID of this lattice site.
-    int getID();
+    inline int getID() { return m_iID; }
 
     /// Set the number of the neighbours according to the height of its neighbour sites
-    inline void setNeighboursNum( int n ) { m_iNumNeighs = n; }
+    inline void setNeighsNum( int n ) { m_iNumNeighs = n; }
 
     /// Returns the number of the neighbours according to the height of its neighbour sites.
-    int getNeighboursNum();
+    inline int getNeighsNum(){ return m_iNumNeighs; }
 
     /// Set the neihbour position for this site.
-    void setNeighPosition( Site*, NeighPoisition  );
+    inline void setNeighPosition(Site *s, NeighPoisition np) { m_mapNeigh[ np ] = s; }
 
     /// Get the neihbour position for this site.
-    Site* getNeighPosition( NeighPoisition );
-
-    /// Stores the sites that are activated.
-    void storeActivationSite( Site* s, ActivationSite as);
-
-    /// Returns the sites that are activated.
-    Site* getActivationSite( ActivationSite as);
+    Site* getNeighPosition(NeighPoisition np){ return m_mapNeigh[np]; }
 
     /// This will holds all the elements that can interact with the surfaces.
     /// Important when we talk about surface reactions.
     /// Element class has not implement yet for that we use forward decleration.
     void addSpecies( Species* s);
 
+    /// Remove the species from the site
     void removeSpecies( Species* s);
 
     vector<Species*> getSpecies();
 
     vector<string> getSpeciesName();
 
-    /// Add a processes in the list of processes that this site can participate in.
-    void addProcess( Process* );
-
-    /// Remove a processes from the list of processes that this site can participate in.
-    void removeProcess( Process* );
-
-    /// Get pointer to possible processes that can occur on this site
-    list< Process* > getProcesses();
-
-    // Set the lattice type that this site belongs to
-    //void setLatticeType(LatticeType);
-
-    /// Set the site as phantom (or not)
-    void setPhantom(bool phantom);
-
-    /// Return boolean of current state of site
-    bool isPhantom();
-
-    /// Return pointer to map
-    map<int, int> getSpeciesMap();
-
-    // Update neighbour list
-    void m_updateNeighbours();
-
-    // Call updateneighbours on another site
-    void m_updateNeighbourList();
-
-    // Reserve memory for the vector holding the species indexes for this site
-    void initSpecies( int );
-
     // Get the react species
     inline valarray< int > getReactSpecies() { return m_vReacSpecies; }
 
-    //Increase the height of the site by one
-    void increaseHeight( int );
+    /// Increase the height of the site by one
+    inline void increaseHeight( int i ){ m_iHeight += i; }
 
-    //Decrease the height of the site by one
-    void decreaseHeight( int );
-
-    //Increase the number of neighs
-    void increaseNeighsNum();
+    /// Decrease the height of the site by one
+    inline void decreaseHeight( int i ){ m_iHeight -= i; }
 
     /// Set the first negihbors of this site
-    void set1stNeibors( int level, Site* );
+    void set1stNeibors(int level, Site* s) { m_m1stNeighs.at( level ).push_back( s ); }
 
     /// Returns the 1st neigbors
     inline map<int, vector<Site* > > get1stNeihbors() const { return m_m1stNeighs; }
