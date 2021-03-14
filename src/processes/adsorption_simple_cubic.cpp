@@ -31,45 +31,36 @@ bool AdsorptionSimpleCubic::rules( Site* s )
     return true;
 }
 
-void AdsorptionSimpleCubic::perform( int siteID )
+void AdsorptionSimpleCubic::perform( Site* s )
 {
-    m_pLattice->adsorp( siteID, m_Species );
+    //For PVD results
+    s->increaseHeight( 1 );
+    s->setNeighsNum( mf_calculateNeighbors( s ) );
+    m_seAffectedSites.insert( s ) ;
+
+    for ( Site* neigh:s->getNeighs() ) {
+        neigh->setNeighsNum( mf_calculateNeighbors( neigh ) );
+        m_seAffectedSites.insert( neigh ) ;
+
+        //We do not need this in adsorption
+//        for ( Site* firstNeigh:neigh->getNeighs() ){
+ //           firstNeigh->setNeighsNum( mf_calculateNeighbors( firstNeigh ) );
+  //          m_seAffectedSites.push_back( firstNeigh );
+   //     }
+    }
 }
 
-//--------------------- Transitions probabilities ----------------------------------------//
-/*        (*prob)[0] = pa*Nx*Ny;									//AdsorptionSimpleCubic
-        (*prob)[1] = group[0].size()*v0*exp(-1.0e0*E/(k*T));			//Desorption 1 neigh
-        (*prob)[3] = group[1].size()*v0*exp(-2.0e0*E/(k*T));        //Desorption 2 neigh
-        (*prob)[5] = group[2].size()*v0*exp(-3.0e0*E/(k*T));		//Desorption 3 neigh
-        (*prob)[7] = group[3].size()*v0*exp(-4.0e0*E/(k*T));		//Desorption 4 neigh
-        (*prob)[9] = group[4].size()*v0*exp(-5.0e0*E/(k*T));		//Desorption 5 neigh
-        (*prob)[2] = A*(*prob)[1];	  							//Diffusion  1 neisgh
-        (*prob)[4] = A*(*prob)[3];								//Diffusion  2 neisgh
-        (*prob)[6] = A*(*prob)[5];								//Diffusion  3 neisgh
-        (*prob)[8] = A*(*prob)[7];								//Diffusion  4 neisgh
-        (*prob)[10] = A*(*prob)[9];								//Diffusion  5 neisgh */
-//----------------------------------------------------------------------------------------//
+int AdsorptionSimpleCubic::mf_calculateNeighbors(Site* s)
+{
+    int neighs = 1;
+    for ( Site* neigh:s->getNeighs() ) {
+        if ( neigh->getHeight() >= s->getHeight() )
+            neighs++;
+    }
+    return neighs;
+}
 
-/*        (*p_tot) = 0;s
-        for (unsigned int i=0; i<nof_trans_prob; i++)
-                 *p_tot += (*prob)[i];
-
-        for (unsigned int i=0; i<nof_trans_prob; i++)
-                cout<< "NO"<< "\t" <<(*prob)[i] << endl;
-
-        cout<<"***************"<< endl;*/
-
-//---------Canonical-form--------------//
-//       for (unsigned int i=0; i<nof_trans_prob; i++)
-//               (*prob)[i] /= (*p_tot);
-//-------------------------------------//
-
-/*	for (unsigned int i=0; i<nof_trans_prob; i++)
-                cout<<"CAN"<< "\t" <<(*prob)[i] << endl;
-        cout<<"***************"<< endl;
-        cout<<"PROBS"<<endl;
-        system("pause");
---------------------------------------------------*/
+set<Site*> AdsorptionSimpleCubic::getAffectedSites() { return m_seAffectedSites; }
 
 double AdsorptionSimpleCubic::getProbability(){
 

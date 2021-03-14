@@ -28,9 +28,9 @@ Desorption::~Desorption(){}
 bool Desorption::rules( Site* s){}
 
 
-void Desorption::perform( int siteID  )
+void Desorption::perform( Site*  )
 {
-    m_pLattice->desorp( siteID , m_Species );
+//    m_pLattice->desorp( siteID , m_Species );
 }
 
 double Desorption::getProbability(){

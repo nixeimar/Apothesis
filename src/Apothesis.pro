@@ -29,7 +29,6 @@ HEADERS += apothesis.h \
            pointers.h \
            processes/desorption_simple_cubic.h \
            processes/diffusion_simple_cubic.h \
-           processes/processpool.h \
            processes/reaction_new.h \
            properties.h \
            register.h \
@@ -60,7 +59,6 @@ SOURCES += apothesis.cpp \
            processes/abstract_process.cpp \
            processes/desorption_simple_cubic.cpp \
            processes/diffusion_simple_cubic.cpp \
-           processes/processpool.cpp \
            processes/reaction_new.cpp \
            properties.cpp \
            error/errorhandler.cpp \

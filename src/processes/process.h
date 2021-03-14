@@ -46,13 +46,13 @@ public:
     virtual double getProbability() = 0;
 
     /// Perform this process in the site
-    virtual void perform( int siteID ) = 0;
+    virtual void perform( Site* ) = 0;
 
     /// The rules for this type of process e.g. the neighbour of site Site.
     virtual bool rules( Site* ) = 0;
 
-    /// Returns the sites that are affected by this process including the site that this process is  performed.
-    virtual list<Site*> getAffectedSites( Site* ) = 0;
+    /// Returns the sites that are affected by this process including the site that this process is performed.
+    virtual set<Site*> getAffectedSites() = 0;
 
     /// Sets the parameters for this process (e.g. temperature, pressure, mole fraction etc.)
     void setParams( map<string, any> params ){ m_mParams = params; };

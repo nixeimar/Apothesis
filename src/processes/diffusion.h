@@ -45,8 +45,8 @@ public:
 
     double getProbability() override;
     bool rules( Site* ) override {}
-    void perform( int siteID ) override;
-    virtual list<Site*> getAffectedSites( Site* ) override {}
+    void perform( Site* ) override;
+    virtual set<Site*> getAffectedSites() override {}
 
 private:
     ///The activation energy of the adsoprtion process

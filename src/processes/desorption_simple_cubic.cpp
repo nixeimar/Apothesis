@@ -26,18 +26,41 @@ DesorptionSimpleCubic::~DesorptionSimpleCubic(){}
 
 bool DesorptionSimpleCubic::rules( Site* s)
 {
-
+    if ( s->getNeighsNum() == m_iNeigh )
+        return true;
+    return false;
 }
 
-list<Site*> DesorptionSimpleCubic::getAffectedSites( Site* )
+void DesorptionSimpleCubic::perform( Site* s)
 {
+    //For PVD results
+    s->decreaseHeight( 1 );
+    s->setNeighsNum( mf_calculateNeighbors( s ) );
 
+    m_seAffectedSites.insert( s );
+    for ( Site* neigh:s->getNeighs() ) {
+        neigh->setNeighsNum( mf_calculateNeighbors( neigh ) );
+        m_seAffectedSites.insert( neigh );
+
+        for ( Site* firstNeigh:neigh->getNeighs() ){
+            firstNeigh->setNeighsNum( mf_calculateNeighbors( firstNeigh ) );
+            m_seAffectedSites.insert( firstNeigh );
+        }
+    }
 }
 
-void DesorptionSimpleCubic::perform( int siteID  )
+int DesorptionSimpleCubic::mf_calculateNeighbors(Site* s)
 {
-    m_pLattice->desorp( siteID , m_Species );
+    int neighs = 1;
+    for ( Site* neigh:s->getNeighs() ) {
+        if ( neigh->getHeight() >= s->getHeight() )
+            neighs++;
+    }
+    return neighs;
 }
+
+set<Site*> DesorptionSimpleCubic::getAffectedSites() { return m_seAffectedSites; }
+
 
 double DesorptionSimpleCubic::getProbability(){
 

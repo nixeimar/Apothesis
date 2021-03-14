@@ -41,8 +41,8 @@ public:
 
     double getProbability() override;
     bool rules( Site* s) override;
-    list<Site*> getAffectedSites( Site* );
-    void perform( int siteID  ) override;
+    set<Site*> getAffectedSites() override;
+    void perform( Site* ) override;
 
 private:
     ///The activation energy of the adsoprtion process
@@ -54,8 +54,14 @@ private:
     ///The species that must be removed from the site
     species_new* m_Species;
 
+    ///A list holding all affected sites from this process
+    set<Site*> m_seAffectedSites;
+
     ///The neighbours of this diffusion process
     int m_iNeigh;
+
+    /// A member function to calculate the neighbors of a given site
+    int mf_calculateNeighbors(Site*);
 
     REGISTER_PROCESS( DesorptionSimpleCubic )
 };

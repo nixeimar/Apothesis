@@ -25,14 +25,14 @@ REGISTER_PROCESS_IMPL(Diffusion)
 Diffusion::Diffusion():m_iNeighNum(0){}
 Diffusion::~Diffusion(){}
 
-void Diffusion::perform( int siteID )
+void Diffusion::perform( Site* )
 {
-    m_pLattice->desorp( siteID, m_Species );
+//    m_pLattice->desorp( siteID, m_Species );
 
-    int targetID = m_pLattice->getSite( siteID )->getNeighs().at(  rand()%4  )->getID();
+ //   int targetID = m_pLattice->getSite( siteID )->getNeighs().at(  rand()%4  )->getID();
 
     //From this site get the neighobours id and peformt it.
-    m_pLattice->adsorp( targetID, m_Species );
+  //  m_pLattice->adsorp( targetID, m_Species );
 }
 
 double Diffusion::getProbability(){

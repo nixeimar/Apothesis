@@ -32,9 +32,9 @@ bool Adsorption::rules( Site* s )
     return true;
 }
 
-void Adsorption::perform( int siteID )
+void Adsorption::perform( Site* s )
 {
-    m_pLattice->adsorp( siteID, m_Species );
+//    m_pLattice->adsorp( siteID, m_Species );
 }
 
 //--------------------- Transitions probabilities ----------------------------------------//

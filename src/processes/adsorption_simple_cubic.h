@@ -30,9 +30,8 @@ public:
 
     double getProbability() override;
     bool rules( Site* ) override;
-    void perform( int siteID  ) override;
-    list<Site*> getAffectedSites( Site* ) override {}
-
+    void perform( Site* ) override;
+    set<Site*> getAffectedSites() override;
 
     inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
     inline double getActivationEnergy(){ return m_dActNrg; }
@@ -59,6 +58,12 @@ private:
 
     ///The species that must adsopt
     species_new* m_Species;
+
+    ///A list holding all affected sites from this process
+    set<Site*> m_seAffectedSites;
+
+    /// A member function to calculate the neighbors of a given site
+    int mf_calculateNeighbors(Site*);
 
     REGISTER_PROCESS(AdsorptionSimpleCubic)
 };

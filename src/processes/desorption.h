@@ -39,11 +39,11 @@ public:
 
     inline void setNumNeigh( int n ){ m_iNeigh = n; }
 
-    virtual list<Site*> getAffectedSites( Site* ) override {}
+    set<Site*> getAffectedSites() override {}
 
     double getProbability() override;
-    bool rules( Site* s) override;
-    void perform( int siteID  ) override;
+    bool rules( Site* s)  override;
+    void perform( Site* ) override;
 
 private:
     ///The activation energy of the adsoprtion process

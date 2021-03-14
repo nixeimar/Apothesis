@@ -44,12 +44,12 @@ public:
     inline void setSpecies( species_new* s ){ m_Species = s; }
     inline species_new* getSpecies(){ return m_Species; }
 
-    inline void setNeigh(int n ){ m_iNeighNum = n; }
+    inline void setNeigh(int n ){ m_iNeigh = n; }
 
     double getProbability() override;
-    bool rules( Site* ) override {}
-    void perform( int siteID ) override;
-    virtual list<Site*> getAffectedSites( Site* ) override {}
+    bool rules( Site* ) override;
+    void perform( Site* ) override;
+    virtual set<Site*> getAffectedSites() override {}
 
 private:
     ///The activation energy of the adsoprtion process
@@ -65,7 +65,7 @@ private:
     species_new* m_Species;
 
     /// The number of neighbours for calculating the probability
-    int m_iNeighNum;
+    int m_iNeigh;
 
     REGISTER_PROCESS(DiffusionSimpleCubic)
 };

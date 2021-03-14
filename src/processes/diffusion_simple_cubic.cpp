@@ -22,17 +22,25 @@ namespace MicroProcesses
 
 REGISTER_PROCESS_IMPL(DiffusionSimpleCubic)
 
-DiffusionSimpleCubic::DiffusionSimpleCubic():m_iNeighNum(0){}
+DiffusionSimpleCubic::DiffusionSimpleCubic():m_iNeigh(0){}
 DiffusionSimpleCubic::~DiffusionSimpleCubic(){}
 
-void DiffusionSimpleCubic::perform( int siteID )
+void DiffusionSimpleCubic::perform( Site* )
 {
-    m_pLattice->desorp( siteID, m_Species );
+/*    m_pLattice->desorp( siteID, m_Species );
 
     int targetID = m_pLattice->getSite( siteID )->getNeighs().at(  rand()%4  )->getID();
 
     //From this site get the neighobours id and peformt it.
-    m_pLattice->adsorp( targetID, m_Species );
+    m_pLattice->adsorp( targetID, m_Species );*/
+}
+
+bool DiffusionSimpleCubic::rules( Site* s)
+{
+    cout  << getName() << " " << s->getNeighsNum() << " " << any_cast<int>(m_mParams["neighs"]) << endl;
+    if ( s->getNeighsNum() == any_cast<int>(m_mParams["neighs"]) )
+        return true;
+    return false;
 }
 
 double DiffusionSimpleCubic::getProbability(){
