@@ -37,7 +37,6 @@ void DiffusionSimpleCubic::perform( Site* )
 
 bool DiffusionSimpleCubic::rules( Site* s)
 {
-    cout  << getName() << " " << s->getNeighsNum() << " " << any_cast<int>(m_mParams["neighs"]) << endl;
     if ( s->getNeighsNum() == any_cast<int>(m_mParams["neighs"]) )
         return true;
     return false;

@@ -234,13 +234,13 @@ void Apothesis::exec()
     //    pLattice->setProcMap( &m_procMap );
 
     //Perform the number of KMC steps read from the input.
-    m_dEndTime = pParameters->getEndTime();
+//    m_dEndTime = pParameters->getEndTime();
 
-    if (m_dEndTime == 0.0){
-        pErrorHandler->error_simple_msg("Zero iterations found.");
-        exit(0);
-    }
-    else
+//    if (m_dEndTime == 0.0){
+ //       pErrorHandler->error_simple_msg("Zero iterations found.");
+  //      exit(0);
+   // }
+    //else
         pIO->writeLogOutput("Running " + to_string( m_dEndTime ) + " sec");
 
     //Calculate the total probability (R) --------------------------//
@@ -280,12 +280,9 @@ void Apothesis::exec()
 
                 // Check if an affected site must enter to a class or not
                 for  (Site* affectedSite: p.first->getAffectedSites() ){
-
                     //Erase the affected site from the proces
                     for (auto &p2:m_processMap){
                         p2.second.erase( affectedSite );
-
-                        cout << p2.first->getName() << endl;
 
                         //Added if it obeys the rules of this process
                         if ( p2.first->rules( affectedSite ) ){
@@ -302,7 +299,7 @@ void Apothesis::exec()
                 //5. Compute dt = -ln(ksi)/Rtot
                 m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
 
-                pLattice->print();
+//                pLattice->print();
 
                 break;
             }
@@ -310,6 +307,7 @@ void Apothesis::exec()
         //6. advance time: time += dt;
         m_dProcTime += m_dt;
 
+        cout << "t = " << m_dProcTime << endl;
         //Calulate the roughness
         pProperties->calculateRoughness();
 
