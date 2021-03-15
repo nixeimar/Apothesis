@@ -53,10 +53,10 @@ public:
     virtual bool rules( Site* ) = 0;
 
     /// Returns the sites that are affected by this process including the site that this process is performed.
-    virtual set<Site*> getAffectedSites() = 0;
+    inline set<Site*> getAffectedSites() { return m_seAffectedSites; }
 
     /// Sets the parameters for this process (e.g. temperature, pressure, mole fraction etc.)
-    void setParams( map<string, any> params ){ m_mParams = params; };
+    void setParams( map<string, any> params ){ m_mParams = params; }
 
     inline void setName( string procName ){ m_sProcName = procName; }
     inline string getName(){ return  m_sProcName; }

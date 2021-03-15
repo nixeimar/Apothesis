@@ -26,7 +26,7 @@ DesorptionSimpleCubic::~DesorptionSimpleCubic(){}
 
 bool DesorptionSimpleCubic::rules( Site* s)
 {
-    if ( s->getNeighsNum() == m_iNeigh )
+    if ( s->getNeighsNum() == any_cast<int>(m_mParams["neighs"] ) )
         return true;
     return false;
 }
@@ -59,9 +59,6 @@ int DesorptionSimpleCubic::mf_calculateNeighbors(Site* s)
     return neighs;
 }
 
-set<Site*> DesorptionSimpleCubic::getAffectedSites() { return m_seAffectedSites; }
-
-
 double DesorptionSimpleCubic::getProbability(){
 
     //These must trenafered in the global definitions
@@ -80,13 +77,13 @@ double DesorptionSimpleCubic::getProbability(){
     double y = 2.0e-3;					// Mole fraction of the precursor on the wafera
     /*--------------------------------------------------*/
 
-    m_iNeigh = any_cast<int>(m_mParams["neighs"]);
+//    m_iNeigh = any_cast<int>(m_mParams["neighs"]);
 
     double v0 = k_d; //*exp(-E/(k*T));
     double A = 0.0e0; //exp((E_d-E_m)/(k*T));
 
 
-    return v0*exp(-(double)m_iNeigh*E/(k*T));			//DesorptionSimpleCubic 1 neigh
+    return 0;// v0*exp(-(double)any_cast<int>(m_mParams["neighs"])*E/(k*T));			//DesorptionSimpleCubic 1 neigh
 }
 
 }

@@ -31,7 +31,6 @@ public:
     double getProbability() override;
     bool rules( Site* ) override;
     void perform( Site* ) override;
-    set<Site*> getAffectedSites() override;
 
     inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
     inline double getActivationEnergy(){ return m_dActNrg; }

@@ -41,7 +41,6 @@ public:
 
     double getProbability() override;
     bool rules( Site* s) override;
-    set<Site*> getAffectedSites() override;
     void perform( Site* ) override;
 
 private:

@@ -60,8 +60,6 @@ int AdsorptionSimpleCubic::mf_calculateNeighbors(Site* s)
     return neighs;
 }
 
-set<Site*> AdsorptionSimpleCubic::getAffectedSites() { return m_seAffectedSites; }
-
 double AdsorptionSimpleCubic::getProbability(){
 
     //These must trenafered in the global definitions

@@ -75,7 +75,7 @@ int DiffusionSimpleCubic::mf_calculateNeighbors(Site* s)
 
 bool DiffusionSimpleCubic::rules( Site* s)
 {
-    if ( s->getNeighsNum() == any_cast<int>(m_mParams["neighs"]) )
+    if ( s->getNeighsNum() == any_cast<int>(m_mParams["neighs"] ) )
         return true;
     return false;
 }
@@ -101,7 +101,7 @@ double DiffusionSimpleCubic::getProbability(){
     double A = exp( (E_d-E_m)/(k*T) );
 
     //--------------------- Transitions probability ----------------------------------------//
-    return 0; // A*v0*exp( -m_iNeighNum*E/(k*T) );
+    return A*v0*exp( -(double)any_cast<int>(m_mParams["neighs"])*E/(k*T) );
     //----------------------------------------------------------------------------------------//
 }
 

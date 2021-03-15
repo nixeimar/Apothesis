@@ -292,7 +292,7 @@ void Apothesis::exec()
                 set<Site*> test = p.first->getAffectedSites();
 
                 // Check if an affected site must enter to a class or not
-                for  (Site* affectedSite: p.first->getAffectedSites() ){
+                for (Site* affectedSite:p.first->getAffectedSites() ){
                     //Erase the affected site from the proces
                     for (auto &p2:m_processMap){
                         p2.second.erase( affectedSite );
