@@ -252,7 +252,7 @@ int BCC::calculateNeighNum( int id )
 // We have to define the processes e.g. Adsorption Simple, Asorption MultipleSites, Diffusion 1s Neighbors,
 // Desorption 1st Neighbors, Reaction Decomposition etc...
 
-void BCC::adsorp( int siteID, species_new* chemSpec )
+/*void BCC::adsorp( int siteID, species_new* chemSpec )
 {
     // >--------  For Lam & Vlachos (2000) ------------------------------------//
     //Remove site and its neihbors from its previous position in diffusion and desorption classes
@@ -393,7 +393,7 @@ void BCC::desorp(int siteID, species_new *chemSpecies)
 
     // ---------  For Lam & Vlachos (2000) ------------------------------------>//
 
-}
+/*}
 
 void BCC::react(int siteID)
 {
@@ -402,4 +402,4 @@ void BCC::react(int siteID)
     //2.Remove every species from this site (that means that the site is occupied by a lattice site).
 
     //3.Update neighbours and process map according to the new height as we would do in PVD.
-}
+}*/

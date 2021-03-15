@@ -25,15 +25,53 @@ REGISTER_PROCESS_IMPL(DiffusionSimpleCubic)
 DiffusionSimpleCubic::DiffusionSimpleCubic():m_iNeigh(0){}
 DiffusionSimpleCubic::~DiffusionSimpleCubic(){}
 
-void DiffusionSimpleCubic::perform( Site* )
+void DiffusionSimpleCubic::perform( Site* s)
 {
-/*    m_pLattice->desorp( siteID, m_Species );
+    //This is desorption ------------------------------------------------->
+    s->increaseHeight( 1 );
 
-    int targetID = m_pLattice->getSite( siteID )->getNeighs().at(  rand()%4  )->getID();
+    s->setNeighsNum( mf_calculateNeighbors( s ) );
+    m_seAffectedSites.insert( s ) ;
 
-    //From this site get the neighobours id and peformt it.
-    m_pLattice->adsorp( targetID, m_Species );*/
+    for ( Site* neigh:s->getNeighs() ) {
+        neigh->setNeighsNum( mf_calculateNeighbors( neigh ) );
+        m_seAffectedSites.insert( neigh );
+
+        for ( Site* firstNeigh:neigh->getNeighs() ){
+            firstNeigh->setNeighsNum( mf_calculateNeighbors( firstNeigh ) );
+            m_seAffectedSites.insert( firstNeigh );
+        }
+    }    //--------------------------------------------------------------------<
+
+    // Random pick a site to re-adsorpt
+    Site* adsorbSite;
+    if ( m_pRandomGen )
+        adsorbSite = s->getNeighs().at( m_pRandomGen->getIntRandom(0, 3) );
+    else{
+        cout << "The random generator has not been defined." << endl;
+        EXIT;
+    }
+
+    //This is adsorption ------------------------------------------------->
+    adsorbSite->increaseHeight( 1 );
+    m_seAffectedSites.insert( adsorbSite );
+    for ( Site* neigh:adsorbSite->getNeighs() ) {
+        neigh->setNeighsNum( mf_calculateNeighbors( neigh ) );
+        m_seAffectedSites.insert( neigh ) ;
+    }
+    //--------------------------------------------------------------------<
 }
+
+int DiffusionSimpleCubic::mf_calculateNeighbors(Site* s)
+{
+    int neighs = 1;
+    for ( Site* neigh:s->getNeighs() ) {
+        if ( neigh->getHeight() >= s->getHeight() )
+            neighs++;
+    }
+    return neighs;
+}
+
 
 bool DiffusionSimpleCubic::rules( Site* s)
 {

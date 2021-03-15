@@ -47,7 +47,6 @@ public:
 
     set<Site*> getAffectedSites() override {}
 
-
 private:
     ///The activation energy of the adsoprtion process
     double m_dActNrg;

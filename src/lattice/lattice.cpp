@@ -78,16 +78,6 @@ Site* Lattice::getSite(int i, int j)
     return m_vSites[ i*m_iSizeY + j ];
 }
 
-void Lattice::setProcMap( map<string, set< int > >* procMap )
-{
-    if ( procMap )
-        m_pProcMap = procMap;
-    else {
-        m_errorHandler->warningSimple_msg("Process map could not be created.");
-        exit(-1);
-    }
-}
-
 void Lattice::print()
 {
     for (int i = 0; i < m_iSizeY; i++){

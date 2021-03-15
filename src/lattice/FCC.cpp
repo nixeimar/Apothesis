@@ -997,41 +997,6 @@ int FCC::calculateNeighNum( int id,  const int level )
     return neighs;
 }
 
-//void FCC::adsorp(string processName, int siteID, species_new* chemSpecies )
-void FCC::adsorp(int siteID, species_new* chemSpecies )
-{
-    //Here a registered event must be called
-    //This must be the name of  the event e.g. Adsorption Simple
-    //So the event name should be Simple_FCC_110 etc
-    if ( m_sOrient == "111"){
-
-
-    }
-    else if ( m_sOrient == "110" ) {
-        //Remove site and its neihbors from its previous position
-        for ( auto &p:*m_pProcMap )
-            p.second.erase( siteID );
-
-
-        //Here execute the event m_pEvents->getEvent(eventName)->perform();
-
-        // Check if this site must be added in this process
-        //    for ( auto &p:*m_pProcMap )
-        //       if ( p.first.rules( site ) )
-        //      p.second.add( site);
-        //
-
-        //Update the neighbours for this case if the height has changed
-
-    }
-}
-
-void FCC::desorp(int siteID, species_new *chemSpecies)
-{
-
-
-}
-
 void FCC::check()
 {
     int k = 0;

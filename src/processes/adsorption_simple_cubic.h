@@ -45,7 +45,6 @@ public:
     inline void setSpecies( species_new* s ){ m_Species = s; }
     inline species_new* getSpecies(){ return m_Species; }
 
-
 private:
     ///The activation energy of the adsoprtion process
     double m_dActNrg;
@@ -58,9 +57,6 @@ private:
 
     ///The species that must adsopt
     species_new* m_Species;
-
-    ///A list holding all affected sites from this process
-    set<Site*> m_seAffectedSites;
 
     /// A member function to calculate the neighbors of a given site
     int mf_calculateNeighbors(Site*);

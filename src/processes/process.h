@@ -25,6 +25,7 @@
 #include "lattice.h"
 #include "site.h"
 #include "species_new.h"
+#include "aux/random_generator.h"
 
 #include "factory_process.h"
 
@@ -76,12 +77,20 @@ public:
     /// Return a parameter of this process
     any getParameter( string str ) { return m_mParams[ str ]; }
 
+    /// Set the random generator
+    inline void setRandomGen( RandomGen::RandomGenerator* randgen ) { m_pRandomGen = randgen; }
+
 protected:
     /** Pointer to the lattice of the process */
     Lattice* m_pLattice;
 
     /// Map for storing the variables for this processs
     map<string, any> m_mParams;
+
+    ///A list holding all affected sites from this process
+    set<Site*> m_seAffectedSites;
+
+    RandomGen::RandomGenerator* m_pRandomGen;
 
 private:
     /// The name of this prcess

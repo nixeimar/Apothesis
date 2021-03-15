@@ -65,10 +65,6 @@ public:
     /// Count the neighbors in the different levels
     int calculateNeighNum( int id,  int level );
 
-    void adsorp(int siteID, species_new* chemSpecies) override;
-    void desorp(int siteID, species_new* chemSpecies) override;
-    void react(int siteID) override{}
-
 protected:
     /// Build the first neighbours for the FCC(100) lattice.
     void mf_neigh_100();

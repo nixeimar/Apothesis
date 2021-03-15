@@ -134,6 +134,7 @@ void Apothesis::init()
     pos.first->first->setName("Adsorption");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
+    pos.first->first->setRandomGen( pRandomGen );
 
     params.insert( {"v0", 1.0e+13} );
     params.insert( {"E", 1.0e+13} );
@@ -143,11 +144,13 @@ void Apothesis::init()
     pos.first->first->setName("Desorption1N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
+    pos.first->first->setRandomGen( pRandomGen );
 
     pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), emptySet } );
     pos.first->first->setName("Diffusion1N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
+    pos.first->first->setRandomGen( pRandomGen );
 
     params.erase("neighs");
     params.insert( {"neighs", 2} );
@@ -155,10 +158,13 @@ void Apothesis::init()
     pos.first->first->setName("Desorption2N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
+    pos.first->first->setRandomGen( pRandomGen );
+
     pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), emptySet } );
     pos.first->first->setName("Diffusion2N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
+    pos.first->first->setRandomGen( pRandomGen );
 
     params.erase("neighs");
     params.insert( {"neighs", 3} );
@@ -166,12 +172,13 @@ void Apothesis::init()
     pos.first->first->setName("Desorption3N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
-
+    pos.first->first->setRandomGen( pRandomGen );
 
     pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), emptySet } );
     pos.first->first->setName("Diffusion3N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
+    pos.first->first->setRandomGen( pRandomGen );
 
     params.erase("neighs");
     params.insert( {"neighs", 4} );
@@ -179,10 +186,13 @@ void Apothesis::init()
     pos.first->first->setName("Desorption4N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
+    pos.first->first->setRandomGen( pRandomGen );
+
     pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), emptySet } );
     pos.first->first->setName("Diffusion4N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
+    pos.first->first->setRandomGen( pRandomGen );
 
     params.erase("neighs");
     params.insert( {"neighs", 5} );
@@ -190,10 +200,13 @@ void Apothesis::init()
     pos.first->first->setName("Desorption5N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
+    pos.first->first->setRandomGen( pRandomGen );
+
     pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), tempSet } );
     pos.first->first->setName("Diffusion5N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
+    pos.first->first->setRandomGen( pRandomGen );
 }
 
 void Apothesis::exec()

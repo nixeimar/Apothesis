@@ -54,9 +54,6 @@ private:
     ///The species that must be removed from the site
     species_new* m_Species;
 
-    ///A list holding all affected sites from this process
-    set<Site*> m_seAffectedSites;
-
     ///The neighbours of this diffusion process
     int m_iNeigh;
 

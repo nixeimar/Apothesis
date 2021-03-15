@@ -109,18 +109,6 @@ class Lattice: public Pointers
     /// Store the surface step info
     void setStepInfo(int, int, int);
 
-    /// The process of adsorption
-    virtual void adsorp( int siteID, species_new* chemSpecies ) = 0;
-
-    /// The process of desorption
-    virtual void desorp( int siteID, species_new* chemSpecies ) = 0;
-
-    /// The process of reaction
-    virtual void react( int siteID ) = 0;
-
-    //Set the pointer to the process map
-    void setProcMap( map<string, set<int> >* );
-
     //Prints the lattice heights
     void print();
 

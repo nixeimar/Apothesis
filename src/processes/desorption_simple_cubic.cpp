@@ -35,8 +35,8 @@ void DesorptionSimpleCubic::perform( Site* s)
 {
     //For PVD results
     s->decreaseHeight( 1 );
-    s->setNeighsNum( mf_calculateNeighbors( s ) );
 
+    s->setNeighsNum( mf_calculateNeighbors( s ) );
     m_seAffectedSites.insert( s );
     for ( Site* neigh:s->getNeighs() ) {
         neigh->setNeighsNum( mf_calculateNeighbors( neigh ) );

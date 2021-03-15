@@ -64,6 +64,9 @@ private:
     ///The species that must be removed from the site
     species_new* m_Species;
 
+    /// A member function to calculate the neighbors of a given site
+    int mf_calculateNeighbors(Site*);
+
     /// The number of neighbours for calculating the probability
     int m_iNeigh;
 
