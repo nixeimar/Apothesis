@@ -23,21 +23,15 @@
 #include <map>
 #include <list>
 #include <fstream>
-
 #include "pointers.h"
 #include "site.h"
 #include "errorhandler.h"
-
 #include "species_new.h"
-//#include "event.h"
 #include <set>
-
-namespace LatticeEvent {class Event;}
 
 using namespace std;
 using namespace Utils;
 using namespace SurfaceTiles;
-
 
 class Lattice: public Pointers
   {
@@ -111,9 +105,14 @@ class Lattice: public Pointers
 
     //Prints the lattice heights
     void print();
+    void printNeighNum();
+
 
     //Prints the neighbors
     void printNeighs(int);
+
+    /// Builds a  stepped surface
+    virtual void buildSteps(int, int, int) = 0;
 
   protected:
     /// The size of the lattice in the x-dimension.
@@ -131,14 +130,8 @@ class Lattice: public Pointers
     /// The sites that consist the lattice.
     vector<Site* > m_vSites;
 
-    /// The neighbours of this lattice (different if e.g. is BCC or FCC)
-//    virtual void mf_neigh() = 0;
-
     /// True if the lattice has steps (comes from the input file if the Step keyword is found).
     bool m_bHasSteps;
-
-    ///Build the steps id m_bHasSteps is true.
-    void mf_buildSteps();
 
     //The info for the step surface i.e. [1 20 10]
     int m_iStepX;
@@ -149,10 +142,6 @@ class Lattice: public Pointers
 
     /// The cut of the lattice [ 100, 110, 111 ]
     string m_sOrient;
-
-    /// Holds the events defined by the user lattice wise
-    map< string, LatticeEvent::Event* > m_mEventsRegistry;
-
   };
 
 #endif // LATTICE_H

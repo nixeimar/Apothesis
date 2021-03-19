@@ -55,9 +55,20 @@ void DiffusionSimpleCubic::perform( Site* s)
     //This is adsorption ------------------------------------------------->
     adsorbSite->increaseHeight( 1 );
     m_seAffectedSites.insert( adsorbSite );
-    for ( Site* neigh:adsorbSite->getNeighs() ) {
+/*    for ( Site* neigh:adsorbSite->getNeighs() ) {
         neigh->setNeighsNum( mf_calculateNeighbors( neigh ) );
         m_seAffectedSites.insert( neigh ) ;
+    }*/
+
+    for ( Site* neigh:s->getNeighs() ) {
+        neigh->setNeighsNum( mf_calculateNeighbors( neigh ) );
+        m_seAffectedSites.insert( neigh ) ;
+
+        //We do not need this in adsorption
+        for ( Site* firstNeigh:neigh->getNeighs() ){
+            firstNeigh->setNeighsNum( mf_calculateNeighbors( firstNeigh ) );
+             m_seAffectedSites.insert( firstNeigh );
+        }
     }
     //--------------------------------------------------------------------<
 }
@@ -71,7 +82,6 @@ int DiffusionSimpleCubic::mf_calculateNeighbors(Site* s)
     }
     return neighs;
 }
-
 
 bool DiffusionSimpleCubic::rules( Site* s)
 {
@@ -101,7 +111,7 @@ double DiffusionSimpleCubic::getProbability(){
     double A = exp( (E_d-E_m)/(k*T) );
 
     //--------------------- Transitions probability ----------------------------------------//
-    return A*v0*exp( -(double)any_cast<int>(m_mParams["neighs"])*E/(k*T) );
+    return 0;// A*v0*exp( -(double)any_cast<int>(m_mParams["neighs"])*E/(k*T) );
     //----------------------------------------------------------------------------------------//
 }
 

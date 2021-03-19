@@ -69,8 +69,12 @@ Apothesis::Apothesis(int argc, char *argv[])
     // Build the lattice. This should always follow the read input
 
     std::cout << "Building the lattice" << std::endl;
-    pLattice->setOrientation("110");
+//    pLattice->setOrientation("110");
     pLattice->build();
+
+    //For building with steps surface
+    pLattice->buildSteps( 20, 1, 0);
+
     std::cout << "Finished building the lattice" << std::endl;
 
     // initialize number of species
@@ -94,7 +98,6 @@ void Apothesis::init()
     if (!pIO->outputOpen())
         pIO->openOutputFile("Output");
 
-
     // Initialize Random generator.
     pRandomGen->init( 0 );
     //Give initial height for lattice. This is for FCC(110).
@@ -103,8 +106,6 @@ void Apothesis::init()
   //          s->setHeight( 9 );
    //     else
     //        s->setHeight( 10 );
-
-    pLattice->print();
 
     // ----- For validating with the case of Lam & Vlachos ------
     set< Site* > emptySet;
@@ -115,7 +116,7 @@ void Apothesis::init()
     //To Deifilia: This must be created for each process in order to pass
     //the parameters from the input file to the porcess
     map<string, any> params;
-    params.insert( {"T", 500.} );
+    params.insert( {"T", 1100.} );
     params.insert( {"P", 101325.} );
     params.insert( {"f", 2.0e-3} );
     params.insert( {"C_tot", 1.0e+19} );
@@ -256,11 +257,8 @@ void Apothesis::exec()
     //else
         pIO->writeLogOutput("Running " + to_string( m_dEndTime ) + " sec");
 
-    //Calculate the total probability (R) --------------------------//
+    //Calculate first time the total probability (R) --------------------------//
     m_dRTot = 0.0;
-    //    for (pair<string, set<int> > p:m_procMap)
-    //       m_dRTot += (double)procPool->getProcessByName( p.first )->getProbability()*p.second.size();
-
     for (pair<Process*, set< Site* > > p:m_processMap)
         m_dRTot += p.first->getProbability()*(double)p.second.size();
 
@@ -268,6 +266,12 @@ void Apothesis::exec()
 
     pProperties->calculateRoughness();
     pIO->writeRoughness( m_dProcTime, pProperties->getRoughness() );
+
+    int iTimeStep = 0;
+    pIO->writeLatticeHeights( m_dProcTime, iTimeStep );
+
+    double writeLatHeigsEvery = 1e-5; //in s
+    double timeToWrite = 0.0;
 
     while ( m_dProcTime <= m_dEndTime ){
         //1. Get a random numbers
@@ -311,21 +315,27 @@ void Apothesis::exec()
 
                 //5. Compute dt = -ln(ksi)/Rtot
                 m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
-
-//                pLattice->print();
-
                 break;
             }
         }
         //6. advance time: time += dt;
         m_dProcTime += m_dt;
+        timeToWrite += m_dt;
 
         cout << "t = " << m_dProcTime << endl;
         //Calulate the roughness
         pProperties->calculateRoughness();
-
         //Then write it
         pIO->writeRoughness( m_dProcTime, pProperties->getRoughness() );
+
+        //Write the lattice heights
+        iTimeStep++;
+
+        if ( timeToWrite >= writeLatHeigsEvery ) {
+            pIO->writeLatticeHeights( m_dProcTime, iTimeStep );
+            timeToWrite = 0.0;
+        }
+
     }
 }
 

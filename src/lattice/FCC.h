@@ -65,6 +65,8 @@ public:
     /// Count the neighbors in the different levels
     int calculateNeighNum( int id,  int level );
 
+    void buildSteps(int, int, int){}
+
 protected:
     /// Build the first neighbours for the FCC(100) lattice.
     void mf_neigh_100();

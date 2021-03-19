@@ -21,12 +21,10 @@ void Properties::calculateRoughness()
 
 void Properties::RMS()
 {
-    ;
 }
 
 void Properties::eventCountingGrowthRate()
 {
-    ;
 }
 
 }

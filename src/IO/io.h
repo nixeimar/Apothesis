@@ -151,7 +151,7 @@ class IO: public Pointers
     void writeLatticeInfo();
 
     /// Write the height of each site
-    void writeLatticeHeights();
+    void writeLatticeHeights( double time, int timeStep );
 
     /// Export the lattice in xyz format. Not implemented yet
     void exportLatticeXYZ();
@@ -180,6 +180,9 @@ class IO: public Pointers
 
     /// The output file
     ofstream m_OutFile;
+
+    /// The output file
+    ofstream m_HeightFile;
 
     /// The rpughness file
     ofstream m_RoughnessFile;

@@ -421,11 +421,22 @@ void IO::writeLatticeInfo()
         m_OutFile << "Lattice type: " << "FCC";
 }
 
-void IO::writeLatticeHeights()
+void IO::writeLatticeHeights( double time, int timeStep )
 {
+    std::string name="Lattice_" + std::to_string( timeStep ) + ".data";
+    std::ofstream file(name);
+
+    file << "Time (s): " << time << endl;
+
+    for (int i = 0; i < m_lattice->getY(); i++){
+        for (int j = 0; j < m_lattice->getX(); j++)
+            file << m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() << " " ;
+
+        file << endl;
+    }
 
     // This must be formatted output.
-    m_OutFile << " --------------------------------------- " << endl;
+/*    m_OutFile << " --------------------------------------- " << endl;
     for ( int i = 0; i < m_lattice->getX(); i++)
     {
         for (int j = 0;  j < m_lattice->getY(); j++)
@@ -450,7 +461,7 @@ void IO::writeLatticeHeights()
         }
         m_OutFile << endl;
     }
-    m_OutFile << " --------------------------------------- " << endl;
+    m_OutFile << " --------------------------------------- " << endl; */
 }
 
 string IO::GetCurrentWorkingDir()

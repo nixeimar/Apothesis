@@ -65,17 +65,7 @@ Site* Lattice::getSite(int id) { return m_vSites[id]; }
 
 Site* Lattice::getSite(int i, int j)
 {
-    if ( i >= m_iSizeX ){
-        m_errorHandler->error_simple_msg("ERROR: The site's index exceeds the size of the x-dimension of the lattice. ");
-        exit(1);
-    }
-
-    if ( j >= m_iSizeY ){
-        m_errorHandler->error_simple_msg("ERROR: The site's index exceeds the size of the y-dimension of the lattice. ");
-        exit(1);
-    }
-
-    return m_vSites[ i*m_iSizeY + j ];
+    return m_vSites[ i*m_iSizeX + j ];
 }
 
 void Lattice::print()
@@ -83,11 +73,19 @@ void Lattice::print()
     for (int i = 0; i < m_iSizeY; i++){
         for (int j = 0; j < m_iSizeX; j++)
             cout << m_vSites[ i*m_iSizeX + j ]->getID() << "( " << m_vSites[ i*m_iSizeX + j ]->getHeight() << " )" ;
-
         cout  << endl;
     }
 }
 
+void Lattice::printNeighNum()
+{
+    for (int i = 0; i < m_iSizeY; i++){
+        for (int j = 0; j < m_iSizeX; j++)
+            cout << m_vSites[ i*m_iSizeX + j ]->getID() << "( " << m_vSites[ i*m_iSizeX + j ]->getNeighsNum() << " )" ;
+
+        cout  << endl;
+    }
+}
 
 void Lattice::printNeighs( int ID )
 {

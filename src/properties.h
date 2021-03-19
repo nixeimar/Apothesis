@@ -25,6 +25,7 @@
 
 using namespace std;
 
+
 namespace Utils {
 
 class Properties: public Pointers
@@ -47,7 +48,6 @@ private:
 
     //The event counting growth rate
     double m_dEvGrRate;
-
 };
 
 }

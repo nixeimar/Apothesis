@@ -83,7 +83,7 @@ double DesorptionSimpleCubic::getProbability(){
     double A = 0.0e0; //exp((E_d-E_m)/(k*T));
 
 
-    return 0;// v0*exp(-(double)any_cast<int>(m_mParams["neighs"])*E/(k*T));			//DesorptionSimpleCubic 1 neigh
+    return v0*exp(-(double)any_cast<int>(m_mParams["neighs"])*E/(k*T));			//DesorptionSimpleCubic 1 neigh
 }
 
 }
