@@ -393,8 +393,15 @@ bool IO::openOutputFile( string name )
     if ( m_OutFile.is_open() )
         return true;
 
-    m_errorHandler->error_simple_msg( "Cannot open file kmc.log" ) ;
-    return false;
+    m_errorHandler->error_simple_msg( "Cannot open file log for writting." ) ;
+    exit(-1);
+//    return false;
+}
+
+
+void IO::writeInOutput( string toWrite )
+{
+    m_OutFile << toWrite << endl;
 }
 
 void IO::closeOutputFile()

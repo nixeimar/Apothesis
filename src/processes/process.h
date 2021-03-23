@@ -80,6 +80,9 @@ public:
     /// Set the random generator
     inline void setRandomGen( RandomGen::RandomGenerator* randgen ) { m_pRandomGen = randgen; }
 
+    inline void setUncoAccepted( bool isUncoAccepted) { m_bUncoAccept = isUncoAccepted; }
+    inline bool isUncoAccepted() { return m_bUncoAccept; }
+
 protected:
     /** Pointer to the lattice of the process */
     Lattice* m_pLattice;
@@ -91,6 +94,8 @@ protected:
     set<Site*> m_seAffectedSites;
 
     RandomGen::RandomGenerator* m_pRandomGen;
+
+    bool m_bUncoAccept;
 
 private:
     /// The name of this prcess

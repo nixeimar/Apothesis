@@ -33,11 +33,13 @@ class Properties: public Pointers
 public:
     Properties(Apothesis* apothesis );
 
-    void calculateRoughness();
-    void RMS();
-    void eventCountingGrowthRate();
+    double getMicroroughness();
+    double getRMS();
+    double eventCountingGrowthRate( int, int, double );
 
     inline double getRoughness(){ return m_dRoughness; }
+    double classCoverage();
+
 
 private:
     //The roughness of the surface

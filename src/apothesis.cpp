@@ -109,14 +109,14 @@ void Apothesis::init()
 
     // ----- For validating with the case of Lam & Vlachos ------
     set< Site* > emptySet;
-    set< Site* > tempSet;
-    for ( Site* s:pLattice->getSites() )
-        tempSet.insert( s );
+//    set< Site* > tempSet;
+//    for ( Site* s:pLattice->getSites() )
+ //       tempSet.insert( s );
 
     //To Deifilia: This must be created for each process in order to pass
     //the parameters from the input file to the porcess
     map<string, any> params;
-    params.insert( {"T", 1100.} );
+    params.insert( {"T", 500.} );
     params.insert( {"P", 101325.} );
     params.insert( {"f", 2.0e-3} );
     params.insert( {"C_tot", 1.0e+19} );
@@ -131,11 +131,18 @@ void Apothesis::init()
     double Em = 4.28e+4/6.0221417930e+23;
     params.insert( {"E_m", Em } );
 
-    auto pos = m_processMap.insert( { FactoryProcess::createProcess("AdsorptionSimpleCubic"), tempSet } );
+
+    auto pos = m_processMap.insert( { FactoryProcess::createProcess("AdsorptionSimpleCubic"), emptySet } );
     pos.first->first->setName("Adsorption");
+    pos.first->first->setUncoAccepted( true );
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
     pos.first->first->setRandomGen( pRandomGen );
+
+    for ( Site* s:pLattice->getSites() ){
+        if ( pos.first->first->rules( s ) )
+            pos.first->second.insert( s );
+    }
 
     params.insert( {"v0", 1.0e+13} );
     params.insert( {"E", 1.0e+13} );
@@ -147,11 +154,17 @@ void Apothesis::init()
     pos.first->first->setLattice( pLattice );
     pos.first->first->setRandomGen( pRandomGen );
 
-    pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), emptySet } );
+    for ( Site* s:pLattice->getSites() ){
+        if ( pos.first->first->rules( s ) )
+            pos.first->second.insert( s );
+    }
+
+
+/*    pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), emptySet } );
     pos.first->first->setName("Diffusion1N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
-    pos.first->first->setRandomGen( pRandomGen );
+    pos.first->first->setRandomGen( pRandomGen );*/
 
     params.erase("neighs");
     params.insert( {"neighs", 2} );
@@ -161,11 +174,16 @@ void Apothesis::init()
     pos.first->first->setLattice( pLattice );
     pos.first->first->setRandomGen( pRandomGen );
 
-    pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), emptySet } );
+    for ( Site* s:pLattice->getSites() ){
+        if ( pos.first->first->rules( s ) )
+            pos.first->second.insert( s );
+    }
+
+/*    pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), emptySet } );
     pos.first->first->setName("Diffusion2N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
-    pos.first->first->setRandomGen( pRandomGen );
+    pos.first->first->setRandomGen( pRandomGen );*/
 
     params.erase("neighs");
     params.insert( {"neighs", 3} );
@@ -175,39 +193,55 @@ void Apothesis::init()
     pos.first->first->setLattice( pLattice );
     pos.first->first->setRandomGen( pRandomGen );
 
-    pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), emptySet } );
+    for ( Site* s:pLattice->getSites() ){
+        if ( pos.first->first->rules( s ) )
+            pos.first->second.insert( s );
+    }
+
+/*    pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), emptySet } );
     pos.first->first->setName("Diffusion3N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
-    pos.first->first->setRandomGen( pRandomGen );
+    pos.first->first->setRandomGen( pRandomGen );*/
 
     params.erase("neighs");
     params.insert( {"neighs", 4} );
+
     pos = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic"), emptySet } );
     pos.first->first->setName("Desorption4N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
     pos.first->first->setRandomGen( pRandomGen );
 
-    pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), emptySet } );
+    for ( Site* s:pLattice->getSites() ){
+        if ( pos.first->first->rules( s ) )
+            pos.first->second.insert( s );
+    }
+
+/*    pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), emptySet } );
     pos.first->first->setName("Diffusion4N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
-    pos.first->first->setRandomGen( pRandomGen );
+    pos.first->first->setRandomGen( pRandomGen );*/
 
     params.erase("neighs");
     params.insert( {"neighs", 5} );
-    pos = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic"), tempSet } );
+    pos = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic"), emptySet } );
     pos.first->first->setName("Desorption5N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
     pos.first->first->setRandomGen( pRandomGen );
 
-    pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), tempSet } );
+    for ( Site* s:pLattice->getSites() ){
+        if ( pos.first->first->rules( s ) )
+            pos.first->second.insert( s );
+    }
+
+/*    pos = m_processMap.insert( { FactoryProcess::createProcess("DiffusionSimpleCubic"), tempSet } );
     pos.first->first->setName("Diffusion5N");
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
-    pos.first->first->setRandomGen( pRandomGen );
+    pos.first->first->setRandomGen( pRandomGen );*/
 }
 
 void Apothesis::exec()
@@ -264,14 +298,32 @@ void Apothesis::exec()
 
     m_dEndTime = 0.01;
 
-    pProperties->calculateRoughness();
-    pIO->writeRoughness( m_dProcTime, pProperties->getRoughness() );
+    pIO->writeInOutput( "\n" );
+    pIO->writeInOutput( "********************************************************************" );
+    string output = "Time (s)"s + '\t' + "Micro roughness (-)" + '\t' + "RMS (-)" + '\t' ;
+
+    for ( auto &p:m_processMap)
+        output += p.first->getName() + '\t';
+
+    for ( auto &p:m_processMap)
+        output += "Coverage " + p.first->getName() + '\t';
+    pIO->writeInOutput( output );
+
+//    pIO->writeInOutput( )
 
     int iTimeStep = 0;
     pIO->writeLatticeHeights( m_dProcTime, iTimeStep );
 
     double writeLatHeigsEvery = 1e-5; //in s
     double timeToWrite = 0.0;
+
+    output = std::to_string(m_dProcTime) + '\t' + std::to_string( pProperties->getMicroroughness() ) + '\t' + std::to_string( pProperties->getRMS() )  + '\t' ;
+    for ( auto &p:m_processMap)
+        output += std::to_string( p.first->getNumEventHappened() ) + '\t';
+
+    for ( auto &p:m_processMap)
+        output += std::to_string( (double)p.second.size()/(double)pLattice->getSize() ) + '\t';
+    pIO->writeInOutput( output );
 
     while ( m_dProcTime <= m_dEndTime ){
         //1. Get a random numbers
@@ -294,14 +346,18 @@ void Apothesis::exec()
                 p.first->eventHappened();
 
                 // Check if an affected site must enter to a class or not
-                for (Site* affectedSite:p.first->getAffectedSites() ){
+                for (Site* affectedSite:p.first->getAffectedSites() ){                   
                     //Erase the affected site from the proces
                     for (auto &p2:m_processMap){
-                        //Added if it obeys the rules of this process
-                        if ( p2.first->rules( affectedSite ) && p2.second.find( affectedSite ) == p2.second.end()  )
-                            p2.second.insert( affectedSite );
-                        else
-                            p2.second.erase( affectedSite );
+                        if ( !p2.first->isUncoAccepted() ) {
+                            //Added if it obeys the rules of this process
+                            if ( p2.first->rules( affectedSite ) ) {
+                                if (p2.second.find( affectedSite ) == p2.second.end() )
+                                    p2.second.insert( affectedSite );
+                            }
+                            else
+                                p2.second.erase( affectedSite );
+                        }
                     }
                 }
 
@@ -319,17 +375,22 @@ void Apothesis::exec()
         m_dProcTime += m_dt;
         timeToWrite += m_dt;
 
-        cout << "t = " << m_dProcTime << endl;
-        //Calulate the roughness
-        pProperties->calculateRoughness();
-        //Then write it
-        pIO->writeRoughness( m_dProcTime, pProperties->getRoughness() );
+        cout << m_dProcTime << endl;
 
         //Write the lattice heights
         iTimeStep++;
 
         if ( timeToWrite >= writeLatHeigsEvery ) {
             pIO->writeLatticeHeights( m_dProcTime, iTimeStep );
+
+            output = std::to_string(m_dProcTime) + '\t' + std::to_string( pProperties->getMicroroughness() ) + '\t' + std::to_string( pProperties->getRMS() )  + '\t' ;
+            for ( auto &p:m_processMap)
+                output += std::to_string( p.first->getNumEventHappened() ) + '\t';
+
+            for ( auto &p:m_processMap)
+                output += std::to_string( (double)p.second.size() ) + '\t';
+            pIO->writeInOutput( output );
+
             timeToWrite = 0.0;
         }
 

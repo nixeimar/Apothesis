@@ -91,6 +91,9 @@ class IO: public Pointers
     /// Opens the output file with the name name.
     bool openOutputFile( string name );
 
+    /// Write in the output file.
+    void writeInOutput( string );
+
     /// Closes the output file.
     void closeOutputFile();
 
