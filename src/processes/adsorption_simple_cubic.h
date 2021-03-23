@@ -44,6 +44,7 @@ public:
     inline void setSpecies( species_new* s ){ m_Species = s; }
     inline species_new* getSpecies(){ return m_Species; }
 
+
 private:
     ///The activation energy of the adsoprtion process
     double m_dActNrg;

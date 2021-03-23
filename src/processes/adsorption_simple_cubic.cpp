@@ -43,10 +43,10 @@ void AdsorptionSimpleCubic::perform( Site* s )
         m_seAffectedSites.insert( neigh ) ;
 
         //We do not need this in adsorption
-        for ( Site* firstNeigh:neigh->getNeighs() ){
-            firstNeigh->setNeighsNum( mf_calculateNeighbors( firstNeigh ) );
-             m_seAffectedSites.insert( firstNeigh );
-        }
+//        for ( Site* firstNeigh:neigh->getNeighs() ){
+//            firstNeigh->setNeighsNum( mf_calculateNeighbors( firstNeigh ) );
+ //            m_seAffectedSites.insert( firstNeigh );
+ //       }
     }
 }
 

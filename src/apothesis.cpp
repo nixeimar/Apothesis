@@ -293,18 +293,15 @@ void Apothesis::exec()
                 //Count the event for this class
                 p.first->eventHappened();
 
-                set<Site*> test = p.first->getAffectedSites();
-
                 // Check if an affected site must enter to a class or not
                 for (Site* affectedSite:p.first->getAffectedSites() ){
                     //Erase the affected site from the proces
                     for (auto &p2:m_processMap){
-                        p2.second.erase( affectedSite );
-
                         //Added if it obeys the rules of this process
-                        if ( p2.first->rules( affectedSite ) ){
+                        if ( p2.first->rules( affectedSite ) && p2.second.find( affectedSite ) == p2.second.end()  )
                             p2.second.insert( affectedSite );
-                        }
+                        else
+                            p2.second.erase( affectedSite );
                     }
                 }
 
