@@ -26,7 +26,7 @@ DesorptionSimpleCubic::~DesorptionSimpleCubic(){}
 
 bool DesorptionSimpleCubic::rules( Site* s)
 {
-    if ( s->getNeighsNum() == any_cast<int>(m_mParams["neighs"] ) )
+    if ( mf_calculateNeighbors( s ) == any_cast<int>(m_mParams["neighs"] ) )
         return true;
     return false;
 }
@@ -35,11 +35,10 @@ void DesorptionSimpleCubic::perform( Site* s)
 {
     //For PVD results
     s->decreaseHeight( 1 );
-
-    s->setNeighsNum( mf_calculateNeighbors( s ) );
+    mf_calculateNeighbors( s ) ;
     m_seAffectedSites.insert( s );
     for ( Site* neigh:s->getNeighs() ) {
-        neigh->setNeighsNum( mf_calculateNeighbors( neigh ) );
+        mf_calculateNeighbors( neigh );
         m_seAffectedSites.insert( neigh );
 
         for ( Site* firstNeigh:neigh->getNeighs() ){
@@ -51,12 +50,91 @@ void DesorptionSimpleCubic::perform( Site* s)
 
 int DesorptionSimpleCubic::mf_calculateNeighbors(Site* s)
 {
+
     int neighs = 1;
+    for ( Site* neigh:s->getNeighs() ) {
+        if ( s->isLowerStep() && neigh->isHigherStep() ){
+            if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
+                neighs++;
+        }
+        else if ( neigh->isLowerStep() && s->isHigherStep() ){
+            if ( neigh->getHeight() >= s->getHeight() - m_pLattice->getStepDiff() + 1 )
+                neighs++;
+        }
+        else {
+            if ( neigh->getHeight() >= s->getHeight() )
+                neighs++;
+        }
+    }
+
+    s->setNeighsNum( neighs );
+    return neighs;
+
+    //For flat surfaces
+/*    int neighs = 1;
+    if ( mf_isInLowerStep( s ) ){
+        for ( Site* neigh:s->getNeighs() ) {
+            if ( mf_isInHigherStep( neigh ) ){
+                if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
+                    neighs++;
+            }
+            else{
+                if ( neigh->getHeight() >= s->getHeight() )
+                    neighs++;
+            }
+        }
+    }
+    else if ( mf_isInHigherStep( s ) ){
+        for ( Site* neigh:s->getNeighs() ) {
+            if ( mf_isInLowerStep( neigh ) ){
+                if ( neigh->getHeight() >= s->getHeight() - (m_pLattice->getStepDiff() + 1 ) )
+                    neighs++;
+            }
+            else{
+                if ( neigh->getHeight() >= s->getHeight() )
+                    neighs++;
+            }
+        }
+    }
+    else {
+        for ( Site* neigh:s->getNeighs() ) {
+            if ( neigh->getHeight() >= s->getHeight() )
+                neighs++;
+        }
+    }
+
+    s->setNeighsNum( neighs );
+
+    return neighs; */
+
+  //For flat surfaces
+/*    int neighs = 1;
     for ( Site* neigh:s->getNeighs() ) {
         if ( neigh->getHeight() >= s->getHeight() )
             neighs++;
     }
-    return neighs;
+    return neighs;*/
+}
+
+bool DesorptionSimpleCubic::mf_isInLowerStep(Site* s)
+{
+    for (int j = 0; j < m_pLattice->getY(); j++)
+        if ( s->getID() == m_pLattice->getSite( j, 0 )->getID() )
+            return true;
+
+    return false;
+}
+
+bool DesorptionSimpleCubic::mf_isInHigherStep(Site* s)
+{
+    for (int j = 0; j < m_pLattice->getY(); j++){
+   //     cout<< m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() << endl;
+        if ( s->getID() == m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() ){
+            return true;
+        }
+    }
+
+    return false;
 }
 
 double DesorptionSimpleCubic::getProbability(){
@@ -64,24 +142,12 @@ double DesorptionSimpleCubic::getProbability(){
     //These must trenafered in the global definitions
     /*--- Taken from  Lam and Vlachos (2000)PHYSICAL REVIEW B, VOLUME 64, 035401 - DOI: 10.1103/PhysRevB.64.035401 ---*/
     double Na = 6.0221417930e+23;				// Avogadro's number [1/mol]
-    double P = 101325;					// [Pa]
     double T = any_cast<double>(m_mParams["T"]); //500;						// [K]
     double k = any_cast<double>(m_mParams["k"]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
-    double s0 = 0.1;
-    double C_tot = 1.0e+19;				// [sites/m^2] Vlachos code says [moles sites/m^2]
     double E_d = (7.14e+4)/Na;			// [j]
     double E = 71128/Na; //any_cast<double>(m_mParams["E"]); //71128/Na;   //(7.14e+4)/Na;			// [j] -> 17 kcal
-    double m = 32e-3/Na;				// [kg]
-    double E_m = (4.28e+4)/Na;			// [j]
-    double k_d = 1.0e+13;				// [s^-1]
-    double y = 2.0e-3;					// Mole fraction of the precursor on the wafera
+    double v0 = 1.0e+13;				// [s^-1]
     /*--------------------------------------------------*/
-
-//    m_iNeigh = any_cast<int>(m_mParams["neighs"]);
-
-    double v0 = k_d; //*exp(-E/(k*T));
-    double A = 0.0e0; //exp((E_d-E_m)/(k*T));
-
 
     return v0*exp(-(double)any_cast<int>(m_mParams["neighs"])*E/(k*T));			//DesorptionSimpleCubic 1 neigh
 }

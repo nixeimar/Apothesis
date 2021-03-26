@@ -99,7 +99,7 @@ void Apothesis::init()
         pIO->openOutputFile("Output");
 
     // Initialize Random generator.
-    pRandomGen->init( 0 );
+    pRandomGen->init( 213212 );
     //Give initial height for lattice. This is for FCC(110).
 //    for ( Site* s:pLattice->getSites() )
  //       if ( s->getID()%2 != 0)
@@ -108,10 +108,6 @@ void Apothesis::init()
     //        s->setHeight( 10 );
 
     // ----- For validating with the case of Lam & Vlachos ------
-    set< Site* > emptySet;
-//    set< Site* > tempSet;
-//    for ( Site* s:pLattice->getSites() )
- //       tempSet.insert( s );
 
     //To Deifilia: This must be created for each process in order to pass
     //the parameters from the input file to the porcess
@@ -131,6 +127,10 @@ void Apothesis::init()
     double Em = 4.28e+4/6.0221417930e+23;
     params.insert( {"E_m", Em } );
 
+    set< Site* > emptySet;
+//    set< Site* > tempSet;
+//    for ( Site* s:pLattice->getSites() )
+ //       tempSet.insert( s );
 
     auto pos = m_processMap.insert( { FactoryProcess::createProcess("AdsorptionSimpleCubic"), emptySet } );
     pos.first->first->setName("Adsorption");
@@ -242,6 +242,7 @@ void Apothesis::init()
     pos.first->first->setParams( params );
     pos.first->first->setLattice( pLattice );
     pos.first->first->setRandomGen( pRandomGen );*/
+   pLattice->printNeighNum();
 }
 
 void Apothesis::exec()
@@ -340,7 +341,8 @@ void Apothesis::exec()
                 m_iSiteNum = pRandomGen->getIntRandom(0, p.second.size() - 1 );
 
                 //3. From this process pick the random site with id and perform it:
-                Site* s = *next(p.second.begin(), m_iSiteNum);
+                Site* s = *next( p.second.begin(), m_iSiteNum );
+
                 p.first->perform( s );
                 //Count the event for this class
                 p.first->eventHappened();

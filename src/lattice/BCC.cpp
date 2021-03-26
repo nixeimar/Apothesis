@@ -35,7 +35,6 @@ BCC::BCC(Apothesis *apothesis, bool step, vector<int> stepInfo) : Lattice(apothe
 void BCC::buildSteps(int iSize, int jSize, int kSize)
 {
     //e.g. Step 20 1 0
-
     if ( m_vSites.size()%iSize != 0){
         cout << "Cannot create  stepped surface because it cannot be divided exaclty." << endl;
         EXIT;
@@ -62,8 +61,17 @@ void BCC::buildSteps(int iSize, int jSize, int kSize)
     for ( int i = 0; i< m_vSites.size(); i++)
         calculateNeighNum( i );
 
-  //  printNeighNum();
+    int h = getSite( m_iSizeY-1, m_iSizeX-1)->getHeight() ;
+    m_iStepDiff = abs( getSite( m_iSizeY-1, m_iSizeX-1)->getHeight() - getSite( 0, 0 )->getHeight() ) + 1;
+
+//    printNeighNum();
+
+    for (int j = 0; j < m_iSizeY; j++){
+        getSite( j, 0 )->setLowerStep( true );
+        getSite( j, m_iSizeX - 1  )->setHigherStep( true );
+    }
 }
+
 
 void BCC::setInitialHeight(int height) { m_iHeight = height; }
 
@@ -120,26 +128,6 @@ void BCC::setStepInfo(int sizeX, int sizeY, int sizeZ)
     m_iStepX = sizeX;
     m_iStepY = sizeY;
     m_iStepZ = sizeZ;
-}
-
-void BCC::mf_buildSteps()
-{
-
-    if (m_iSizeX % m_iStepX != 0)
-    {
-        m_errorHandler->error_simple_msg("ERROR: The number of steps you provided doesn't conform with the lattice size ");
-        exit(0);
-    }
-    if (m_iStepY != 0) // Be sure that we do have steps. If indi_y = 0 (1 0 0) then we have an initial flat surface
-    {
-        unsigned int steps = m_iSizeX / m_iStepX;
-        for (unsigned int step = 1; step < steps; step++)
-            for (unsigned int i = step * m_iStepX; i < (step + 1) * m_iStepX; i++)
-                for (unsigned int j = 0; j < m_iSizeY; j++)
-                    m_vSites[i * m_iStepY + j] += m_iStepY * step;
-        //(*mesh)[i][j] += m_iStepY * step;///
-        cout << "Number of steps:" << steps << endl;
-    }
 }
 
 void BCC::mf_neigh()
@@ -216,9 +204,13 @@ void BCC::mf_neigh()
     /* Last column */
     for (int j = iSecondCorner + m_iSizeX; j < iForthCorner; j += m_iSizeX){
         m_vSites[j]->setNeigh(m_vSites[j - 1]);
+//        m_vSites[j]->setNeighPosition( m_vSites[j - 1], Site::EAST );
         m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX + 1]);
+  //      m_vSites[j]->setNeighPosition( m_vSites[j - m_iSizeX + 1], Site::WEST );
         m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX]);
+    //    m_vSites[j]->setNeighPosition( m_vSites[j + m_iSizeX], Site::SOUTH );
         m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX]);
+      //  m_vSites[j]->setNeighPosition( m_vSites[j - m_iSizeX], Site::NORTH );
     }
 
     /*	int iCount = 0;

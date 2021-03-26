@@ -135,6 +135,18 @@ public:
     /// Returns the 1st neigbors
     inline map<int, vector<Site* > > get1stNeihbors() const { return m_m1stNeighs; }
 
+    /// Returns true if is in lower step (used in the step case only)
+    void setLowerStep( bool b){ m_isLowerStep = b; }
+
+    /// Returns true if is in higher step (used in the step case only)
+    void setHigherStep( bool b) { m_isHigherStep = b; }
+
+    /// Returns true if is in lower step (used in the step case only)
+    bool isLowerStep(){ return m_isLowerStep; }
+
+    /// Returns true if is in higher step (used in the step case only)
+    bool isHigherStep() { return m_isHigherStep; }
+
 protected:
     //The lattice type that this site belongs to
     //LatticeType m_LatticeType;
@@ -206,6 +218,12 @@ private:
     /// same level
     /// upper level
     map< int, vector <Site* > > m_m2ndNeighs;
+
+    /// if the site belong to the lower step storing vaious info
+    bool m_isLowerStep;
+
+    /// if the site belong to the higher step storing vaious info
+    bool m_isHigherStep;
 };
 
 }

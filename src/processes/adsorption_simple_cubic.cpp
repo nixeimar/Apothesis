@@ -35,11 +35,11 @@ void AdsorptionSimpleCubic::perform( Site* s )
 {
     //For PVD results
     s->increaseHeight( 1 );
-    s->setNeighsNum( mf_calculateNeighbors( s ) );
+    mf_calculateNeighbors( s );
     m_seAffectedSites.insert( s ) ;
 
     for ( Site* neigh:s->getNeighs() ) {
-        neigh->setNeighsNum( mf_calculateNeighbors( neigh ) );
+        mf_calculateNeighbors( neigh );
         m_seAffectedSites.insert( neigh ) ;
 
         //We do not need this in adsorption
@@ -54,11 +54,87 @@ int AdsorptionSimpleCubic::mf_calculateNeighbors(Site* s)
 {
     int neighs = 1;
     for ( Site* neigh:s->getNeighs() ) {
+        if ( s->isLowerStep() && neigh->isHigherStep() ){
+            if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
+                neighs++;
+        }
+        else if ( neigh->isLowerStep() && s->isHigherStep() ){
+            if ( neigh->getHeight() >= s->getHeight() - m_pLattice->getStepDiff() + 1 )
+                neighs++;
+        }
+        else {
+            if ( neigh->getHeight() >= s->getHeight() )
+                neighs++;
+        }
+    }
+
+    s->setNeighsNum( neighs );
+    return neighs;
+
+    //For flat surfaces
+/*    int neighs = 1;
+    if ( mf_isInLowerStep( s ) ){
+        for ( Site* neigh:s->getNeighs() ) {
+            if ( mf_isInHigherStep( neigh ) ){
+                if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
+                    neighs++;
+            }
+            else{
+                if ( neigh->getHeight() >= s->getHeight() )
+                    neighs++;
+            }
+        }
+    }
+    else if ( mf_isInHigherStep( s ) ){
+        for ( Site* neigh:s->getNeighs() ) {
+            if ( mf_isInLowerStep( neigh ) ){
+                if ( neigh->getHeight() >= s->getHeight() - (m_pLattice->getStepDiff() + 1 ) )
+                    neighs++;
+            }
+            else{
+                if ( neigh->getHeight() >= s->getHeight() )
+                    neighs++;
+            }
+        }
+    }
+    else {
+        for ( Site* neigh:s->getNeighs() ) {
+            if ( neigh->getHeight() >= s->getHeight() )
+                neighs++;
+        }
+    }
+
+    s->setNeighsNum( neighs );
+
+    return neighs;*/
+
+  //For flat surfaces
+/*    int neighs = 1;
+    for ( Site* neigh:s->getNeighs() ) {
         if ( neigh->getHeight() >= s->getHeight() )
             neighs++;
     }
-    return neighs;
+    return neighs;*/
 }
+
+bool AdsorptionSimpleCubic::mf_isInLowerStep(Site* s)
+{
+    for (int j = 0; j < m_pLattice->getY(); j++)
+        if ( s->getID() == m_pLattice->getSite( j, 0 )->getID() )
+            return true;
+
+    return false;
+}
+
+bool AdsorptionSimpleCubic::mf_isInHigherStep(Site* s)
+{
+    for (int j = 0; j < m_pLattice->getY(); j++)
+        if ( s->getID() == s->getID() == m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() )
+            return true;
+
+    return false;
+}
+
 
 double AdsorptionSimpleCubic::getProbability(){
 

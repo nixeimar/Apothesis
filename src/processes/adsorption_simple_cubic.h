@@ -46,6 +46,10 @@ public:
 
 
 private:
+
+    bool mf_isInLowerStep( Site* s );
+    bool mf_isInHigherStep( Site* s );
+
     ///The activation energy of the adsoprtion process
     double m_dActNrg;
 

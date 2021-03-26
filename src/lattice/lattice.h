@@ -107,12 +107,14 @@ class Lattice: public Pointers
     void print();
     void printNeighNum();
 
-
     //Prints the neighbors
     void printNeighs(int);
 
     /// Builds a  stepped surface
     virtual void buildSteps(int, int, int) = 0;
+
+    /// Returns the differnce between the first and last step
+    inline int getStepDiff(){ return m_iStepDiff; }
 
   protected:
     /// The size of the lattice in the x-dimension.
@@ -142,6 +144,9 @@ class Lattice: public Pointers
 
     /// The cut of the lattice [ 100, 110, 111 ]
     string m_sOrient;
+
+    /// The height differences between the first and last step
+    int m_iStepDiff;
   };
 
 #endif // LATTICE_H

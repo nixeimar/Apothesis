@@ -48,8 +48,6 @@ public:
 
   void setStepInfo(int sizeX, int sizeY, int sizeZ);
 
-  void mf_buildSteps();
-
   /// Sets the type of the lattice.
   void setType(string);
 
