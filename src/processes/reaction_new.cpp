@@ -16,7 +16,7 @@
 //============================================================================
 
 #include "reaction_new.h"
-#include "species_new.cpp"
+//#include "species_new.cpp"
 
 reaction_new::reaction_new(){}
 reaction_new::~reaction_new(){}

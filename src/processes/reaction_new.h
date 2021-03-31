@@ -23,10 +23,9 @@
 #include <vector>
 
 #include "process.h"
+#include "species_new.h"
 
 using namespace std;
-
-class species_new;
 
 class reaction_new: public Process
 {

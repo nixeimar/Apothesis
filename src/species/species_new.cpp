@@ -1,6 +1,4 @@
 #include "species_new.h"
-#include "reaction_new.h"
-
 
 species_new::species_new(){}
 
