@@ -44,6 +44,7 @@ public:
     inline void setSpecies( species_new* s ){ m_Species = s; }
     inline species_new* getSpecies(){ return m_Species; }
 
+    inline void setEnablingNeighsNum( int n){ m_iEnableNeighs = n; }
 
 private:
 
@@ -66,6 +67,9 @@ private:
 
     /// A member function to calculate the neighbors of a given site
     int mf_calculateNeighbors(Site*);
+
+    /// The number of neighbors to be checked for enabling the site
+    int m_iEnableNeighs;
 
     REGISTER_PROCESS(AdsorptionFCC110Simple)
 };

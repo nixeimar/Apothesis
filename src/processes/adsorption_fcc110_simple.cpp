@@ -30,17 +30,22 @@ bool AdsorptionFCC110Simple::rules( Site* s )
     if ( s == targetSite )
         return false;
 
+    int iCount = 1;
+
     //These are the neighbour a level below (which are the same as the level above!)
     if ( s->get1stNeihbors()[ -1 ][ 0 ]->getHeight() != s->get1stNeihbors()[ -1 ][ 1 ]->getHeight() )
-        return false;
+        iCount++;
 
     if ( s->get1stNeihbors()[ -1 ][ 1 ]->getHeight() != s->get1stNeihbors()[ -1 ][ 2 ]->getHeight() )
-        return false;
+        iCount++;
 
     if ( s->get1stNeihbors()[ -1 ][ 2 ]->getHeight() == s->get1stNeihbors()[ -1 ][ 3 ]->getHeight() )
-        return false;
+        iCount++;
 
-    return true;
+    if ( iCount == m_iEnableNeighs )
+        return true;
+
+    return false;
 }
 
 void AdsorptionFCC110Simple::perform( Site* s )
