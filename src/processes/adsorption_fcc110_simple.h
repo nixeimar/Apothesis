@@ -47,6 +47,8 @@ public:
 
 private:
 
+    Site* targetSite;
+
     bool mf_isInLowerStep( Site* s );
     bool mf_isInHigherStep( Site* s );
 

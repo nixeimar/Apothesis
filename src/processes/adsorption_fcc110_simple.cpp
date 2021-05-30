@@ -27,17 +27,26 @@ AdsorptionFCC110Simple::~AdsorptionFCC110Simple(){}
 
 bool AdsorptionFCC110Simple::rules( Site* s )
 {
-    //These are the neighbour a level below (which are the same as the level above!)
-    if ( s->get1stNeihbors()[ -1 ][ 0 ]->getHeight() == s->get1stNeihbors()[ -1 ][ 1 ]->getHeight() &&
-         s->get1stNeihbors()[ -1 ][ 1 ]->getHeight() == s->get1stNeihbors()[ -1 ][ 2 ]->getHeight() &&
-         s->get1stNeihbors()[ -1 ][ 2 ]->getHeight() == s->get1stNeihbors()[ -1 ][ 3 ]->getHeight() )
-        return true;
-    else
+    if ( s == targetSite )
         return false;
+
+    //These are the neighbour a level below (which are the same as the level above!)
+    if ( s->get1stNeihbors()[ -1 ][ 0 ]->getHeight() != s->get1stNeihbors()[ -1 ][ 1 ]->getHeight() )
+        return false;
+
+    if ( s->get1stNeihbors()[ -1 ][ 1 ]->getHeight() != s->get1stNeihbors()[ -1 ][ 2 ]->getHeight() )
+        return false;
+
+    if ( s->get1stNeihbors()[ -1 ][ 2 ]->getHeight() == s->get1stNeihbors()[ -1 ][ 3 ]->getHeight() )
+        return false;
+
+    return true;
 }
 
 void AdsorptionFCC110Simple::perform( Site* s )
 {
+    //Set the target site to use it later in the rules
+    targetSite = s;
     s->increaseHeight( 2 ); //Since this is FCC
 
     //Get the neighs in the same level
