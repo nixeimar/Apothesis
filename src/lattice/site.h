@@ -110,12 +110,12 @@ public:
 
     /// This will holds all the elements that can interact with the surfaces.
     /// Important when we talk about surface reactions.
-    /// Element class has not implement yet for that we use forward decleration.
     void addSpecies( Species* s);
 
-    /// Remove the species from the site
+    /// Remove a species from the site
     void removeSpecies( Species* s);
 
+    /// Get the species currently in the site
     vector<Species*> getSpecies();
 
     vector<string> getSpeciesName();
@@ -130,7 +130,7 @@ public:
     inline void decreaseHeight( int i ){ m_iHeight -= i; }
 
     /// Set the first negihbors of this site
-    void set1stNeibors(int level, Site* s) { m_m1stNeighs.at( level ).push_back( s ); }
+    void set1stNeibors( int level, Site* s) { m_m1stNeighs.at( level ).push_back( s ); }
 
     /// Returns the 1st neigbors
     inline map<int, vector<Site* > > get1stNeihbors() const { return m_m1stNeighs; }

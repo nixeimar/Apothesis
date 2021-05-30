@@ -41,12 +41,6 @@ void AdsorptionSimpleCubic::perform( Site* s )
     for ( Site* neigh:s->getNeighs() ) {
         mf_calculateNeighbors( neigh );
         m_seAffectedSites.insert( neigh ) ;
-
-        //We do not need this in adsorption
-//        for ( Site* firstNeigh:neigh->getNeighs() ){
-//            firstNeigh->setNeighsNum( mf_calculateNeighbors( firstNeigh ) );
- //            m_seAffectedSites.insert( firstNeigh );
- //       }
     }
 }
 
@@ -69,7 +63,7 @@ int AdsorptionSimpleCubic::mf_calculateNeighbors(Site* s)
     }
 
     s->setNeighsNum( neighs );
-    return neighs;
+    return neighs; // I do not know if we actual need this to be done here ...
 
     //For flat surfaces
 /*    int neighs = 1;

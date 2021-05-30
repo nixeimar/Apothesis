@@ -373,6 +373,7 @@ void Apothesis::exec()
                 break;
             }
         }
+
         //6. advance time: time += dt;
         m_dProcTime += m_dt;
         timeToWrite += m_dt;
@@ -395,7 +396,6 @@ void Apothesis::exec()
 
             timeToWrite = 0.0;
         }
-
     }
 }
 
