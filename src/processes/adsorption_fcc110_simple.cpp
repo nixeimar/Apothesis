@@ -33,10 +33,10 @@ bool AdsorptionFCC110Simple::rules( Site* s )
     int iCount = 1;
 
     //These are the neighbour a level below (which are the same as the level above!)
-    if ( s->get1stNeihbors()[ -1 ][ 0 ]->getHeight() != s->get1stNeihbors()[ -1 ][ 1 ]->getHeight() )
+    if ( s->get1stNeihbors()[ -1 ][ 0 ]->getHeight() == s->get1stNeihbors()[ -1 ][ 1 ]->getHeight() )
         iCount++;
 
-    if ( s->get1stNeihbors()[ -1 ][ 1 ]->getHeight() != s->get1stNeihbors()[ -1 ][ 2 ]->getHeight() )
+    if ( s->get1stNeihbors()[ -1 ][ 1 ]->getHeight() == s->get1stNeihbors()[ -1 ][ 2 ]->getHeight() )
         iCount++;
 
     if ( s->get1stNeihbors()[ -1 ][ 2 ]->getHeight() == s->get1stNeihbors()[ -1 ][ 3 ]->getHeight() )
