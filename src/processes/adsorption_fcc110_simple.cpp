@@ -21,13 +21,14 @@ namespace MicroProcesses
 
 REGISTER_PROCESS_IMPL( AdsorptionFCC110Simple )
 
-AdsorptionFCC110Simple::AdsorptionFCC110Simple():m_Species(0){}
+AdsorptionFCC110Simple::AdsorptionFCC110Simple():m_Species(0), m_iEnableNeighs(4){}
 
 AdsorptionFCC110Simple::~AdsorptionFCC110Simple(){}
 
 bool AdsorptionFCC110Simple::rules( Site* s )
 {
-    if ( s == targetSite )
+
+    if ( targetSite && s == targetSite )
         return false;
 
     int iCount = 1;
@@ -42,7 +43,7 @@ bool AdsorptionFCC110Simple::rules( Site* s )
     if ( s->get1stNeihbors()[ -1 ][ 2 ]->getHeight() == s->get1stNeihbors()[ -1 ][ 3 ]->getHeight() )
         iCount++;
 
-    if ( iCount == m_iEnableNeighs )
+    if ( iCount == m_iEnableNeighs && s->getHeight() <  s->get1stNeihbors()[ -1 ][ 0 ]->getHeight() )
         return true;
 
     return false;
@@ -50,13 +51,15 @@ bool AdsorptionFCC110Simple::rules( Site* s )
 
 void AdsorptionFCC110Simple::perform( Site* s )
 {
+    m_seAffectedSites.clear();
+
     //Set the target site to use it later in the rules
     targetSite = s;
     s->increaseHeight( 2 ); //Since this is FCC
-
+    m_seAffectedSites.insert( s );
     //Get the neighs in the same level
-    for (Site* s:s->get1stNeihbors().at(0) )
-        m_seAffectedSites.insert( s );
+//    for ( int i =0; i < s->get1stNeihbors()[ 0 ].size(); i++)
+//       m_seAffectedSites.insert( s->get1stNeihbors()[ 0 ][ i ] );
 
     //Loop over the sites in the same level
     //The 4 neighs below are already occupied so we start from 4
@@ -67,8 +70,8 @@ void AdsorptionFCC110Simple::perform( Site* s )
     s->setNeighsNum( iCount );
 
     //These are the neighbour a level below (which are the same as the level above!)
-    for (Site* s1:s->get1stNeihbors()[ -1 ])
-        m_seAffectedSites.insert( s1 );
+    for ( int i =0; i < s->get1stNeihbors()[ -1 ].size(); i++)
+        m_seAffectedSites.insert( s->get1stNeihbors()[ -1 ][ i ] );
 }
 
 double AdsorptionFCC110Simple::getProbability()
