@@ -113,3 +113,6 @@ void Lattice::printNeighs( int ID )
     }
 
 }
+
+
+void Lattice::writeXYZ( string filename ){;}

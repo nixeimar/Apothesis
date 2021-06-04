@@ -26,14 +26,9 @@
 
 #include "lattice.h"
 
-#include "adsorption_fcc_110.h"
-
-
 using namespace std;
 using namespace SurfaceTiles;
 using namespace Utils;
-
-//Comment this is the FCC(110) surface which is a hexagonal packed structure
 
 class FCC: public Lattice
 {
@@ -59,11 +54,13 @@ public:
     void build();
 
     /// Sets the minimun initial height for the lattice.
-    void setInitialHeight( int  height );
-
+    void setInitialHeight( int  );
 
     /// Count the neighbors in the different levels
-    int calculateNeighNum( int id,  int level );
+    int calculateNeighNum( int,  int);
+
+    /// Write the lattice in XYZ format in a filename
+    void writeXYZ( string );
 
     void buildSteps(int, int, int){}
 

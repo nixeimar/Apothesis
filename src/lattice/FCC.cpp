@@ -20,7 +20,7 @@
 
 FCC::FCC(Apothesis* apothesis):Lattice(apothesis)
 { 
-//   m_mEventsRegistry.insert("Simple", new LatticeEvent::AdsorptionFCC110Simple() );
+    //   m_mEventsRegistry.insert("Simple", new LatticeEvent::AdsorptionFCC110Simple() );
 }
 
 void FCC::setInitialHeight( int  height ) { m_iHeight = height; }
@@ -475,7 +475,7 @@ void FCC::mf_neigh_110()
         m_vSites[ i ]->setNeighPosition( m_vSites[ i + 1 ],  Site::EAST_UP );
         m_vSites[ i ]->set1stNeibors( -1, m_vSites[ i - m_iSizeX + 1 ] );
         m_vSites[ i ]->setNeighPosition( m_vSites[ i - m_iSizeX + 1 ],  Site::EAST_DOWN );
-     }
+    }
 
     //Last column - 1
     for ( int i = (N6 + m_iSizeX); i < N7; i+=m_iSizeX ){
@@ -534,11 +534,11 @@ void FCC::mf_neigh_111()
             m_vSites[ j]->setNeigh( m_vSites[ j - m_iSizeY + 1]);
             m_vSites[ j]->setNeighPosition( m_vSites[ j - m_iSizeY + 1 ], Site::WEST_UP);
 
-    //        m_vSites[ j]->storeActivationSite( m_vSites[ j - 1 ], Site::ACTV_EAST );
-    //       m_vSites[ j]->storeActivationSite( m_vSites[ j + 1], Site::ACTV_WEST );
+            //        m_vSites[ j]->storeActivationSite( m_vSites[ j - 1 ], Site::ACTV_EAST );
+            //       m_vSites[ j]->storeActivationSite( m_vSites[ j + 1], Site::ACTV_WEST );
 
-     //       m_vSites[ j]->storeActivationSite( m_vSites[ j + m_iSizeY ], Site::ACTV_SOUTH );
-    //       m_vSites[ j]->storeActivationSite( m_vSites[ j - m_iSizeY ], Site::ACTV_NORTH );
+            //       m_vSites[ j]->storeActivationSite( m_vSites[ j + m_iSizeY ], Site::ACTV_SOUTH );
+            //       m_vSites[ j]->storeActivationSite( m_vSites[ j - m_iSizeY ], Site::ACTV_NORTH );
 
             m_vSites[ j]->setNeighPosition( m_vSites[ j - 2*m_iSizeY  ], Site::NORTH);
             m_vSites[ j]->setNeighPosition( m_vSites[ j + 2*m_iSizeY ], Site::SOUTH);
@@ -995,6 +995,107 @@ int FCC::calculateNeighNum( int id,  const int level )
 
 
     return neighs;
+}
+
+void FCC::writeXYZ( string filename )
+{
+    std::ofstream file(filename);
+
+    double a = 3.;
+    double x=0., y=0., z= 0.;
+    double x1=a/2., y1=a/2., z1= 0.;
+    double h = 0., h1 = a/2.;
+
+    int iCountAtoms = 0;
+
+    //Get the maximum height
+    int iMaxH = 0;
+    for (int i = 0; i < m_lattice->getY(); i++)
+        for (int j = 0; j < m_lattice->getX(); j++){
+            //Count the atoms as you pass ...
+
+            if ( m_lattice->getSite( i*m_lattice->getX() + j )->getHeight()%2 == 0 )
+                iCountAtoms += m_lattice->getSite( i*m_lattice->getX() + j )->getHeight()/2;
+            else
+                iCountAtoms += (m_lattice->getSite( i*m_lattice->getX() + j )->getHeight()+1)/2;
+
+            if ( m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() > iMaxH )
+                iMaxH = m_lattice->getSite( i*m_lattice->getX() + j )->getHeight();
+        }
+
+    file << iCountAtoms << endl;
+    file << endl;
+
+
+    for (int i = 0; i < m_lattice->getY(); i++){
+        for (int j = 0; j < m_lattice->getX(); j++){
+
+            if (  m_lattice->getSite( i*m_lattice->getX() + j )->getHeight()%2  != 0 ){
+
+                for ( int k = 0; k < m_lattice->getSite( i*m_lattice->getX() + j )->getHeight(); k+=2){
+                    file << "Cu" << " " << x << " "  <<  y  << " " << h << endl;
+                    h = h + a;
+                }
+
+                h = 0.;
+                y = y + a;
+            }
+            else
+            {
+                for ( int k = 0; k < m_lattice->getSite( i*m_lattice->getX() + j )->getHeight(); k+=2){
+                    file << "Cu" << " " << x1 << " "  <<  y1  << " " << h1 << endl;
+                    h1 = h1 + a;
+                }
+
+                h1 = a/2.;
+                y1 = y1 + a;
+            }
+
+        }
+
+        y = 0.;
+        y1 = a/2.;
+
+        x = x + a;
+        x1 = x1 + a;
+    }
+
+
+    /*    for (int iheight = 0; iheight < iMaxH; iheight++ ){
+        x = 0;
+        x1 = a/2.;
+
+        for (int i = 0; i < m_lattice->getY(); i++){
+
+            if ( iheight%2  == 0 ){
+
+                for (int j = 0; j < m_lattice->getX(); j+=2){
+
+                    if ( m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() < iMaxH ) continue;
+
+                    file << "Cu" << " " << x << " "  <<  y  << " " << h << endl;
+                    y = y + a;
+                }
+            }
+            else {
+                for (int j = 0; j < m_lattice->getX(); j+=2){
+
+                    if ( m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() < iMaxH ) continue;
+
+                    file << "Cu" << " " << x1 << " "  <<  y1  << " " << h << endl;
+                    y1 = y1 + a;
+                }
+            }
+
+            x = x + a;
+            x1 = x1 + a;
+            y = 0.;
+            y1 = a/2.;
+        }
+
+        h = h + a;
+    }*/
+    file.close();
 }
 
 void FCC::check()

@@ -116,6 +116,9 @@ class Lattice: public Pointers
     /// Returns the differnce between the first and last step
     inline int getStepDiff(){ return m_iStepDiff; }
 
+    /// Write the lattice in XYZ format in a filename
+    virtual void writeXYZ( string filename );
+
   protected:
     /// The size of the lattice in the x-dimension.
     int m_iSizeX;

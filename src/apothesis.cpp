@@ -177,6 +177,9 @@ void Apothesis::exec()
         output += std::to_string( (double)p.second.size()/(double)pLattice->getSize() ) + '\t';
     pIO->writeInOutput( output );
 
+
+    pLattice->writeXYZ( "lattice.xyz" );
+
     while ( m_dProcTime <= m_dEndTime ){
         //1. Get a random numbers
         m_dSum = 0.0;
@@ -231,6 +234,8 @@ void Apothesis::exec()
         timeToWrite += m_dt;
 
         cout << m_dProcTime << endl;
+
+        pLattice->writeXYZ( "test.xzy" );
 
         //Write the lattice heights
         iTimeStep++;
