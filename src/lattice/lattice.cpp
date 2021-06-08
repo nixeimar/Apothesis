@@ -72,7 +72,7 @@ void Lattice::print()
 {
     for (int i = 0; i < m_iSizeY; i++){
         for (int j = 0; j < m_iSizeX; j++)
-            cout << m_vSites[ i*m_iSizeX + j ]->getID() << "( " << m_vSites[ i*m_iSizeX + j ]->getHeight() << " )" ;
+            cout << m_vSites[ i*m_iSizeX + j ]->getID() << "\t" << "( " << m_vSites[ i*m_iSizeX + j ]->getHeight() << " )" ;
         cout  << endl;
     }
 }

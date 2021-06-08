@@ -123,8 +123,8 @@ void Apothesis::init()
     //    for ( Site* s:pLattice->getSites() )
     //       tempSet.insert( s );
 
-    auto pos = m_processMap.insert( { FactoryProcess::createProcess("AdsorptionFCC110Simple"), emptySet } );
-    pos.first->first->setName("Adsorption");
+    auto pos = m_processMap.insert( { FactoryProcess::createProcess("AdsorptionFCC1102SSimple"), emptySet } );
+    pos.first->first->setName("AdsorptionFCC1102SSimple");
     pos.first->first->init( params );
     pos.first->first->setLattice( pLattice );
     pos.first->first->setRandomGen( pRandomGen );
@@ -204,7 +204,7 @@ void Apothesis::exec()
 
                 // Check if an affected site must enter to a class or not
                 for (Site* affectedSite:p.first->getAffectedSites() ){
-                    //Erase the affected site from the proces
+                    //Erase the affected site from the processes
                     for (auto &p2:m_processMap){
                         if ( !p2.first->isUncoAccepted() ) {
                             //Added if it obeys the rules of this process
@@ -214,9 +214,17 @@ void Apothesis::exec()
                             }
                             else
                                 p2.second.erase( affectedSite );
+
+
+                            if ( p2.second.empty() && p2.first->getName() == "AdsorptionFCC1102SSimple") {
+                                cout << "No place to adsorb! " << endl;
+                                exit(0);
+                            }
+
                         }
                     }
                 }
+
 
                 //4. Re-compute the processes rates and re-compute Rtot (see ppt).
                 m_dRTot = 0.0;
@@ -240,13 +248,11 @@ void Apothesis::exec()
         //Write the lattice heights
         iTimeStep++;
 
-/*        cout << "******************" << endl;
-        cout <<" Site " << tempSite->getID() << endl;
-        cout << "******************" << endl;
-        pLattice->print();
-        cout << "******************" << endl;
-        pLattice->printNeighNum();
-        cout << "******************" << endl;*/
+//        cout << "******************" << endl;
+//        cout <<" Site " << tempSite->getID() << endl;
+//        cout << "******************" << endl;
+//        pLattice->print();
+//        cout << "******************" << endl;
 
         if ( timeToWrite >= writeLatHeigsEvery ) {
             pIO->writeLatticeHeights( m_dProcTime, iTimeStep );

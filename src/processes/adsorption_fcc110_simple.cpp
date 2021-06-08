@@ -27,7 +27,6 @@ AdsorptionFCC110Simple::~AdsorptionFCC110Simple(){}
 
 bool AdsorptionFCC110Simple::rules( Site* s )
 {
-
     if ( targetSite && s == targetSite )
         return false;
 
@@ -52,26 +51,48 @@ bool AdsorptionFCC110Simple::rules( Site* s )
 void AdsorptionFCC110Simple::perform( Site* s )
 {
     m_seAffectedSites.clear();
-
     //Set the target site to use it later in the rules
     targetSite = s;
     s->increaseHeight( 2 ); //Since this is FCC
     m_seAffectedSites.insert( s );
-    //Get the neighs in the same level
-//    for ( int i =0; i < s->get1stNeihbors()[ 0 ].size(); i++)
-//       m_seAffectedSites.insert( s->get1stNeihbors()[ 0 ][ i ] );
 
-    //Loop over the sites in the same level
-    //The 4 neighs below are already occupied so we start from 4
-    int iCount = 4;
-    for (Site* s1:s->get1stNeihbors()[ 0 ])
-        if ( s1->getHeight() >= s->getHeight() )
-            iCount++;
-    s->setNeighsNum( iCount );
+    //Get the neighs in the same level and update their number of neighbours by one
+    for ( int i =0; i < targetSite->get1stNeihbors()[ 0 ].size(); i++){
+        mf_setNeighsNum( targetSite->get1stNeihbors()[ 0 ][ i ] );
+
+        // Only in debug
+        if ( targetSite->get1stNeihbors()[ 0 ][ i ]->getNeighsNum() > 8 ) {
+            cout << "Issue with Neigbours " << targetSite->get1stNeihbors()[ 0 ][ i ]->getID() << " Target site: " << targetSite->getID() <<  " " << targetSite->get1stNeihbors()[ 0 ][ i ]->getNeighsNum() <<  endl;
+            cout << " " << targetSite->get1stNeihbors()[ 0 ][ i ]->getNeighsNum() <<  endl;
+            m_pLattice->print();
+            cout << " ************ " << endl;
+            m_pLattice->printNeighNum();
+            exit(0);
+        }
+    }
+
+    //For the target site
+    mf_setNeighsNum(  targetSite );
+
+    if ( targetSite->getNeighsNum() > 8 ) {
+        cout << "Issue with Neigbours " << s->getID() << endl;
+        exit(0);
+    }
 
     //These are the neighbour a level below (which are the same as the level above!)
-    for ( int i =0; i < s->get1stNeihbors()[ -1 ].size(); i++)
+    for ( int i =0; i < targetSite->get1stNeihbors()[ -1 ].size(); i++)
         m_seAffectedSites.insert( s->get1stNeihbors()[ -1 ][ i ] );
+}
+
+// Reconsider this ... Can we do it faster e.g. do not count the neighs everytime ????
+void AdsorptionFCC110Simple::mf_setNeighsNum( Site* s)
+{
+    int iCount = 4;
+    for ( int i =0; i < s->get1stNeihbors()[ 0 ].size(); i++){
+        if (  s->get1stNeihbors()[ 0 ][ i ]->getHeight() >= s->getHeight() )
+            iCount++;
+        s->setNeighsNum( iCount );
+    }
 }
 
 double AdsorptionFCC110Simple::getProbability()

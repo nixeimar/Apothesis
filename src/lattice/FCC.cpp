@@ -993,7 +993,6 @@ int FCC::calculateNeighNum( int id,  const int level )
         break;
     }
 
-
     return neighs;
 }
 
@@ -1026,7 +1025,6 @@ void FCC::writeXYZ( string filename )
     file << iCountAtoms << endl;
     file << endl;
 
-
     for (int i = 0; i < m_lattice->getY(); i++){
         for (int j = 0; j < m_lattice->getX(); j++){
 
@@ -1043,7 +1041,7 @@ void FCC::writeXYZ( string filename )
             else
             {
                 for ( int k = 0; k < m_lattice->getSite( i*m_lattice->getX() + j )->getHeight(); k+=2){
-                    file << "Cu" << " " << x1 << " "  <<  y1  << " " << h1 << endl;
+                    file << "C" << " " << x1 << " "  <<  y1  << " " << h1 << endl;
                     h1 = h1 + a;
                 }
 
@@ -1060,41 +1058,6 @@ void FCC::writeXYZ( string filename )
         x1 = x1 + a;
     }
 
-
-    /*    for (int iheight = 0; iheight < iMaxH; iheight++ ){
-        x = 0;
-        x1 = a/2.;
-
-        for (int i = 0; i < m_lattice->getY(); i++){
-
-            if ( iheight%2  == 0 ){
-
-                for (int j = 0; j < m_lattice->getX(); j+=2){
-
-                    if ( m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() < iMaxH ) continue;
-
-                    file << "Cu" << " " << x << " "  <<  y  << " " << h << endl;
-                    y = y + a;
-                }
-            }
-            else {
-                for (int j = 0; j < m_lattice->getX(); j+=2){
-
-                    if ( m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() < iMaxH ) continue;
-
-                    file << "Cu" << " " << x1 << " "  <<  y1  << " " << h << endl;
-                    y1 = y1 + a;
-                }
-            }
-
-            x = x + a;
-            x1 = x1 + a;
-            y = 0.;
-            y1 = a/2.;
-        }
-
-        h = h + a;
-    }*/
     file.close();
 }
 

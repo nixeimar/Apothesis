@@ -14,43 +14,53 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
-#ifndef ADSORPTION2SITES_H
-#define ADSORPTION2SITES_H
+#ifndef ADSORPTION2SSITES_H
+#define ADSORPTION2SSITES_H
 
 #include "process.h"
+#include "algorithm"
 
 namespace MicroProcesses
 {
 
-class AdsorptionFCC110Simple: public Process
+class AdsorptionFCC1102SSimple: public Process
 {
 public:
-    AdsorptionFCC110Simple();
-    ~AdsorptionFCC110Simple() override;
+    AdsorptionFCC1102SSimple();
+    ~AdsorptionFCC1102SSimple() override;
 
     double getProbability() override;
+
+    /// Have at least one neighbour with below layer 4 neighs occupied and be less height than this site
     bool rules( Site* ) override;
+
+    /// Simple adsorption and then 
     void perform( Site* ) override;
 
     inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
     inline double getActivationEnergy(){ return m_dActNrg; }
 
-    inline void setMolFrac( double val ){ m_dMolFrac = val; }
-    inline double getMolFrac(){ return m_dMolFrac; }
-
-    inline void setTargetSite( Site* site ){ m_Site = site;}
-    inline Site* getTargetSite(){ return m_Site; }
-
-    inline void setSpecies( species_new* s ){ m_Species = s; }
-    inline species_new* getSpecies(){ return m_Species; }
-
-    inline void setEnablingNeighsNum( int n){ m_iEnableNeighs = n; }
-
 private:
-    Site* targetSite;
+    /// The site the this process is performed
+    Site* m_psTargetSite;
 
-    bool mf_isInLowerStep( Site* s );
-    bool mf_isInHigherStep( Site* s );
+    /// Its couple
+    Site* m_psCoupledSite;
+
+    /// The particles that have to be removed
+    list<Site* > m_lToRemove;
+
+    /// The number of neighbours that must have a site below it in order to be able to adsorb
+    int m_iEnableNeighs;
+
+    /// Finds the couple of
+    Site* mf_findCouple();
+
+    /// Check if it has a couple to be used else the site must be removed
+    bool mf_hasCouple( Site* );
+
+    /// Check if the sites below are complete
+    bool mf_isLowLevelComplete( Site* s );
 
     ///The activation energy of the adsoprtion process
     double m_dActNrg;
@@ -58,23 +68,13 @@ private:
     ///The mole fraction of the AdsorptionSimpleCubic process
     double m_dMolFrac;
 
-    ///The site that AdsorptionSimpleCubic will be performed
-    Site* m_Site;
-
-    ///The species that must adsopt
-    species_new* m_Species;
-
     /// A member function to calculate the neighbors of a given site
     int mf_calculateNeighbors(Site*);
-
-    /// The number of neighbors to be checked for enabling the site
-    int m_iEnableNeighs;
 
     /// Count the neights at the same level of a site
     void mf_setNeighsNum( Site* );
 
-
-    REGISTER_PROCESS(AdsorptionFCC110Simple)
+    REGISTER_PROCESS(AdsorptionFCC1102SSimple)
 };
 }
 

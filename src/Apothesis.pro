@@ -23,6 +23,7 @@ HEADERS += apothesis.h \
            IO/io.h \
            processes/adsorption.h \
            processes/adsorption_2sites.h \
+           processes/adsorption_fcc1102s_simple.h \
            processes/adsorption_fcc110_simple.h \
            processes/adsorption_simple_cubic.h \
            aux/random_generator.h \
@@ -52,6 +53,7 @@ HEADERS += apothesis.h \
 SOURCES += apothesis.cpp \
            IO/io.cpp \
            processes/adsorption_2sites.cpp \
+           processes/adsorption_fcc1102s_simple.cpp \
            processes/adsorption_fcc110_simple.cpp \
            processes/adsorption_simple_cubic.cpp \
            aux/mersenne.cpp \
