@@ -128,10 +128,23 @@ void Apothesis::init()
     pos.first->first->init( params );
     pos.first->first->setLattice( pLattice );
     pos.first->first->setRandomGen( pRandomGen );
+    pos.first->first->init( params );
 
-    for ( Site* s:pLattice->getSites() ){
-        if ( pos.first->first->rules( s ) )
-            pos.first->second.insert( s );
+
+/*    for (int i = 4; i < 9; i++){
+        auto des = m_processMap.insert( { FactoryProcess::createProcess("DesorptionFCC110Simple"), emptySet } );
+        string name = "Desortpion " + std::to_string( i );
+        des.first->first->setName( name );
+        params.insert( {"neighs", i } );
+        des.first->first->init( params );
+        params.erase( "neighs" );
+    }*/
+
+    for ( auto &p:m_processMap){
+        for ( Site* s:pLattice->getSites() ){
+            if ( p.first->rules( s ) )
+                p.second.insert( s );
+        }
     }
 
 //    pLattice->print();

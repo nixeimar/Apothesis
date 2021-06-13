@@ -51,6 +51,8 @@ void DesorptionSimpleCubic::perform( Site* s)
 int DesorptionSimpleCubic::mf_calculateNeighbors(Site* s)
 {
 
+    //We do not need to count the neighbours here!!!
+    //We need it only in the rules!
     int neighs = 1;
     for ( Site* neigh:s->getNeighs() ) {
         if ( s->isLowerStep() && neigh->isHigherStep() ){

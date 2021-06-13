@@ -1,0 +1,11 @@
+#ifndef ADSORPTIONFCC1102SMULTI_H
+#define ADSORPTIONFCC1102SMULTI_H
+
+
+class AdsorptionFCC1102SMulti
+{
+public:
+    AdsorptionFCC1102SMulti();
+};
+
+#endif // ADSORPTIONFCC1102SMULTI_H

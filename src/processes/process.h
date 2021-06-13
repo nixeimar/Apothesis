@@ -74,6 +74,9 @@ public:
     /// Returns how many times this process happens
     int getNumEventHappened(){ return m_iHappened; }
 
+    /// Insert a parameter for this process
+    inline void setParameter( string str, any val ) { m_mParams[ str ] = val; }
+
     /// Return a parameter of this process
     any getParameter( string str ) { return m_mParams[ str ]; }
 
