@@ -147,6 +147,18 @@ public:
     /// Returns true if is in higher step (used in the step case only)
     bool isHigherStep() { return m_isHigherStep; }
 
+    /// Testing: adding species formula
+    inline void addSpeciesLabel( string formula ){ m_sLabel = formula; }
+
+    /// Testing: geting species formula
+    inline string getSpeciesLabel(){ return m_sLabel; }
+
+    /// This site is coupled with another one (for dimmer formation)
+    inline void setCoupledSite(Site* s){ m_cSite = s; }
+
+    /// Get the couple site of this site
+    inline Site* getCoupledSite(){ return  m_cSite;}
+
 protected:
     //The lattice type that this site belongs to
     //LatticeType m_LatticeType;
@@ -199,6 +211,12 @@ protected:
 
     /// The number of second neighs
     int m_iSecondNeighs;
+
+    /// Test ...
+    string m_sLabel;
+
+    /// Coupled site
+    Site* m_cSite;
 
 private:
     /// Orientation of the lattice

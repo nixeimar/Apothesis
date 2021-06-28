@@ -19,7 +19,7 @@
 #include "read.h"
 
 FCC::FCC(Apothesis* apothesis):Lattice(apothesis)
-{ 
+{
     //   m_mEventsRegistry.insert("Simple", new LatticeEvent::AdsorptionFCC110Simple() );
 }
 
@@ -1009,7 +1009,7 @@ void FCC::writeXYZ( string filename )
 
     //Get the maximum height
     int iMaxH = 0;
-    for (int i = 0; i < m_lattice->getY(); i++)
+    for (int i = 0; i < m_lattice->getY(); i++){
         for (int j = 0; j < m_lattice->getX(); j++){
             //Count the atoms as you pass ...
 
@@ -1021,6 +1021,7 @@ void FCC::writeXYZ( string filename )
             if ( m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() > iMaxH )
                 iMaxH = m_lattice->getSite( i*m_lattice->getX() + j )->getHeight();
         }
+    }
 
     file << iCountAtoms << endl;
     file << endl;
@@ -1028,10 +1029,10 @@ void FCC::writeXYZ( string filename )
     for (int i = 0; i < m_lattice->getY(); i++){
         for (int j = 0; j < m_lattice->getX(); j++){
 
-            if (  m_lattice->getSite( i*m_lattice->getX() + j )->getHeight()%2  != 0 ){
-
+            if (  m_lattice->getSite( i*m_lattice->getX() + j )->getHeight()%2 != 0 ){
                 for ( int k = 0; k < m_lattice->getSite( i*m_lattice->getX() + j )->getHeight(); k+=2){
                     file << "Cu" << " " << x << " "  <<  y  << " " << h << endl;
+
                     h = h + a;
                 }
 
@@ -1048,11 +1049,10 @@ void FCC::writeXYZ( string filename )
                 h1 = a/2.;
                 y1 = y1 + a;
             }
-
         }
 
         y = 0.;
-        y1 = a/2.;
+        y1 = a/2;
 
         x = x + a;
         x1 = x1 + a;

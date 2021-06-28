@@ -14,8 +14,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
-#ifndef DESORPTIONFCC110SIMPLE_H
-#define DESORPTIONFCC110SIMPLE_H
+#ifndef DESORPTIONFCC110MULTI_H
+#define DESORPTIONFCC110MULTI_H
 
 #include "process.h"
 #include <iostream>
@@ -23,11 +23,11 @@
 namespace MicroProcesses
 {
 
-class DesorptionFCC110Simple: public Process
+class DesorptionFCC110Multi: public Process
 {
 public:
-    DesorptionFCC110Simple();
-    ~DesorptionFCC110Simple() override;
+    DesorptionFCC110Multi();
+    ~DesorptionFCC110Multi() override;
 
     double getProbability() override;
     bool rules( Site* ) override;
@@ -74,7 +74,7 @@ private:
     void mf_setNeighsNum( Site* );
 
 
-    REGISTER_PROCESS(DesorptionFCC110Simple)
+    REGISTER_PROCESS(DesorptionFCC110Multi)
 };
 }
 

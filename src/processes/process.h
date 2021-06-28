@@ -53,6 +53,7 @@ public:
     virtual bool rules( Site* ) = 0;
 
     /// Initialization for this process (e.g. temperature, pressure, mole fraction etc.)
+    /// This must be for every process
     void init( map<string, any> params ){ m_mParams = params; }
 
     /// Returns the sites that are affected by this process including the site that this process is performed.

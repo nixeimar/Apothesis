@@ -14,8 +14,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
-#ifndef ADSORPTION2SSITES_H
-#define ADSORPTION2SSITES_H
+#ifndef ADSORPTION2SSIMPLE_H
+#define ADSORPTION2SSIMPLE_H
 
 #include "process.h"
 #include "algorithm"
