@@ -28,19 +28,22 @@ DesorptionFCC110Multi::~DesorptionFCC110Multi(){}
 // It can always desorpts if it is adsorbed ...
 bool DesorptionFCC110Multi::rules( Site* s )
 {
-    if ( s->getSpeciesLabel() == "HAMD" && mf_countNeighs( s ) == any_cast<int>(m_mParams["neighs"] ) )
+    if ( s->getLabel() == "HAMD" )
         return true;
     return false;
 }
 
 void DesorptionFCC110Multi::perform( Site* s )
 {
-    m_seAffectedSites.clear();
+    // Increase the height
+    s->increaseHeight( 2 );
+    s->getCoupledSite()->increaseHeight( 2 );
 
     //Here we assume that the HAMD just desorbed from the site and a Cu atom added in the surface
-    s->increaseHeight( 2 );
+    s->setLabel("Cu");
+    s->getCoupledSite()->setLabel("Cu");
 
-    s->addSpeciesLabel("NA");
+    m_seAffectedSites.clear();
 
     for ( int i =0; i < s->get1stNeihbors()[ -1 ].size(); i++)
         m_seAffectedSites.insert( s->get1stNeihbors()[ -1 ][ i ] );
@@ -48,41 +51,43 @@ void DesorptionFCC110Multi::perform( Site* s )
     //In the same level the neighbors must be removed if for some reason there is no couple
     for ( int i =0; i < s->get1stNeihbors()[ 0 ].size(); i++)
         m_seAffectedSites.insert( s->get1stNeihbors()[ 0 ][ i ] );
+
+    for ( int i =0; i < s->getCoupledSite()->get1stNeihbors()[ -1 ].size(); i++)
+        m_seAffectedSites.insert( s->getCoupledSite()->get1stNeihbors()[ -1 ][ i ] );
+
+    //In the same level the neighbors must be removed if for some reason there is no couple
+    for ( int i =0; i < s->getCoupledSite()->get1stNeihbors()[ 0 ].size(); i++)
+        m_seAffectedSites.insert( s->getCoupledSite()->get1stNeihbors()[ 0 ][ i ] );
+
+    //First remove the coupled site
+    s->getCoupledSite()->removeCouple();
+
+    //Then the coupled coupled ... else it crashes (as expected!)  ...
+    s->removeCouple();
 }
 
 int DesorptionFCC110Multi::mf_countNeighs( Site* s)
 {
     int iCount = 4;
     for ( int i =0; i < s->get1stNeihbors()[ 0 ].size(); i++)
-        if (  s->get1stNeihbors()[ 0 ][ i ]->getHeight() >= s->getHeight() )
+        if (  s->get1stNeihbors()[ 0 ][ i ]->getLabel() != "HAMD" && s->getHeight() <= s->get1stNeihbors()[ 0 ][ i ]->getHeight()  )
             iCount++;
 
     return iCount;
 }
 
-void DesorptionFCC110Multi::mf_setNeighsNum( Site* s )
-{
-    int iCount = 4;
-    for ( int i =0; i < s->get1stNeihbors()[ 0 ].size(); i++){
-        if (  s->get1stNeihbors()[ 0 ][ i ]->getHeight() >= s->getHeight() )
-            iCount++;
-        s->setNeighsNum( iCount );
-    }
-}
-
 double DesorptionFCC110Multi::getProbability()
 {
     //These must trenafered in the global definitions
-    double Na = 6.0221417930e+23;		// Avogadro's number [1/mol]
-    double P = 101325;					// [Pa]
+    /*--- Taken from  Lam and Vlachos (2000)PHYSICAL REVIEW B, VOLUME 64, 035401 - DOI: 10.1103/PhysRevB.64.035401 ---*/
+    double Na = 6.0221417930e+23;				// Avogadro's number [1/mol]
     double T = any_cast<double>(m_mParams["T"]); //500;						// [K]
     double k = any_cast<double>(m_mParams["k"]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
-    double s0 = any_cast<double>(m_mParams["s0"]); //0.1;
-    double C_tot = any_cast<double>(m_mParams["C_tot"]);			// [sites/m^2] Vlachos code says [moles sites/m^2]
-    double m = 32e-3/Na;				// [kg/mol] this is the molecular wei
-    double y = 2.0e-4;					// Mole fraction of the precursor on the wafer
+    double E = 90000/Na;  //71128/Na;   //(7.14e+4)/Na;			// [j] -> 17 kcal
+    double v0 = 1.0e+13;				// [s^-1]
+    /*--------------------------------------------------*/
 
-    return s0*y*P/(C_tot*sqrt(2.0e0*3.14159265*m*k*T) );
+    return v0*exp(-E/(k*T));			//DesorptionSimpleCubic 1 neigh
 }
 
 }

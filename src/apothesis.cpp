@@ -103,11 +103,11 @@ void Apothesis::init()
     //To Deifilia: This must be created for each process in order to pass
     //the parameters from the input file to the porcess
     map<string, any> params;
-    params.insert( {"T", 500.} );
+    params.insert( {"T", 423.} );
     params.insert( {"P", 101325.} );
-    params.insert( {"f", 2.0e-3} );
+    params.insert( {"f", 4.2e-5} );
     params.insert( {"C_tot", 1.0e+19} );
-    params.insert( {"s0", 0.1} );
+    params.insert( {"s0", 0.9} );
     params.insert( {"k", 1.3806503e-23} );
     params.insert( {"Na", 6.0221417930e+23} );
 
@@ -130,19 +130,19 @@ void Apothesis::init()
     pos.first->first->setRandomGen( pRandomGen );
     pos.first->first->init( params );
 
-/*    for (int i = 4; i < 9; i++){
+//    for (int i = 4; i < 9; i++){
         auto des = m_processMap.insert( { FactoryProcess::createProcess("DesorptionFCC110Multi"), emptySet } );
-        string name = "Desortpion " + std::to_string( i );
+        string name = "Desorption HAMD"; //+ std::to_string( i );
         des.first->first->setName( name );
-        params.insert( {"neighs", i } );
-        cout << any_cast<int>(params["neighs"]) << endl;
+  //      params.insert( {"neighs", i } );
         des.first->first->init( params );
-        params.erase( "neighs" );
-    }*/
+   //     params.erase( "neighs" );
+ //   }
 
     for ( auto &p:m_processMap){
+        cout << p.first->getName() << endl;
         for ( Site* s:pLattice->getSites() ){
-            s->addSpeciesLabel("NA"); // For not occupied species
+            s->setLabel("Cu"); // For not occupied species
             if ( p.first->rules( s ) )
                 p.second.insert( s );
         }
@@ -164,7 +164,7 @@ void Apothesis::exec()
     for (pair<Process*, set< Site* > > p:m_processMap)
         m_dRTot += p.first->getProbability()*(double)p.second.size();
 
-    m_dEndTime = 0.01;
+    m_dEndTime = 0.1;
 
     pIO->writeInOutput( "\n" );
     pIO->writeInOutput( "********************************************************************" );
@@ -191,8 +191,7 @@ void Apothesis::exec()
         output += std::to_string( (double)p.second.size()/(double)pLattice->getSize() ) + '\t';
     pIO->writeInOutput( output );
 
-
-    pLattice->writeXYZ( "lattice.xyz" );
+    pLattice->writeXYZ( "initial.xzy" );
 
     while ( m_dProcTime <= m_dEndTime ){
         //1. Get a random numbers
@@ -201,6 +200,7 @@ void Apothesis::exec()
 
         for ( auto &p:m_processMap){
             m_dProcRate = p.first->getProbability()*p.second.size();
+
             m_dSum += m_dProcRate/m_dRTot;
 
             //2. Pick a process according to the rates
@@ -211,12 +211,13 @@ void Apothesis::exec()
                 //3. From this process pick the random site with id and perform it:
                 Site* s = *next( p.second.begin(), m_iSiteNum );
 
+                cout << "Performing: " << p.first->getName() << endl;
                 p.first->perform( s );
                 tempSite = s;
                 //Count the event for this class
                 p.first->eventHappened();
 
-                // Check if an affected site must enter to a class or not
+                // Check if an affected site must enter tob a class or not
                 for (Site* affectedSite:p.first->getAffectedSites() ){
                     //Erase the affected site from the processes
                     for (auto &p2:m_processMap){
@@ -228,16 +229,9 @@ void Apothesis::exec()
                             }
                             else
                                 p2.second.erase( affectedSite );
-
-                            if ( p2.second.empty() && p2.first->getName() == "AdsorptionFCC1102SSimple") {
-                                cout << "No place to adsorb! " << endl;
-                                exit(0);
-                            }
-
                         }
                     }
                 }
-
 
                 //4. Re-compute the processes rates and re-compute Rtot (see ppt).
                 m_dRTot = 0.0;
@@ -254,9 +248,10 @@ void Apothesis::exec()
         m_dProcTime += m_dt;
         timeToWrite += m_dt;
 
-        cout << m_dProcTime << endl;
+        string latName = "lattice_" + to_string( m_dProcTime )+".xyz";
+        pLattice->writeXYZ( latName );
 
-        pLattice->writeXYZ( "test.xzy" );
+        cout << m_dProcTime << endl;
 
         //Write the lattice heights
         iTimeStep++;
@@ -281,6 +276,8 @@ void Apothesis::exec()
             timeToWrite = 0.0;
         }
     }
+
+    pLattice->print();
 }
 
 void Apothesis::logSuccessfulRead(bool read, string parameter)

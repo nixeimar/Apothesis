@@ -1030,9 +1030,25 @@ void FCC::writeXYZ( string filename )
         for (int j = 0; j < m_lattice->getX(); j++){
 
             if (  m_lattice->getSite( i*m_lattice->getX() + j )->getHeight()%2 != 0 ){
-                for ( int k = 0; k < m_lattice->getSite( i*m_lattice->getX() + j )->getHeight(); k+=2){
-                    file << "Cu" << " " << x << " "  <<  y  << " " << h << endl;
 
+                for ( int k = 0; k < m_lattice->getSite( i*m_lattice->getX() + j )->getHeight(); k+=2){
+
+                    if ( m_lattice->getSite(i*m_lattice->getX() + j)->getLabel() == "HAMD" ) {
+                        if ( k != m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() - 2 )
+                            file << "Cu" << " " << x << " "  <<  y  << " " << h << endl;
+                        else if ( k == m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() - 2 )
+                            file << "O" << " " << x << " "  <<  y  << " " << h << endl;
+                    }
+                    else
+                        file << "Cu" << " " << x << " "  <<  y  << " " << h << endl;
+
+/*                    if ( k != m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() - 2 )
+                        file << "Cu" << " " << x << " "  <<  y  << " " << h << endl;
+                    else
+                        if ( m_lattice->getSite(i*m_lattice->getX() + j)->getLabel() == "HAMD")
+                            file << "O" << " " << x << " "  <<  y  << " " << h << endl;
+                        else
+                            file << "Cu" << " " << x << " "  <<  y  << " " << h << endl;*/
                     h = h + a;
                 }
 
@@ -1042,7 +1058,25 @@ void FCC::writeXYZ( string filename )
             else
             {
                 for ( int k = 0; k < m_lattice->getSite( i*m_lattice->getX() + j )->getHeight(); k+=2){
-                    file << "C" << " " << x1 << " "  <<  y1  << " " << h1 << endl;
+//                    file << "C" << " " << x1 << " "  <<  y1  << " " << h1 << endl;
+
+                    if ( m_lattice->getSite(i*m_lattice->getX() + j)->getLabel() == "HAMD" ) {
+                        if ( k != m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() - 2 )
+                            file << "C" << " " << x1 << " "  <<  y1  << " " << h1 << endl;
+                        else if ( k == m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() - 2 )
+                            file << "O" << " " << x1 << " "  <<  y1  << " " << h1 << endl;
+                    }
+                    else
+                        file << "C" << " " << x1 << " "  <<  y1  << " " << h1 << endl;
+
+
+/*                    if ( k != m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() -2 )
+                        file << "C" << " " << x1 << " "  <<  y1  << " " << h1 << endl;
+                    else
+                        if ( m_lattice->getSite(i*m_lattice->getX() + j)->getLabel() == "HAMD")
+                            file << "O" << " " << x1 << " "  <<  y1  << " " << h1 << endl;
+                        else
+                            file << "C" << " " << x1 << " "  <<  y1  << " " << h1 << endl;*/
                     h1 = h1 + a;
                 }
 

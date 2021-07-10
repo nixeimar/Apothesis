@@ -148,16 +148,19 @@ public:
     bool isHigherStep() { return m_isHigherStep; }
 
     /// Testing: adding species formula
-    inline void addSpeciesLabel( string formula ){ m_sLabel = formula; }
+    inline void setLabel( string formula ){ m_sLabel = formula; }
 
     /// Testing: geting species formula
-    inline string getSpeciesLabel(){ return m_sLabel; }
+    inline string getLabel(){ return m_sLabel; }
 
     /// This site is coupled with another one (for dimmer formation)
-    inline void setCoupledSite(Site* s){ m_cSite = s; }
+    inline void setCoupledSite(Site* s){ m_pCoupledSite = s; }
 
     /// Get the couple site of this site
-    inline Site* getCoupledSite(){ return  m_cSite;}
+    inline Site* getCoupledSite(){ return  m_pCoupledSite;}
+
+    /// Remove the coupled site
+    inline void removeCouple(){ m_pCoupledSite = nullptr; }
 
 protected:
     //The lattice type that this site belongs to
@@ -216,7 +219,7 @@ protected:
     string m_sLabel;
 
     /// Coupled site
-    Site* m_cSite;
+    Site* m_pCoupledSite;
 
 private:
     /// Orientation of the lattice

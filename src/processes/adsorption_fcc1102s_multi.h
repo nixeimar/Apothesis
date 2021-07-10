@@ -41,20 +41,11 @@ public:
     inline double getActivationEnergy(){ return m_dActNrg; }
 
 private:
-    /// The site the this process is performed
-    Site* m_psTargetSite;
-
-    /// Its couple
-    Site* m_psCoupledSite;
-
     /// The particles that have to be removed
     list<Site* > m_lToRemove;
 
     /// The number of neighbours that must have a site below it in order to be able to adsorb
     int m_iEnableNeighs;
-
-    /// Finds the couple of
-    Site* mf_findCouple();
 
     /// Check if it has a couple to be used else the site must be removed
     bool mf_hasCouple( Site* );
@@ -71,8 +62,8 @@ private:
     /// A member function to calculate the neighbors of a given site
     int mf_calculateNeighbors(Site*);
 
-    /// Count the neights at the same level of a site
-    void mf_setNeighsNum( Site* );
+    /// Find the potential couples of this site in order to select one of them (unbiased
+    vector<Site*> mf_findPotCouples( Site* s);
 
     REGISTER_PROCESS(AdsortpionFCC1102SMulti)
 };

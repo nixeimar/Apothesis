@@ -70,9 +70,6 @@ private:
     /// The number of neighbors to be checked for enabling the site
     int m_iEnableNeighs;
 
-    /// Count the neights at the same level of a site
-    void mf_setNeighsNum( Site* );
-
 
     REGISTER_PROCESS(DesorptionFCC110Multi)
 };
