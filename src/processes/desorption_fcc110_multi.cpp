@@ -36,8 +36,8 @@ bool DesorptionFCC110Multi::rules( Site* s )
 void DesorptionFCC110Multi::perform( Site* s )
 {
     // Increase the height
-    s->increaseHeight( 2 );
-    s->getCoupledSite()->increaseHeight( 2 );
+//    s->increaseHeight( 2 );
+//    s->getCoupledSite()->increaseHeight( 2 );
 
     //Here we assume that the HAMD just desorbed from the site and a Cu atom added in the surface
     s->setLabel("Cu");

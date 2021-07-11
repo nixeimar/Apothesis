@@ -164,7 +164,7 @@ void Apothesis::exec()
     for (pair<Process*, set< Site* > > p:m_processMap)
         m_dRTot += p.first->getProbability()*(double)p.second.size();
 
-    m_dEndTime = 0.1;
+    m_dEndTime = 0.5;
 
     pIO->writeInOutput( "\n" );
     pIO->writeInOutput( "********************************************************************" );

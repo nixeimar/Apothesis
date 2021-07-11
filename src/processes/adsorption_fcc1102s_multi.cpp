@@ -31,18 +31,24 @@ AdsortpionFCC1102SMulti::~AdsortpionFCC1102SMulti(){}
 
 bool AdsortpionFCC1102SMulti::rules( Site* s )
 {
+    if ( s->getLabel() != "Cu")
+        return false;
+
     if ( s->getCoupledSite() )
         return true;
 
-    vector<Site* > sites = mf_findPotCouples( s );
+    if ( mf_isLowLevelComplete(s) )
+    {
+        vector<Site* > sites = mf_findPotCouples( s );
 
-    if ( !sites.empty() ) {
-        Site* coupledSite = sites[ rand() % sites.size() ];
+        if ( !sites.empty() ) {
+            Site* coupledSite = sites[ rand() % sites.size() ];
 
-        if ( coupledSite ) {
-            s->setCoupledSite( coupledSite );
-            coupledSite->setCoupledSite( s );
-            return true;
+            if ( coupledSite ) {
+                s->setCoupledSite( coupledSite );
+                coupledSite->setCoupledSite( s );
+                return true;
+            }
         }
     }
 
@@ -53,11 +59,14 @@ void AdsortpionFCC1102SMulti::perform( Site* s )
 {
     m_seAffectedSites.clear();
 
-    m_seAffectedSites.insert( s );
-    m_seAffectedSites.insert( s->getCoupledSite() );
-
     s->setLabel("HAMD");
     s->getCoupledSite()->setLabel("HAMD");
+
+    s->increaseHeight( 2 );
+    s->getCoupledSite()->increaseHeight( 2 );
+
+    m_seAffectedSites.insert( s );
+    m_seAffectedSites.insert( s->getCoupledSite() );
 
     //Mark the affected sites
     for ( int i =0; i < s->get1stNeihbors()[ -1 ].size(); i++)
@@ -72,44 +81,6 @@ void AdsortpionFCC1102SMulti::perform( Site* s )
     for ( int i =0; i < s->getCoupledSite()->get1stNeihbors()[ 0 ].size(); i++)
         m_seAffectedSites.insert( s->getCoupledSite()->get1stNeihbors()[ 0 ][ i ] );
 }
-
-/*bool AdsortpionFCC1102SMulti::rules( Site* s )
-{
-    if ( s->getHeight() < s->get1stNeihbors()[ -1 ][ 0 ]->getHeight() &&
-         mf_isLowLevelComplete( s ) &&  mf_hasCouple( s ) && s->getLabel().compare( "Cu" ) == 0 )
-        return true;
-    return false;
-}*/
-
-/*void AdsortpionFCC1102SMulti::perform( Site* s )
-{
-    m_seAffectedSites.clear();
-
-    Site* coupledSite = mf_findPotCouples( s )[ rand() % mf_findPotCouples( s ).size()];
-
-    // A coupled site has its couple ...
-    s->setCoupledSite( coupledSite );
-    coupledSite->setCoupledSite( s );
-
-    m_seAffectedSites.insert( s );
-    m_seAffectedSites.insert( coupledSite );
-
-    s->setLabel("HAMD");
-    coupledSite->setLabel("HAMD");
-
-    //Mark the affected sites
-    for ( int i =0; i < s->get1stNeihbors()[ -1 ].size(); i++)
-        m_seAffectedSites.insert( s->get1stNeihbors()[ -1 ][ i ] );
-
-    for ( int i =0; i < s->get1stNeihbors()[ 0 ].size(); i++)
-        m_seAffectedSites.insert( s->get1stNeihbors()[ 0 ][ i ] );
-
-    for ( int i =0; i < coupledSite->get1stNeihbors()[ -1 ].size(); i++)
-        m_seAffectedSites.insert( coupledSite->get1stNeihbors()[ -1 ][ i ] );
-
-    for ( int i =0; i < coupledSite->get1stNeihbors()[ 0 ].size(); i++)
-        m_seAffectedSites.insert( coupledSite->get1stNeihbors()[ 0 ][ i ] );
-}*/
 
 bool AdsortpionFCC1102SMulti::mf_hasCouple( Site* s )
 {
@@ -135,7 +106,11 @@ bool AdsortpionFCC1102SMulti::mf_isLowLevelComplete( Site* s )
     if ( s->get1stNeihbors()[ -1 ][ 2 ]->getHeight() == s->get1stNeihbors()[ -1 ][ 3 ]->getHeight() )
         iCount++;
 
-    if ( iCount == m_iEnableNeighs && s->getHeight() <  s->get1stNeihbors()[ -1 ][ 0 ]->getHeight() )
+    if  ( s->get1stNeihbors()[ -1 ][ 0 ]->getLabel() != "Cu" || s->get1stNeihbors()[ -1 ][ 1 ]->getLabel() != "Cu"
+          || s->get1stNeihbors()[ -1 ][ 2 ]->getLabel() != "Cu" || s->get1stNeihbors()[ -1 ][ 3 ]->getLabel() != "Cu")
+        return false;
+
+    if ( iCount == m_iEnableNeighs && s->getHeight() < s->get1stNeihbors()[ -1 ][ 0 ]->getHeight() &&  s->getLabel() == "Cu")
         return true;
 
     return false;
@@ -145,7 +120,7 @@ vector<Site* > AdsortpionFCC1102SMulti::mf_findPotCouples( Site* s)
 {
     vector<Site* > sites;
     for (int i =0; i <  s->get1stNeihbors()[ 0 ].size(); i++)
-        if ( !s->get1stNeihbors()[ 0 ][i]->getCoupledSite() && s->get1stNeihbors()[ 0 ][ i ]->getLabel() == "Cu"
+        if ( !s->getCoupledSite() && !s->get1stNeihbors()[ 0 ][i]->getCoupledSite() && s->get1stNeihbors()[ 0 ][ i ]->getLabel() == "Cu"
              && mf_isLowLevelComplete( s->get1stNeihbors()[ 0 ][ i ] ) && s->get1stNeihbors()[ 0][ i ]->getHeight() == s->getHeight() )
             sites.push_back( s->get1stNeihbors()[ 0][ i ] );
     return sites;
