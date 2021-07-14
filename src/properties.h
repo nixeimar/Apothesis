@@ -40,6 +40,7 @@ public:
     inline double getRoughness(){ return m_dRoughness; }
     double classCoverage();
 
+    double getMeanDH();
 
 private:
     //The roughness of the surface

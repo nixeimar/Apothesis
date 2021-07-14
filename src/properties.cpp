@@ -44,4 +44,20 @@ double Properties::eventCountingGrowthRate( int adsorptionCounts, int desortionC
     return (ra-rb)/(double)m_lattice->getSize(); //growth rate in [ML/s]
 }
 
+double Properties::getMeanDH()
+{
+    double mean = 0.0, sum = 0.0 ;
+    int iCount = 0;
+    for (unsigned int i=0; i< m_lattice->getSize(); i++){
+        if ( m_lattice->getSite( i )->getLabel() == "Cu"){
+            sum += m_lattice->getSite( i )->getHeight();
+            iCount++;
+        }
+    }
+
+    mean = sum/iCount;
+
+    return mean;
+}
+
 }

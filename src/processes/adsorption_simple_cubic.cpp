@@ -139,6 +139,7 @@ double AdsorptionSimpleCubic::getProbability(){
     double k = any_cast<double>(m_mParams["k"]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
     double s0 = any_cast<double>(m_mParams["s0"]); //0.1;
     double C_tot = any_cast<double>(m_mParams["C_tot"]);			// [sites/m^2] Vlachos code says [moles sites/m^2]
+    // Ctot for copper: 2e-19 (see
     double m = 32e-3/Na;				// [kg/mol] this is the molecular weight
     double y = 2.0e-4;					// Mole fraction of the precursor on the wafer
 

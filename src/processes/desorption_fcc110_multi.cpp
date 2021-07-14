@@ -83,11 +83,11 @@ double DesorptionFCC110Multi::getProbability()
     double Na = 6.0221417930e+23;				// Avogadro's number [1/mol]
     double T = any_cast<double>(m_mParams["T"]); //500;						// [K]
     double k = any_cast<double>(m_mParams["k"]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
-    double E = 90000/Na;  //71128/Na;   //(7.14e+4)/Na;			// [j] -> 17 kcal
+    double E = 170000/Na; //170000/Na; //170000/Na; //170000/Na;  //71128/Na;   //(7.14e+4)/Na;			// [j] -> 17 kcal
     double v0 = 1.0e+13;				// [s^-1]
     /*--------------------------------------------------*/
 
-    return v0*exp(-E/(k*T));			//DesorptionSimpleCubic 1 neigh
+    return 0; //v0*exp(-E/(k*T));
 }
 
 }

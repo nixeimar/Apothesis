@@ -59,8 +59,8 @@ void AdsortpionFCC1102SMulti::perform( Site* s )
 {
     m_seAffectedSites.clear();
 
-    s->setLabel("HAMD");
-    s->getCoupledSite()->setLabel("HAMD");
+    s->setLabel("Cu");
+    s->getCoupledSite()->setLabel("Cu");
 
     s->increaseHeight( 2 );
     s->getCoupledSite()->increaseHeight( 2 );
@@ -136,9 +136,10 @@ double AdsortpionFCC1102SMulti::getProbability()
     double s0 = any_cast<double>(m_mParams["s0"]); //0.1;
     double C_tot = any_cast<double>(m_mParams["C_tot"]); // [sites/m^2] Vlachos code says [moles sites/m^2]
     double m = 0.4091/Na; //For CuAMD 409 kg/kmol	// [kg/mol] this is the molecular weight
-    double y = 4.0e-5;					// Mole fraction of the precursor on the wafer
+    double y = any_cast<double>(m_mParams["f"]);					// Mole fraction of the precursor on the wafer
 
-    return s0*y*P/(C_tot*sqrt(2.0e0*3.14159265*m*k*T) );
+//    return s0*y*P/(C_tot*sqrt(2.0e0*3.14159265*m*k*T) );
+    return s0*y*P/(C_tot*sqrt(2.0e0*3.14159265*m*k*T) ); //*exp(384/(Na*k*T));
 }
 
 }
