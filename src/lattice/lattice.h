@@ -119,7 +119,9 @@ class Lattice: public Pointers
     /// Write the lattice in XYZ format in a filename
     virtual void writeXYZ( string filename );
 
-  protected:
+    virtual void writeLatticeHeights( double, int );
+
+protected:
     /// The size of the lattice in the x-dimension.
     int m_iSizeX;
 

@@ -133,12 +133,21 @@ void BCC::setStepInfo(int sizeX, int sizeY, int sizeZ)
 void BCC::mf_neigh()
 {
     /* All except the boundaries */
-    for (int i = 1; i < m_iSizeY - 1; i++){
-        for (int j = 1; j < m_iSizeX - 1; j++){
+    for (int i = 1; i < m_iSizeY - 1; i++)
+    {
+        for (int j = 1; j < m_iSizeX - 1; j++)
+        {
             m_vSites[i * m_iSizeX + j]->setNeigh(m_vSites[(i - 1) * m_iSizeX + j]);
+            m_vSites[i * m_iSizeX + j]->setNeighPosition(m_vSites[(i - 1) * m_iSizeX + j], Site::NORTH);
+
             m_vSites[i * m_iSizeX + j]->setNeigh(m_vSites[(i + 1) * m_iSizeX + j]);
+            m_vSites[i * m_iSizeX + j]->setNeighPosition(m_vSites[(i + 1) * m_iSizeX + j], Site::SOUTH);
+
             m_vSites[i * m_iSizeX + j]->setNeigh(m_vSites[i * m_iSizeX + j + 1]);
+            m_vSites[i * m_iSizeX + j]->setNeighPosition(m_vSites[i * m_iSizeX + j + 1], Site::EAST);
+
             m_vSites[i * m_iSizeX + j]->setNeigh(m_vSites[i * m_iSizeX + j - 1]);
+            m_vSites[i * m_iSizeX + j]->setNeighPosition(m_vSites[i * m_iSizeX + j - 1], Site::WEST);
         }
     }
 
@@ -148,69 +157,131 @@ void BCC::mf_neigh()
     int iForthCorner = m_iSizeX * m_iSizeY - 1;
 
     /*First row */
-    for (int j = iFirstCorner; j <= iSecondCorner; j++){
-        if (j != 0 && j != m_iSizeX - 1){
+    for (int j = iFirstCorner; j <= iSecondCorner; j++)
+    {
+        if (j != 0 && j != m_iSizeX - 1)
+        {
             m_vSites[j]->setNeigh(m_vSites[j - 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[j - 1], Site::WEST);
+
             m_vSites[j]->setNeigh(m_vSites[j + 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[j + 1], Site::EAST);
+
             m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX]);
+            m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX], Site::SOUTH);
+
             m_vSites[j]->setNeigh(m_vSites[iThirdCorner + j]);
+            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner + j], Site::NORTH);
         }
-        else if (j == iFirstCorner){
+        else if (j == iFirstCorner)
+        {
             m_vSites[j]->setNeigh(m_vSites[iSecondCorner]);
+            m_vSites[j]->setNeighPosition(m_vSites[iSecondCorner], Site::WEST);
+
             m_vSites[j]->setNeigh(m_vSites[1]);
+            m_vSites[j]->setNeighPosition(m_vSites[1], Site::EAST);
+
             m_vSites[j]->setNeigh(m_vSites[iSecondCorner + 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[iSecondCorner + 1], Site::SOUTH);
+
             m_vSites[j]->setNeigh(m_vSites[iThirdCorner]);
+            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner], Site::NORTH);
         }
-        else if (j == iSecondCorner){
+        else if (j == iSecondCorner)
+        {
             m_vSites[j]->setNeigh(m_vSites[j - 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[j - 1], Site::WEST);
+
             m_vSites[j]->setNeigh(m_vSites[0]);
+            m_vSites[j]->setNeighPosition(m_vSites[0], Site::EAST);
+
             m_vSites[j]->setNeigh(m_vSites[2 * m_iSizeX - 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[2 * m_iSizeX - 1], Site::SOUTH);
+
             m_vSites[j]->setNeigh(m_vSites[iForthCorner]);
+            m_vSites[j]->setNeighPosition(m_vSites[iForthCorner], Site::NORTH);
         }
     }
 
     /*Last row */
     int iPos = 1;
-    for (int j = iThirdCorner; j <= iForthCorner; j++){
-        if (j != iThirdCorner && j != iForthCorner){
+    for (int j = iThirdCorner; j <= iForthCorner; j++)
+    {
+        if (j != iThirdCorner && j != iForthCorner)
+        {
             m_vSites[j]->setNeigh(m_vSites[j - 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[j - 1], Site::WEST);
+
             m_vSites[j]->setNeigh(m_vSites[j + 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[j + 1], Site::EAST);
+
             m_vSites[j]->setNeigh(m_vSites[iFirstCorner + iPos]);
+            m_vSites[j]->setNeighPosition(m_vSites[iFirstCorner + iPos], Site::SOUTH);
+
             m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX]);
+            m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX], Site::NORTH);
             iPos++;
         }
-        else if (j == iThirdCorner){
+        else if (j == iThirdCorner)
+        {
             m_vSites[j]->setNeigh(m_vSites[iForthCorner]);
+            m_vSites[j]->setNeighPosition(m_vSites[iForthCorner], Site::WEST);
+
             m_vSites[j]->setNeigh(m_vSites[iThirdCorner + 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner + 1], Site::EAST);
+
             m_vSites[j]->setNeigh(m_vSites[iFirstCorner]);
+            m_vSites[j]->setNeighPosition(m_vSites[iFirstCorner], Site::SOUTH);
+
             m_vSites[j]->setNeigh(m_vSites[iThirdCorner - m_iSizeX]);
+            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner - m_iSizeX], Site::NORTH);
         }
-        else if (j == iForthCorner){
+        else if (j == iForthCorner)
+        {
             m_vSites[j]->setNeigh(m_vSites[iForthCorner - 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[iForthCorner - 1], Site::WEST);
+
             m_vSites[j]->setNeigh(m_vSites[iThirdCorner]);
+            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner], Site::EAST);
+
             m_vSites[j]->setNeigh(m_vSites[iSecondCorner]);
+            m_vSites[j]->setNeighPosition(m_vSites[iSecondCorner], Site::SOUTH);
+
             m_vSites[j]->setNeigh(m_vSites[iThirdCorner - 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner - 1], Site::NORTH);
         }
     }
 
     /* First column */
-    for (int j = iFirstCorner + m_iSizeX; j < iThirdCorner; j += m_iSizeX){
+    for (int j = iFirstCorner + m_iSizeX; j < iThirdCorner; j += m_iSizeX)
+    {
         m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX - 1]);
+        m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX - 1], Site::WEST);
+
         m_vSites[j]->setNeigh(m_vSites[j + 1]);
+        m_vSites[j]->setNeighPosition(m_vSites[j + 1], Site::EAST);
+
         m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX]);
+        m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX], Site::SOUTH);
+
         m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX]);
+        m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX], Site::NORTH);
     }
 
     /* Last column */
-    for (int j = iSecondCorner + m_iSizeX; j < iForthCorner; j += m_iSizeX){
+    for (int j = iSecondCorner + m_iSizeX; j < iForthCorner; j += m_iSizeX)
+    {
         m_vSites[j]->setNeigh(m_vSites[j - 1]);
-//        m_vSites[j]->setNeighPosition( m_vSites[j - 1], Site::EAST );
+        m_vSites[j]->setNeighPosition(m_vSites[j - 1], Site::WEST);
+
         m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX + 1]);
-  //      m_vSites[j]->setNeighPosition( m_vSites[j - m_iSizeX + 1], Site::WEST );
+        m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX + 1], Site::EAST);
+
         m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX]);
-    //    m_vSites[j]->setNeighPosition( m_vSites[j + m_iSizeX], Site::SOUTH );
+        m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX], Site::SOUTH);
+
         m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX]);
-      //  m_vSites[j]->setNeighPosition( m_vSites[j - m_iSizeX], Site::NORTH );
+        m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX], Site::NORTH);
     }
 
     /*	int iCount = 0;
@@ -228,8 +299,6 @@ void BCC::mf_neigh()
     }*/
 }
 
-//Site* BCC::getSite(int id) { return m_vSites[ id ]; }
-
 void BCC::check()
 {
     cout << "Checking lattice..." << endl;
@@ -242,6 +311,26 @@ void BCC::check()
     cout << "S:" << getSite(test)->getNeighPosition(Site::SOUTH)->getID() << endl;
 }
 
+
+void BCC::writeLatticeHeights( double time, int step )
+{
+    std::ofstream file("Lattice_" + to_string(step) );
+
+    for (int i = 0; i < m_iSizeY; i++){
+        for (int j = 0; j < m_iSizeX; j++)
+            file << m_vSites[ i*m_iSizeX + j ]->getHeight() << " ";
+        file  << endl;
+    }
+
+
+    for (int i = 0; i < m_iSizeY; i++){
+        for (int j = 0; j < m_iSizeX; j++)
+            file << m_vSites[ i*m_iSizeX + j ]->getLabel() + to_string( m_vSites[ i*m_iSizeX + j ]->getID() )  << "\t" << "( " << m_vSites[ i*m_iSizeX + j ]->getHeight() << " ) " ;
+        file  << endl;
+    }
+
+    file.close();
+}
 
 int BCC::calculateNeighNum( int id )
 {
@@ -256,157 +345,3 @@ int BCC::calculateNeighNum( int id )
     return neighs;
 }
 
-// We have to define the processes e.g. Adsorption Simple, Asorption MultipleSites, Diffusion 1s Neighbors,
-// Desorption 1st Neighbors, Reaction Decomposition etc...
-
-/*void BCC::adsorp( int siteID, species_new* chemSpec )
-{
-    // >--------  For Lam & Vlachos (2000) ------------------------------------//
-    //Remove site and its neihbors from its previous position in diffusion and desorption classes
-    for ( auto &p:*m_pProcMap ) {
-        if ( !IO::contains( p.first, "Adsoprtion" ) ){
-            p.second.erase( siteID );
-
-            for ( Site* s:m_vSites[ siteID ]->getNeighs() ) {
-                p.second.erase( s->getID() );
-                for ( Site* firstNeigh:s->getNeighs() )
-                    p.second.erase( firstNeigh->getID() );
-            }
-        }
-    }
-
-    //For PVD results
-    m_vSites[ siteID ]->increaseHeight( 1 );
-    m_iSiteNeighsNum = calculateNeighNum( siteID );
-
-    string strProc = "Desorption " + to_string( m_iSiteNeighsNum ) + "N";
-    m_pProcMap->at( strProc ).insert( siteID );
-
-    strProc = "Diffusion " + to_string( m_iSiteNeighsNum ) + "N";
-    m_pProcMap->at( strProc ).insert( siteID );
-
-    for ( Site* s:m_vSites[ siteID ]->getNeighs() ) {
-        m_iSiteNeighsNum = calculateNeighNum( s->getID() );
-        string strProc = "Desorption " + to_string( m_iSiteNeighsNum ) + "N";
-        m_pProcMap->at( strProc ).insert( s->getID() );
-        strProc = "Diffusion " + to_string( m_iSiteNeighsNum ) + "N";
-        m_pProcMap->at( strProc ).insert( s->getID()  );
-
-        for ( Site* firstNeigh:s->getNeighs() ){
-            m_iSiteNeighsNum = calculateNeighNum( firstNeigh->getID() );
-            string strProc = "Desorption " + to_string( m_iSiteNeighsNum ) + "N";
-            m_pProcMap->at( strProc ).insert( firstNeigh->getID() );
-            strProc = "Diffusion " + to_string( m_iSiteNeighsNum ) + "N";
-            m_pProcMap->at( strProc ).insert( firstNeigh->getID()  );
-        }
-    }
-    // ---------  For Lam & Vlachos (2000) ------------------------------------<//
-
-
-    //1.Add to this site species the new adroped species
-    //m_vSites[ siteID ]->getReactSpecies()[ chemSpec->getID() ]++;
-
-    //2.Check if this site can react (according to the reactio matrix) and put it in the appropriate process map classes.
-    //  2a. If a reaction with the max coeff has been completed. Remove it from adsoprtion and wait to react.
-
-    //3.Check if this site (according to the reactio matrix) can accept diffused species from the neighbour sites or be a donor.
-    //  3a. Do that for the neighbour sites and remove/add them accordingly in the process map.
-}
-
-void BCC::desorp(int siteID, species_new *chemSpecies)
-{
-    // <--------  For Lam & Vlachos (2000) ------------------------------------//
-    //Remove site and its neihbors from its previous position in diffusion and desorption classes
-    for ( auto &p:*m_pProcMap ) {
-        if ( !IO::contains( p.first, "Adsoprtion" ) ){
-            p.second.erase( siteID );
-
-            for ( Site* s:m_vSites[ siteID ]->getNeighs() ) {
-                p.second.erase( s->getID() );
-                for ( Site* firstNeigh:s->getNeighs() )
-                    p.second.erase( firstNeigh->getID() );
-            }
-        }
-    }
-
-    //For PVD results
-    m_vSites[ siteID ]->decreaseHeight( 1 );
-    m_iSiteNeighsNum = calculateNeighNum( siteID );
-
-    string strProc = "Desorption " + to_string( m_iSiteNeighsNum ) + "N";
-    m_pProcMap->at( strProc ).insert( siteID );
-
-    strProc = "Diffusion " + to_string( m_iSiteNeighsNum ) + "N";
-    m_pProcMap->at( strProc ).insert( siteID );
-
-    for ( Site* s:m_vSites[ siteID ]->getNeighs() ) {
-        m_iSiteNeighsNum = calculateNeighNum( s->getID() );
-        string strProc = "Desorption " + to_string( m_iSiteNeighsNum ) + "N";
-        m_pProcMap->at( strProc ).insert( s->getID() );
-        strProc = "Diffusion " + to_string( m_iSiteNeighsNum ) + "N";
-        m_pProcMap->at( strProc ).insert( s->getID()  );
-
-        for ( Site* firstNeigh:s->getNeighs() ){
-            m_iSiteNeighsNum = calculateNeighNum( firstNeigh->getID() );
-            string strProc = "Desorption " + to_string( m_iSiteNeighsNum ) + "N";
-            m_pProcMap->at( strProc ).insert( firstNeigh->getID() );
-            strProc = "Diffusion " + to_string( m_iSiteNeighsNum ) + "N";
-            m_pProcMap->at( strProc ).insert( firstNeigh->getID()  );
-
-        }
-    }
-    // ---------  For Lam & Vlachos (2000) ------------------------------------>//
-
-
-    // <--------  For Lam & Vlachos (2000) ------------------------------------//
-    //Remove site from its previous positin in diffusion and desorption classes
-/*    for ( auto &p:*m_pProcMap ) {
-        if ( !IO::contains( p.first, "Adsoprtion" ) )
-            p.second.erase( siteID );
-    }
-
-    this->print();
-
-    //For PVD results
-    m_vSites[ siteID ]->decreaseHeight();
-
-    //This is for the basic site
-    int neighs = 1;
-    for ( Site* s:m_vSites[ siteID ]->getNeighs() ){
-        if ( s->getHeight() <= m_vSites[ siteID ]->getHeight() )
-            m_iMinNeigs++;
-        else {
-            for ( auto &p:*m_pProcMap ) {
-                if ( !IO::contains( p.first, "Adsoprtion" ) )
-                    p.second.erase( s->getID() );
-            }
-
-            s->decreaseNeighsNum();
-
-            string strProcN = "Desorption " + to_string( s->getNeighboursNum() ) + "N";
-            m_pProcMap->at( strProcN ).insert( s->getID() );
-
-            strProcN = "Diffusion " + to_string( s->getNeighboursNum() ) + "N";
-            m_pProcMap->at( strProcN ).insert( s->getID() );
-        }
-    }
-    m_vSites[ siteID ]->setNeighboursNum( m_iMinNeigs );
-
-    string strProc = "Desorption " + to_string( m_iMinNeigs ) + "N";
-    m_pProcMap->at( strProc ).insert( siteID );
-
-    strProc = "Diffusion " + to_string( m_iMinNeigs ) + "N";
-    m_pProcMap->at( strProc ).insert( siteID );*/
-
-// ---------  For Lam & Vlachos (2000) ------------------------------------>//
-
-/*}
-
-void BCC::react(int siteID)
-{
-    //1.React means increase the sites height by one.
-
-    //2.Remove every species from this site (that means that the site is occupied by a lattice site).
-
-    //3.Update neighbours and process map according to the new height as we would do in PVD.
-}*/

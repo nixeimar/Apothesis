@@ -29,10 +29,12 @@ HEADERS += apothesis.h \
            aux/random_generator.h \
            aux/randomc.h \
            pointers.h \
+           processes/adsroption_simple_cubic_4s_multi.h \
            processes/desorption_fcc110_multi.h \
            processes/desorption_fcc110_simple.h \
            processes/desorption_simple_cubic.h \
-           processes/diffusion_fcc11.h \
+           processes/desorption_simple_cubic_4s_multi.h \
+           processes/diffusion_fcc110.h \
            processes/diffusion_simple_cubic.h \
            processes/reaction_new.h \
            properties.h \
@@ -64,10 +66,12 @@ SOURCES += apothesis.cpp \
            lattice/lattice.cpp \
            main.cpp \
            processes/abstract_process.cpp \
+           processes/adsroption_simple_cubic4s_multi.cpp \
            processes/desorption_fcc110_multi.cpp \
            processes/desorption_fcc110_simple.cpp \
            processes/desorption_simple_cubic.cpp \
-           processes/diffusion_fcc11.cpp \
+           processes/desorption_simple_cubic_4s_multi.cpp \
+           processes/diffusion_fcc110.cpp \
            processes/diffusion_simple_cubic.cpp \
            processes/reaction_new.cpp \
            properties.cpp \

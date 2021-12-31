@@ -87,6 +87,14 @@ public:
     inline void setUncoAccepted( bool isUncoAccepted) { m_bUncoAccept = isUncoAccepted; }
     inline bool isUncoAccepted() { return m_bUncoAccept; }
 
+    inline void setConstant( bool isConst =false ){ m_bConstant = isConst; }
+
+    //If this process is supposed to be constant (i.e. independent of coverage)
+    inline bool isConstant(){ return m_bConstant;}
+
+    inline void setNeighs( int num ){ m_iNeighs = num; }
+    inline int getNeighs(){ return m_iNeighs; }
+
 protected:
     /** Pointer to the lattice of the process */
     Lattice* m_pLattice;
@@ -100,6 +108,10 @@ protected:
     RandomGen::RandomGenerator* m_pRandomGen;
 
     bool m_bUncoAccept;
+
+    bool m_bConstant;
+
+    int m_iNeighs;
 
 private:
     /// The name of this prcess

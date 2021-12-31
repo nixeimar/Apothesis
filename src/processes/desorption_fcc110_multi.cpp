@@ -35,15 +35,14 @@ bool DesorptionFCC110Multi::rules( Site* s )
 
 void DesorptionFCC110Multi::perform( Site* s )
 {
-    // Increase the height
-//    s->increaseHeight( 2 );
-//    s->getCoupledSite()->increaseHeight( 2 );
-
     //Here we assume that the HAMD just desorbed from the site and a Cu atom added in the surface
     s->setLabel("Cu");
     s->getCoupledSite()->setLabel("Cu");
 
     m_seAffectedSites.clear();
+
+    m_seAffectedSites.insert( s );
+    m_seAffectedSites.insert( s->getCoupledSite() );
 
     for ( int i =0; i < s->get1stNeihbors()[ -1 ].size(); i++)
         m_seAffectedSites.insert( s->get1stNeihbors()[ -1 ][ i ] );
@@ -83,11 +82,13 @@ double DesorptionFCC110Multi::getProbability()
     double Na = 6.0221417930e+23;				// Avogadro's number [1/mol]
     double T = any_cast<double>(m_mParams["T"]); //500;						// [K]
     double k = any_cast<double>(m_mParams["k"]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
-    double E = 170000/Na; //170000/Na; //170000/Na; //170000/Na;  //71128/Na;   //(7.14e+4)/Na;			// [j] -> 17 kcal
+    double E = 46185.9366466657;//Na; //170000/Na; //170000/Na; //170000/Na;  //71128/Na;   //(7.14e+4)/Na;			// [j] -> 17 kcal
     double v0 = 1.0e+13;				// [s^-1]
+    double h = 6.62607004e-34; //m2 kg / s
     /*--------------------------------------------------*/
 
-    return 0; //v0*exp(-E/(k*T));
+  //  return (k*T/h)*pow(T,-10)*exp(E/(k*T));
+    return 5E-06*(k*T/h)*exp(-40000/(Na*k*T));
 }
 
 }

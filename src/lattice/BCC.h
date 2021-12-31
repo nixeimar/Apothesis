@@ -69,6 +69,8 @@ public:
   /// Create stepped surface
   void buildSteps(int, int, int);
 
+  void writeLatticeHeights( double, int );
+
 protected:
   /// Build the neighbours for the BCC lattice for each site.
   void mf_neigh();

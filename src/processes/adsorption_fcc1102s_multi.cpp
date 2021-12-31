@@ -40,16 +40,17 @@ bool AdsortpionFCC1102SMulti::rules( Site* s )
     if ( mf_isLowLevelComplete(s) )
     {
         vector<Site* > sites = mf_findPotCouples( s );
+        if ( !sites.empty() )
+            return true;
 
-        if ( !sites.empty() ) {
+/*        if ( !sites.empty() ) {
             Site* coupledSite = sites[ rand() % sites.size() ];
-
             if ( coupledSite ) {
                 s->setCoupledSite( coupledSite );
                 coupledSite->setCoupledSite( s );
                 return true;
             }
-        }
+        }*/
     }
 
     return false;
@@ -59,8 +60,18 @@ void AdsortpionFCC1102SMulti::perform( Site* s )
 {
     m_seAffectedSites.clear();
 
-    s->setLabel("Cu");
-    s->getCoupledSite()->setLabel("Cu");
+    //Find its couple
+    if ( !s->getCoupledSite() ) {
+        vector<Site* > sites = mf_findPotCouples( s );
+        Site* coupledSite = sites[ rand() % sites.size() ];
+        if ( coupledSite ) {
+            s->setCoupledSite( coupledSite );
+            coupledSite->setCoupledSite( s );
+        }
+    }
+
+    s->setLabel("HAMD");
+    s->getCoupledSite()->setLabel("HAMD");
 
     s->increaseHeight( 2 );
     s->getCoupledSite()->increaseHeight( 2 );
@@ -120,8 +131,8 @@ vector<Site* > AdsortpionFCC1102SMulti::mf_findPotCouples( Site* s)
 {
     vector<Site* > sites;
     for (int i =0; i <  s->get1stNeihbors()[ 0 ].size(); i++)
-        if ( !s->getCoupledSite() && !s->get1stNeihbors()[ 0 ][i]->getCoupledSite() && s->get1stNeihbors()[ 0 ][ i ]->getLabel() == "Cu"
-             && mf_isLowLevelComplete( s->get1stNeihbors()[ 0 ][ i ] ) && s->get1stNeihbors()[ 0][ i ]->getHeight() == s->getHeight() )
+        //if ( !s->getCoupledSite() && !s->get1stNeihbors()[ 0 ][i]->getCoupledSite() && s->get1stNeihbors()[ 0 ][ i ]->getLabel() == "Cu"
+        if ( !s->get1stNeihbors()[ 0 ][i]->getCoupledSite() && s->get1stNeihbors()[ 0 ][ i ]->getLabel() == "Cu"             && mf_isLowLevelComplete( s->get1stNeihbors()[ 0 ][ i ] ) && s->get1stNeihbors()[ 0][ i ]->getHeight() == s->getHeight() )
             sites.push_back( s->get1stNeihbors()[ 0][ i ] );
     return sites;
 }
@@ -137,9 +148,11 @@ double AdsortpionFCC1102SMulti::getProbability()
     double C_tot = any_cast<double>(m_mParams["C_tot"]); // [sites/m^2] Vlachos code says [moles sites/m^2]
     double m = 0.4091/Na; //For CuAMD 409 kg/kmol	// [kg/mol] this is the molecular weight
     double y = any_cast<double>(m_mParams["f"]);					// Mole fraction of the precursor on the wafer
+    double h = 6.62607004e-34; //m2 kg / s
 
-//    return s0*y*P/(C_tot*sqrt(2.0e0*3.14159265*m*k*T) );
-    return s0*y*P/(C_tot*sqrt(2.0e0*3.14159265*m*k*T) ); //*exp(384/(Na*k*T));
+    double E = 6.3766627287e-19; //j
+
+    return 1.75E-06*(k*T/h)*exp(-40000/(Na*k*T)); // (k*T/h)*s0*y*P/(C_tot*sqrt(2.0e0*3.14159265*m*k*T) )*exp(-40000/(Na*k*T));
 }
 
 }

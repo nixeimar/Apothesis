@@ -26,12 +26,12 @@ double Properties::getRMS()
     double dev = 0;
 
     for (unsigned int i=0; i< m_lattice->getSize(); i++)
-            sum += m_lattice->getSite( i )->getHeight();
+        sum += m_lattice->getSite( i )->getHeight();
 
     mean = sum/(double)m_lattice->getSize();
 
     for (unsigned int i=0; i<m_lattice->getSize(); i++)
-            dev += m_lattice->getSite( i )->getHeight()*m_lattice->getSite( i )->getHeight();
+        dev += m_lattice->getSite( i )->getHeight()*m_lattice->getSite( i )->getHeight();
 
     return sqrt( dev/(double)m_lattice->getSize() );
 }
@@ -47,15 +47,25 @@ double Properties::eventCountingGrowthRate( int adsorptionCounts, int desortionC
 double Properties::getMeanDH()
 {
     double mean = 0.0, sum = 0.0 ;
-    int iCount = 0;
-    for (unsigned int i=0; i< m_lattice->getSize(); i++){
-        if ( m_lattice->getSite( i )->getLabel() == "Cu"){
-            sum += m_lattice->getSite( i )->getHeight();
-            iCount++;
+    if ( m_lattice->getType() == Lattice::FCC ){
+        int iCount = 0;
+        for (unsigned int i=0; i< m_lattice->getSize(); i++){
+            if ( m_lattice->getSite( i )->getLabel() == "Cu"){
+                if ( m_lattice->getSite(i)->getHeight() > m_lattice->getSite(i)->get1stNeihbors()[ -1 ][ 0 ]->getHeight() ){
+                    sum += m_lattice->getSite( i )->getHeight();
+                    iCount++;
+                }
+            }
         }
-    }
 
-    mean = sum/iCount;
+        mean = sum/iCount;
+    }
+    else if ( m_lattice->getType() == Lattice::BCC ){
+        for (unsigned int i=0; i< m_lattice->getSize(); i++)
+            sum += m_lattice->getSite( i )->getHeight();
+
+        mean = sum/m_lattice->getSize();
+    }
 
     return mean;
 }

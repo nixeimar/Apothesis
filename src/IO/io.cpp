@@ -402,6 +402,7 @@ bool IO::openOutputFile( string name )
 void IO::writeInOutput( string toWrite )
 {
     m_OutFile << toWrite << endl;
+    m_OutFile.flush();
 }
 
 void IO::closeOutputFile()
