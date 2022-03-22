@@ -7,7 +7,9 @@ It is still under development but please feel free to contact me if you have som
 
 Compile - qmake
 --------------------------------------------------------------------------------------------------------------
-On linux systems in the source directory run 
+Apothesis needs rapidJSON inside the "src" folder to compile which can me cloned from https://github.com/Tencent/rapidjson.git
+
+Once rapidJSON is downloaded, on linux systems in the src directory run 
 ```
 qmake
 make
