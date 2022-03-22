@@ -4,11 +4,20 @@
 
 TEMPLATE = app
 TARGET = Apothesis
+
+QT-=gui core
+CONFIG += c++11
+CONFIG += debug_and_release
+CONFING -= qt
+
+
 INCLUDEPATH += . \
               IO \
               lattice \
               error \
-              processes
+              processes \
+	      species \
+	      rapidjson/include
 
 # The following define makes your compiler warn you if you use any
 # feature of Qt which has been marked as deprecated (the exact warnings
@@ -23,31 +32,42 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 # Input
 HEADERS += apothesis.h \
+           lattice/BCC.h \
+           lattice/FCC.h \
            register.h \
            processes/parameters.h \
            pointers.h \
            error/errorhandler.h \
-           IO/io.h \
-           IO/SpeciesIO.h \ 
            lattice/lattice.h \
            lattice/site.h \
            processes/abstract_process.h \
            processes/adsorption.h \
+           processes/desorption.h \
            processes/diffusion.h \
            processes/factory_process.h \
            processes/process.h \
-           processes/SurfaceReaction.h
+           processes/SurfaceReaction.h \
+           species/species.h \
+           IO/read.h \
+           processes/io.h
+
 SOURCES += apothesis.cpp \
+           lattice/BCC.cpp \
+           lattice/FCC.cpp \
            main.cpp \
            register.cpp \
            processes/parameters.cpp \
            error/errorhandler.cpp \
-           IO/io.cpp \
-           IO/SpeciesIO.cpp \
            lattice/lattice.cpp \
            lattice/site.cpp \
            processes/adsorption.cpp \
+           processes/desorption.cpp \
            processes/diffusion.cpp \
            processes/factory_process.cpp \
            processes/process.cpp \
-           processes/SurfaceReaction.cpp
+           processes/SurfaceReaction.cpp \
+           species/species.cpp \
+           IO/read.cpp \
+           processes/io.cpp
+
+

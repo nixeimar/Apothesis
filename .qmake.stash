@@ -22,3 +22,27 @@ QMAKE_CXX.COMPILER_MACROS = \
     QMAKE_GCC_MAJOR_VERSION \
     QMAKE_GCC_MINOR_VERSION \
     QMAKE_GCC_PATCH_VERSION
+QMAKE_LICHECK_TIMESTAMP = "Tue Mar 22"
+QMAKE_DEFAULT_INCDIRS = \
+    /opt/intel/compilers_and_libraries_2017.1.132/linux/mkl/include \
+    /opt/intel/compilers_and_libraries_2017.0.098/linux/mkl/include \
+    /usr/include/c++/7 \
+    /usr/include/c++/7/x86_64-suse-linux \
+    /usr/include/c++/7/backward \
+    /usr/lib64/gcc/x86_64-suse-linux/7/include \
+    /usr/local/include \
+    /usr/lib64/gcc/x86_64-suse-linux/7/include-fixed \
+    /usr/x86_64-suse-linux/include \
+    /usr/include
+QMAKE_DEFAULT_LIBDIRS = \
+    /usr/lib64/gcc/x86_64-suse-linux/7 \
+    /usr/lib64 \
+    /lib64 \
+    /opt/intel/compilers_and_libraries_2017.1.132/linux/tbb/lib/intel64_lin/gcc4.7 \
+    /opt/intel/compilers_and_libraries_2017.1.132/linux/compiler/lib/intel64_lin \
+    /opt/intel/compilers_and_libraries_2017.1.132/linux/mkl/lib/intel64_lin \
+    /opt/intel/compilers_and_libraries_2017.0.098/linux/compiler/lib/intel64 \
+    /opt/intel/compilers_and_libraries_2017.0.098/linux/mkl/lib/intel64 \
+    /usr/x86_64-suse-linux/lib \
+    /lib \
+    /usr/lib
