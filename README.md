@@ -9,7 +9,7 @@ Compile - qmake
 --------------------------------------------------------------------------------------------------------------
 Apothesis needs rapidJSON inside the "src" folder to compile which can me cloned from https://github.com/Tencent/rapidjson.git
 
-On linux systems in the source directory run 
+Once rapidJSON is downloaded, on linux systems in the src directory run 
 ```
 qmake
 make
