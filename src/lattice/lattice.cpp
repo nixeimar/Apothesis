@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "lattice.h"
-#include "read.h"
 
 Lattice::Lattice(Apothesis *apothesis) : Pointers(apothesis),m_iStepDiff(0)
 {

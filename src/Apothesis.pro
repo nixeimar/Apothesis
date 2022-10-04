@@ -21,6 +21,9 @@ INCLUDEPATH += . \
 # Input
 HEADERS += apothesis.h \
            IO/io.h \
+           IO/cml_reader.h \
+           IO/reader.h \
+           IO/xyz_reader.h \
            processes/adsorption.h \
            processes/adsorption_fcc1102s_multi.h \
            processes/adsorption_fcc1102s_simple.h \
@@ -40,7 +43,6 @@ HEADERS += apothesis.h \
            properties.h \
            register.h \
            error/errorhandler.h \
-           IO/read.h \
            lattice/BCC.h \
            lattice/FCC.h \
            lattice/lattice.h \
@@ -57,6 +59,9 @@ HEADERS += apothesis.h \
 
 SOURCES += apothesis.cpp \
            IO/io.cpp \
+           IO/cml_reader.cpp \
+           IO/reader.cpp \
+           IO/xyz_reader.cpp \
            processes/adsorption_fcc1102s_multi.cpp \
            processes/adsorption_fcc1102s_simple.cpp \
            processes/adsorption_fcc110_simple.cpp \
@@ -76,7 +81,6 @@ SOURCES += apothesis.cpp \
            processes/reaction_new.cpp \
            properties.cpp \
            error/errorhandler.cpp \
-           IO/read.cpp \
            lattice/BCC.cpp \
            lattice/FCC.cpp \
            lattice/site.cpp \

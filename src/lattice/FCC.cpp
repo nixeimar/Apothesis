@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "FCC.h"
-#include "read.h"
 
 FCC::FCC(Apothesis* apothesis):Lattice(apothesis)
 {

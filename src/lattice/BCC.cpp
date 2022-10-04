@@ -16,8 +16,6 @@
 //============================================================================
 
 #include "BCC.h"
-#include "read.h"
-
 #include <map>
 
 BCC::BCC(Apothesis *apothesis) : Lattice(apothesis), m_iMinNeigs(1)

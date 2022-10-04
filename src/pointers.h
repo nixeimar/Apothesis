@@ -38,7 +38,7 @@ public:
     Pointers( Apothesis* apothesis):m_apothesis(apothesis),
                         m_lattice( apothesis->pLattice),
                         m_io(apothesis->pIO),
-                        m_read(apothesis->pRead),
+                        m_reader(apothesis->pReader),
                         m_errorHandler(apothesis->pErrorHandler),
                         m_parameters(apothesis->pParameters),
                         m_randomGen( apothesis->pRandomGen ),
@@ -56,7 +56,7 @@ protected:
     IO*& m_io;
 
     /// Pointers to the classes of apothesis.cpp
-    Read*& m_read;
+    Reader*& m_reader;
 
     /// Pointers to the classes of apothesis.cpp
     Utils::ErrorHandler*& m_errorHandler;

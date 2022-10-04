@@ -20,7 +20,6 @@
 #include "lattice/lattice.h"
 #include "FCC.h"
 #include "io.h"
-#include "read.h"
 #include "errorhandler.h"
 #include "parameters.h"
 #include "properties.h"
@@ -30,6 +29,7 @@
 #include "reaction_new.h"
 #include "aux/random_generator.h"
 #include <bits/stdc++.h>
+#include "reader.h"
 
 #include "factory_process.h"
 
@@ -37,15 +37,11 @@
 
 using namespace MicroProcesses;
 
-typedef rapidjson::Document Document;
-typedef rapidjson::Value Value;
-typedef rapidjson::SizeType SizeType;
-
 //using namespace Utils;
 
 Apothesis::Apothesis(int argc, char *argv[])
     : pLattice(0),
-      pRead(0),
+      pReader(0),
       m_dProcTime(0.0),
       m_dRTot(0.0),
       m_dProcRate(0.0),
@@ -62,9 +58,9 @@ Apothesis::Apothesis(int argc, char *argv[])
 
     // Create input instance
     pIO = new IO(this);
-    pRead = new Read(this);
-
-    vector<string> pName = pRead->getSpeciesNames();
+    pReader = new Reader(this);
+    pReader->setInputPath("./input.txt");
+    pReader->parseFile();
 
     //FOR the FCC case
     // Build the lattice. This should always follow the read input
@@ -78,6 +74,14 @@ Apothesis::Apothesis(int argc, char *argv[])
 
     std::cout << "Finished building the lattice" << std::endl;
 
+    std::cout << "Building the lattice" << std::endl;
+    pLattice->build();
+//    pIO->writeLatticeHeights();
+    std::cout << "Finished building the lattice" << std::endl;
+
+    // initialize number of species
+    m_nSpecies = 0;
+
     // initialize number of species
     m_nSpecies = 0;
 }
@@ -85,7 +89,7 @@ Apothesis::Apothesis(int argc, char *argv[])
 Apothesis::~Apothesis()
 {
     delete pIO;
-    delete pRead;
+    delete pReader;
     delete pLattice;
 }
 

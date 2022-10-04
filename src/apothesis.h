@@ -42,7 +42,7 @@ namespace RandomGen { class RandomGenerator; }
 
 class Lattice;
 class IO;
-class Read;
+class Reader;
 
 class Apothesis
 {
@@ -55,7 +55,7 @@ public:
     IO* pIO;
 
     /// Ponter to the read class
-    Read* pRead;
+    Reader* pReader;
 
     /// Pointer to the lattice class
     Lattice* pLattice;
