@@ -36,12 +36,11 @@ using namespace MicroProcesses;
 namespace SurfaceTiles
 {
 
-class Site
-{
-public:
-
+  class Site
+  {
+  public:
     /// Contructor.
-    Site();
+    Site(Lattice *lattice);
 
     /// Destructor.
     virtual ~Site();
@@ -83,6 +82,9 @@ public:
 
     /// Get the height of the particular site.
     inline int getHeight() { return m_iHeight; }
+
+    /// Increase the height by a certain amount.
+    void increaseHeight(int height);
 
     /// Set the neigbours.
     inline void setNeigh(Site *s){ m_vNeigh.push_back(s); }
@@ -162,7 +164,12 @@ public:
     /// Remove the coupled site
     inline void removeCouple(){ m_pCoupledSite = nullptr; }
 
-protected:
+    /// Clear neighbour list
+    void m_clearNeighbourList();
+
+    void m_addSite(Site *site);
+
+  protected:
     //The lattice type that this site belongs to
     //LatticeType m_LatticeType;
 
@@ -177,20 +184,20 @@ protected:
     int m_iHeight;
 
     /// The neighbours at the same level - We do not need this because we have the map (see below).
-    vector< Site*> m_vNeigh;
+    vector<Site *> m_vNeigh;
 
     /// Holds the number of the neighbours of the particular site according to each height/
     int m_iNumNeighs;
 
     //TODO: get rid of map?
     /// A map that holds the neighbour sites according to their orientation.
-    map< NeighPoisition, Site*> m_mapNeigh;
+    map<NeighPoisition, Site *> m_mapNeigh;
 
     /// A map that hold the sites that this site can activate if it has all the its neighbours occupied.
-    map< ActivationSite, Site* > m_mapAct;
+    map<ActivationSite, Site *> m_mapAct;
 
     /// A list of active sites for each process
-    map< Process*, vector<Site*>> activeSites;
+    map<Process *, vector<Site *>> activeSites;
 
     /// A map counting the species that are present
     map<int, int> m_mapSpecies;
@@ -199,8 +206,9 @@ protected:
     bool m_bIsOccupied;
 
     /// The list of processes that this site can participate in.
-    list< Process* > m_lProcs;
+    list<Process *> m_lProcs;
 
+<<<<<<< HEAD
     vector<Species* > m_species;
 
     bool m_phantom;
@@ -245,8 +253,8 @@ private:
 
     /// if the site belong to the higher step storing vaious info
     bool m_isHigherStep;
-};
+  };
 
-}
+} // namespace SurfaceTiles
 
 #endif

@@ -20,6 +20,7 @@
 
 #include "pointers.h"
 #include "apothesis.h"
+#include <iostream>
 
 using namespace std;
 
@@ -85,7 +86,7 @@ class Parameters: public Pointers
     double m_dP;
 
     /// The number of iterations to be performed.
-    int m_iIter;
+    double m_time;
 
     /// The time to run kmc.
     int m_dTime;

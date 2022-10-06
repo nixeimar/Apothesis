@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //============================================================================
 //    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
@@ -342,4 +343,3 @@ int BCC::calculateNeighNum( int id )
     m_vSites[ id ]->setNeighsNum( neighs );
     return neighs;
 }
-

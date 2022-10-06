@@ -19,7 +19,6 @@
 
 namespace MicroProcesses
 {
-
 REGISTER_PROCESS_IMPL( Diffusion )
 
 Diffusion::Diffusion():m_iNeigh(0){}
@@ -115,4 +114,4 @@ double Diffusion::getProbability(){
     //----------------------------------------------------------------------------------------//
 }
 
-}
+} // namespace MicroProcesses

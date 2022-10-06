@@ -97,6 +97,9 @@ public:
     inline void setDebugMode(bool ifDebug) { m_debugMode = ifDebug;}
     bool getDebugMode() { return m_debugMode; }
 
+    /// Return number of species
+    int getNumSpecies();
+
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
     map< MicroProcesses::Process*, set< SurfaceTiles::Site* > > m_processMap;
@@ -158,7 +161,6 @@ private:
     double m_dSum; // = 0.0;
     int m_iSiteNum; // = 0;
     int n;
-
 };
 
 #endif // KMC_H

@@ -61,6 +61,9 @@ class Lattice: public Pointers
     /// Returns the size of the lattice.
     inline int getSize(){ return m_iSizeX*m_iSizeY; } // = 0;
 
+    /// Call update neighbours function;
+    virtual void updateNeighbours(Site* site) = 0;
+
     /// Returns the type of the lattice
     Lattice::Type getType();
 
@@ -95,7 +98,7 @@ class Lattice: public Pointers
     void setInitialHeight( int  height );
 
     //Set true if the lattice has steps
-    void setSteps(bool hasSteps = false);
+    void setSteps(bool hasSteps);
 
     /// Set the "cut" of the surface
     void setOrientation(string s){ m_sOrient = s; }
@@ -138,7 +141,7 @@ protected:
     vector<Site* > m_vSites;
 
     /// True if the lattice has steps (comes from the input file if the Step keyword is found).
-    bool m_bHasSteps;
+    bool m_hasSteps = false;
 
     //The info for the step surface i.e. [1 20 10]
     int m_iStepX;

@@ -81,9 +81,6 @@ Apothesis::Apothesis(int argc, char *argv[])
 
     // initialize number of species
     m_nSpecies = 0;
-
-    // initialize number of species
-    m_nSpecies = 0;
 }
 
 Apothesis::~Apothesis()
@@ -168,6 +165,116 @@ void Apothesis::init()
         for ( Site* s:pLattice->getSites() ){
             if ( p.first->rules( s ) )
                 p.second.insert( s );
+=======
+  cout << "Opening output file" << endl;
+  /// The output file name will come from the user and will have the extenstion .log
+  /// This would come as a parameter from the user from the args (also the input).
+  /// Now both are hard copied.
+
+  if (!pIO->outputOpen())
+    pIO->openOutputFile("Output-700K");
+
+  // Processes in this case
+  vector<string> pProc = m_processes;
+
+  cout << pProc[0] << endl;
+
+  Document &doc = pRead->getDoc();
+
+  pIO->writeLogOutput("Initializing instances of species");
+  if (std::find(pProc.begin(), pProc.end(), "Reaction") == pProc.end())
+  {
+    vector<double> mws = pRead->getMWs();
+    vector<string> names = pRead->getSpeciesNames();
+
+    for (int i = 0; i < mws.size(); ++i)
+    {
+      Species *s = new Species(names[i], mws[i], m_nSpecies);
+      m_nSpecies++;
+      m_species[names[i]] = s;
+    }
+  }
+
+  // Initializing interactions between species
+  pIO->writeLogOutput("Reading interactions between species");
+  Value &speciesName = doc["Species"];
+  for (Value::ConstMemberIterator itr = speciesName.MemberBegin(); itr != speciesName.MemberEnd(); ++itr)
+  {
+    const char *name = itr->name.GetString();
+    Value &singleSpecies = speciesName[name];
+    if (singleSpecies.HasMember("Interactions"))
+    {
+      Value &interactions = singleSpecies["Interactions"];
+
+      pIO->writeLogOutput("Initializing interactions between species...");
+
+      int numInters = interactions.Size();
+      for (int i = 0; i < numInters; i++)
+      {
+        m_interactions.push_back(make_tuple(name, interactions[i].GetString()));
+        pIO->writeLogOutput("(" + get<0>(m_interactions.back()) + ", " + get<1>(m_interactions.back()) + ")");
+      }
+    }
+  }
+
+  pIO->writeLogOutput("Initializing processes");
+
+  if (std::find(pProc.begin(), pProc.end(), "Adsorption") != pProc.end())
+  {
+    pIO->writeLogOutput("Initializing Adsorption");
+
+    // Read parameters for Adsorption
+    Value &specie = doc["Process"]["Adsorption"]["Species"];
+    Value &stick = doc["Process"]["Adsorption"]["Sticking"];
+    Value &mFrac = doc["Process"]["Adsorption"]["MassFraction"];
+    Value &ads = doc["Process"]["Adsorption"];
+
+    // Verify presence of each parameter in input file
+    logSuccessfulRead(specie.IsArray(), "Adsorption species");
+    logSuccessfulRead(stick.IsArray(), "Adsorption sticking coefficients");
+    logSuccessfulRead(mFrac.IsArray(), "Adsorption mass fraction");
+
+    // Initialize vectors
+    vector<string> species;
+    vector<double> sticking;
+    vector<double> massFraction;
+
+    // Sum of mass fraction. Later used to normalize.
+    double sum = 0;
+
+    for (SizeType i = 0; i < specie.Size(); i++)
+    {
+      // Output possible errors
+      if (!specie[i].IsString())
+        pErrorHandler->error_simple_msg("Species format is not a string");
+      if (!stick[i].IsNumber())
+        pErrorHandler->error_simple_msg("Sticking coefficient format is not a double");
+      if (!mFrac[i].IsNumber())
+        pErrorHandler->error_simple_msg("Mass fraction format is not a double");
+
+      // Push values to corresponding vectors
+      species.push_back(specie[i].GetString());
+      sticking.push_back(stick[i].GetDouble());
+      massFraction.push_back(mFrac[i].GetDouble());
+      sum += massFraction[i];
+    }
+
+    // Normalize the values of the mass fraction
+    for (vector<double>::iterator itr = massFraction.begin(); itr != massFraction.end(); ++itr)
+    {
+      *itr = *itr / sum;
+    }
+
+    for (int i = 0; i < species.size(); ++i)
+    {
+      bool direct = false;
+      if (ads.HasMember("Direct"))
+      {
+        string dir = ads["Direct"].GetString();
+        if (dir.compare("Yes") == 0)
+        {
+          direct = true;
+>>>>>>> master
         }
     } <---------------- */
 
@@ -244,7 +351,22 @@ void Apothesis::init()
                     p.second.insert( s );
             }
         }
+      }
+      Adsorption *a = new Adsorption(this, species[i], m_species[species[i]], sticking[i], massFraction[i], direct);
 
+      // Keep two separate vectors: one for all processes, one for adsorption processes only
+      m_vAdsorption.push_back(a);
+      m_vProcesses.push_back(a);
+    }
+
+    // Resolving Conflicts
+
+    pIO->writeLogOutput("...Done initializing Adsorption process.");
+  }
+  if (std::find(pProc.begin(), pProc.end(), "Desorption") != pProc.end())
+  {
+    pIO->writeLogOutput("Initializing Desorption");
+>>>>>>> master
 
     /*    auto pos = m_processMap.insert( { FactoryProcess::createProcess("AdsortpionFCC1102SMulti"), emptySet } );
     pos.first->first->setName("AdsortpionFCC1102SMulti");
@@ -439,7 +561,6 @@ void Apothesis::exec()
         output += p.first->getName() + '\t' + std::to_string( (double)p.first->getProbability() ) + '\t';
     pIO->writeInOutput( output );
 
-
     //    pLattice->print();
 }
 
@@ -463,5 +584,3 @@ Species *Apothesis::getSpecies(string species)
 {
     return m_species[species];
 }
-
-

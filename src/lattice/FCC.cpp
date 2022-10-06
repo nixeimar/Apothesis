@@ -17,12 +17,13 @@
 
 #include "FCC.h"
 
+<<<<<<< HEAD
 FCC::FCC(Apothesis* apothesis):Lattice(apothesis)
 {
     //   m_mEventsRegistry.insert("Simple", new LatticeEvent::AdsorptionFCC110Simple() );
 }
 
-void FCC::setInitialHeight( int  height ) { m_iHeight = height; }
+void FCC::setInitialHeight(int height) { m_iHeight = height; }
 
 void FCC::build()
 {
@@ -81,8 +82,6 @@ void FCC::build()
                 delete m_vSites[ i ];
             EXIT
         }
-
-
         int iPos = 0;
         for (int i = 0; i< m_iSizeY; i++ ){
             for (int j = 0; j< m_iSizeX; j++ ){
@@ -102,7 +101,6 @@ void FCC::build()
         mf_neigh_110();
     }
     else if ( m_sOrient == "100") {  }
-
 }
 
 FCC::~FCC()
@@ -660,6 +658,7 @@ void FCC::mf_neigh_111()
             m_vSites[ i ]->setNeighPosition(m_vSites[ getSize() - 2*m_iSizeY + i], Site::NORTH);
             m_vSites[ i ]->setNeighPosition(m_vSites[ i + 2*m_iSizeY ], Site::SOUTH);        }
     }
+  }
 
     /* Last row */
     for ( int i = (getSize() - m_iSizeY); i < getSize(); i++ ){
@@ -991,6 +990,12 @@ int FCC::calculateNeighNum( int id,  const int level )
         }
         break;
     }
+    else
+    {
+      m_vSites[i]->setNeighPosition(m_vSites[i - 2 * m_iSizeY], Site::NORTH);
+      m_vSites[i]->setNeighPosition(m_vSites[i + 2 * m_iSizeY], Site::SOUTH);
+    }
+  }
 
     return neighs;
 }
@@ -1021,6 +1026,17 @@ int FCC::calculateNeighNum( int id,  const int level )
                 iMaxH = m_lattice->getSite( i*m_lattice->getX() + j )->getHeight();
         }
     }
+    else if (i == getSize() - m_iSizeY - 1)
+    {
+      m_vSites[i]->setNeighPosition(m_vSites[i - 2 * m_iSizeY], Site::NORTH);
+      m_vSites[i]->setNeighPosition(m_vSites[m_iSizeY - 1], Site::SOUTH);
+    }
+    else
+    {
+      m_vSites[i]->setNeighPosition(m_vSites[i - 2 * m_iSizeY], Site::NORTH);
+      m_vSites[i]->setNeighPosition(m_vSites[i + 2 * m_iSizeY], Site::SOUTH);
+    }
+  }
 
     file << iCountAtoms << endl;
     file << endl;
@@ -1071,6 +1087,7 @@ int FCC::calculateNeighNum( int id,  const int level )
         x1 = x1 + a;
 
     }
+  }
 
     file.close();
 }*/
@@ -1101,6 +1118,7 @@ void FCC::writeXYZ( string filename )
                 iMaxH = m_lattice->getSite( i*m_lattice->getX() + j )->getHeight();
         }
     }
+  }
 
     file << iCountAtoms << endl;
     file << endl;

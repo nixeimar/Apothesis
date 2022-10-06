@@ -150,7 +150,6 @@ double Desorption::getProbability(){
     double E = 7e+10/Na;  //71128/Na;   	// [j] -> 17 kcal
     double v0 = 1.0e+13;				// [s^-1]
     /*--------------------------------------------------*/
-
     return v0*exp(-(double)any_cast<int>(m_mParams["neighs"])*E/(k*T));			//DesorptionSimpleCubic 1 neigh
 }
 

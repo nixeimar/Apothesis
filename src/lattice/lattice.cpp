@@ -120,6 +120,5 @@ void Lattice::printNeighs( int ID )
 
 }
 
-
 void Lattice::writeXYZ( string filename ){;}
 void Lattice::writeLatticeHeights( double, int ){;}
