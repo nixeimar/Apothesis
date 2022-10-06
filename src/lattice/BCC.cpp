@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 //============================================================================
 //    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
@@ -17,6 +16,7 @@
 //============================================================================
 
 #include "BCC.h"
+
 #include <map>
 
 BCC::BCC(Apothesis *apothesis) : Lattice(apothesis), m_iMinNeigs(1)
@@ -25,7 +25,7 @@ BCC::BCC(Apothesis *apothesis) : Lattice(apothesis), m_iMinNeigs(1)
 }
 
 BCC::BCC(Apothesis *apothesis, bool step, vector<int> stepInfo) : Lattice(apothesis),
-    m_hasSteps(step),
+    m_bHasSteps(step),
     m_stepInfo(stepInfo)
 {
     ;

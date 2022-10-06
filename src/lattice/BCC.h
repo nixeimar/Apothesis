@@ -79,7 +79,7 @@ protected:
   void mf_buildNeighbours();
 
 private:
-  bool m_hasSteps = false;
+  bool m_bHasSteps = false;
 
   vector<int> m_stepInfo;
 

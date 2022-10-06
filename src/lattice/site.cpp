@@ -37,11 +37,6 @@ namespace SurfaceTiles
     m_mapSpecies[s->getId()]++;
   }
 
-  void Site::m_addSite(Site* site)
-  {
-    m_vNeigh.push_back(site);
-  }
-
   void Site::removeSpecies(Species *s)
   {
     // TODO: Is this better to do by species pointer or by string?. I think pointer is easier
@@ -73,11 +68,6 @@ namespace SurfaceTiles
     {
       cout << "Warning: did not find an instance of " << s->getName() << "in site " << getID() << endl;
     }
-  }
-
-  void Site::m_clearNeighbourList()
-  {
-    m_vNeigh.clear();
   }
 
   vector<Species *> Site::getSpecies()

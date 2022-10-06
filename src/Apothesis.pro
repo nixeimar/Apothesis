@@ -11,11 +11,11 @@ CONFIG += debug_and_release
 CONFING -= qt
 
 INCLUDEPATH += . \
-	 lattice \
-	 processes \
-	 IO \
-	 species \
-	 error
+         lattice \
+         processes \
+         IO \
+         species \
+         error
 
 # Input
 HEADERS += apothesis.h \
@@ -26,10 +26,6 @@ HEADERS += apothesis.h \
            processes/adsorption.h \
            aux/random_generator.h \
            aux/randomc.h \
-           lattice/BCC.h \
-           lattice/FCC.h \
-           register.h \
-           processes/parameters.h \
            pointers.h \
            processes/reaction_new.h \
            properties.h \
@@ -40,10 +36,6 @@ HEADERS += apothesis.h \
            lattice/lattice.h \
            lattice/site.h \
            processes/abstract_process.h \
-           lattice/lattice.h \
-           lattice/site.h \
-           processes/abstract_process.h \
-           processes/adsorption.h \
            processes/desorption.h \
            processes/diffusion.h \
            processes/factory_process.h \
@@ -60,18 +52,6 @@ SOURCES += apothesis.cpp \
            IO/xyz_reader.cpp \
            aux/mersenne.cpp \
            aux/random_generator.cpp \
-           processes/SurfaceReaction.h \
-           species/species.h \
-           IO/read.h \
-           processes/io.h
-
-SOURCES += apothesis.cpp \
-           lattice/BCC.cpp \
-           lattice/FCC.cpp \
-           main.cpp \
-           register.cpp \
-           processes/parameters.cpp \
-           error/errorhandler.cpp \
            lattice/lattice.cpp \
            main.cpp \
            processes/abstract_process.cpp \
@@ -89,7 +69,3 @@ SOURCES += apothesis.cpp \
            processes/process.cpp \
            species/species.cpp \
            species/species_new.cpp
-           processes/SurfaceReaction.cpp \
-           species/species.cpp \
-           IO/read.cpp \
-           processes/io.cpp

@@ -62,7 +62,7 @@ class Lattice: public Pointers
     inline int getSize(){ return m_iSizeX*m_iSizeY; } // = 0;
 
     /// Call update neighbours function;
-    virtual void updateNeighbours(Site* site) = 0;
+//    virtual void updateNeighbours(Site* site) = 0;
 
     /// Returns the type of the lattice
     Lattice::Type getType();

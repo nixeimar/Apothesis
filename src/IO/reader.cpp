@@ -710,4 +710,3 @@ map<string,vector<double>> Reader::getProcEnergetics(){
 map<string,vector<double>> Reader::getProcStoichiometry(){
     return m_mProcStoichiometry;
 }
-

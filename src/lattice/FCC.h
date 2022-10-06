@@ -38,8 +38,6 @@ public:
     /// Constructor
     FCC( Apothesis* apothesis );
 
-    FCC(Apothesis *apothesis, bool step, vector<int> stepInfo);
-
     /// Distructor.
     virtual ~FCC();
 
