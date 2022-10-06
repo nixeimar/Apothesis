@@ -15,19 +15,22 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#ifndef DIFFUSION_H
-#define DIFFUSION_H
+#ifndef DIFFUSIONSIMPLECUBIC_H
+#define DIFFUSIONSIMPLECUBIC_H
 
 #include <process.h>
+#include <any>
+
+using namespace std;
 
 namespace MicroProcesses
 {
 
-class Diffusion:public Process
+class DiffusionSimpleCubic:public Process
 {
 public:
-    Diffusion();
-    ~Diffusion() override;
+    DiffusionSimpleCubic();
+    ~DiffusionSimpleCubic() override;
 
     inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
     inline double getActivationEnergy(){ return m_dActNrg; }
@@ -41,10 +44,10 @@ public:
     inline void setSpecies( species_new* s ){ m_Species = s; }
     inline species_new* getSpecies(){ return m_Species; }
 
-    inline void setNeigh(int n ){ m_iNeighNum = n; }
+    inline void setNeigh(int n ){ m_iNeigh = n; }
 
     double getProbability() override;
-    bool rules( Site* ) override {}
+    bool rules( Site* ) override;
     void perform( Site* ) override;
 
 private:
@@ -60,12 +63,15 @@ private:
     ///The species that must be removed from the site
     species_new* m_Species;
 
-    /// The number of neighbours for calculating the probability
-    int m_iNeighNum;
+    /// A member function to calculate the neighbors of a given site
+    int mf_calculateNeighbors(Site*);
 
-    REGISTER_PROCESS(Diffusion)
+    /// The number of neighbours for calculating the probability
+    int m_iNeigh;
+
+    REGISTER_PROCESS(DiffusionSimpleCubic)
 };
 
 }
 
-#endif // Diffusion_H
+#endif // DiffusionSimpleCubic_H

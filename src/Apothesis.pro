@@ -6,7 +6,6 @@ TEMPLATE = app
 TARGET = apothesis
 
 QT-=gui core
-#CONFIG += c++11
 QMAKE_CXXFLAGS += -std=c++17
 CONFIG += debug_and_release
 CONFING -= qt
@@ -25,20 +24,9 @@ HEADERS += apothesis.h \
            IO/reader.h \
            IO/xyz_reader.h \
            processes/adsorption.h \
-           processes/adsorption_fcc1102s_multi.h \
-           processes/adsorption_fcc1102s_simple.h \
-           processes/adsorption_fcc110_simple.h \
-           processes/adsorption_simple_cubic.h \
            aux/random_generator.h \
            aux/randomc.h \
            pointers.h \
-           processes/adsroption_simple_cubic_4s_multi.h \
-           processes/desorption_fcc110_multi.h \
-           processes/desorption_fcc110_simple.h \
-           processes/desorption_simple_cubic.h \
-           processes/desorption_simple_cubic_4s_multi.h \
-           processes/diffusion_fcc110.h \
-           processes/diffusion_simple_cubic.h \
            processes/reaction_new.h \
            properties.h \
            register.h \
@@ -62,22 +50,11 @@ SOURCES += apothesis.cpp \
            IO/cml_reader.cpp \
            IO/reader.cpp \
            IO/xyz_reader.cpp \
-           processes/adsorption_fcc1102s_multi.cpp \
-           processes/adsorption_fcc1102s_simple.cpp \
-           processes/adsorption_fcc110_simple.cpp \
-           processes/adsorption_simple_cubic.cpp \
            aux/mersenne.cpp \
            aux/random_generator.cpp \
            lattice/lattice.cpp \
            main.cpp \
            processes/abstract_process.cpp \
-           processes/adsroption_simple_cubic4s_multi.cpp \
-           processes/desorption_fcc110_multi.cpp \
-           processes/desorption_fcc110_simple.cpp \
-           processes/desorption_simple_cubic.cpp \
-           processes/desorption_simple_cubic_4s_multi.cpp \
-           processes/diffusion_fcc110.cpp \
-           processes/diffusion_simple_cubic.cpp \
            processes/reaction_new.cpp \
            properties.cpp \
            error/errorhandler.cpp \

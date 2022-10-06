@@ -14,24 +14,23 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
-
-#ifndef ADSORPTION_H
-#define ADSORPTION_H
+#ifndef ADSORPTIONSIMPLECUBIC_H
+#define ADSORPTIONSIMPLECUBIC_H
 
 #include "process.h"
 
 namespace MicroProcesses
 {
 
-class Adsorption: public Process
+class AdsorptionSimpleCubic: public Process
 {
 public:
-    Adsorption();
-    ~Adsorption() override;
+    AdsorptionSimpleCubic();
+    ~AdsorptionSimpleCubic() override;
 
     double getProbability() override;
     bool rules( Site* ) override;
-    void perform( Site*  ) override;
+    void perform( Site* ) override;
 
     inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
     inline double getActivationEnergy(){ return m_dActNrg; }
@@ -45,21 +44,29 @@ public:
     inline void setSpecies( species_new* s ){ m_Species = s; }
     inline species_new* getSpecies(){ return m_Species; }
 
+
 private:
+
+    bool mf_isInLowerStep( Site* s );
+    bool mf_isInHigherStep( Site* s );
+
     ///The activation energy of the adsoprtion process
     double m_dActNrg;
 
-    ///The mole fraction of the adsorption process
+    ///The mole fraction of the AdsorptionSimpleCubic process
     double m_dMolFrac;
 
-    ///The site that adsorption will be performed
+    ///The site that AdsorptionSimpleCubic will be performed
     Site* m_Site;
 
     ///The species that must adsopt
     species_new* m_Species;
 
-    REGISTER_PROCESS(Adsorption)
+    /// A member function to calculate the neighbors of a given site
+    int mf_calculateNeighbors(Site*);
+
+    REGISTER_PROCESS(AdsorptionSimpleCubic)
 };
 }
 
-#endif // Adsorption_H
+#endif // AdsorptionSimpleCubic_H

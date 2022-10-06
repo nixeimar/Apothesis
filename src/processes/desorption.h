@@ -14,19 +14,19 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
-#ifndef DESORPTION_H
-#define DESORPTION_H
+#ifndef DESORPTIONSIMPLECUBIC_H
+#define DESORPTIONSIMPLECUBIC_H
 
 #include "process.h"
 
 namespace MicroProcesses
 {
 
-class Desorption:public Process
+class DesorptionSimpleCubic:public Process
 {
 public:
-    Desorption();
-    ~Desorption() override;
+    DesorptionSimpleCubic();
+    ~DesorptionSimpleCubic() override;
 
     inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
     inline double getActivationEnergy(){ return m_dActNrg; }
@@ -40,10 +40,14 @@ public:
     inline void setNumNeigh( int n ){ m_iNeigh = n; }
 
     double getProbability() override;
-    bool rules( Site* s)  override;
+    bool rules( Site* s) override;
     void perform( Site* ) override;
 
 private:
+
+    bool mf_isInLowerStep( Site* s );
+    bool mf_isInHigherStep( Site* s );
+
     ///The activation energy of the adsoprtion process
     double m_dActNrg;
 
@@ -56,8 +60,11 @@ private:
     ///The neighbours of this diffusion process
     int m_iNeigh;
 
-    REGISTER_PROCESS( Desorption )
+    /// A member function to calculate the neighbors of a given site
+    int mf_calculateNeighbors(Site*);
+
+    REGISTER_PROCESS( DesorptionSimpleCubic )
 };
 }
 
-#endif // Desorption_H
+#endif // DesorptionSimpleCubicSIMPLECUBIC_H

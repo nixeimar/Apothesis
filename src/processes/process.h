@@ -46,7 +46,7 @@ public:
     ///Get probability
     virtual double getProbability() = 0;
 
-    /// Perform this process in the site
+    /// Perform this process in the site and compute/store the affected sites
     virtual void perform( Site* ) = 0;
 
     /// The rules for this type of process e.g. the neighbour of site Site.

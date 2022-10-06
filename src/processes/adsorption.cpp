@@ -14,79 +14,134 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
-
-#include "adsorption.h"
+#include "adsorption_simple_cubic.h"
 
 namespace MicroProcesses
 {
 
-REGISTER_PROCESS_IMPL( Adsorption )
+REGISTER_PROCESS_IMPL( AdsorptionSimpleCubic )
 
-Adsorption::Adsorption():m_Species(0){}
+AdsorptionSimpleCubic::AdsorptionSimpleCubic():m_Species(0){}
 
-Adsorption::~Adsorption(){}
+AdsorptionSimpleCubic::~AdsorptionSimpleCubic(){}
 
-bool Adsorption::rules( Site* s )
+bool AdsorptionSimpleCubic::rules( Site* s )
 {
-    //You can always adsorb as is
+    //You can always adsorb in simple cubic lattices
     return true;
 }
 
-void Adsorption::perform( Site* s )
+void AdsorptionSimpleCubic::perform( Site* s )
 {
-//    m_pLattice->adsorp( siteID, m_Species );
+    //For PVD results
+    s->increaseHeight( 1 );
+    mf_calculateNeighbors( s );
+    m_seAffectedSites.insert( s ) ;
+
+    for ( Site* neigh:s->getNeighs() ) {
+        mf_calculateNeighbors( neigh );
+        m_seAffectedSites.insert( neigh ) ;
+    }
 }
 
-//--------------------- Transitions probabilities ----------------------------------------//
-/*        (*prob)[0] = pa*Nx*Ny;									//Adsorption
-        (*prob)[1] = group[0].size()*v0*exp(-1.0e0*E/(k*T));			//Desorption 1 neigh
-        (*prob)[3] = group[1].size()*v0*exp(-2.0e0*E/(k*T));        //Desorption 2 neigh
-        (*prob)[5] = group[2].size()*v0*exp(-3.0e0*E/(k*T));		//Desorption 3 neigh
-        (*prob)[7] = group[3].size()*v0*exp(-4.0e0*E/(k*T));		//Desorption 4 neigh
-        (*prob)[9] = group[4].size()*v0*exp(-5.0e0*E/(k*T));		//Desorption 5 neigh
-        (*prob)[2] = A*(*prob)[1];	  							//Diffusion  1 neisgh
-        (*prob)[4] = A*(*prob)[3];								//Diffusion  2 neisgh
-        (*prob)[6] = A*(*prob)[5];								//Diffusion  3 neisgh
-        (*prob)[8] = A*(*prob)[7];								//Diffusion  4 neisgh
-        (*prob)[10] = A*(*prob)[9];								//Diffusion  5 neisgh */
-//----------------------------------------------------------------------------------------//
+int AdsorptionSimpleCubic::mf_calculateNeighbors(Site* s)
+{
+    int neighs = 1;
+    for ( Site* neigh:s->getNeighs() ) {
+        if ( s->isLowerStep() && neigh->isHigherStep() ){
+            if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
+                neighs++;
+        }
+        else if ( neigh->isLowerStep() && s->isHigherStep() ){
+            if ( neigh->getHeight() >= s->getHeight() - m_pLattice->getStepDiff() + 1 )
+                neighs++;
+        }
+        else {
+            if ( neigh->getHeight() >= s->getHeight() )
+                neighs++;
+        }
+    }
 
-/*        (*p_tot) = 0;
-        for (unsigned int i=0; i<nof_trans_prob; i++)
-                 *p_tot += (*prob)[i];
+    s->setNeighsNum( neighs );
+    return neighs; // I do not know if we actual need this to be done here ...
 
-        for (unsigned int i=0; i<nof_trans_prob; i++)
-                cout<< "NO"<< "\t" <<(*prob)[i] << endl;
+    //For flat surfaces
+    /*    int neighs = 1;
+    if ( mf_isInLowerStep( s ) ){
+        for ( Site* neigh:s->getNeighs() ) {
+            if ( mf_isInHigherStep( neigh ) ){
+                if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
+                    neighs++;
+            }
+            else{
+                if ( neigh->getHeight() >= s->getHeight() )
+                    neighs++;
+            }
+        }
+    }
+    else if ( mf_isInHigherStep( s ) ){
+        for ( Site* neigh:s->getNeighs() ) {
+            if ( mf_isInLowerStep( neigh ) ){
+                if ( neigh->getHeight() >= s->getHeight() - (m_pLattice->getStepDiff() + 1 ) )
+                    neighs++;
+            }
+            else{
+                if ( neigh->getHeight() >= s->getHeight() )
+                    neighs++;
+            }
+        }
+    }
+    else {
+        for ( Site* neigh:s->getNeighs() ) {
+            if ( neigh->getHeight() >= s->getHeight() )
+                neighs++;
+        }
+    }
 
-        cout<<"***************"<< endl;*/
+    s->setNeighsNum( neighs );
 
-//---------Canonical-form--------------//
-//       for (unsigned int i=0; i<nof_trans_prob; i++)
-//               (*prob)[i] /= (*p_tot);
-//-------------------------------------//
+    return neighs;*/
 
-/*	for (unsigned int i=0; i<nof_trans_prob; i++)
-                cout<<"CAN"<< "\t" <<(*prob)[i] << endl;
-        cout<<"***************"<< endl;
-        cout<<"PROBS"<<endl;
-        system("pause");
---------------------------------------------------*/
+    //For flat surfaces
+    /*    int neighs = 1;
+    for ( Site* neigh:s->getNeighs() ) {
+        if ( neigh->getHeight() >= s->getHeight() )
+            neighs++;
+    }
+    return neighs;*/
+}
 
-double Adsorption::getProbability(){
+bool AdsorptionSimpleCubic::mf_isInLowerStep(Site* s)
+{
+    for (int j = 0; j < m_pLattice->getY(); j++)
+        if ( s->getID() == m_pLattice->getSite( j, 0 )->getID() )
+            return true;
+
+    return false;
+}
+
+bool AdsorptionSimpleCubic::mf_isInHigherStep(Site* s)
+{
+    for (int j = 0; j < m_pLattice->getY(); j++)
+        if ( s->getID() == s->getID() == m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() )
+            return true;
+
+    return false;
+}
+
+
+double AdsorptionSimpleCubic::getProbability(){
 
     //These must trenafered in the global definitions
     double Na = 6.0221417930e+23;		// Avogadro's number [1/mol]
     double P = 101325;					// [Pa]
-    double T = 500;						// [K]
-    double k = 1.3806503e-23;			// Boltzmann's constant [j/K]
-    double s0 = 0.1;
-    double C_tot = 1.0e+19;				// [sites/m^2] Vlachos code says [moles sites/m^2]
-    double E_d = (7.14e+4)/Na;			// [j]
-    double E = 71128/Na;   //(7.14e+4)/Na;			// [j]
-    double m = 32e-3/Na;				// [kg]
-    double E_m = (4.28e+4)/Na;			// [j]
-    double k_d = 1.0e+13;				// [s^-1]
-    double y = 2.0e-3;					// Mole fraction of the precursor on the wafer
+    double T = any_cast<double>(m_mParams["T"]); //500;						// [K]
+    double k = any_cast<double>(m_mParams["k"]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
+    double s0 = any_cast<double>(m_mParams["s0"]); //0.1;
+    double C_tot = any_cast<double>(m_mParams["C_tot"]);			// [sites/m^2] Vlachos code says [moles sites/m^2]
+    // Ctot for copper: 2e-19 (see
+    double m = 32e-3/Na;				// [kg/mol] this is the molecular weight
+    double y = 2.0e-4;					// Mole fraction of the precursor on the wafer
 
     return s0*y*P/(C_tot*sqrt(2.0e0*3.14159265*m*k*T) );
 }

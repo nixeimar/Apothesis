@@ -50,6 +50,7 @@ double Properties::getMeanDH()
     if ( m_lattice->getType() == Lattice::FCC ){
         int iCount = 0;
         for (unsigned int i=0; i< m_lattice->getSize(); i++){
+            //This is not correct. It should just counts the height. What it is there should be seen by the individual processes.
             if ( m_lattice->getSite( i )->getLabel() == "Cu"){
                 if ( m_lattice->getSite(i)->getHeight() > m_lattice->getSite(i)->get1stNeihbors()[ -1 ][ 0 ]->getHeight() ){
                     sum += m_lattice->getSite( i )->getHeight();
