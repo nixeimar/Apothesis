@@ -19,19 +19,19 @@
 namespace MicroProcesses
 {
 
-REGISTER_PROCESS_IMPL( AdsorptionSimpleCubic )
+REGISTER_PROCESS_IMPL( Adsorption )
 
-AdsorptionSimpleCubic::AdsorptionSimpleCubic():m_Species(0){}
+Adsorption::Adsorption():m_Species(0){}
 
-AdsorptionSimpleCubic::~AdsorptionSimpleCubic(){}
+Adsorption::~Adsorption(){}
 
-bool AdsorptionSimpleCubic::rules( Site* s )
+bool Adsorption::rules( Site* s )
 {
     //You can always adsorb in simple cubic lattices
     return true;
 }
 
-void AdsorptionSimpleCubic::perform( Site* s )
+void Adsorption::perform( Site* s )
 {
     //For PVD results
     s->increaseHeight( 1 );
@@ -44,7 +44,7 @@ void AdsorptionSimpleCubic::perform( Site* s )
     }
 }
 
-int AdsorptionSimpleCubic::mf_calculateNeighbors(Site* s)
+int Adsorption::mf_calculateNeighbors(Site* s)
 {
     int neighs = 1;
     for ( Site* neigh:s->getNeighs() ) {
@@ -111,7 +111,7 @@ int AdsorptionSimpleCubic::mf_calculateNeighbors(Site* s)
     return neighs;*/
 }
 
-bool AdsorptionSimpleCubic::mf_isInLowerStep(Site* s)
+bool Adsorption::mf_isInLowerStep(Site* s)
 {
     for (int j = 0; j < m_pLattice->getY(); j++)
         if ( s->getID() == m_pLattice->getSite( j, 0 )->getID() )
@@ -120,7 +120,7 @@ bool AdsorptionSimpleCubic::mf_isInLowerStep(Site* s)
     return false;
 }
 
-bool AdsorptionSimpleCubic::mf_isInHigherStep(Site* s)
+bool Adsorption::mf_isInHigherStep(Site* s)
 {
     for (int j = 0; j < m_pLattice->getY(); j++)
         if ( s->getID() == s->getID() == m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() )
@@ -130,7 +130,7 @@ bool AdsorptionSimpleCubic::mf_isInHigherStep(Site* s)
 }
 
 
-double AdsorptionSimpleCubic::getProbability(){
+double Adsorption::getProbability(){
 
     //These must trenafered in the global definitions
     double Na = 6.0221417930e+23;		// Avogadro's number [1/mol]

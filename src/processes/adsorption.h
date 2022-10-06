@@ -22,11 +22,11 @@
 namespace MicroProcesses
 {
 
-class AdsorptionSimpleCubic: public Process
+class Adsorption: public Process
 {
 public:
-    AdsorptionSimpleCubic();
-    ~AdsorptionSimpleCubic() override;
+    Adsorption();
+    ~Adsorption() override;
 
     double getProbability() override;
     bool rules( Site* ) override;
@@ -65,7 +65,7 @@ private:
     /// A member function to calculate the neighbors of a given site
     int mf_calculateNeighbors(Site*);
 
-    REGISTER_PROCESS(AdsorptionSimpleCubic)
+    REGISTER_PROCESS(Adsorption)
 };
 }
 

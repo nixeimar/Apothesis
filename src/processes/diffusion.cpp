@@ -20,12 +20,12 @@
 namespace MicroProcesses
 {
 
-REGISTER_PROCESS_IMPL(DiffusionSimpleCubic)
+REGISTER_PROCESS_IMPL( Diffusion )
 
-DiffusionSimpleCubic::DiffusionSimpleCubic():m_iNeigh(0){}
-DiffusionSimpleCubic::~DiffusionSimpleCubic(){}
+Diffusion::Diffusion():m_iNeigh(0){}
+Diffusion::~Diffusion(){}
 
-void DiffusionSimpleCubic::perform( Site* s)
+void Diffusion::perform( Site* s)
 {
     //This is desorption ------------------------------------------------->
     s->increaseHeight( 1 );
@@ -73,7 +73,7 @@ void DiffusionSimpleCubic::perform( Site* s)
     //--------------------------------------------------------------------<
 }
 
-int DiffusionSimpleCubic::mf_calculateNeighbors(Site* s)
+int Diffusion::mf_calculateNeighbors(Site* s)
 {
     int neighs = 1;
     for ( Site* neigh:s->getNeighs() ) {
@@ -83,14 +83,14 @@ int DiffusionSimpleCubic::mf_calculateNeighbors(Site* s)
     return neighs;
 }
 
-bool DiffusionSimpleCubic::rules( Site* s)
+bool Diffusion::rules( Site* s)
 {
     if ( s->getNeighsNum() == any_cast<int>(m_mParams["neighs"] ) )
         return true;
     return false;
 }
 
-double DiffusionSimpleCubic::getProbability(){
+double Diffusion::getProbability(){
     //These must trenafered in the global definitions
     /*--- Taken from  Lam and Vlachos (2000)PHYSICAL REVIEW B, VOLUME 64, 035401 - DOI: 10.1103/PhysRevB.64.035401 ---*/
     double Na = 6.0221417930e+23;				// Avogadro's number [1/mol]

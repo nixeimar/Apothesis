@@ -19,19 +19,19 @@
 namespace MicroProcesses
 {
 
-REGISTER_PROCESS_IMPL(DesorptionSimpleCubic);
+REGISTER_PROCESS_IMPL(Desorption);
 
-DesorptionSimpleCubic::DesorptionSimpleCubic():m_iNeigh(0){}
-DesorptionSimpleCubic::~DesorptionSimpleCubic(){}
+Desorption::Desorption():m_iNeigh(0){}
+Desorption::~Desorption(){}
 
-bool DesorptionSimpleCubic::rules( Site* s)
+bool Desorption::rules( Site* s)
 {
     if ( mf_calculateNeighbors( s ) == any_cast<int>(m_mParams["neighs"] ) )
         return true;
     return false;
 }
 
-void DesorptionSimpleCubic::perform( Site* s)
+void Desorption::perform( Site* s)
 {
     //For PVD results
     s->decreaseHeight( 1 );
@@ -48,7 +48,7 @@ void DesorptionSimpleCubic::perform( Site* s)
     }
 }
 
-int DesorptionSimpleCubic::mf_calculateNeighbors(Site* s)
+int Desorption::mf_calculateNeighbors(Site* s)
 {
 
     //We do not need to count the neighbours here!!!
@@ -118,7 +118,7 @@ int DesorptionSimpleCubic::mf_calculateNeighbors(Site* s)
     return neighs;*/
 }
 
-bool DesorptionSimpleCubic::mf_isInLowerStep(Site* s)
+bool Desorption::mf_isInLowerStep(Site* s)
 {
     for (int j = 0; j < m_pLattice->getY(); j++)
         if ( s->getID() == m_pLattice->getSite( j, 0 )->getID() )
@@ -127,7 +127,7 @@ bool DesorptionSimpleCubic::mf_isInLowerStep(Site* s)
     return false;
 }
 
-bool DesorptionSimpleCubic::mf_isInHigherStep(Site* s)
+bool Desorption::mf_isInHigherStep(Site* s)
 {
     for (int j = 0; j < m_pLattice->getY(); j++){
    //     cout<< m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() << endl;
@@ -139,7 +139,7 @@ bool DesorptionSimpleCubic::mf_isInHigherStep(Site* s)
     return false;
 }
 
-double DesorptionSimpleCubic::getProbability(){
+double Desorption::getProbability(){
 
     //These must trenafered in the global definitions
     /*--- Taken from  Lam and Vlachos (2000)PHYSICAL REVIEW B, VOLUME 64, 035401 - DOI: 10.1103/PhysRevB.64.035401 ---*/

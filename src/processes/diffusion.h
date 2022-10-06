@@ -26,11 +26,11 @@ using namespace std;
 namespace MicroProcesses
 {
 
-class DiffusionSimpleCubic:public Process
+class Diffusion:public Process
 {
 public:
-    DiffusionSimpleCubic();
-    ~DiffusionSimpleCubic() override;
+    Diffusion();
+    ~Diffusion() override;
 
     inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
     inline double getActivationEnergy(){ return m_dActNrg; }
@@ -69,7 +69,7 @@ private:
     /// The number of neighbours for calculating the probability
     int m_iNeigh;
 
-    REGISTER_PROCESS(DiffusionSimpleCubic)
+    REGISTER_PROCESS(Diffusion)
 };
 
 }

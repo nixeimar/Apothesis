@@ -22,11 +22,11 @@
 namespace MicroProcesses
 {
 
-class DesorptionSimpleCubic:public Process
+class Desorption:public Process
 {
 public:
-    DesorptionSimpleCubic();
-    ~DesorptionSimpleCubic() override;
+    Desorption();
+    ~Desorption() override;
 
     inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
     inline double getActivationEnergy(){ return m_dActNrg; }
@@ -63,7 +63,7 @@ private:
     /// A member function to calculate the neighbors of a given site
     int mf_calculateNeighbors(Site*);
 
-    REGISTER_PROCESS( DesorptionSimpleCubic )
+    REGISTER_PROCESS( Desorption )
 };
 }
 
