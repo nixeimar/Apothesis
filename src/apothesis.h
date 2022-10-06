@@ -1,4 +1,4 @@
-//============================================================================
+    //============================================================================
 //    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
@@ -23,7 +23,11 @@
 #include <vector>
 #include <string>
 #include <functional>
-#include "species.h"
+#include <set>
+#include <valarray>
+#include "species_new.h"
+#include "species/species.h"
+
 
 #define EXIT { printf("Apothesis terminated. \n"); exit( EXIT_FAILURE ); }
 
@@ -31,12 +35,14 @@ using namespace std;
 
 /** The basic class of the kinetic monte carlo code. */
 
-namespace Utils{ class ErrorHandler; class Parameters;}
+namespace Utils{ class ErrorHandler; class Parameters; class Properties; }
 namespace SurfaceTiles{ class Site; }
-namespace MicroProcesses { class Process; class Adsorption; class Desorption; class Diffusion; class SurfaceReaction;}
+namespace MicroProcesses { class Process; class Adsorption; class Desorption; class Diffusion; class SurfaceReaction; }
+namespace RandomGen { class RandomGenerator; }
+
 class Lattice;
 class IO;
-class Read;
+class Reader;
 
 class Apothesis
 {
@@ -45,12 +51,11 @@ public:
     virtual ~Apothesis();
 
     /// Pointers to the classes that will share the common space i.e. the "pointer"
-
-    /// Ponter to the input/output class
+    /// Pointer to the input/output class
     IO* pIO;
 
     /// Ponter to the read class
-    Read* pRead;
+    Reader* pReader;
 
     /// Pointer to the lattice class
     Lattice* pLattice;
@@ -61,15 +66,18 @@ public:
     /// Pointer to the paramters class
     Utils::Parameters* pParameters;
 
+    /// Pointer to the properties class
+    Utils::Properties* pProperties;
+
+    /// Random generator
+    RandomGen::RandomGenerator *pRandomGen;
+
     /// Intialization of the KMC method. For example here the processes to be performed
     /// as these are written in the input file are constcucted through the factory method
     void init();
 
     /// Perform the KMC iteratios
     void exec();
-
-    /// Add a process
-    void addProcess(string process);
 
     /// Function to log to output file whether a parameter is properly read
     void logSuccessfulRead(bool read, string parameter);
@@ -83,50 +91,50 @@ public:
     /// Return normalized probabilities of each process
     vector<double> calculateProbabilities(vector<MicroProcesses::Process*>);
 
-    MicroProcesses::Process* getProcessAt(int index, vector<MicroProcesses::Process*> pProcesses);
-
-    MicroProcesses::Process* pickProcess(vector<double> probabilities, double random, vector<MicroProcesses::Process*> pProcesses);
-
-    MicroProcesses::Adsorption* findAdsorption(string species);
-
-    MicroProcesses::Desorption* findDesorption(string species);
-
     /// Return access to IO pointer
-    IO* getIOPointer();
+    inline IO* getIOPointer() { return pIO; }
 
-    void setDebugMode(bool);
-
-    bool getDebugMode();
-
-    void setLatticePointer(Lattice* pLattice);
-
-    /// Return access to adsorption
-    vector<MicroProcesses::Adsorption*> getAdsorptionPointers();
-
-    /// Return access to adsorption
-    vector<MicroProcesses::SurfaceReaction*> getReactionPointers();
+    inline void setDebugMode(bool ifDebug) { m_debugMode = ifDebug;}
+    bool getDebugMode() { return m_debugMode; }
 
     /// Return number of species
     int getNumSpecies();
 
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
-    // Not to handy. Re-think... I have found another way... Implement it
-    map< MicroProcesses::Process*, list< SurfaceTiles::Site* >* > m_processMap;
+    map< MicroProcesses::Process*, set< SurfaceTiles::Site* > > m_processMap;
 
-    /// Vector holding the processes to be performed.
-    vector< MicroProcesses::Process*> m_vProcesses;
+    //This holds the process and the list of sites that can be performed.
+    //This should replace m_processMap.
+    //Have to check if string is the name of the process or should we put
+    //set is log(n) in insert and delete and log(1) for delete
+    // "Adsorption:CuAMD" must be a name of a process because we want to be able to do
+    // m_procMap["Adsorption:CuAMD"]->addSite(Site);
+    map< string, set< int > > m_procMap;
 
-    vector< MicroProcesses::Adsorption*> m_vAdsorption;
-    
-    vector< MicroProcesses::Desorption*> m_vDesorption;
+    //The map holding all tbe species. The int is the same as the ID of the species.
+    // e.g Assuming the user has procided CuAMD, H2, SiH4, SiH2
+    // then m_speciesMAP[ 0 ]= > CuAMD
+    //      m_speciesMAP[ 1 ]= > H2
+    //      m_speciesMAP[ 2 ]= > SiH4
+    //      m_speciesMAP[ 3 ]= > SiH2
+    map< int, species_new* > m_speciesMap;
 
-    vector< MicroProcesses::SurfaceReaction*> m_vSurfaceReaction;
+    // Hold the name and the stichiometric coeficient of the reactants in the surface reactions
+    // The elements of the vector can be accessed through thr id of the species.
 
-    vector <reference_wrapper<MicroProcesses::SurfaceReaction>> m_refSurfaceReaction;
+    // e.g. 2CuAMD + 2H2 => ...
+    // e.g. CuAMD + S => ...
+    // CuAMD: 0
+    // H2: 1
+    // S: 2
+    // e.g. Reaction_0: 2 2 0 0 0 0 0 0 etc.
+    //      Reaction_1: 1 0 1 0 0 0 0 0 etc.
+    // m_surfReactionsMap[ 0 ] -> will return the stoichiometric coeff for this reactions.
+    map< string, valarray<int> > m_surfReacMap;
 
-    /// Vector holding the name of the processes (string)
-    vector<string> m_processes;
+    // Same as m_surfReacMap holding the procudts. The string should be the same.
+    map< string, valarray<int> > m_surfProdMap;
 
     /// The number of flags given by the user
     int m_iArgc;
@@ -137,23 +145,22 @@ private:
     // map of species
     map<string, Species*> m_species;
 
-    // map of interactions
-    vector<tuple<string, string>> m_interactions;
-
     // Set debug mode
     bool m_debugMode;
 
     /// number of species
     int m_nSpecies;
 
-    /// Simulation time
-    long double m_time;
-
-    /// Iterations 
-    unsigned int m_iter;
-
-    /// Write frequency
-    int m_writeFrequency;
+    //
+    double m_dRTot;
+    double m_dEndTime; // = 0.01;
+    double m_dProcTime;
+    double m_dProcRate; // = 0.0;
+    double m_dt; // = 0.0;
+    double m_dRandom; // = 0;
+    double m_dSum; // = 0.0;
+    int m_iSiteNum; // = 0;
+    int n;
 };
 
 #endif // KMC_H

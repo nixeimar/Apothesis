@@ -15,18 +15,43 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#include "register.h"
+#ifndef PROPERTIES_H
+#define PROPERTIES_H
 
-template<class T>
-Register<T>::Register(const std::string& name){
-    FactoryProcess::registerThis( name, this);
+#include "pointers.h"
+#include "apothesis.h"
+
+#include "lattice/lattice.h"
+
+using namespace std;
+
+
+namespace Utils {
+
+class Properties: public Pointers
+{
+public:
+    Properties(Apothesis* apothesis );
+
+    double getMicroroughness();
+    double getRMS();
+    double eventCountingGrowthRate( int, int, double );
+
+    inline double getRoughness(){ return m_dRoughness; }
+    double classCoverage();
+    double getMeanDH();
+
+private:
+    //The roughness of the surface
+    double m_dRoughness;
+
+    //The RMS roughness
+    double m_dRMS;
+
+    //The event counting growth rate
+    double m_dEvGrRate;
+};
+
 }
 
-template<class T>
-Register<T>::~Register(){}
-
-template<class T>
-MicroProcesses::Process* Register<T>::create(){
-    return new T;
-}
-
+#endif // PROPERTIES_H

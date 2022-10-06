@@ -20,6 +20,7 @@
 
 #include <string>
 
+using namespace std;
 namespace MicroProcesses { class Process; }
 
 /** The abstract class which is used for the process factory **/
@@ -27,7 +28,7 @@ class AbstractProcess
   {
   public:
     /// Constructor
-    AbstractProcess(){};
+    AbstractProcess( const string& );
 
     /// Destructor
     virtual ~AbstractProcess(){}

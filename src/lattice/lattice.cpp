@@ -16,21 +16,20 @@
 //============================================================================
 
 #include "lattice.h"
-#include "read.h"
 
-Lattice::Lattice(Apothesis *apothesis) : Pointers(apothesis)
+Lattice::Lattice(Apothesis *apothesis) : Pointers(apothesis),m_iStepDiff(0)
 {
-  //Document input =
+
 }
 
 void Lattice::setType(string sType)
 {
-  if (sType == "FCC")
-    m_Type = FCC;
-  else if (sType == "BCC")
-    m_Type = BCC;
-  else
-    m_Type = NONE;
+    if (sType == "FCC")
+        m_Type = FCC;
+    else if (sType == "BCC")
+        m_Type = BCC;
+    else
+        m_Type = NONE;
 }
 
 void Lattice::setX(int x) { m_iSizeX = x; }
@@ -39,72 +38,87 @@ void Lattice::setY(int y) { m_iSizeY = y; }
 
 void Lattice::setInitialHeight(int height) { m_iHeight = height; }
 
-
 Lattice::~Lattice()
 {
 }
 
 vector<Site *> Lattice::getSites()
 {
-  return m_vSites;
+    return m_vSites;
 }
 
 Lattice::Type Lattice::getType()
 {
-  switch (m_Type)
-  {
-  case FCC:
-    return FCC;
-  case BCC:
-    return BCC;
-  default:
-    return NONE;
-  }
-}
-
-Site *Lattice::getSite(int id) { return m_vSites[id]; }
-
-double Lattice::mf_roughness()
-{
-  double roughness = 0;
-
-  for (auto& site:m_vSites)
-  {
-    for (auto& neighbour: site->getNeighs())
+    switch (m_Type)
     {
-      roughness += abs(site->getHeight() - neighbour->getHeight());
+    case FCC:
+        return FCC;
+    case BCC:
+        return BCC;
+    default:
+        return NONE;
     }
-  }
-
-  return 1 + roughness / (2*m_vSites.size());
 }
 
-double Lattice::getRoughness()
+Site* Lattice::getSite(int id) { return m_vSites[id]; }
+
+Site* Lattice::getSite(int i, int j)
 {
-  return mf_roughness();
+    return m_vSites[ i*m_iSizeX + j ];
 }
 
-void Lattice::check()
+void Lattice::print()
 {
-  int k = 0;
+/*    for (int i = 0; i < m_iSizeY; i++){
+        for (int j = 0; j < m_iSizeX; j++)
+            cout << m_vSites[ i*m_iSizeX + j ]->getID() << "\t" << "( " << m_vSites[ i*m_iSizeX + j ]->getHeight() << " )" ;
+        cout  << endl;
+    }*/
 
-  cout << "Checking lattice..." << endl;
+    for (int i = 0; i < m_iSizeY; i++){
+        for (int j = 0; j < m_iSizeX; j++)
+            cout << m_vSites[ i*m_iSizeX + j ]->getLabel() + to_string( m_vSites[ i*m_iSizeX + j ]->getID() )  << "\t" << "( " << m_vSites[ i*m_iSizeX + j ]->getHeight() << " ) " ;
+        cout  << endl;
+    }
 
-  int test = 2;
-  cout << test << ": ";
-  cout << "W:" << getSite(test)->getNeighPosition(Site::WEST)->getID() << " ";
-  cout << "Wu:" << getSite(test)->getNeighPosition(Site::WEST_UP)->getID() << " ";
-  cout << "WD:" << getSite(test)->getNeighPosition(Site::WEST_DOWN)->getID() << " ";
-  cout << "E:" << getSite(test)->getNeighPosition(Site::EAST)->getID() << " ";
-  cout << "EU:" << getSite(test)->getNeighPosition(Site::EAST_UP)->getID() << " ";
-  cout << "ED:" << getSite(test)->getNeighPosition(Site::EAST_DOWN)->getID() << " ";
-  cout << "N:" << getSite(test)->getNeighPosition(Site::NORTH)->getID() << " ";
-  cout << "S:" << getSite(test)->getNeighPosition(Site::SOUTH)->getID() << endl;
-
-  cout << "Activation: " << endl;
-
-  cout << "N:" << getSite(test)->getActivationSite(Site::ACTV_NORTH)->getID() << " ";
-  cout << "S:" << getSite(test)->getActivationSite(Site::ACTV_SOUTH)->getID() << " ";
-  cout << "E:" << getSite(test)->getActivationSite(Site::ACTV_EAST)->getID() << " ";
-  cout << "W:" << getSite(test)->getActivationSite(Site::ACTV_WEST)->getID() << endl;
 }
+
+void Lattice::printNeighNum()
+{
+    for (int i = 0; i < m_iSizeY; i++){
+        for (int j = 0; j < m_iSizeX; j++)
+            cout << m_vSites[ i*m_iSizeX + j ]->getID() << "( " << m_vSites[ i*m_iSizeX + j ]->getNeighsNum() << " )" ;
+
+        cout  << endl;
+    }
+}
+
+void Lattice::printNeighs( int ID )
+{
+    cout << "======= Printing neigbors ============ " << endl;
+
+    if ( ID < getSize() ){
+        cout << "Level 0 neighs: ";
+        for ( int i = 0; i< m_vSites[ ID ]->get1stNeihbors()[ 0 ].size(); i++ )
+            cout << m_vSites[ ID ]->get1stNeihbors()[ 0 ].at( i )->getID() << " ";
+
+        cout << endl;
+
+        cout << "Level -1 neighs: ";
+        for ( int i = 0; i< m_vSites[ ID ]->get1stNeihbors()[ -1 ].size(); i++ )
+            cout << m_vSites[ ID ]->get1stNeihbors()[ -1 ].at( i )->getID() << " ";
+
+        cout << endl;
+
+        cout << "======= end printing neigbors ============ " << endl;
+
+    }
+    else {
+        cout << "Cannot print neighs because ID exceeds the available number of sites." << endl;
+        EXIT;
+    }
+
+}
+
+void Lattice::writeXYZ( string filename ){;}
+void Lattice::writeLatticeHeights( double, int ){;}

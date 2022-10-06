@@ -83,14 +83,22 @@ class IO: public Pointers
     /// Returns the name of the output file if it is user defined.
     const string& getOutputFilename() const;
 
+    void writeRoughness( double t, double r);
+
     /// Opens the input file.
     void openInputFile(string file);
 
     /// Opens the output file with the name name.
     bool openOutputFile( string name );
 
+    /// Write in the output file.
+    void writeInOutput( string );
+
     /// Closes the output file.
     void closeOutputFile();
+
+    /// Closes the roughness file.
+    void closeRoughnessFile();
 
     /// Reads the input file " .kmc".
     void readInputFile();
@@ -102,7 +110,7 @@ class IO: public Pointers
     int toInt( string );
 
     /// Check if a string contains another string. TODO: This should be transferred to a generic string class).
-    bool contains( string, string, CASE cas = Insensitive );
+    static bool contains( string, string, CASE cas = Insensitive );
 
     /// Splits a string to a vector of strings. TODO: This should be transferred to a generic string class).
     vector<string> split( string , string );
@@ -146,7 +154,7 @@ class IO: public Pointers
     void writeLatticeInfo();
 
     /// Write the height of each site
-    void writeLatticeHeights();
+    void writeLatticeHeights( double time, int timeStep );
 
     /// Export the lattice in xyz format. Not implemented yet
     void exportLatticeXYZ();
@@ -156,6 +164,9 @@ class IO: public Pointers
 
     /// Check if Output file is open
     bool outputOpen();
+
+    /// Open roughness file for writting the roughness
+    void openRoughnessFile( string );
 
   protected:
     /// The type of lattice
@@ -173,6 +184,12 @@ class IO: public Pointers
     /// The output file
     ofstream m_OutFile;
 
+    /// The output file
+    ofstream m_HeightFile;
+
+    /// The rpughness file
+    ofstream m_RoughnessFile;
+
     /// Keywords:
     /// Process keyword
     string m_sProcess;
@@ -189,8 +206,8 @@ class IO: public Pointers
     /// Comment
     string m_sCommentLine;
 
-    ///  Num of iterations keyword.
-    string m_sIterations;
+    /// End time keyword.
+    string m_sTime;
 
   };
 

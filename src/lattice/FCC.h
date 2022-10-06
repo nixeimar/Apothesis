@@ -31,8 +31,9 @@ using namespace SurfaceTiles;
 using namespace Utils;
 
 class FCC: public Lattice
-  {
-  public:
+{
+public:
+    /// The type of the lattice.
 
     /// Constructor
     FCC( Apothesis* apothesis );
@@ -45,18 +46,6 @@ class FCC: public Lattice
     /// Sets the type of the lattice.
     void setType( string );
 
-    /// Returns the x dimension of the lattice.
-    inline int getX(){return m_iSizeX;}
-
-    /// Returns the y dimension of the lattice.
-    inline int getY(){return m_iSizeY;}
-
-    /// Returns the size of the lattice.
-    inline int getSize(){return  m_iSizeX*m_iSizeY;}
-
-    /// Returns a site with a specific id.
-    Site* getSite( int id);
-
     /// Various checks if the lattice has been constucted correctly. Partially implemented.
     void check();
 
@@ -67,20 +56,25 @@ class FCC: public Lattice
     void build();
 
     /// Sets the minimun initial height for the lattice.
-    void setInitialHeight( int  height );
+    void setInitialHeight( int  );
 
-    void updateNeighbours(Site* s);
+    /// Count the neighbors in the different levels
+    int calculateNeighNum( int,  int);
 
-  protected:
+    /// Write the lattice in XYZ format in a filename
+    void writeXYZ( string );
 
-    /// The neighbours for the FCC lattice.
-    void mf_neigh();
+    void buildSteps(int, int, int){}
 
-  private:
-    bool m_hasSteps = false;
-  
-    vector<int> m_stepInfo;
+protected:
+    /// Build the first neighbours for the FCC(100) lattice.
+    void mf_neigh_100();
 
-  };
+    /// Build the first neighbours for the FCC(110) lattice.
+    void mf_neigh_110();
+
+    /// Build the first neighbours for the FCC(111) lattice.
+    void mf_neigh_111();
+};
 
 #endif // LATTICE_H

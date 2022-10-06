@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //============================================================================
 //    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
@@ -16,280 +17,329 @@
 //============================================================================
 
 #include "BCC.h"
-#include "read.h"
+#include <map>
 
-BCC::BCC(Apothesis *apothesis) : Lattice(apothesis)
+BCC::BCC(Apothesis *apothesis) : Lattice(apothesis), m_iMinNeigs(1)
 {
-	;
+    ;
 }
 
-// TODO: Should "hasSteps" be migrated to lattice base class?
 BCC::BCC(Apothesis *apothesis, bool step, vector<int> stepInfo) : Lattice(apothesis),
-																  m_hasSteps(step),
-																  m_stepInfo(stepInfo)
+    m_hasSteps(step),
+    m_stepInfo(stepInfo)
 {
-	;
+    ;
 }
+
+void BCC::buildSteps(int iSize, int jSize, int kSize)
+{
+    //e.g. Step 20 1 0
+    if ( m_vSites.size()%iSize != 0){
+        cout << "Cannot create  stepped surface because it cannot be divided exaclty." << endl;
+        EXIT;
+    }
+
+    int iStep = 0;
+    int iHeight = 0;
+
+    //Steps in x-direction
+    for (int i = 0; i < m_iSizeX; i++) {
+        if ( iStep == iSize ) {
+            iStep = 0;
+            iHeight += jSize;
+        }
+
+        for (int j = 0; j < m_iSizeY; j++)
+            getSite(j, i)->setHeight( m_iHeight + iHeight );
+
+        iStep++;
+    }
+
+//    print();
+
+    for ( int i = 0; i< m_vSites.size(); i++)
+        calculateNeighNum( i );
+
+    int h = getSite( m_iSizeY-1, m_iSizeX-1)->getHeight() ;
+    m_iStepDiff = abs( getSite( m_iSizeY-1, m_iSizeX-1)->getHeight() - getSite( 0, 0 )->getHeight() ) + 1;
+
+//    printNeighNum();
+
+    for (int j = 0; j < m_iSizeY; j++){
+        getSite( j, 0 )->setLowerStep( true );
+        getSite( j, m_iSizeX - 1  )->setHigherStep( true );
+    }
+}
+
 
 void BCC::setInitialHeight(int height) { m_iHeight = height; }
 
 void BCC::build()
 {
-	if (m_Type == NONE)
-	{
-		cout << "Not supported lattice type" << endl;
-		EXIT;
-	}
+    if (m_Type == NONE)
+    {
+        cout << "Not supported lattice type" << endl;
+        EXIT;
+    }
 
-	if (m_iSizeX == 0 || m_iSizeY == 0)
-	{
-		m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
-		EXIT;
-	}
+    if (m_iSizeX == 0 || m_iSizeY == 0)
+    {
+        m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
+        EXIT;
+    }
 
-	if (m_iHeight < 5)
-	{
-		m_errorHandler->warningSimple_msg("The lattice initial height is too small.Consider revising.");
-	}
+    if (m_iHeight < 5)
+    {
+        m_errorHandler->warningSimple_msg("The lattice initial height is too small.Consider revising.");
+    }
 
-	// The sites of the lattice.
-	m_vSites.resize(getSize());
-	for (int i = 0; i < m_vSites.size(); i++)
-		m_vSites[i] = new Site(this);
+    // The sites of the lattice.
+    m_vSites.resize( getSize() );
+    for (int i = 0; i < m_vSites.size(); i++)
+        m_vSites[i] = new Site();
 
-	//  m_pSites = new Site[ m_iSizeX*m_iSizeY];
+    //This is OK
+    for (int i = 0; i < m_iSizeX; i++)
+    {
+        for (int j = i * m_iSizeY; j < (m_iSizeY + i * m_iSizeY); j++)
+        {
+            m_vSites[j]->setID(j);
+            m_vSites[j]->setHeight(m_iHeight - 1);
+        }
+    }
 
-// if m_iSizeX = 120
-	for (int i = 0; i < m_iSizeX; i++)
-	{
-		// m_iSizeY = 160
-		for (int j = i * m_iSizeY; j < (m_iSizeY + i * m_iSizeY); j++)
-		{
-			m_vSites[j]->setID(j);
-			m_vSites[j]->setIID(i);
-			m_vSites[j]->setJID(j%m_iSizeY);
-			m_vSites[j]->setHeight(m_iHeight - 1);
-			m_vSites[j]->setLatticeType(Site::LatticeType::BCC);
-		}
-	}
-
-	if (m_hasSteps)
-		mf_buildSteps();
-
-	mf_neigh();
+    mf_neigh();
 }
 
 BCC::~BCC()
 {
-	for (int i = 0; i < getSize(); i++)
-		delete m_vSites[i];
+    for (int i = 0; i < getSize(); i++)
+        delete m_vSites[i];
 }
 
 void BCC::setSteps(bool hasSteps)
 {
-	m_hasSteps = hasSteps;
+    m_bHasSteps = hasSteps;
 }
 
 void BCC::setStepInfo(int sizeX, int sizeY, int sizeZ)
 {
-	m_iStepX = sizeX;
-	m_iStepY = sizeY;
-	m_iStepZ = sizeZ;
-}
-
-void BCC::mf_buildSteps()
-{
-	// Pick dimension of step
-	// TODO: Can we assume that the largest value is the dimension of stepping?
-	// Find the initial height from arbitrary site
-	int initialHeight = m_vSites[0]->getHeight();
-	vector<int> currentDimensions{m_iSizeX, m_iSizeY, initialHeight};
-
-	int iteration = 0;
-	int stepDimension = 0, stepSoFar = 0, growthDimension = 0, growthSoFar = 0, latentDimension = 0;
-	for (auto &dim : m_stepInfo)
-	{
-		// If the step information is the same value as lattice dim, this will not be the step/growth dimension
-		if (dim != currentDimensions[iteration])
-		{
-			// The step dimension will be the largest value
-			if (dim > stepSoFar)
-			{
-				stepDimension = iteration;
-				stepSoFar = dim;
-			}
-			else
-			{
-				growthDimension = iteration;
-			}
-		}
-		else
-		{
-			latentDimension = iteration;
-		}
-
-		iteration++;
-	}
-
-	// steps [160, 20, 1]
-
-	for (unsigned int firstDim = 0; firstDim < currentDimensions[latentDimension]; ++firstDim)
-	{
-		for (unsigned int secondDim = 0; secondDim < currentDimensions[stepDimension]; ++secondDim)
-		{
-			// Calculate how much we increase the step by.
-			// Calculation is split up to ensure we have proper integer division in the first step.
-			int growth = secondDim / m_stepInfo[stepDimension];
-			growth *= m_stepInfo[growthDimension];
-			int index = firstDim * currentDimensions[stepDimension] + secondDim;
-			m_vSites[index]->increaseHeight(growth);
-		}
-	}
-
-	/* if (m_iSizeX % m_iStepX != 0)
-	{
-		m_errorHandler->error_simple_msg("ERROR: The number of steps you provided doesn't conform with the lattice size ");
-		exit(0);
-	} */
-	//if (m_iStepY != 0) // Be sure that we do have steps. If indi_y = 0 (1 0 0) then we have an initial flat surface
-	//{
-	//	unsigned int steps = m_iSizeX / m_iStepX;
-	//	for (unsigned int step = 1; step < steps; step++)
-	//		for (unsigned int i = step * m_iStepX; i < (step + 1) * m_iStepX; i++)
-	//			for (unsigned int j = 0; j < m_iSizeY; j++)
-	//				m_vSites[i * m_iStepY + j] += m_iStepY * step;
-	//	//(*mesh)[i][j] += m_iStepY * step;///
-	//	cout << "Number of steps:" << steps << endl;
-	//}
+    m_iStepX = sizeX;
+    m_iStepY = sizeY;
+    m_iStepZ = sizeZ;
 }
 
 void BCC::mf_neigh()
 {
-	/* All except the boundaries */
-	for (int i = 0; i < m_iSizeY; i++)
-	{
-		for (int j = 0; j < m_iSizeX; j++)
-		{
-			int currentIndex = i * m_iSizeX + j;
-			int currentHeight = m_vSites[currentIndex]->getHeight();
-			int southIndex = (i - 1) * m_iSizeX + j;
-			if (i == 0)
-				southIndex = m_iSizeX - 1 + j;
-			if (m_vSites[southIndex]->getHeight() >= currentHeight)
-			{
-				m_vSites[currentIndex]->setNeigh(m_vSites[southIndex]);
-			}
-			m_vSites[currentIndex]->setNeighPosition(m_vSites[southIndex], Site::SOUTH);
+    /* All except the boundaries */
+    for (int i = 1; i < m_iSizeY - 1; i++)
+    {
+        for (int j = 1; j < m_iSizeX - 1; j++)
+        {
+            m_vSites[i * m_iSizeX + j]->setNeigh(m_vSites[(i - 1) * m_iSizeX + j]);
+            m_vSites[i * m_iSizeX + j]->setNeighPosition(m_vSites[(i - 1) * m_iSizeX + j], Site::NORTH);
 
-			int northIndex = ((i + 1) % m_iSizeY) * m_iSizeX + j;
-			if (m_vSites[northIndex]->getHeight() >= currentHeight)
-			{
-				m_vSites[currentIndex]->setNeigh(m_vSites[northIndex]);
-			}
-			m_vSites[currentIndex]->setNeighPosition(m_vSites[northIndex], Site::NORTH);
+            m_vSites[i * m_iSizeX + j]->setNeigh(m_vSites[(i + 1) * m_iSizeX + j]);
+            m_vSites[i * m_iSizeX + j]->setNeighPosition(m_vSites[(i + 1) * m_iSizeX + j], Site::SOUTH);
 
-			int eastIndex = (i * m_iSizeX) + (j + 1) % m_iSizeY;
-			if (m_vSites[eastIndex]->getHeight() >= currentHeight)
-			{
-				m_vSites[currentIndex]->setNeigh(m_vSites[eastIndex]);
-			}
-			m_vSites[currentIndex]->setNeighPosition(m_vSites[eastIndex], Site::EAST);
+            m_vSites[i * m_iSizeX + j]->setNeigh(m_vSites[i * m_iSizeX + j + 1]);
+            m_vSites[i * m_iSizeX + j]->setNeighPosition(m_vSites[i * m_iSizeX + j + 1], Site::EAST);
 
-			int westIndex = i * m_iSizeX + j - 1;
-			if (j == 0)
-				westIndex = i * m_iSizeX + (m_iSizeY - 1);
-			if (m_vSites[westIndex]->getHeight() >= currentHeight)
-			{
-				m_vSites[currentIndex]->setNeigh(m_vSites[westIndex]);
-			}
-			m_vSites[currentIndex]->setNeighPosition(m_vSites[westIndex], Site::WEST);
-			if (m_vSites[currentIndex]->getID() == 3581)
-			{
-				cout<<"Num neighbours: "<<m_vSites[currentIndex]->getNeighboursNum();
-				cout<<"No neighbours"<<endl;
-			}
-		}
-	}
+            m_vSites[i * m_iSizeX + j]->setNeigh(m_vSites[i * m_iSizeX + j - 1]);
+            m_vSites[i * m_iSizeX + j]->setNeighPosition(m_vSites[i * m_iSizeX + j - 1], Site::WEST);
+        }
+    }
 
-	/*	int iCount = 0;
-	int pos = 0;
-	while (iCount < 100) {
-		cout << "Enter pos to print neighbours: ";
-		cin >> pos;
-		cout << m_vSites[pos]->getID() << ": " << endl;
+    int iFirstCorner = 0;
+    int iSecondCorner = m_iSizeX - 1;
+    int iThirdCorner = m_iSizeX * m_iSizeY - m_iSizeX;
+    int iForthCorner = m_iSizeX * m_iSizeY - 1;
+
+    /*First row */
+    for (int j = iFirstCorner; j <= iSecondCorner; j++)
+    {
+        if (j != 0 && j != m_iSizeX - 1)
+        {
+            m_vSites[j]->setNeigh(m_vSites[j - 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[j - 1], Site::WEST);
+
+            m_vSites[j]->setNeigh(m_vSites[j + 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[j + 1], Site::EAST);
+
+            m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX]);
+            m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX], Site::SOUTH);
+
+            m_vSites[j]->setNeigh(m_vSites[iThirdCorner + j]);
+            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner + j], Site::NORTH);
+        }
+        else if (j == iFirstCorner)
+        {
+            m_vSites[j]->setNeigh(m_vSites[iSecondCorner]);
+            m_vSites[j]->setNeighPosition(m_vSites[iSecondCorner], Site::WEST);
+
+            m_vSites[j]->setNeigh(m_vSites[1]);
+            m_vSites[j]->setNeighPosition(m_vSites[1], Site::EAST);
+
+            m_vSites[j]->setNeigh(m_vSites[iSecondCorner + 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[iSecondCorner + 1], Site::SOUTH);
+
+            m_vSites[j]->setNeigh(m_vSites[iThirdCorner]);
+            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner], Site::NORTH);
+        }
+        else if (j == iSecondCorner)
+        {
+            m_vSites[j]->setNeigh(m_vSites[j - 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[j - 1], Site::WEST);
+
+            m_vSites[j]->setNeigh(m_vSites[0]);
+            m_vSites[j]->setNeighPosition(m_vSites[0], Site::EAST);
+
+            m_vSites[j]->setNeigh(m_vSites[2 * m_iSizeX - 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[2 * m_iSizeX - 1], Site::SOUTH);
+
+            m_vSites[j]->setNeigh(m_vSites[iForthCorner]);
+            m_vSites[j]->setNeighPosition(m_vSites[iForthCorner], Site::NORTH);
+        }
+    }
+
+    /*Last row */
+    int iPos = 1;
+    for (int j = iThirdCorner; j <= iForthCorner; j++)
+    {
+        if (j != iThirdCorner && j != iForthCorner)
+        {
+            m_vSites[j]->setNeigh(m_vSites[j - 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[j - 1], Site::WEST);
+
+            m_vSites[j]->setNeigh(m_vSites[j + 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[j + 1], Site::EAST);
+
+            m_vSites[j]->setNeigh(m_vSites[iFirstCorner + iPos]);
+            m_vSites[j]->setNeighPosition(m_vSites[iFirstCorner + iPos], Site::SOUTH);
+
+            m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX]);
+            m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX], Site::NORTH);
+            iPos++;
+        }
+        else if (j == iThirdCorner)
+        {
+            m_vSites[j]->setNeigh(m_vSites[iForthCorner]);
+            m_vSites[j]->setNeighPosition(m_vSites[iForthCorner], Site::WEST);
+
+            m_vSites[j]->setNeigh(m_vSites[iThirdCorner + 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner + 1], Site::EAST);
+
+            m_vSites[j]->setNeigh(m_vSites[iFirstCorner]);
+            m_vSites[j]->setNeighPosition(m_vSites[iFirstCorner], Site::SOUTH);
+
+            m_vSites[j]->setNeigh(m_vSites[iThirdCorner - m_iSizeX]);
+            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner - m_iSizeX], Site::NORTH);
+        }
+        else if (j == iForthCorner)
+        {
+            m_vSites[j]->setNeigh(m_vSites[iForthCorner - 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[iForthCorner - 1], Site::WEST);
+
+            m_vSites[j]->setNeigh(m_vSites[iThirdCorner]);
+            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner], Site::EAST);
+
+            m_vSites[j]->setNeigh(m_vSites[iSecondCorner]);
+            m_vSites[j]->setNeighPosition(m_vSites[iSecondCorner], Site::SOUTH);
+
+            m_vSites[j]->setNeigh(m_vSites[iThirdCorner - 1]);
+            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner - 1], Site::NORTH);
+        }
+    }
+
+    /* First column */
+    for (int j = iFirstCorner + m_iSizeX; j < iThirdCorner; j += m_iSizeX)
+    {
+        m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX - 1]);
+        m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX - 1], Site::WEST);
+
+        m_vSites[j]->setNeigh(m_vSites[j + 1]);
+        m_vSites[j]->setNeighPosition(m_vSites[j + 1], Site::EAST);
+
+        m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX]);
+        m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX], Site::SOUTH);
+
+        m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX]);
+        m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX], Site::NORTH);
+    }
+
+    /* Last column */
+    for (int j = iSecondCorner + m_iSizeX; j < iForthCorner; j += m_iSizeX)
+    {
+        m_vSites[j]->setNeigh(m_vSites[j - 1]);
+        m_vSites[j]->setNeighPosition(m_vSites[j - 1], Site::WEST);
+
+        m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX + 1]);
+        m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX + 1], Site::EAST);
+
+        m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX]);
+        m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX], Site::SOUTH);
+
+        m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX]);
+        m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX], Site::NORTH);
+    }
+
+    /*	int iCount = 0;
+    int pos = 0;
+    while (iCount < 100) {
+        cout << "Enter pos to print neighbours: ";
+        cin >> pos;
+        cout << m_vSites[pos]->getID() << ": " << endl;
 //		for (int i = 0; i < 4; i++) {
-			cout << "WEST: " << m_vSites[pos]->getNeighPosition( Site::WEST )->getID()  << endl;
-			cout << "EAST: " << m_vSites[pos]->getNeighPosition(Site::EAST)->getID() << endl;
-			cout << "NORTH: " << m_vSites[pos]->getNeighPosition(Site::NORTH)->getID() << endl;
-			cout << "SOUTH: " << m_vSites[pos]->getNeighPosition(Site::SOUTH)->getID() << endl;
-			//		}
-	}*/
+            cout << "WEST: " << m_vSites[pos]->getNeighPosition( Site::WEST )->getID()  << endl;
+            cout << "EAST: " << m_vSites[pos]->getNeighPosition(Site::EAST)->getID() << endl;
+            cout << "NORTH: " << m_vSites[pos]->getNeighPosition(Site::NORTH)->getID() << endl;
+            cout << "SOUTH: " << m_vSites[pos]->getNeighPosition(Site::SOUTH)->getID() << endl;
+            //		}
+    }*/
 }
-
-Site *BCC::getSite(int id) { return m_vSites[id]; }
 
 void BCC::check()
 {
-	int k = 0;
+    cout << "Checking lattice..." << endl;
 
-	cout << "Checking lattice..." << endl;
-
-	int test = 2;
-	cout << test << ": ";
-	cout << "W:" << getSite(test)->getNeighPosition(Site::WEST)->getID() << " ";
-	cout << "Wu:" << getSite(test)->getNeighPosition(Site::WEST_UP)->getID() << " ";
-	cout << "WD:" << getSite(test)->getNeighPosition(Site::WEST_DOWN)->getID() << " ";
-	cout << "E:" << getSite(test)->getNeighPosition(Site::EAST)->getID() << " ";
-	cout << "EU:" << getSite(test)->getNeighPosition(Site::EAST_UP)->getID() << " ";
-	cout << "ED:" << getSite(test)->getNeighPosition(Site::EAST_DOWN)->getID() << " ";
-	cout << "N:" << getSite(test)->getNeighPosition(Site::NORTH)->getID() << " ";
-	cout << "S:" << getSite(test)->getNeighPosition(Site::SOUTH)->getID() << endl;
-
-	cout << "Activation: " << endl;
-
-	cout << "N:" << getSite(test)->getActivationSite(Site::ACTV_NORTH)->getID() << " ";
-	cout << "S:" << getSite(test)->getActivationSite(Site::ACTV_SOUTH)->getID() << " ";
-	cout << "E:" << getSite(test)->getActivationSite(Site::ACTV_EAST)->getID() << " ";
-	cout << "W:" << getSite(test)->getActivationSite(Site::ACTV_WEST)->getID() << endl;
+    int test = 2;
+    cout << test << ": ";
+    cout << "W:" << getSite(test)->getNeighPosition(Site::WEST)->getID() << " ";\
+    cout << "E:" << getSite(test)->getNeighPosition(Site::EAST)->getID() << " ";
+    cout << "N:" << getSite(test)->getNeighPosition(Site::NORTH)->getID() << " ";
+    cout << "S:" << getSite(test)->getNeighPosition(Site::SOUTH)->getID() << endl;
 }
 
-void BCC::updateNeighbours(Site *site)
+
+void BCC::writeLatticeHeights( double time, int step )
 {
-	int siteHeight = site->getHeight();
+    std::ofstream file("Lattice_" + to_string(step) );
 
-	int totalNeigh = 0;
-	site->m_clearNeighbourList();
+    for (int i = 0; i < m_iSizeY; i++){
+        for (int j = 0; j < m_iSizeX; j++)
+            file << m_vSites[ i*m_iSizeX + j ]->getHeight() << " ";
+        file  << endl;
+    }
 
-	// Check NESW sites, see if the heights are the same. If same, add to list of neighbours.
-	bool isActiveEAST = false;
-	isActiveEAST = siteHeight <= site->getNeighPosition(Site::EAST)->getHeight();
-	if (isActiveEAST)
-	{
-		site->m_addSite(site->getNeighPosition(Site::EAST));
-		totalNeigh++;
-	}
 
-	bool isActiveWEST = false;
-	isActiveWEST = siteHeight <= site->getNeighPosition(Site::WEST)->getHeight();
-	if (isActiveWEST)
-	{
-		site->m_addSite(site->getNeighPosition(Site::WEST));
-		totalNeigh++;
-	}
+    for (int i = 0; i < m_iSizeY; i++){
+        for (int j = 0; j < m_iSizeX; j++)
+            file << m_vSites[ i*m_iSizeX + j ]->getLabel() + to_string( m_vSites[ i*m_iSizeX + j ]->getID() )  << "\t" << "( " << m_vSites[ i*m_iSizeX + j ]->getHeight() << " ) " ;
+        file  << endl;
+    }
 
-	bool isActiveNORTH = false;
-	isActiveNORTH = siteHeight <= site->getNeighPosition(Site::NORTH)->getHeight();
-	if (isActiveNORTH)
-	{
-		site->m_addSite(site->getNeighPosition(Site::NORTH));
-		totalNeigh++;
-	}
+    file.close();
+}
 
-	bool isActiveSOUTH = false;
-	isActiveSOUTH = siteHeight <= site->getNeighPosition(Site::SOUTH)->getHeight();
-	if (isActiveSOUTH)
-	{
-		site->m_addSite(site->getNeighPosition(Site::SOUTH));
-		totalNeigh++;
-	}
+int BCC::calculateNeighNum( int id )
+{
+    int neighs = 1;
+    for ( Site* s:m_vSites[ id ]->getNeighs() ) {
+        if ( s->getHeight() >= m_vSites[ id ]->getHeight() )
+            neighs++;
+    }
+
+    // THIS IS BAD! REFACTOR ....
+    m_vSites[ id ]->setNeighsNum( neighs );
+    return neighs;
 }

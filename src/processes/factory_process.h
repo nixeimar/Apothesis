@@ -25,8 +25,10 @@
 
 /** A factory process (pattern) for creating the processes
  * for the surface processes. */
+namespace MicroProcesses {
+class Process;
+}
 
-namespace MicroProcesses {class Process;}
 class AbstractProcess;
 
 using namespace std;
@@ -41,7 +43,7 @@ public:
     virtual ~FactoryProcess();
 
     /// Register the new process (Store it in the map table since a map table cannot be initialized)
-    static void registerThis(  const string& , AbstractProcess* );
+    static void registerThis( const string& , AbstractProcess* );
 
     /// Create the process
     static MicroProcesses::Process* createProcess( const string& );

@@ -23,20 +23,22 @@
 #include <map>
 #include <list>
 #include <fstream>
-
 #include "pointers.h"
 #include "site.h"
 #include "errorhandler.h"
+#include "species_new.h"
+#include <set>
 
 using namespace std;
-using namespace SurfaceTiles;
 using namespace Utils;
+using namespace SurfaceTiles;
 
 class Lattice: public Pointers
   {
   public:
     /// The type of the lattice.
-       enum Type{ NONE,
+       enum Type{
+               NONE,
                BCC,
                FCC
                };
@@ -51,13 +53,13 @@ class Lattice: public Pointers
     void setType( string );
 
     /// Returns the x dimension of the lattice.
-    virtual int getX() = 0;
+    inline int getX() { return m_iSizeX;} // = 0;
 
     /// Returns the y dimension of the lattice.
-    virtual int getY() = 0;
+    inline int getY(){ return m_iSizeY;}// = 0;
 
     /// Returns the size of the lattice.
-    virtual int getSize() = 0;
+    inline int getSize(){ return m_iSizeX*m_iSizeY; } // = 0;
 
     /// Call update neighbours function;
     virtual void updateNeighbours(Site* site) = 0;
@@ -71,11 +73,11 @@ class Lattice: public Pointers
     /// Returns a site with a specific id.
     Site* getSite( int id);
 
+    /// Returns a site with a specific id as in 2D space.
+    Site* getSite( int i, int j);
+
     /// Returns all the sites of the lattice.
     vector<Site*> getSites();
-
-    /// Various checks if the lattice has been constucted correctly. Partially implemented.
-    void check();
 
     /// Init the lattice.
     void init();
@@ -98,13 +100,31 @@ class Lattice: public Pointers
     //Set true if the lattice has steps
     void setSteps(bool hasSteps);
 
+    /// Set the "cut" of the surface
+    void setOrientation(string s){ m_sOrient = s; }
+
     /// Store the surface step info
     void setStepInfo(int, int, int);
 
-    /// Get the roughness (public function)
-    double getRoughness();
+    //Prints the lattice heights
+    void print();
+    void printNeighNum();
 
-  protected:
+    //Prints the neighbors
+    void printNeighs(int);
+
+    /// Builds a  stepped surface
+    virtual void buildSteps(int, int, int) = 0;
+
+    /// Returns the differnce between the first and last step
+    inline int getStepDiff(){ return m_iStepDiff; }
+
+    /// Write the lattice in XYZ format in a filename
+    virtual void writeXYZ( string filename );
+
+    virtual void writeLatticeHeights( double, int );
+
+protected:
     /// The size of the lattice in the x-dimension.
     int m_iSizeX;
 
@@ -120,23 +140,21 @@ class Lattice: public Pointers
     /// The sites that consist the lattice.
     vector<Site* > m_vSites;
 
-    /// The neighbours for the FCC lattice.
-    virtual void mf_neigh() = 0;
-
     /// True if the lattice has steps (comes from the input file if the Step keyword is found).
     bool m_hasSteps = false;
-
-    ///Build the steps id m_hasSteps is true. 
-    void mf_buildSteps();
 
     //The info for the step surface i.e. [1 20 10]
     int m_iStepX;
     int m_iStepY;
     int m_iStepZ;
 
-    // Calculate the roughness of the lattice
-    double mf_roughness();
+    map< string, set<int > >* m_pProcMap;
 
+    /// The cut of the lattice [ 100, 110, 111 ]
+    string m_sOrient;
+
+    /// The height differences between the first and last step
+    int m_iStepDiff;
   };
 
 #endif // LATTICE_H

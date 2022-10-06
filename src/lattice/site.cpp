@@ -23,97 +23,13 @@
 namespace SurfaceTiles
 {
 
-  Site::Site(Lattice *lattice) : m_phantom(false),
-                                 m_lattice(lattice)
+  Site::Site():m_phantom(false),m_isLowerStep(false), m_isHigherStep(false)
   {
+      vector<Site* > vec;
+      m_m1stNeighs = { {-1, vec}, { 0, vec }, {1, vec }, };
   }
 
-  Site::~Site() { ; }
-
-  vector<Site *> Site::getNeighs()
-  {
-    return m_vNeigh;
-  }
-
-  void Site::setNeigh(Site *s)
-  {
-    m_vNeigh.push_back(s);
-  }
-
-  void Site::setID(int id)
-  {
-    m_iID = id;
-  }
-
-  void Site::setIID(int IID)
-  {
-    m_iIIndex = IID;
-  }
-
-  int Site::getIID()
-  {
-    return m_iIIndex;
-  }
-
-  void Site::setJID(int JID)
-  {
-    m_iJIndex = JID;
-  }
-
-  int Site::getJID()
-  {
-    return m_iJIndex;
-  }
-
-  int Site::getID()
-  {
-    return m_iID;
-  }
-
-  void Site::setHeight(int h)
-  {
-    m_iHeight = h;
-  }
-
-  int Site::getHeight()
-  {
-    return m_iHeight;
-  }
-
-  void Site::increaseHeight(int height)
-  {
-    m_iHeight += height;
-  }
-
-  void Site::setLatticeType(LatticeType type)
-  {
-    m_LatticeType = type;
-  }
-
-  int Site::getNeighboursNum()
-  {
-    return m_vNeigh.size();
-  }
-
-  void Site::setNeighPosition(Site *s, NeighPoisition np)
-  {
-    m_mapNeigh[np] = s;
-  }
-
-  Site *Site::getNeighPosition(NeighPoisition np)
-  {
-    return m_mapNeigh[np];
-  }
-
-  void Site::storeActivationSite(Site *s, ActivationSite as)
-  {
-    m_mapAct[as] = s;
-  }
-
-  Site *Site::getActivationSite(ActivationSite as)
-  {
-    return m_mapAct[as];
-  }
+  Site::~Site() {}
 
   void Site::addSpecies(Species *s)
   {
@@ -177,59 +93,6 @@ namespace SurfaceTiles
       names.push_back((*itr)->getName());
     }
     return names;
-  }
-
-  void Site::addProcess(Process *process)
-  {
-    m_lProcs.push_back(process);
-  }
-
-  void Site::removeProcess(Process *process)
-  {
-    m_lProcs.remove(process);
-  }
-
-  list<Process *> Site::getProcesses()
-  {
-    return m_lProcs;
-  }
-
-  void Site::setPhantom(bool phantom)
-  {
-    m_phantom = phantom;
-  }
-
-  bool Site::isPhantom()
-  {
-    return m_phantom;
-  }
-
-  map<int, int> Site::getSpeciesMap()
-  {
-    return m_mapSpecies;
-  }
-
-  void Site::m_updateNeighbours()
-  {
-    m_lattice->updateNeighbours(this);
-  }
-
-  void Site::m_updateNeighbourList()
-  {
-    // If called on a different site, simply call the respective site's m_updateNeighbours() function
-    vector<Site *> neighbours{getNeighPosition(Site::EAST), getNeighPosition(Site::WEST), getNeighPosition(Site::NORTH), getNeighPosition(Site::SOUTH)};
-    for (int neigh = 0; neigh < neighbours.size(); ++neigh)
-    {
-      neighbours[neigh]->m_updateNeighbours();
-    }
-  }
-
-  void Site::initSpeciesMap(int numSpecies)
-  {
-    for (int i = 0; i < numSpecies; ++i)
-    {
-      m_mapSpecies[i] = 0;
-    }
   }
 
 } // namespace SurfaceTiles

@@ -14,263 +14,143 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
-
 #include "desorption.h"
-#include "register.cpp"
-#include "parameters.h"
 
-namespace MicroProcesses{
-
-Desorption::Desorption
-(
-    Apothesis* instance,
-    string speciesName,
-    Species* species,
-    double energy,
-    double frequency
-)
-:
-m_sName("Desorption"),
-m_iNeighNum(0), 
-m_apothesis(instance),
-m_desorptionSpeciesName(speciesName),
-m_desorptionSpecies(species),
-m_desorptionEnergy(energy),
-m_desorptionFrequency(frequency),
-m_maxNeighbours(5), //TODO: initialize maxneighbours
-m_canDiffuse(false)
+namespace MicroProcesses
 {
-  // Initialize list to state number of sites with n neighbours
-  for(int i = 0; i < m_maxNeighbours; ++i)
-  {
-    m_numNeighbours.push_back(0);
-  }
 
-  m_probabilities = generateProbabilities();
-}
+REGISTER_PROCESS_IMPL(Desorption);
 
+Desorption::Desorption():m_iNeigh(0){}
 Desorption::~Desorption(){}
 
-string Desorption::getName(){ return m_sName; }
-
-const string Desorption::getSpeciesName(){ return m_desorptionSpeciesName; }
-
-const Species* Desorption::getSpecies(){ return m_desorptionSpecies; }
-
-//This should be called only once in the initialization
-void Desorption::activeSites(Lattice* lattice)
+bool Desorption::rules( Site* s)
 {
-
-  m_pLattice = lattice;
-  vector< Site* > vSites = m_pLattice->getSites();
-
-  for ( int i = 0; i < m_pLattice->getSize(); i++)
-    if ( vSites[ i ]->getID()%2 != 0 ) {
-      //m_lDesSites.push_back( vSites[ i ] );
-      vSites[ i ]->addProcess( this );
-      }
+    if ( mf_calculateNeighbors( s ) == any_cast<int>(m_mParams["neighs"] ) )
+        return true;
+    return false;
 }
 
-void Desorption::selectSite()
+void Desorption::perform( Site* s)
 {
-  /* This comes from random i.e. picking from the available list for Desorption randomly */
-  int len = getActiveList().size();
-  int y = rand()%len;
-  int counter = 0;
-  list<Site* >::iterator site = m_lDesSites.begin();
-  for (; site != m_lDesSites.end(); site++ ){
-    if ( counter == y )
-      m_site = (*site);
-    counter++;
+    //For PVD results
+    s->decreaseHeight( 1 );
+    mf_calculateNeighbors( s ) ;
+    m_seAffectedSites.insert( s );
+    for ( Site* neigh:s->getNeighs() ) {
+        mf_calculateNeighbors( neigh );
+        m_seAffectedSites.insert( neigh );
+
+        for ( Site* firstNeigh:neigh->getNeighs() ){
+            firstNeigh->setNeighsNum( mf_calculateNeighbors( firstNeigh ) );
+            m_seAffectedSites.insert( firstNeigh );
+        }
     }
 }
 
-void Desorption::setProcessMap( map< Process*, list<Site* >* >* ){}
-
-void Desorption::perform()
+int Desorption::mf_calculateNeighbors(Site* s)
 {
-  if (m_site->getSpecies().size() == 1)
-  {
-    int height = m_site->getHeight();
-    height = height - 2;
-    m_site->setHeight( height);
-  }
-  
-  int numNeighbours = m_site->getNeighboursNum();
 
-  m_site->removeSpecies(m_apothesis->getSpecies(m_desorptionSpeciesName));
-
-  
-  // If there are no longer any species that can be desorbed, remove from list
-  if (m_apothesis->getNumSpecies() == 1)
-  {
-    return;
-  }
-  else if (m_site->getSpecies().size() == 0)
-  {
-    mf_removeFromList();  
-
-    // Access to diffusion class. If we have no more species, we also can't diffuse
-    getDiffusion()->mf_removeFromList(m_site);
-  }
-  
-  m_site->m_updateNeighbours();
-
-  // Remove count from list of sites that have n number of neighbours
-  updateSiteCounter(numNeighbours, false);
-  
-}
-
-void Desorption::mf_removeFromList() 
-{ 
-  m_lDesSites.remove(m_site); 
-  //TODO: Is this necessary?
-  m_site->removeProcess( this ); 
-}
-
-void Desorption::mf_addToList(Site *s) 
-{ 
-  m_lDesSites.push_back(s); 
-}
-
-
-list<Site*> Desorption::getActiveList()
-{
-  return m_lDesSites;
-}
-
-void Desorption::test()
-{
-  cout << m_lDesSites.size() << endl;
-}
-
-
-double Desorption::getProbability()
-{
-  if ( m_lDesSites.size() == 0 )
-  {
-    return 0;
-  }
-
-  else if (m_site->getSpeciesName().size() == 0)
-  {
-    return 0;
-  }
-  
-  double prob = 0;
-
-  // Calculate probability for each possible value of n
-  for (int i = 0; i < m_maxNeighbours; ++i)
-  {
-    prob += m_probabilities[i] * m_numNeighbours[i];
-  }
-
-  return prob;
-}
-
-vector<double> Desorption::generateProbabilities()
-{
-  /* These are parameters values (I/O) */
-  double dTemp = m_apothesis->pParameters->getTemperature();
-  double dkBoltz = m_apothesis->pParameters->dkBoltz;
-
-  double freq = m_desorptionFrequency;
-  double energy = m_desorptionEnergy/m_apothesis->pParameters->dAvogadroNum;
-
-  vector<double> prob;
-  /* Desorption probability see Lam and Vlachos  */
-  for (int n = 1; n <= m_maxNeighbours; ++n)
-  {
-    prob.push_back( freq*exp(-n*energy/(dkBoltz*dTemp)));
-  }
-
-  return prob;
-}
-
-const double Desorption::getDesorptionEnergy()
-{
-  return m_desorptionEnergy;
-}
-
-const double Desorption::getDesorptionFrequency()
-{
-  return m_desorptionFrequency;
-}
-
-Adsorption* Desorption::getAdsorption()
-{
-  return m_pAdsorption;
-}
-
-void Desorption::setAdsorptionPointer(Adsorption* a)
-{
-  m_pAdsorption = a;
-}
-
-Diffusion* Desorption::getDiffusion()
-{
-  return m_pDiffusion;
-}
-
-void Desorption::setDiffusionPointer(Diffusion* d)
-{
-  m_pDiffusion = d;
-}
-
-bool Desorption::canDiffuse()
-{
-  return m_canDiffuse;
-}
-
-void Desorption::setDiffusion(bool canDiffuse)
-{
-  m_canDiffuse = canDiffuse;
-}
-
-void Desorption::updateSiteCounter(int neighbours, bool addOrRemove)
-{
-  //TODO: better bound checking 
-  if (neighbours < 1)
-  {
-    return;
-  } 
-  // Updates list of number of neighbours each possible site has
-  if (addOrRemove)
-  {
-    m_numNeighbours.at(neighbours-1)++;
-  }
-  else
-  {
-    if (m_numNeighbours[neighbours-1] > 0)
-    {
-      m_numNeighbours[neighbours-1]--;
+    //We do not need to count the neighbours here!!!
+    //We need it only in the rules!
+    int neighs = 1;
+    for ( Site* neigh:s->getNeighs() ) {
+        if ( s->isLowerStep() && neigh->isHigherStep() ){
+            if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
+                neighs++;
+        }
+        else if ( neigh->isLowerStep() && s->isHigherStep() ){
+            if ( neigh->getHeight() >= s->getHeight() - m_pLattice->getStepDiff() + 1 )
+                neighs++;
+        }
+        else {
+            if ( neigh->getHeight() >= s->getHeight() )
+                neighs++;
+        }
     }
-  }
+
+    s->setNeighsNum( neighs );
+    return neighs;
+
+    //For flat surfaces
+/*    int neighs = 1;
+    if ( mf_isInLowerStep( s ) ){
+        for ( Site* neigh:s->getNeighs() ) {
+            if ( mf_isInHigherStep( neigh ) ){
+                if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
+                    neighs++;
+            }
+            else{
+                if ( neigh->getHeight() >= s->getHeight() )
+                    neighs++;
+            }
+        }
+    }
+    else if ( mf_isInHigherStep( s ) ){
+        for ( Site* neigh:s->getNeighs() ) {
+            if ( mf_isInLowerStep( neigh ) ){
+                if ( neigh->getHeight() >= s->getHeight() - (m_pLattice->getStepDiff() + 1 ) )
+                    neighs++;
+            }
+            else{
+                if ( neigh->getHeight() >= s->getHeight() )
+                    neighs++;
+            }
+        }
+    }
+    else {
+        for ( Site* neigh:s->getNeighs() ) {
+            if ( neigh->getHeight() >= s->getHeight() )
+                neighs++;
+        }
+    }
+
+    s->setNeighsNum( neighs );
+
+    return neighs; */
+
+  //For flat surfaces
+/*    int neighs = 1;
+    for ( Site* neigh:s->getNeighs() ) {
+        if ( neigh->getHeight() >= s->getHeight() )
+            neighs++;
+    }
+    return neighs;*/
 }
 
-void Desorption::updateNeighbours(Site* s)
+bool Desorption::mf_isInLowerStep(Site* s)
 {
-  // For all the neighbours of this site remove num sites and update m_numNeighbours
-  vector<Site*> sites = s->getNeighs();
-  //TODO: ensure getNeighs is properly updated within site
-  for(vector<Site*> :: iterator itr = sites.begin(); itr != sites.end(); ++itr)
-  {
-    Site* site = *itr;
-    int currentNeighbours = site->getNeighboursNum();
-    if (currentNeighbours != 0)
-      updateSiteCounter(currentNeighbours, false);
-    m_site = site;
-    // Recalculate the number of sites
-    s->m_updateNeighbours();
-    int updateNeighbours = m_site->getNeighboursNum();
-    if (updateNeighbours != 0)
-      updateSiteCounter(updateNeighbours, true);
-  }
+    for (int j = 0; j < m_pLattice->getY(); j++)
+        if ( s->getID() == m_pLattice->getSite( j, 0 )->getID() )
+            return true;
+
+    return false;
 }
 
-void Desorption::setSite(Site* s)
+bool Desorption::mf_isInHigherStep(Site* s)
 {
-  m_site = s;
+    for (int j = 0; j < m_pLattice->getY(); j++){
+   //     cout<< m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() << endl;
+        if ( s->getID() == m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() ){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+double Desorption::getProbability(){
+
+    //These must trenafered in the global definitions
+    /*--- Taken from  Lam and Vlachos (2000)PHYSICAL REVIEW B, VOLUME 64, 035401 - DOI: 10.1103/PhysRevB.64.035401 ---*/
+    double Na = 6.0221417930e+23;				// Avogadro's number [1/mol]
+    double T = any_cast<double>(m_mParams["T"]); //500;						// [K]
+    double k = any_cast<double>(m_mParams["k"]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
+    double E_d = (7.14e+4)/Na;			// [j]
+    double E = 7e+10/Na;  //71128/Na;   	// [j] -> 17 kcal
+    double v0 = 1.0e+13;				// [s^-1]
+    /*--------------------------------------------------*/
+    return v0*exp(-(double)any_cast<int>(m_mParams["neighs"])*E/(k*T));			//DesorptionSimpleCubic 1 neigh
 }
 
 }

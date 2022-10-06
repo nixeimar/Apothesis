@@ -52,16 +52,13 @@ class Parameters: public Pointers
     inline double getPressure() { return m_dP; }
 
     /// Set the total number of KMC iterations
-    inline void setTime( double time ) 
-    {
-      m_time = time; 
-    }
+   // inline void setIterations( int iter ) { m_iIter = iter; }
 
-    /// Set the total number of KMC iterations
-    inline long double getTime() 
-    {
-      return m_time; 
-    }
+    /// Set the total time for KMC
+    inline void setEndTime( double time ) { m_dTime = time; }
+
+    /// Get the total time
+    inline double getEndTime() { return m_dTime; }
 
     /// The Avogadro number.
     const double dAvogadroNum = 6.022141793e+23;
@@ -73,7 +70,7 @@ class Parameters: public Pointers
     const double dPi = 3.14159265;
 
     /// R value (J/molK)
-    const double dR = 8.3145;
+    const double dUniversalGasConst = 8.3145;
 
     /// Store the processes to be created by the factory method.
     void setProcess(string, vector<double> );
@@ -90,6 +87,9 @@ class Parameters: public Pointers
 
     /// The number of iterations to be performed.
     double m_time;
+
+    /// The time to run kmc.
+    int m_dTime;
 
     /// Stores the processes as read from the input file allong with their parameters.
     map< string,  vector< double> > m_mProcs;

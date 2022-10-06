@@ -24,7 +24,9 @@
 #include <list>
 #include <fstream>
 
+#include "io.h"
 #include "lattice.h"
+#include "species_new.h"
 
 using namespace std;
 using namespace SurfaceTiles;
@@ -46,22 +48,8 @@ public:
 
   void setStepInfo(int sizeX, int sizeY, int sizeZ);
 
-  void mf_buildSteps();
-
   /// Sets the type of the lattice.
   void setType(string);
-
-  /// Returns the x dimension of the lattice.
-  inline int getX() { return m_iSizeX; }
-
-  /// Returns the y dimension of the lattice.
-  inline int getY() { return m_iSizeY; }
-
-  /// Returns the size of the lattice.
-  inline int getSize() { return m_iSizeX * m_iSizeY; }
-
-  /// Returns a site with a specific id.
-  Site *getSite(int id);
 
   /// Various checks if the lattice has been constucted correctly. Partially implemented.
   void check();
@@ -70,25 +58,34 @@ public:
   void init();
 
   /// Build the lattice with an intitial height.
-  void build();
+  void build() override;
 
   /// Sets the minimun initial height for the lattice.
   void setInitialHeight(int height);
 
-  /// Update neighbours
-  void updateNeighbours(Site *s);
+  /// Calculate the number of neighbor based on the height
+  int calculateNeighNum( int id );
+
+  /// Create stepped surface
+  void buildSteps(int, int, int);
+
+  void writeLatticeHeights( double, int );
 
 protected:
-  /// Build the neighbours for the BCC lattice.
+  /// Build the neighbours for the BCC lattice for each site.
   void mf_neigh();
 
   /// Build the neighbours of each site depending on the type of the.
   void mf_buildNeighbours();
 
 private:
-  bool m_hasSteps;
+  bool m_hasSteps = false;
 
   vector<int> m_stepInfo;
+
+  int m_iMinNeigs;
+
+  int m_iSiteNeighsNum;
 };
 
 #endif // LATTICE_H

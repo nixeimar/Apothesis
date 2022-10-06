@@ -35,32 +35,40 @@ class Pointers
 
 public:
     /// Contructor
-    Pointers( Apothesis* apothesis):m_apothesis( apothesis),
+    Pointers( Apothesis* apothesis):m_apothesis(apothesis),
                         m_lattice( apothesis->pLattice),
                         m_io(apothesis->pIO),
-                        m_read(apothesis->pRead),
+                        m_reader(apothesis->pReader),
                         m_errorHandler(apothesis->pErrorHandler),
-                        m_parameters(apothesis->pParameters)
+                        m_parameters(apothesis->pParameters),
+                        m_randomGen( apothesis->pRandomGen ),
+                        m_properties( apothesis->pProperties )
     {}
 
 protected:
-    /// Pointers to the classes of kmc.cpp
+    /// Pointers to the classes of apothesis.cpp
     Apothesis*& m_apothesis;
 
-    /// Pointers to the classes of kmc.cpp
+    /// Pointers to the classes of apothesis.cpp
     Lattice*& m_lattice;
 
-    /// Pointers to the classes of kmc.cpp
+    /// Pointers to the classes of apothesis.cpp
     IO*& m_io;
 
-    /// Pointers to the classes of kmc.cpp
-    Read*& m_read;
+    /// Pointers to the classes of apothesis.cpp
+    Reader*& m_reader;
 
-    /// Pointers to the classes of kmc.cpp
+    /// Pointers to the classes of apothesis.cpp
     Utils::ErrorHandler*& m_errorHandler;
 
     /// Pointers to the classes of kmc.cpp
     Utils::Parameters*& m_parameters;
+
+    /// Random generator
+    RandomGen::RandomGenerator *&m_randomGen;
+
+    /// Random generator
+    Utils::Properties *&m_properties;
 };
 
 #endif // POINTERS_H

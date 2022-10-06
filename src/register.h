@@ -27,14 +27,19 @@ template<class T>
 class Register: public AbstractProcess// Pointers class contains ptrs to master copy of
 {
 public:
-    /// Contructor.
-    Register<T>( const std::string& name);
+    /// Contructor
+//    Register<T>( const std::string& name);
+    Register<T>(const std::string& name):AbstractProcess( name ){}
 
-    /// Destructor.
-    ~Register<T>();
+    /// Destructor
+    virtual ~Register<T>(){}
 
     /// Creator of the process.
-    virtual MicroProcesses::Process* create();
+    //virtual MicroProcesses::Process* create();
+    virtual MicroProcesses::Process* create(){
+        return new T;
+    }
+
 };
 
 #endif // REGISTER_H
