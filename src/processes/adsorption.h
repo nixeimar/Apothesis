@@ -65,7 +65,7 @@ private:
     /// A member function to calculate the neighbors of a given site
     int mf_calculateNeighbors(Site*);
 
-    REGISTER_PROCESS(Adsorption)
+    REGISTER_PROCESS( Adsorption )
 };
 }
 

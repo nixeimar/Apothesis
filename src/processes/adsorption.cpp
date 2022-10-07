@@ -41,6 +41,12 @@ void Adsorption::perform( Site* s )
     for ( Site* neigh:s->getNeighs() ) {
         mf_calculateNeighbors( neigh );
         m_seAffectedSites.insert( neigh ) ;
+
+        //We do not need this in adsorption
+//        for ( Site* firstNeigh:neigh->getNeighs() ){
+//            firstNeigh->setNeighsNum( mf_calculateNeighbors( firstNeigh ) );
+ //            m_seAffectedSites.insert( firstNeigh );
+ //       }
     }
 }
 
@@ -63,10 +69,10 @@ int Adsorption::mf_calculateNeighbors(Site* s)
     }
 
     s->setNeighsNum( neighs );
-    return neighs; // I do not know if we actual need this to be done here ...
+    return neighs;
 
     //For flat surfaces
-    /*    int neighs = 1;
+/*    int neighs = 1;
     if ( mf_isInLowerStep( s ) ){
         for ( Site* neigh:s->getNeighs() ) {
             if ( mf_isInHigherStep( neigh ) ){
@@ -102,8 +108,8 @@ int Adsorption::mf_calculateNeighbors(Site* s)
 
     return neighs;*/
 
-    //For flat surfaces
-    /*    int neighs = 1;
+  //For flat surfaces
+/*    int neighs = 1;
     for ( Site* neigh:s->getNeighs() ) {
         if ( neigh->getHeight() >= s->getHeight() )
             neighs++;
@@ -139,8 +145,7 @@ double Adsorption::getProbability(){
     double k = any_cast<double>(m_mParams["k"]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
     double s0 = any_cast<double>(m_mParams["s0"]); //0.1;
     double C_tot = any_cast<double>(m_mParams["C_tot"]);			// [sites/m^2] Vlachos code says [moles sites/m^2]
-    // Ctot for copper: 2e-19 (see
-    double m = 32e-3/Na;				// [kg/mol] this is the molecular weight
+    double m = 32e-3/Na;				// [kg/mol] this is the molecular wei
     double y = 2.0e-4;					// Mole fraction of the precursor on the wafer
 
     return s0*y*P/(C_tot*sqrt(2.0e0*3.14159265*m*k*T) );
