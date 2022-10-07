@@ -11,7 +11,7 @@
 
 #include "lattice.h"
 #include "FCC.h"
-#include "BCC.h"
+#include "SimpleCubic.h"
 #include "pointers.h"
 #include "apothesis.h"
 #include "errorhandler.h"
