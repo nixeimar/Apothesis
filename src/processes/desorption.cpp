@@ -51,8 +51,6 @@ void Desorption::perform( Site* s)
 int Desorption::mf_calculateNeighbors(Site* s)
 {
 
-    //We do not need to count the neighbours here!!!
-    //We need it only in the rules!
     int neighs = 1;
     for ( Site* neigh:s->getNeighs() ) {
         if ( s->isLowerStep() && neigh->isHigherStep() ){
@@ -147,9 +145,10 @@ double Desorption::getProbability(){
     double T = any_cast<double>(m_mParams["T"]); //500;						// [K]
     double k = any_cast<double>(m_mParams["k"]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
     double E_d = (7.14e+4)/Na;			// [j]
-    double E = 7e+10/Na;  //71128/Na;   	// [j] -> 17 kcal
+    double E = 71128/Na; //any_cast<double>(m_mParams["E"]); //71128/Na;   //(7.14e+4)/Na;			// [j] -> 17 kcal
     double v0 = 1.0e+13;				// [s^-1]
     /*--------------------------------------------------*/
+
     return v0*exp(-(double)any_cast<int>(m_mParams["neighs"])*E/(k*T));			//DesorptionSimpleCubic 1 neigh
 }
 
