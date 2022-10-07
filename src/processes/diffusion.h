@@ -69,7 +69,7 @@ private:
     /// The number of neighbours for calculating the probability
     int m_iNeigh;
 
-    REGISTER_PROCESS(Diffusion)
+    REGISTER_PROCESS( Diffusion )
 };
 
 }
