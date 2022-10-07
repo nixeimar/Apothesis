@@ -15,8 +15,8 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#ifndef BCC_H
-#define BCC_H
+#ifndef SIMPLECUBIC_H
+#define SIMPLECUBIC_H
 
 #include <iostream>
 #include <stdlib.h>
@@ -32,17 +32,17 @@ using namespace std;
 using namespace SurfaceTiles;
 using namespace Utils;
 
-class BCC : public Lattice
+class SimpleCubic : public Lattice
 {
 public:
   /// Constructor
-  BCC(Apothesis *apothesis);
+  SimpleCubic(Apothesis *apothesis);
 
   /// Constructor
-  BCC(Apothesis *apothesis, bool step, vector<int> stepInfo);
+  SimpleCubic(Apothesis *apothesis, bool step, vector<int> stepInfo);
 
   /// Distructor.
-  virtual ~BCC();
+  virtual ~SimpleCubic();
 
   void setSteps(bool hasSteps);
 

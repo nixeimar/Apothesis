@@ -15,23 +15,23 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#include "BCC.h"
+#include "SimpleCubic.h"
 
 #include <map>
 
-BCC::BCC(Apothesis *apothesis) : Lattice(apothesis), m_iMinNeigs(1)
+SimpleCubic::SimpleCubic(Apothesis *apothesis) : Lattice(apothesis), m_iMinNeigs(1)
 {
     ;
 }
 
-BCC::BCC(Apothesis *apothesis, bool step, vector<int> stepInfo) : Lattice(apothesis),
+SimpleCubic::SimpleCubic(Apothesis *apothesis, bool step, vector<int> stepInfo) : Lattice(apothesis),
     m_bHasSteps(step),
     m_stepInfo(stepInfo)
 {
     ;
 }
 
-void BCC::buildSteps(int iSize, int jSize, int kSize)
+void SimpleCubic::buildSteps(int iSize, int jSize, int kSize)
 {
     //e.g. Step 20 1 0
     if ( m_vSites.size()%iSize != 0){
@@ -72,9 +72,9 @@ void BCC::buildSteps(int iSize, int jSize, int kSize)
 }
 
 
-void BCC::setInitialHeight(int height) { m_iHeight = height; }
+void SimpleCubic::setInitialHeight(int height) { m_iHeight = height; }
 
-void BCC::build()
+void SimpleCubic::build()
 {
     if (m_Type == NONE)
     {
@@ -111,25 +111,25 @@ void BCC::build()
     mf_neigh();
 }
 
-BCC::~BCC()
+SimpleCubic::~SimpleCubic()
 {
     for (int i = 0; i < getSize(); i++)
         delete m_vSites[i];
 }
 
-void BCC::setSteps(bool hasSteps)
+void SimpleCubic::setSteps(bool hasSteps)
 {
     m_bHasSteps = hasSteps;
 }
 
-void BCC::setStepInfo(int sizeX, int sizeY, int sizeZ)
+void SimpleCubic::setStepInfo(int sizeX, int sizeY, int sizeZ)
 {
     m_iStepX = sizeX;
     m_iStepY = sizeY;
     m_iStepZ = sizeZ;
 }
 
-void BCC::mf_neigh()
+void SimpleCubic::mf_neigh()
 {
     /* All except the boundaries */
     for (int i = 1; i < m_iSizeY - 1; i++)
@@ -298,7 +298,7 @@ void BCC::mf_neigh()
     }*/
 }
 
-void BCC::check()
+void SimpleCubic::check()
 {
     cout << "Checking lattice..." << endl;
 
@@ -311,7 +311,7 @@ void BCC::check()
 }
 
 
-void BCC::writeLatticeHeights( double time, int step )
+void SimpleCubic::writeLatticeHeights( double time, int step )
 {
     std::ofstream file("Lattice_" + to_string(step) );
 
@@ -331,7 +331,7 @@ void BCC::writeLatticeHeights( double time, int step )
     file.close();
 }
 
-int BCC::calculateNeighNum( int id )
+int SimpleCubic::calculateNeighNum( int id )
 {
     int neighs = 1;
     for ( Site* s:m_vSites[ id ]->getNeighs() ) {

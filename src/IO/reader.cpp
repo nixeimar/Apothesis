@@ -107,13 +107,13 @@ void Reader::initializeLattice(){
     {
       if (m_bSteps)
       {
-        BCC *lattice = new BCC(m_apothesis, true, m_vSteps);
+        SimpleCubic *lattice = new SimpleCubic(m_apothesis, true, m_vSteps);
         m_apothesis->pLattice = lattice;
 
       }
       else
       {
-        BCC *lattice = new BCC(m_apothesis);
+        SimpleCubic *lattice = new SimpleCubic(m_apothesis);
         m_apothesis->pLattice = lattice;
       }
       m_lattice->setType("BCC");

@@ -59,24 +59,14 @@ Apothesis::Apothesis(int argc, char *argv[])
     // Create input instance
     pIO = new IO(this);
     pReader = new Reader(this);
-    pReader->setInputPath("./input.txt");
-    pReader->parseFile();
 
-    //FOR the FCC case
-    // Build the lattice. This should always follow the read input
-    //    std::cout << "Building the lattice" << std::endl;
-    //   pLattice->setOrientation("110");
-    //  pLattice->build();
+    //This should come from the user
+    pReader->setInputPath("./input.kmc");
+    pReader->parseFile();
 
     //For building with steps surface. Works only for simple cubic
     //pLattice->buildSteps( 20, 1, 0);
     pLattice->build();
-
-    std::cout << "Finished building the lattice" << std::endl;
-
-    std::cout << "Building the lattice" << std::endl;
-    pLattice->build();
-//    pIO->writeLatticeHeights();
     std::cout << "Finished building the lattice" << std::endl;
 
     // initialize number of species

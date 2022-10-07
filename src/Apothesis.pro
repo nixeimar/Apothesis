@@ -23,6 +23,7 @@ HEADERS += apothesis.h \
            IO/cml_reader.h \
            IO/reader.h \
            IO/xyz_reader.h \
+           lattice/SimpleCubic.h \
            processes/adsorption.h \
            aux/random_generator.h \
            aux/randomc.h \
@@ -31,7 +32,6 @@ HEADERS += apothesis.h \
            properties.h \
            register.h \
            error/errorhandler.h \
-           lattice/BCC.h \
            lattice/FCC.h \
            lattice/lattice.h \
            lattice/site.h \
@@ -52,13 +52,13 @@ SOURCES += apothesis.cpp \
            IO/xyz_reader.cpp \
            aux/mersenne.cpp \
            aux/random_generator.cpp \
+           lattice/SimpleCubic.cpp \
            lattice/lattice.cpp \
            main.cpp \
            processes/abstract_process.cpp \
            processes/reaction_new.cpp \
            properties.cpp \
            error/errorhandler.cpp \
-           lattice/BCC.cpp \
            lattice/FCC.cpp \
            lattice/site.cpp \
            processes/adsorption.cpp \
