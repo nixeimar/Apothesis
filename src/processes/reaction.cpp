@@ -15,21 +15,21 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#include "reaction_new.h"
+#include "reaction.h"
 //#include "species_new.cpp"
 
-reaction_new::reaction_new(){}
-reaction_new::~reaction_new(){}
+reaction::reaction(){}
+reaction::~reaction(){}
 
 
-void reaction_new::addReactants( const double coeff, species_new* species ){
+void reaction::addReactants( const double coeff, species_new* species ){
     pair<double, species_new*> data;
     data.first = coeff;
     data.second = species;
     m_vpReactants.push_back( data );
 }
 
-void reaction_new::addProducts( const double coeff, species_new* species ){
+void reaction::addProducts( const double coeff, species_new* species ){
     pair<double, species_new*> data;
     data.first = coeff;
     data.second = species;
@@ -37,7 +37,7 @@ void reaction_new::addProducts( const double coeff, species_new* species ){
 }
 
 
-void reaction_new::print()
+void reaction::print()
 {
     int iCount = 0;
     for ( pair<double, species_new*> &p:m_vpReactants){

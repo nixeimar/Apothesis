@@ -17,10 +17,19 @@
 #include "errorhandler.h"
 #include "parameters.h"
 
+#include "factory_process.h"
+#include "adsorption.h"
+#include "desorption.h"
+#include "diffusion.h"
+#include "reaction.h"
+
 #define EXIT { printf("Apothesis terminated. \n"); exit( EXIT_FAILURE ); }
 
 using namespace std;
 using namespace Utils;
+
+//The reader should return a Map with the processes & a Map with the physical parameters (T, P etc)
+
 
 class Reader: public Pointers
 {
@@ -257,10 +266,11 @@ private:
     ///Diffusion
     bool m_bisDiffusion(vector<string>,vector<string>);
 
+    /// The process list which holds all the processes defined by the user.
+    list<MicroProcesses::Process*> m_processes;
+
     ///Apothesis member variable
     Apothesis * m_apothesis;
-
-
 };
 
 #endif // TXTREADER_H

@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class reaction_new;
+class reaction;
 
 class species_new
 {
@@ -22,8 +22,8 @@ public:
     inline void setID( int id ){ m_iID = id; }
     inline int getID(){ return m_iID; }
 
-    void addReaction( reaction_new* reaction );
-    vector< reaction_new* > getReactions();
+    void addReaction( reaction* reaction );
+    vector< reaction* > getReactions();
 
     inline void setMaxReacCoreff( double maxCoeff ){ m_dMaxCoeff = maxCoeff; }
     inline double getMaxReacCoreff(){ return m_dMaxCoeff; }
@@ -36,7 +36,7 @@ private:
     int m_iID;
 
     /// The reactions that species participates in
-    vector< reaction_new* > m_vReactions;
+    vector< reaction* > m_vReactions;
 
     /// This is the maximun number of the coefficient
     /// that this species participates in a reaction

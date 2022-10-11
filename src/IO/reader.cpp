@@ -17,6 +17,7 @@ void Reader::parseFile(){
         {
             m_fsetLattice(vsTokens);
         }
+
         if (vsTokens[0].compare(m_sReadKey) == 0)
         {
             //Cml reader constructor
@@ -247,6 +248,9 @@ void Reader::m_fsetProcesses(vector<string> lines){
         m_fidentifyProcess(line,procId);
         procId++;
     }
+
+    int j = 0;
+
 }
 
 void Reader::m_fidentifyProcess(string processKey, int id){
@@ -260,6 +264,22 @@ void Reader::m_fidentifyProcess(string processKey, int id){
 
     string procName;
     if(m_bisAdsorption(reactants)){
+
+        //To Christianna: Check this
+
+        //What are the parameters for adsorption:
+        //Type: default simple (other should be e.g. Arrhenius type)
+        //Mole fraction (if simple):  default = 1.0
+        //Sticking (if simple): default = 1.0
+        //Number of sites to occupy: default = 1 (taken from the stoichiometry)
+
+        m_processes.push_front( FactoryProcess::createProcess("Adsorption") );
+        m_processes.front()->setParameter("f", 0.1);
+        m_processes.front()->setParameter("simple", true);
+        m_processes.front()->setParameter("site", "A");
+        m_processes.front()->setParameter("sticking", "A");
+        m_processes.front()->setParameter("ctot", 1e-13);
+
         procName="Adsorption"+to_string(id);
     }else if(m_bisDesorption(products)){
         procName="Desorption"+to_string(id);

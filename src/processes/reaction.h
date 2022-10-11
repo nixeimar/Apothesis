@@ -15,8 +15,8 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#ifndef REACTION_NEW_H
-#define REACTION_NEW_H
+#ifndef REACTION_H
+#define REACTION_H
 
 #include <iostream>
 #include <string>
@@ -27,11 +27,11 @@
 
 using namespace std;
 
-class reaction_new: public Process
+class reaction: public Process
 {
 public:
-    reaction_new();
-    ~reaction_new();
+    reaction();
+    ~reaction();
 
     inline vector< pair < double, species_new* > > getReactants(){ return m_vpReactants; }
     inline vector< pair < double, species_new* > > getproducts(){ return m_vpProducts; }

@@ -65,14 +65,14 @@ public:
     inline void setID( int id ){ m_iID = id; }
     inline int getID(){ return m_iID; }
 
-    inline void setTargetSite( int id );
+//    inline void setTargetSite( int id );
 
     inline void setLattice( Lattice* lattice ){ m_pLattice = lattice; }
 
     /// Counts how many times this process happens
     inline void eventHappened(){ m_iHappened++; }
 
-    /// Returns how many times this process happens
+    /// Returns how many times this process happened
     int getNumEventHappened(){ return m_iHappened; }
 
     /// Insert a parameter for this process
