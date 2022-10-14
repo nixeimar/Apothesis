@@ -64,10 +64,7 @@ Apothesis::Apothesis(int argc, char *argv[])
     pReader->setInputPath("./input.kmc");
     pReader->parseFile();
 
-    //For building with steps surface. Works only for simple cubic
-    //pLattice->buildSteps( 20, 1, 0);
-    pLattice->build();
-    std::cout << "Finished building the lattice" << std::endl;
+
 
     // initialize number of species
     m_nSpecies = 0;
@@ -93,31 +90,56 @@ void Apothesis::init()
     // Initialize Random generator.
     pRandomGen->init( 21321200 );
 
+
+    for(const auto& [key,value]:pReader->getSpecies()){
+        Species *s = new Species(key, value, m_nSpecies);
+        m_nSpecies++;
+        m_species[key] = s;
+        if (pReader->getLatticeSpecies()==key)
+            pLattice->setSpecies(s);
+
+    }
+
+    //For building with steps surface. Works only for simple cubic
+    //pLattice->buildSteps( 20, 1, 0);
+    pLattice->build();
+    std::cout << "Finished building the lattice" << std::endl;
+
+
+    /*
+    map<string,vector<double>> procEnergetics=pReader->getProcEnergetics();
+    map<string,vector<double>> procStoichiometry=pReader->getProcStoichiometry();
+
+    for(const auto& [key,value]:pReader->getProcSpecies()){
+        vector<double> energetics=procEnergetics[key];
+        vector<string> species=value;
+        if(pReader->contains(key,"Adsorption")){
+            cout << key << " "<< "Adsorption" <<" " << species[0]<<  endl;
+            Adsorption *a = new Adsorption(this, species[0], m_species[species[0]], energetics[0], energetics[1], false);
+            m_vProcesses.push_back(a);
+        }
+        else if(pReader->contains(key,"Desorption")){
+            cout << key << " "<< "Desorption" << endl;
+            Desorption *ds = new Desorption(this, species[0], m_species[species[0]], energetics[0], energetics[1]);
+            m_vProcesses.push_back(ds);
+        }
+        else if(pReader->contains(key,"Diffusion")){
+            cout << key << " "<< "Diffusion" << endl;
+            Diffusion *df = new Diffusion(this, species[0], energetics[0], energetics[1]);
+            m_vProcesses.push_back(df);
+        }else{
+            cout << key << " "<< "Reaction" << endl;
+            //SurfaceReaction *sr = new SurfaceReaction(this, m_species[species[0]], procStoichiometry[key], energetics[0], energetics[1], false);
+            //m_vProcesses.push_back(sr);
+        }
+    }*/
+
     //To Deifilia: This must be created for each process in order to pass
     //the parameters from the input file to the porcess
     map<string, any> params;
-
-//        params.insert( {"T", 473.} );
-//        params.insert( {"f", 0.0000593894333333333} ); //
-//       params.insert( {"s0",  0.0262442285521079} ); //
-
     params.insert( {"T", 533.} );
     params.insert( {"f", 0.0000340636296296296} ); //Arrhenius
     params.insert( {"s0", 0.137295210293006} ); //Arrhenius
-
-//    params.insert( {"f", 0.0000397675925925926} ); //LH
-//    params.insert( {"s0", 0.0976139043395484} ); //LH
-
-    //    params.insert( {"T", 573.} );
-    //   params.insert( {"f", 0.0000399932074074074} ); //LH
-    //    params.insert( {"s0", 0.0946803966934485} ); //LH
-
-  //  params.insert( {"T", 623.} );
-  //  params.insert( {"f", 0.000012289962962963} );//Arrhenius
-//   params.insert( {"s0", 0.670471054574958} ); //Arrhenius
-
-//      params.insert( {"f", 0.0000401917740740741} ); //LH
-//      params.insert( {"s0", 0.0913294779849493} ); //LH
 
     params.insert( {"P", 1333.22} );
     params.insert( {"C_tot", 2.0e+19} ); //For Cu

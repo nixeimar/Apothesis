@@ -40,6 +40,7 @@ public:
     explicit Reader(Apothesis *apothesis): Pointers(apothesis),
         m_sBuildKey("build_lattice"),
         m_sReadKey("read_lattice"),
+        m_sLatticeKey("lattice_species"),
         m_sStepKey("steps"),
         m_sNSpeciesKey("nspecies"),
         m_sNProcKey("nprocesses"),
@@ -52,7 +53,7 @@ public:
         //Initialize the map for the lattice
         m_apothesis=apothesis;
         m_LatticeType["NONE"] = Lattice::NONE;
-        m_LatticeType["BCC"] = Lattice::BCC;
+        m_LatticeType["SimpleCubic"] = Lattice::SimpleCubic;
         m_LatticeType["FCC"] = Lattice::FCC;
     }
 
@@ -121,6 +122,9 @@ public:
     ///retunrs simulation debug mode
     string getDebugMode();
 
+    /// Returns species that consist the lattice
+    string getLatticeSpecies();
+
     /// Returns species map species name and mw
     map<string,double> getSpecies();
 
@@ -153,6 +157,9 @@ private:
 
     /// Step lattice keyword
     string m_sStepKey;
+
+    /// Lattice species keyword
+    string m_sLatticeKey;
 
     /// Read lattice from file keyword
     string m_sReadKey;
@@ -212,6 +219,9 @@ private:
     /// Lattice build steps
     vector<int> m_vSteps;
 
+    /// The type of lattice
+    string m_sLatticeSpecies;
+
     /// Do lattice build steps
     bool m_bSteps;
 
@@ -220,6 +230,9 @@ private:
 
     /// Set lattice info
     void m_fsetLattice(vector<string>);
+
+    /// Set lattice species
+    void m_fsetLatticeSpecies(string);
 
     /// Set species info
     void m_fsetSpecies(vector<string>);

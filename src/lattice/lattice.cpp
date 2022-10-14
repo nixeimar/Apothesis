@@ -26,8 +26,8 @@ void Lattice::setType(string sType)
 {
     if (sType == "FCC")
         m_Type = FCC;
-    else if (sType == "BCC")
-        m_Type = BCC;
+    else if (sType == "SimpleCubic")
+        m_Type = SimpleCubic;
     else
         m_Type = NONE;
 }
@@ -37,6 +37,8 @@ void Lattice::setX(int x) { m_iSizeX = x; }
 void Lattice::setY(int y) { m_iSizeY = y; }
 
 void Lattice::setInitialHeight(int height) { m_iHeight = height; }
+
+void Lattice::setSpecies(Species * s) { m_pSpecies = s; }
 
 Lattice::~Lattice()
 {
@@ -53,8 +55,8 @@ Lattice::Type Lattice::getType()
     {
     case FCC:
         return FCC;
-    case BCC:
-        return BCC;
+    case SimpleCubic:
+        return SimpleCubic;
     default:
         return NONE;
     }

@@ -28,7 +28,7 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
 {
     //Initialize the map for the lattice
     m_mLatticeType[ "NONE" ] = Lattice::NONE;
-    m_mLatticeType[ "BCC" ] = Lattice::BCC;
+    m_mLatticeType[ "SimpleCubic" ] = Lattice::SimpleCubic;
     m_mLatticeType[ "FCC" ] = Lattice::FCC;
 }
 

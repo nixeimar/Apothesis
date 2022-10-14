@@ -39,7 +39,7 @@ class Lattice: public Pointers
     /// The type of the lattice.
        enum Type{
                NONE,
-               BCC,
+               SimpleCubic,
                FCC
                };
 
@@ -51,6 +51,9 @@ class Lattice: public Pointers
 
     /// Sets the type of the lattice.
     void setType( string );
+
+    /// Sets the species on lattice sites.
+    void setSpecies(Species*);
 
     /// Returns the x dimension of the lattice.
     inline int getX() { return m_iSizeX;} // = 0;
@@ -149,6 +152,8 @@ protected:
     int m_iStepZ;
 
     map< string, set<int > >* m_pProcMap;
+
+    Species * m_pSpecies;
 
     /// The cut of the lattice [ 100, 110, 111 ]
     string m_sOrient;

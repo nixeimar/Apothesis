@@ -17,11 +17,14 @@ void Reader::parseFile(){
         {
             m_fsetLattice(vsTokens);
         }
-
         if (vsTokens[0].compare(m_sReadKey) == 0)
         {
             //Cml reader constructor
             //xyz reader constructor
+        }
+        if (vsTokens[0].compare(m_sLatticeKey) == 0)
+        {
+            m_fsetLatticeSpecies(vsTokens[1]);
         }
 
         if(vsTokens[0].compare(m_sNSpeciesKey)==0){
@@ -104,7 +107,7 @@ void Reader::initializeLattice(){
       }
 
     }
-    case Lattice::BCC:
+    case Lattice::SimpleCubic:
     {
       if (m_bSteps)
       {
@@ -207,6 +210,13 @@ void Reader::m_fsetLattice(vector<string> vsTokens){
     }
 }
 
+
+void Reader::m_fsetLatticeSpecies(string token){
+
+    m_sLatticeSpecies=token;
+    std::cout << "lattice species : "<< m_sLatticeSpecies << std::endl;
+}
+
 void Reader::m_fsetSteps(vector<string> vsTokens){
     m_bSteps=false;
     if (isNumber(vsTokens[1]) && isNumber(vsTokens[2]) && isNumber(vsTokens[3]))
@@ -248,9 +258,6 @@ void Reader::m_fsetProcesses(vector<string> lines){
         m_fidentifyProcess(line,procId);
         procId++;
     }
-
-    int j = 0;
-
 }
 
 void Reader::m_fidentifyProcess(string processKey, int id){
@@ -273,12 +280,12 @@ void Reader::m_fidentifyProcess(string processKey, int id){
         //Sticking (if simple): default = 1.0
         //Number of sites to occupy: default = 1 (taken from the stoichiometry)
 
-        m_processes.push_front( FactoryProcess::createProcess("Adsorption") );
-        m_processes.front()->setParameter("f", 0.1);
-        m_processes.front()->setParameter("simple", true);
-        m_processes.front()->setParameter("site", "A");
-        m_processes.front()->setParameter("sticking", "A");
-        m_processes.front()->setParameter("ctot", 1e-13);
+        //m_processes.push_front( FactoryProcess::createProcess("Adsorption") );
+        //m_processes.front()->setParameter("f", 0.1);
+        //m_processes.front()->setParameter("simple", true);
+        //m_processes.front()->setParameter("site", "A");
+        //m_processes.front()->setParameter("sticking", "A");
+        //m_processes.front()->setParameter("ctot", 1e-13);
 
         procName="Adsorption"+to_string(id);
     }else if(m_bisDesorption(products)){
@@ -711,6 +718,10 @@ double Reader::getTime(){
 
 string Reader::getDebugMode(){
     return m_sDebugMode;
+}
+
+string Reader::getLatticeSpecies(){
+    return m_sLatticeSpecies;
 }
 
 map<string,double> Reader::getSpecies(){

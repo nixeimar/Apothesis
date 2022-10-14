@@ -105,6 +105,8 @@ void SimpleCubic::build()
         {
             m_vSites[j]->setID(j);
             m_vSites[j]->setHeight(m_iHeight - 1);
+            m_vSites[j]->addSpecies(m_pSpecies);
+
         }
     }
 
