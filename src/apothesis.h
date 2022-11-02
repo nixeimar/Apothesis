@@ -28,6 +28,7 @@
 #include "species_new.h"
 #include "species/species.h"
 
+//Checking
 
 #define EXIT { printf("Apothesis terminated. \n"); exit( EXIT_FAILURE ); }
 
