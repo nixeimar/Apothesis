@@ -86,6 +86,7 @@ void Reader::openInputFile(string path){
     }
 }
 
+//Todo: Remove this from here!  It is initialization ...
 void Reader::initializeLattice(){
 
     switch (m_LatticeType[m_sLatticeType])
@@ -120,7 +121,7 @@ void Reader::initializeLattice(){
         SimpleCubic *lattice = new SimpleCubic(m_apothesis);
         m_apothesis->pLattice = lattice;
       }
-      m_lattice->setType("BCC");
+      m_lattice->setType("SimpleCubic");
 
       break;
     }
@@ -136,8 +137,6 @@ void Reader::initializeLattice(){
     m_lattice->setX(m_vLatticeDims[0]);
     m_lattice->setY(m_vLatticeDims[1]);
     m_lattice->setInitialHeight(m_vLatticeDims[2]);
-
-
 }
 
 vector<string> Reader::inputFileLines()
@@ -160,11 +159,11 @@ vector<string> Reader::inputFileLines()
       continue;
 
     //We do not care about comments.
-    if (startsWith(vsTokens[0], m_sCommentLine))
+    if (startsWith( vsTokens[0], m_sCommentLine))
       continue;
 
     //Fill the vector
-    lines.push_back(line);
+    lines.push_back( line );
 
   }
   return lines;
@@ -218,6 +217,7 @@ void Reader::m_fsetLatticeSpecies(string token){
 }
 
 void Reader::m_fsetSteps(vector<string> vsTokens){
+
     m_bSteps=false;
     if (isNumber(vsTokens[1]) && isNumber(vsTokens[2]) && isNumber(vsTokens[3]))
     {
@@ -246,9 +246,7 @@ void Reader::m_fsetSpecies(vector<string> lines){
                 m_errorHandler->error_simple_msg("Missing mw for species "+ vsTokens[0] + "is not a number");
             }
         }
-
     }
-
 }
 
 void Reader::m_fsetProcesses(vector<string> lines){
@@ -425,7 +423,6 @@ string Reader::lcMatch(string X, vector<string> vsY)
     return mMatches[maxKey];
 
 }
-
 
 void Reader::m_fsetTime(string time){
     if (isNumber(time))

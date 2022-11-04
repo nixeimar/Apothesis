@@ -23,7 +23,10 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sLattice("lattice"),
     m_sTemperature("temperature"),
     m_sPressure("pressure"),
-    m_sTime("Time"),
+    m_sTime("time"),
+    m_sSteps("steps"),
+    m_sRandom("random"),
+    m_sSpecies("species"),
     m_sCommentLine("#")
 {
     //Initialize the map for the lattice
@@ -34,7 +37,7 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
 
 IO::~IO(){}
 
-void IO::init( int argc, char* argv[] )
+void IO::init(int argc, char* argv[])
 {
     openInputFile("input.kmc");
 }
@@ -44,11 +47,12 @@ string IO::getInputPath() const {;}
 
 void IO::readInputFile()
 {
-
-    list< string > lKeywords{ m_sLattice, m_sProcess, m_sPressure, m_sTemperature, m_sTime };
+    list< string > lKeywords{ m_sLattice, m_sProcess, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies };
 
     string sLine;
     while ( getline( m_InputFile, sLine ) ) {
+
+        cout << sLine << endl;
 
         // Remove any tabs, weird spaces etc.
         sLine = simplified( sLine );
@@ -112,6 +116,26 @@ void IO::readInputFile()
             }
         }
 
+        if ( vsTokens[ 0].compare(  m_sSteps ) == 0 ){
+            m_lattice->setSteps( true );
+
+            if ( isNumber( vsTokens[ 1 ] ) ){
+                m_lattice->setStepX( toInt( vsTokens[ 1 ] ) );
+            }
+            else {
+                m_errorHandler->error_simple_msg("The x dimension of step is not a number.");
+                EXIT;
+            }
+
+            if ( isNumber( vsTokens[ 2 ] ) ){
+                m_lattice->setStepY( toInt( vsTokens[ 2 ] ) );
+            }
+            else {
+                m_errorHandler->error_simple_msg("The y dimension of step is not a number.");
+                EXIT;
+            }
+        }
+
         if ( vsTokens[ 0].compare(  m_sTemperature ) == 0 ){
             if ( isNumber( vsTokens[ 1 ] ) ){
                 m_parameters->setTemperature( toDouble( vsTokens[ 1] ) );
@@ -141,6 +165,11 @@ void IO::readInputFile()
                 m_errorHandler->error_simple_msg("Could not read number of KMC iterations from input file. Is it a number?");
                 EXIT;
             }
+        }
+
+
+        if ( vsTokens[ 0].compare( m_sRandom ) == 0){
+
         }
 
         if ( vsTokens[ 0].compare( m_sProcess ) == 0){
@@ -395,7 +424,7 @@ bool IO::openOutputFile( string name )
 
     m_errorHandler->error_simple_msg( "Cannot open file log for writting." ) ;
     exit(-1);
-//    return false;
+    //    return false;
 }
 
 
@@ -444,7 +473,7 @@ void IO::writeLatticeHeights( double time, int timeStep )
     }
 
     // This must be formatted output.
-/*    m_OutFile << " --------------------------------------- " << endl;
+    /*    m_OutFile << " --------------------------------------- " << endl;
     for ( int i = 0; i < m_lattice->getX(); i++)
     {
         for (int j = 0;  j < m_lattice->getY(); j++)

@@ -55,16 +55,11 @@ Apothesis::Apothesis(int argc, char *argv[])
     pRandomGen = new RandomGen::RandomGenerator( this );
 
     /* This must be constructed before the input */
+    pLattice = new SimpleCubic(this);
 
     // Create input instance
     pIO = new IO(this);
-    pReader = new Reader(this);
-
-    //This should come from the user
-    pReader->setInputPath("./input.kmc");
-    pReader->parseFile();
-
-
+    pIO->init(m_iArgc, m_vcArgv);
 
     // initialize number of species
     m_nSpecies = 0;
@@ -79,32 +74,13 @@ Apothesis::~Apothesis()
 
 void Apothesis::init()
 {
-    cout << "Opening output file" << endl;
-    /// The output file name will come from the user and will have the extenstion .log
-    /// This would come as a parameter from the user from the args (also the input).
-    /// Now both are hard copied.
+    pIO->readInputFile();
 
     if (!pIO->outputOpen())
         pIO->openOutputFile("Output");
 
     // Initialize Random generator.
-    pRandomGen->init( 21321200 );
-
-
-    for(const auto& [key,value]:pReader->getSpecies()){
-        Species *s = new Species(key, value, m_nSpecies);
-        m_nSpecies++;
-        m_species[key] = s;
-        if (pReader->getLatticeSpecies()==key)
-            pLattice->setSpecies(s);
-
-    }
-
-    //For building with steps surface. Works only for simple cubic
-    //pLattice->buildSteps( 20, 1, 0);
-    pLattice->build();
-    std::cout << "Finished building the lattice" << std::endl;
-
+    pRandomGen->init( pParameters->getRandGenInit() );
 
     /*
     map<string,vector<double>> procEnergetics=pReader->getProcEnergetics();
@@ -163,6 +139,7 @@ void Apothesis::init()
     pos.first->first->setRandomGen( pRandomGen );
     auto des = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
     des.first->first->setName("DesorptionSimpleCubic4sMulti");
+
 //    des.first->first->setConstant( true );
     des.first->first->init( params );
     des.first->first->setLattice( pLattice );
@@ -177,107 +154,19 @@ void Apothesis::init()
         }
     } <---------------- */
 
-
-        auto pos = m_processMap.insert( { FactoryProcess::createProcess("AdsroptionSimpleCubic4sMulti"), emptySet } );
-        pos.first->first->setName("AdsortpionSimpleCubinc4SMulti");
-        pos.first->first->init( params );
-        pos.first->first->setLattice( pLattice );
-        pos.first->first->setRandomGen( pRandomGen );
-
-        auto des = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-        des.first->first->setName("0Neighs");
-    //    des.first->first->setConstant( true );
-        des.first->first->init( params );
-        des.first->first->setLattice( pLattice );
-        des.first->first->setRandomGen( pRandomGen );
-        des.first->first->setNeighs( 0 );
-
-        auto des1 = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-        des1.first->first->setName("1Neighs");
-    //    des.first->first->setConstant( true );
-        des1.first->first->init( params );
-        des1.first->first->setLattice( pLattice );
-        des1.first->first->setRandomGen( pRandomGen );
-        des1.first->first->setNeighs( 1 );
-
-        auto des2 = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-        des2.first->first->setName("2Neighs");
-    //    des.first->first->setConstant( true );
-        des2.first->first->init( params );
-        des2.first->first->setLattice( pLattice );
-        des2.first->first->setRandomGen( pRandomGen );
-        des2.first->first->setNeighs( 2 );
-
-        auto des3 = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-        des3.first->first->setName("3Neighs");
-    //    des.first->first->setConstant( true );
-        des3.first->first->init( params );
-        des3.first->first->setLattice( pLattice );
-        des3.first->first->setRandomGen( pRandomGen );
-        des3.first->first->setNeighs( 3 );
-
-        auto des4 = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-        des4.first->first->setName("4Neighs");
-    //    des.first->first->setConstant( true );
-        des4.first->first->init( params );
-        des4.first->first->setLattice( pLattice );
-        des4.first->first->setRandomGen( pRandomGen );
-        des4.first->first->setNeighs( 4 );
-
-        auto des5 = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-        des5.first->first->setName("5Neighs");
-    //    des.first->first->setConstant( true );
-        des5.first->first->init( params );
-        des5.first->first->setLattice( pLattice );
-        des5.first->first->setRandomGen( pRandomGen );
-        des5.first->first->setNeighs( 5 );
-
-        auto des6 = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-        des6.first->first->setName("6Neighs");
-    //    des.first->first->setConstant( true );
-        des6.first->first->init( params );
-        des6.first->first->setLattice( pLattice );
-        des6.first->first->setRandomGen( pRandomGen );
-        des6.first->first->setNeighs( 6 );
-
-        for ( Site* s:pLattice->getSites() )
-            s->setLabel("Cu"); // in all cases we start with Cu
-
-        for ( auto &p:m_processMap){
-            cout << p.first->getName() << endl;
-            for ( Site* s:pLattice->getSites() ){
-                if ( p.first->rules( s ) )
-                    p.second.insert( s );
-            }
-        }
-
-
-    /*    auto pos = m_processMap.insert( { FactoryProcess::createProcess("AdsortpionFCC1102SMulti"), emptySet } );
-    pos.first->first->setName("AdsortpionFCC1102SMulti");
-    pos.first->first->init( params );
-    pos.first->first->setLattice( pLattice );
-    pos.first->first->setRandomGen( pRandomGen );
-    auto des = m_processMap.insert( { FactoryProcess::createProcess("DesorptionFCC110Multi"), emptySet } );
-    string name = "Desorption HAMD"; //+ std::to_string( i );
-    des.first->first->setName( name );
-    des.first->first->init( params );
-    for ( Site* s:pLattice->getSites() )
-        s->setLabel("Cu"); // in all cases we start with Cu
     for ( auto &p:m_processMap){
         cout << p.first->getName() << endl;
         for ( Site* s:pLattice->getSites() ){
             if ( p.first->rules( s ) )
                 p.second.insert( s );
         }
-    } -- > Enable for FCC */
-
-//    pLattice->print();
-    cout << " Lets see! " << endl;
+    }
 }
 
 void Apothesis::exec()
 {
     Site* tempSite = 0;
+
     //--------------- Open files for writting ---------------------->
     pIO->openRoughnessFile( "testRough" );
     pIO->writeLogOutput("Running " + to_string( m_dEndTime ) + " sec");

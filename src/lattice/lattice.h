@@ -67,6 +67,9 @@ class Lattice: public Pointers
     /// Call update neighbours function;
 //    virtual void updateNeighbours(Site* site) = 0;
 
+//    /// Builds a  stepped surface
+//    virtual void buildSteps(int iStepX, int iStepY);
+
     /// Returns the type of the lattice
     Lattice::Type getType();
 
@@ -101,7 +104,10 @@ class Lattice: public Pointers
     void setInitialHeight( int  height );
 
     //Set true if the lattice has steps
-    void setSteps(bool hasSteps);
+    inline void setSteps(bool hasSteps){m_hasSteps = hasSteps; }
+
+    //Set true if the lattice has steps
+    inline bool hasSteps(){ return m_hasSteps; }
 
     /// Set the "cut" of the surface
     void setOrientation(string s){ m_sOrient = s; }
@@ -116,9 +122,6 @@ class Lattice: public Pointers
     //Prints the neighbors
     void printNeighs(int);
 
-    /// Builds a  stepped surface
-    virtual void buildSteps(int, int, int) = 0;
-
     /// Returns the differnce between the first and last step
     inline int getStepDiff(){ return m_iStepDiff; }
 
@@ -126,6 +129,18 @@ class Lattice: public Pointers
     virtual void writeXYZ( string filename );
 
     virtual void writeLatticeHeights( double, int );
+
+    /// Sets the steps of the surface in X
+    inline void setStepX( int stepX ){ m_iStepX = stepX; }
+
+    /// Sets the steps of the surface in Y
+    inline void setStepY( int stepY ){ m_iStepY = stepY; }
+
+    /// Returns the step in X
+    inline int getStepX(){ return m_iStepX; }
+
+    /// Returns the step in Y
+    inline int getStepY(){ return m_iStepY; }
 
 protected:
     /// The size of the lattice in the x-dimension.
@@ -136,6 +151,7 @@ protected:
 
     /// The minimum initialize size of the lattice.
     int m_iHeight;
+
 
     /// The type of the lattice: BCC, FCC etc.
     Type m_Type;

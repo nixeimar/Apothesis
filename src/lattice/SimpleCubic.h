@@ -67,9 +67,11 @@ public:
   int calculateNeighNum( int id );
 
   /// Create stepped surface
-  void buildSteps(int, int, int);
+  void buildSteps(int, int);
 
   void writeLatticeHeights( double, int );
+
+  inline bool isStepped(){return m_bHasSteps;}
 
 protected:
   /// Build the neighbours for the BCC lattice for each site.

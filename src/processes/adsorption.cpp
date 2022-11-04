@@ -41,28 +41,31 @@ void Adsorption::perform( Site* s )
     for ( Site* neigh:s->getNeighs() ) {
         mf_calculateNeighbors( neigh );
         m_seAffectedSites.insert( neigh ) ;
-
-        //We do not need this in adsorption
-//        for ( Site* firstNeigh:neigh->getNeighs() ){
-//            firstNeigh->setNeighsNum( mf_calculateNeighbors( firstNeigh ) );
- //            m_seAffectedSites.insert( firstNeigh );
- //       }
     }
 }
 
 int Adsorption::mf_calculateNeighbors(Site* s)
 {
     int neighs = 1;
-    for ( Site* neigh:s->getNeighs() ) {
-        if ( s->isLowerStep() && neigh->isHigherStep() ){
-            if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
-                neighs++;
+
+    if (m_pLattice->hasSteps() ){
+        for ( Site* neigh:s->getNeighs() ) {
+            if ( s->isLowerStep() && neigh->isHigherStep() ){
+                if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
+                    neighs++;
+            }
+            else if ( neigh->isLowerStep() && s->isHigherStep() ){
+                if ( neigh->getHeight() >= s->getHeight() - m_pLattice->getStepDiff() + 1 )
+                    neighs++;
+            }
+            else {
+                if ( neigh->getHeight() >= s->getHeight() )
+                    neighs++;
+            }
         }
-        else if ( neigh->isLowerStep() && s->isHigherStep() ){
-            if ( neigh->getHeight() >= s->getHeight() - m_pLattice->getStepDiff() + 1 )
-                neighs++;
-        }
-        else {
+    } else {
+        int neighs = 1;
+        for ( Site* neigh:s->getNeighs() ) {
             if ( neigh->getHeight() >= s->getHeight() )
                 neighs++;
         }
@@ -70,51 +73,6 @@ int Adsorption::mf_calculateNeighbors(Site* s)
 
     s->setNeighsNum( neighs );
     return neighs;
-
-    //For flat surfaces
-/*    int neighs = 1;
-    if ( mf_isInLowerStep( s ) ){
-        for ( Site* neigh:s->getNeighs() ) {
-            if ( mf_isInHigherStep( neigh ) ){
-                if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
-                    neighs++;
-            }
-            else{
-                if ( neigh->getHeight() >= s->getHeight() )
-                    neighs++;
-            }
-        }
-    }
-    else if ( mf_isInHigherStep( s ) ){
-        for ( Site* neigh:s->getNeighs() ) {
-            if ( mf_isInLowerStep( neigh ) ){
-                if ( neigh->getHeight() >= s->getHeight() - (m_pLattice->getStepDiff() + 1 ) )
-                    neighs++;
-            }
-            else{
-                if ( neigh->getHeight() >= s->getHeight() )
-                    neighs++;
-            }
-        }
-    }
-    else {
-        for ( Site* neigh:s->getNeighs() ) {
-            if ( neigh->getHeight() >= s->getHeight() )
-                neighs++;
-        }
-    }
-
-    s->setNeighsNum( neighs );
-
-    return neighs;*/
-
-  //For flat surfaces
-/*    int neighs = 1;
-    for ( Site* neigh:s->getNeighs() ) {
-        if ( neigh->getHeight() >= s->getHeight() )
-            neighs++;
-    }
-    return neighs;*/
 }
 
 bool Adsorption::mf_isInLowerStep(Site* s)
@@ -135,20 +93,23 @@ bool Adsorption::mf_isInHigherStep(Site* s)
     return false;
 }
 
-
 double Adsorption::getProbability(){
 
-    //These must trenafered in the global definitions
-    double Na = 6.0221417930e+23;		// Avogadro's number [1/mol]
-    double P = 101325;					// [Pa]
-    double T = any_cast<double>(m_mParams["T"]); //500;						// [K]
-    double k = any_cast<double>(m_mParams["k"]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
-    double s0 = any_cast<double>(m_mParams["s0"]); //0.1;
-    double C_tot = any_cast<double>(m_mParams["C_tot"]);			// [sites/m^2] Vlachos code says [moles sites/m^2]
-    double m = 32e-3/Na;				// [kg/mol] this is the molecular wei
-    double y = 2.0e-4;					// Mole fraction of the precursor on the wafer
+    if ( getType().compare( "simple" ) == 0 ){
+        //These must trenafered in the global definitions
+        double Na = 6.0221417930e+23;		// Avogadro's number [1/mol]
+        double P = 101325;					// [Pa]
+        double T = any_cast<double>(m_mParams["T"]); //500;						// [K]
+        double k = any_cast<double>(m_mParams["k"]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
+        double s0 = any_cast<double>(m_mParams["s0"]); //0.1;
+        double C_tot = any_cast<double>(m_mParams["C_tot"]);			// [sites/m^2] Vlachos code says [moles sites/m^2]
+        double m = 32e-3/Na;				// [kg/mol] this is the molecular wei
+        double y = 2.0e-4;					// Mole fraction of the precursor on the wafer
 
-    return s0*y*P/(C_tot*sqrt(2.0e0*3.14159265*m*k*T) );
+        return s0*y*P/(C_tot*sqrt(2.0e0*3.14159265*m*k*T) );
+    }
+
+    return -1.0;
 }
 
 }

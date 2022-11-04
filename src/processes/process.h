@@ -52,6 +52,12 @@ public:
     /// The rules for this type of process e.g. the neighbour of site Site.
     virtual bool rules( Site* ) = 0;
 
+    /// Set the type of the process
+    virtual void setType(string type) { m_sType; }
+
+    /// Returns the type of the process
+    virtual string getType() { return m_sType; }
+
     /// Initialization for this process (e.g. temperature, pressure, mole fraction etc.)
     /// This must be for every process
     void init( map<string, any> params ){ m_mParams = params; }

@@ -111,6 +111,8 @@ FCC::~FCC()
         delete m_vSites[i];
 }
 
+void FCC::buildSteps( int iSizeX, int iSizeY ){;}
+
 void FCC::mf_neigh_100()
 {
 

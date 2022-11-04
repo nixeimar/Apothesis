@@ -69,7 +69,7 @@ class IO: public Pointers
     /// Dafault: The path of the executable
     /// Input file name: input.kmc
     /// Output file name: output.log
-    void init( int argc, char* argv[] );
+    void init(int argc, char* argv[]);
 
     /// Returns the path of the input file.
     string getInputPath() const;
@@ -168,6 +168,9 @@ class IO: public Pointers
     /// Open roughness file for writting the roughness
     void openRoughnessFile( string );
 
+    /// Set lattice using input info
+    void initializeLattice();
+
   protected:
     /// The type of lattice
     string m_sLatticeType;
@@ -197,6 +200,9 @@ class IO: public Pointers
     /// Lattice keyword
     string m_sLattice;
 
+    /// steps keyword
+    string m_sSteps;
+
     /// Temperature keyword
     string m_sTemperature;
 
@@ -209,6 +215,11 @@ class IO: public Pointers
     /// End time keyword.
     string m_sTime;
 
+    /// Random generator initiliazer.
+    string m_sRandom;
+
+    /// Species molecular weight
+    string m_sSpecies;
   };
 
 #endif // IO_H

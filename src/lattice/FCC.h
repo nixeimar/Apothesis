@@ -62,7 +62,7 @@ public:
     /// Write the lattice in XYZ format in a filename
     void writeXYZ( string );
 
-    void buildSteps(int, int, int){}
+    void buildSteps(int, int);
 
 protected:
     /// Build the first neighbours for the FCC(100) lattice.

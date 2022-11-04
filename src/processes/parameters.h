@@ -75,6 +75,12 @@ class Parameters: public Pointers
     /// Store the processes to be created by the factory method.
     void setProcess(string, vector<double> );
 
+    /// Store the initial value for the random generator
+    inline void setRandGenInit( int num ) { m_iRand = num; }
+
+    /// Store the initial value for the random generator
+    inline int getRandGenInit(){return m_iRand; }
+
     /// Get the processes to be created.
     map< string,  vector< double> > getProcesses() { return m_mProcs; }
 
@@ -90,6 +96,9 @@ class Parameters: public Pointers
 
     /// The time to run kmc.
     int m_dTime;
+
+    /// The random generator initializer
+    int m_iRand;
 
     /// Stores the processes as read from the input file allong with their parameters.
     map< string,  vector< double> > m_mProcs;

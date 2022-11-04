@@ -28,10 +28,10 @@ SimpleCubic::SimpleCubic(Apothesis *apothesis, bool step, vector<int> stepInfo) 
     m_bHasSteps(step),
     m_stepInfo(stepInfo)
 {
-    ;
+    buildSteps( stepInfo[ 0 ], stepInfo[ 1 ]);
 }
 
-void SimpleCubic::buildSteps(int iSize, int jSize, int kSize)
+void SimpleCubic::buildSteps(int iSize, int jSize )
 {
     //e.g. Step 20 1 0
     if ( m_vSites.size()%iSize != 0){
@@ -55,22 +55,17 @@ void SimpleCubic::buildSteps(int iSize, int jSize, int kSize)
         iStep++;
     }
 
-//    print();
-
     for ( int i = 0; i< m_vSites.size(); i++)
         calculateNeighNum( i );
 
     int h = getSite( m_iSizeY-1, m_iSizeX-1)->getHeight() ;
     m_iStepDiff = abs( getSite( m_iSizeY-1, m_iSizeX-1)->getHeight() - getSite( 0, 0 )->getHeight() ) + 1;
 
-//    printNeighNum();
-
     for (int j = 0; j < m_iSizeY; j++){
         getSite( j, 0 )->setLowerStep( true );
         getSite( j, m_iSizeX - 1  )->setHigherStep( true );
     }
 }
-
 
 void SimpleCubic::setInitialHeight(int height) { m_iHeight = height; }
 

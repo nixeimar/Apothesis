@@ -1,21 +1,27 @@
-build_lattice SimpleCubic 10 10 10
-lattice_species A
-steps 20 1 0
+#build the lattice with steps or not
+lattice SimpleCubic 10 10 10 
+steps 20 1 
 
-nspecies 1
-A 32
+#in seconds
+time  0.001 
 
-nprocesses 2
-
-A + * -> A*, simple 0.1 1.0 1.0e+19
-A* -> A + *, simple 1.0e+13 1.0e+13
-A* -> A*, simple 7.14e+4 7.14e+4
-
-#The (A) here should not be imported by the user (it should be implied)
-
-#Settings
-time  0.001
+#in Kelvin
 temperature 1000
-pressure 101325
-debug  On
 
+#in Pascal
+pressure 101325
+
+#random number initialization
+random 1234
+
+#MW of species gr/mol 
+species 32
+
+#Sitcking, f, C_tot, 
+process Adsorption simple 0.01 1e-3 1e+13 
+
+#Enenrgy (Joules), v0 (-) 
+process Desorption arrhenius 10 1
+
+#Energy (Joules), v0 (-) 
+process Diffusion arrhenius 10 1
