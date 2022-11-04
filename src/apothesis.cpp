@@ -74,41 +74,17 @@ Apothesis::~Apothesis()
 
 void Apothesis::init()
 {
+    //Read the input file
     pIO->readInputFile();
 
-    if (!pIO->outputOpen())
+    //Open the output file
+    if ( !pIO->outputOpen() )
         pIO->openOutputFile("Output");
 
-    // Initialize Random generator.
+    // Initialize Random generator
     pRandomGen->init( pParameters->getRandGenInit() );
 
-    /*
-    map<string,vector<double>> procEnergetics=pReader->getProcEnergetics();
-    map<string,vector<double>> procStoichiometry=pReader->getProcStoichiometry();
-
-    for(const auto& [key,value]:pReader->getProcSpecies()){
-        vector<double> energetics=procEnergetics[key];
-        vector<string> species=value;
-        if(pReader->contains(key,"Adsorption")){
-            cout << key << " "<< "Adsorption" <<" " << species[0]<<  endl;
-            Adsorption *a = new Adsorption(this, species[0], m_species[species[0]], energetics[0], energetics[1], false);
-            m_vProcesses.push_back(a);
-        }
-        else if(pReader->contains(key,"Desorption")){
-            cout << key << " "<< "Desorption" << endl;
-            Desorption *ds = new Desorption(this, species[0], m_species[species[0]], energetics[0], energetics[1]);
-            m_vProcesses.push_back(ds);
-        }
-        else if(pReader->contains(key,"Diffusion")){
-            cout << key << " "<< "Diffusion" << endl;
-            Diffusion *df = new Diffusion(this, species[0], energetics[0], energetics[1]);
-            m_vProcesses.push_back(df);
-        }else{
-            cout << key << " "<< "Reaction" << endl;
-            //SurfaceReaction *sr = new SurfaceReaction(this, m_species[species[0]], procStoichiometry[key], energetics[0], energetics[1], false);
-            //m_vProcesses.push_back(sr);
-        }
-    }*/
+    //Create the processes or get the processes
 
     //To Deifilia: This must be created for each process in order to pass
     //the parameters from the input file to the porcess

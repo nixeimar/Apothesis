@@ -52,8 +52,6 @@ void IO::readInputFile()
     string sLine;
     while ( getline( m_InputFile, sLine ) ) {
 
-        cout << sLine << endl;
-
         // Remove any tabs, weird spaces etc.
         sLine = simplified( sLine );
         //cout << sLine << endl;
@@ -167,9 +165,8 @@ void IO::readInputFile()
             }
         }
 
-
         if ( vsTokens[ 0].compare( m_sRandom ) == 0){
-
+            m_parameters->setRandGenInit( toDouble( vsTokens[ 1] ) );
         }
 
         if ( vsTokens[ 0].compare( m_sProcess ) == 0){
