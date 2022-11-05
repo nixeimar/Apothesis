@@ -62,6 +62,7 @@ public:
     /// Write the lattice in XYZ format in a filename
     void writeXYZ( string );
 
+
     void buildSteps(int, int);
 
 protected:

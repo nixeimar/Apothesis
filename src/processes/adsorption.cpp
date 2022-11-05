@@ -99,10 +99,10 @@ double Adsorption::getProbability(){
         //These must trenafered in the global definitions
         double Na = 6.0221417930e+23;		// Avogadro's number [1/mol]
         double P = 101325;					// [Pa]
-        double T = any_cast<double>(m_mParams["T"]); //500;						// [K]
-        double k = any_cast<double>(m_mParams["k"]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
-        double s0 = any_cast<double>(m_mParams["s0"]); //0.1;
-        double C_tot = any_cast<double>(m_mParams["C_tot"]);			// [sites/m^2] Vlachos code says [moles sites/m^2]
+        double T = any_cast<double>(m_vParams[1]); //500;						// [K]
+        double k = any_cast<double>(m_vParams[2]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
+        double s0 = any_cast<double>(m_vParams[3]); //0.1;
+        double C_tot = any_cast<double>(m_vParams[4]);			// [sites/m^2] Vlachos code says [moles sites/m^2]
         double m = 32e-3/Na;				// [kg/mol] this is the molecular wei
         double y = 2.0e-4;					// Mole fraction of the precursor on the wafer
 

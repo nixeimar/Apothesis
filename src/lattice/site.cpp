@@ -34,7 +34,7 @@ namespace SurfaceTiles
   void Site::addSpecies(Species *s)
   {
     m_species.push_back(s);
-    m_mapSpecies[s->getId()]++;
+//    m_mapSpecies[s->getId()]++;
   }
 
   void Site::removeSpecies(Species *s)

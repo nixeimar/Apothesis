@@ -26,9 +26,9 @@ Desorption::~Desorption(){}
 
 bool Desorption::rules( Site* s)
 {
-    if ( mf_calculateNeighbors( s ) == any_cast<int>(m_mParams["neighs"] ) )
-        return true;
-    return false;
+//    if ( mf_calculateNeighbors( s ) == any_cast<int>(m_mParams["neighs"] ) )
+ //       return true;
+  //  return false;
 }
 
 void Desorption::perform( Site* s)
@@ -142,14 +142,14 @@ double Desorption::getProbability(){
     //These must trenafered in the global definitions
     /*--- Taken from  Lam and Vlachos (2000)PHYSICAL REVIEW B, VOLUME 64, 035401 - DOI: 10.1103/PhysRevB.64.035401 ---*/
     double Na = 6.0221417930e+23;				// Avogadro's number [1/mol]
-    double T = any_cast<double>(m_mParams["T"]); //500;						// [K]
-    double k = any_cast<double>(m_mParams["k"]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
+    double T = any_cast<double>(m_vParams[0]); //500;						// [K]
+    double k = any_cast<double>(m_vParams[1]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
     double E_d = (7.14e+4)/Na;			// [j]
     double E = 71128/Na; //any_cast<double>(m_mParams["E"]); //71128/Na;   //(7.14e+4)/Na;			// [j] -> 17 kcal
     double v0 = 1.0e+13;				// [s^-1]
     /*--------------------------------------------------*/
 
-    return v0*exp(-(double)any_cast<int>(m_mParams["neighs"])*E/(k*T));			//DesorptionSimpleCubic 1 neigh
+    return v0*exp(-(double)any_cast<int>(m_vParams[2])*E/(k*T));			//DesorptionSimpleCubic 1 neigh
 }
 
 }

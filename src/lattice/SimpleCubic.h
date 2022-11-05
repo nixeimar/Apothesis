@@ -38,15 +38,10 @@ public:
   /// Constructor
   SimpleCubic(Apothesis *apothesis);
 
-  /// Constructor
-  SimpleCubic(Apothesis *apothesis, bool step, vector<int> stepInfo);
-
   /// Distructor.
   virtual ~SimpleCubic();
 
   void setSteps(bool hasSteps);
-
-  void setStepInfo(int sizeX, int sizeY, int sizeZ);
 
   /// Sets the type of the lattice.
   void setType(string);
@@ -60,18 +55,20 @@ public:
   /// Build the lattice with an intitial height.
   void build() override;
 
+  /// Create stepped surface
+  void buildSteps() override;
+
   /// Sets the minimun initial height for the lattice.
   void setInitialHeight(int height);
 
   /// Calculate the number of neighbor based on the height
   int calculateNeighNum( int id );
 
-  /// Create stepped surface
-  void buildSteps(int, int);
-
   void writeLatticeHeights( double, int );
 
   inline bool isStepped(){return m_bHasSteps;}
+
+  inline int getNumFirstNeihgs() override { return 5; }
 
 protected:
   /// Build the neighbours for the BCC lattice for each site.
@@ -81,6 +78,7 @@ protected:
   void mf_buildNeighbours();
 
 private:
+
   bool m_bHasSteps = false;
 
   vector<int> m_stepInfo;

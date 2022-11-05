@@ -154,7 +154,7 @@ class IO: public Pointers
     void writeLatticeInfo();
 
     /// Write the height of each site
-    void writeLatticeHeights( double time, int timeStep );
+    void writeLatticeHeights( double time, double timeStep );
 
     /// Export the lattice in xyz format. Not implemented yet
     void exportLatticeXYZ();
@@ -220,6 +220,9 @@ class IO: public Pointers
 
     /// Species molecular weight
     string m_sSpecies;
-  };
+
+    /// Writer keyword
+    string m_sWrite;
+};
 
 #endif // IO_H

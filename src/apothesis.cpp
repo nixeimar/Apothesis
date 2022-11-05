@@ -84,36 +84,62 @@ void Apothesis::init()
     // Initialize Random generator
     pRandomGen->init( pParameters->getRandGenInit() );
 
-    //Create the processes or get the processes
+    //Create the lattice
+    pLattice->build();
+    if ( pLattice->hasSteps() )
+        pLattice->buildSteps();
+    pLattice->printInfo();
+    pLattice->print();
 
-    //To Deifilia: This must be created for each process in order to pass
-    //the parameters from the input file to the porcess
-    map<string, any> params;
-    params.insert( {"T", 533.} );
-    params.insert( {"f", 0.0000340636296296296} ); //Arrhenius
-    params.insert( {"s0", 0.137295210293006} ); //Arrhenius
+    //Pring paramters
+    pParameters->printInfo();
 
-    params.insert( {"P", 1333.22} );
-    params.insert( {"C_tot", 2.0e+19} ); //For Cu
-    params.insert( {"k", 1.3806503e-23} );
-    params.insert( {"Na", 6.0221417930e+23} );
-
-    double Ed = 7.14e+4/6.0221417930e+23;
-    params.insert( {"E_d", Ed } );
-    params.insert( {"Na", 6.0221417930e+23} );
-
-    double Em = 4.28e+4/6.0221417930e+23;
-    params.insert( {"E_m", Em } );
-
+    //An empty set used for the initialization of the processMap
     set< Site* > emptySet;
 
+    //Create the processes
+    for ( auto proc:pParameters->getProcessesInfo() ){
+        vector<any> params;
+        if ( proc.first.compare( "Desorption" ) == 0 || proc.first.compare( "Diffusion" ) == 0 ){
+            for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
+
+                auto pos = m_processMap.insert( { FactoryProcess::createProcess(proc.first), emptySet } );
+                params = proc.second;
+                params.push_back( neighs + 1 ); //Since neighbors start from 1 and not 0
+                cout << any_cast<int>(params[ params.size()-1 ]) << endl;
+                pos.first->first->setName( proc.first + " N:" +  to_string( neighs ) ); //The name of the actuall class used
+                pos.first->first->init( params );
+                pos.first->first->setLattice( pLattice );
+                pos.first->first->setRandomGen( pRandomGen );
+            }
+        }
+        else {
+            auto pos = m_processMap.insert( { FactoryProcess::createProcess(proc.first), emptySet } );
+            pos.first->first->setName( proc.first ); //The name of the actuall class used
+            pos.first->first->init( params );
+            pos.first->first->setLattice( pLattice );
+            pos.first->first->setRandomGen( pRandomGen );
+        }
+    }
+
+    for ( auto &p:m_processMap ){
+        cout << p.first->getName() << endl;
+        for ( Site* s:pLattice->getSites() ){
+            if ( p.first->rules( s ) )
+                p.second.insert( s );
+        }
+    }
+
+    cout << endl;
+
     //FOr IKY ---->
-/*    auto pos = m_processMap.insert( { FactoryProcess::createProcess("AdsroptionSimpleCubic4sMulti"), emptySet } );
+    /*    auto pos = m_processMap.insert( { FactoryProcess::createProcess("AdsroptionSimpleCubic4sMulti"), emptySet } );
     pos.first->first->setName("AdsortpionSimpleCubinc4SMulti");
     pos.first->first->init( params );
     pos.first->first->setLattice( pLattice );
     pos.first->first->setRandomGen( pRandomGen );
-    auto des = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
+
+auto des = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
     des.first->first->setName("DesorptionSimpleCubic4sMulti");
 
 //    des.first->first->setConstant( true );
@@ -129,14 +155,6 @@ void Apothesis::init()
                 p.second.insert( s );
         }
     } <---------------- */
-
-    for ( auto &p:m_processMap){
-        cout << p.first->getName() << endl;
-        for ( Site* s:pLattice->getSites() ){
-            if ( p.first->rules( s ) )
-                p.second.insert( s );
-        }
-    }
 }
 
 void Apothesis::exec()
@@ -144,7 +162,7 @@ void Apothesis::exec()
     Site* tempSite = 0;
 
     //--------------- Open files for writting ---------------------->
-    pIO->openRoughnessFile( "testRough" );
+    //pIO->openRoughnessFile( "testRough" );
     pIO->writeLogOutput("Running " + to_string( m_dEndTime ) + " sec");
 
     //Calculate first time the total probability (R) --------------------------//
@@ -152,11 +170,11 @@ void Apothesis::exec()
     for (pair<Process*, set< Site* > > p:m_processMap)
         m_dRTot += p.first->getProbability()*(double)p.second.size();
 
-    m_dEndTime = 10;
+    m_dEndTime = pParameters->getEndTime();
 
     pIO->writeInOutput( "\n" );
     pIO->writeInOutput( "********************************************************************" );
-    string output = "Time (s)"s + '\t' + "Growth rate (Ang/min)" + '\t' + "RMS (-)" + '\t' ;
+    string output = "Time (s)"s + '\t' +     "Growth rate (Ang/min)" + '\t' + "RMS (-)" + '\t' ;
 
     for ( auto &p:m_processMap)
         output += p.first->getName() + '\t';
@@ -168,15 +186,15 @@ void Apothesis::exec()
     int iTimeStep = 0;
     pIO->writeLatticeHeights( m_dProcTime, iTimeStep );
 
-    double writeLatHeigsEvery = 0.001; //in s
-    double timeToWrite = 0;
+    double timeToWriteLog = 0;
+    double timeToWriteLattice = 0;
 
     pLattice->writeXYZ( "initial.xzy" );
 
     // The average height for the first time
     double aveDH1 = pProperties->getMeanDH();
 
-    output = std::to_string(m_dProcTime) + '\t' + std::to_string( fabs(pProperties->getMeanDH() - aveDH1)*2.55*60 ) + '\t' + std::to_string( pProperties->getRMS() )  + '\t' ;
+    output = std::to_string(m_dProcTime) + '\t' + std::to_string( fabs(pProperties->getMeanDH() - aveDH1) ) + '\t' + std::to_string( pProperties->getRMS() )  + '\t' ;
     for ( auto &p:m_processMap)
         output += std::to_string( p.first->getNumEventHappened() ) + '\t';
 
@@ -249,10 +267,10 @@ void Apothesis::exec()
                         m_dRTot += p3.first->getProbability()*(double)p3.second.size();
                 }
 
-               pLattice->print();
+                pLattice->print();
 
-               for (auto &p2:m_processMap)
-                   cout << p2.first->getName() << " " << p2.second.size() << endl;
+                for (auto &p2:m_processMap)
+                    cout << p2.first->getName() << " " << p2.second.size() << endl;
 
 
                 cout << "Timestep: " << iTimeStep << endl;
@@ -265,23 +283,14 @@ void Apothesis::exec()
 
         //6. advance time: time += dt;
         m_dProcTime += m_dt;
-        timeToWrite += m_dt;
+        timeToWriteLog += m_dt;
 
         cout << m_dProcTime << endl;
 
- //       for (auto &p2:m_processMap)
- //           cout << p2.first->getName() << " " << p2.second.size() << endl;
-
-
-        //Write the lattice heights
         iTimeStep++;
 
-        if ( timeToWrite >= writeLatHeigsEvery ) {
-            string latName = "lattice_" + to_string( m_dProcTime )+".xyz";
- //           pLattice->writeXYZ( latName );
- //          pLattice->writeLatticeHeights( m_dProcTime, iTimeStep );
-
-            output = std::to_string(m_dProcTime) + '\t' + std::to_string( 2.55*fabs(pProperties->getMeanDH() ) ) + '\t' + std::to_string( pProperties->getRMS() )  + '\t' ;
+        if ( timeToWriteLog >= pParameters->getWriteLogTimeStep() ){ // writeLatHeigsEvery ) {
+            output = std::to_string(m_dProcTime) + '\t' + std::to_string( fabs(pProperties->getMeanDH() ) ) + '\t' + std::to_string( pProperties->getRMS() )  + '\t' ;
             for ( auto &p:m_processMap)
                 output += std::to_string( p.first->getNumEventHappened() ) + '\t';
 
@@ -289,8 +298,11 @@ void Apothesis::exec()
                 output += p.first->getName() + '\t' + std::to_string( (double)p.first->getProbability()*p.second.size() ) + '\t';
             pIO->writeInOutput( output );
 
-            timeToWrite = 0.0;
+            timeToWriteLog = 0.0;
         }
+
+        if ( timeToWriteLattice >= pParameters->getWriteLatticeTimeStep() )
+            string latName = "lattice_" + to_string( m_dProcTime )+".xyz";
     }
 
     string latName = "lattice_" + to_string( m_dProcTime )+".xyz";
@@ -307,7 +319,6 @@ void Apothesis::exec()
         output += p.first->getName() + '\t' + std::to_string( (double)p.first->getProbability() ) + '\t';
     pIO->writeInOutput( output );
 
-    //    pLattice->print();
 }
 
 void Apothesis::logSuccessfulRead(bool read, string parameter)

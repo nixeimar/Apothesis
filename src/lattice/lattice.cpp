@@ -62,6 +62,10 @@ Lattice::Type Lattice::getType()
     }
 }
 
+
+void Lattice::buildSteps(){;}
+
+
 Site* Lattice::getSite(int id) { return m_vSites[id]; }
 
 Site* Lattice::getSite(int i, int j)
@@ -124,3 +128,21 @@ void Lattice::printNeighs( int ID )
 
 void Lattice::writeXYZ( string filename ){;}
 void Lattice::writeLatticeHeights( double, int ){;}
+
+void Lattice::printInfo() {
+
+    cout << endl;
+    cout << "--- start info lattice parameteres ----- " << endl;
+    cout << "---------------------------------------- " << endl;
+    cout << "Type: "; cout << getType() << endl;
+    cout << "Size X: "; cout << getX() << endl;
+    cout << "Size Y: "; cout << getY() << endl;
+
+    if ( hasSteps() ) {
+        cout << "Number of steps: "; cout << getNumSteps() << endl;
+        cout << "Step height: "; cout << getStepHeight() << endl;
+    }
+    cout << "--- end lattice parameters info -------- " << endl;
+    cout << endl;
+}
+

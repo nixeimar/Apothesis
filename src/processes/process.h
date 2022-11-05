@@ -59,8 +59,9 @@ public:
     virtual string getType() { return m_sType; }
 
     /// Initialization for this process (e.g. temperature, pressure, mole fraction etc.)
-    /// This must be for every process
-    void init( map<string, any> params ){ m_mParams = params; }
+    /// This must be for every process according to the process
+//    void init( map<string, any> params ){ m_mParams = params; }
+    void init( vector<any> params ){ m_vParams = params; }
 
     /// Returns the sites that are affected by this process including the site that this process is performed.
     inline set<Site*> getAffectedSites() { return m_seAffectedSites; }
@@ -71,8 +72,6 @@ public:
     inline void setID( int id ){ m_iID = id; }
     inline int getID(){ return m_iID; }
 
-//    inline void setTargetSite( int id );
-
     inline void setLattice( Lattice* lattice ){ m_pLattice = lattice; }
 
     /// Counts how many times this process happens
@@ -80,12 +79,6 @@ public:
 
     /// Returns how many times this process happened
     int getNumEventHappened(){ return m_iHappened; }
-
-    /// Insert a parameter for this process
-    inline void setParameter( string str, any val ) { m_mParams[ str ] = val; }
-
-    /// Return a parameter of this process
-    any getParameter( string str ) { return m_mParams[ str ]; }
 
     /// Set the random generator
     inline void setRandomGen( RandomGen::RandomGenerator* randgen ) { m_pRandomGen = randgen; }
@@ -105,8 +98,13 @@ protected:
     /** Pointer to the lattice of the process */
     Lattice* m_pLattice;
 
-    /// Map for storing the variables for this processs
-    map<string, any> m_mParams;
+ //   /// Map for storing the variables for this processs
+//    map<string, any> m_mParams;
+
+    /// Vector storing the variables for this processs.
+    /// The first position in the vector is always a string declaring the type (e.g. simple, arrhenius etc.)
+    /// followed by the parameters needed for this process to perform
+    vector<any> m_vParams;
 
     ///A list holding all affected sites from this process
     set<Site*> m_seAffectedSites;

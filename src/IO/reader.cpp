@@ -112,8 +112,9 @@ void Reader::initializeLattice(){
     {
       if (m_bSteps)
       {
-        SimpleCubic *lattice = new SimpleCubic(m_apothesis, true, m_vSteps);
-        m_apothesis->pLattice = lattice;
+          ;
+//        SimpleCubic *lattice = new SimpleCubic(m_apothesis, true, m_vSteps);
+ //       m_apothesis->pLattice = lattice;
 
       }
       else

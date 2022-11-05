@@ -27,6 +27,7 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sSteps("steps"),
     m_sRandom("random"),
     m_sSpecies("species"),
+    m_sWrite("write"),
     m_sCommentLine("#")
 {
     //Initialize the map for the lattice
@@ -47,7 +48,7 @@ string IO::getInputPath() const {;}
 
 void IO::readInputFile()
 {
-    list< string > lKeywords{ m_sLattice, m_sProcess, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies };
+    list< string > lKeywords{ m_sLattice, m_sProcess, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite};
 
     string sLine;
     while ( getline( m_InputFile, sLine ) ) {
@@ -118,7 +119,7 @@ void IO::readInputFile()
             m_lattice->setSteps( true );
 
             if ( isNumber( vsTokens[ 1 ] ) ){
-                m_lattice->setStepX( toInt( vsTokens[ 1 ] ) );
+                m_lattice->setNumSteps( toInt( vsTokens[ 1 ] ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The x dimension of step is not a number.");
@@ -126,7 +127,7 @@ void IO::readInputFile()
             }
 
             if ( isNumber( vsTokens[ 2 ] ) ){
-                m_lattice->setStepY( toInt( vsTokens[ 2 ] ) );
+                m_lattice->setStepHeight( toInt( vsTokens[ 2 ] ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The y dimension of step is not a number.");
@@ -169,9 +170,34 @@ void IO::readInputFile()
             m_parameters->setRandGenInit( toDouble( vsTokens[ 1] ) );
         }
 
+        if ( vsTokens[ 0].compare( m_sWrite ) == 0){
+            if ( vsTokens[ 1].compare( "log") == 0 ) {
+                if ( isNumber( vsTokens[ 2 ] ) ){
+                    m_parameters->setWriteLogTimeStep( toDouble( vsTokens[ 2 ] ) );
+                }
+                else {
+                    m_errorHandler->error_simple_msg("Could not read number for writing to log. Is it a number?");
+                    EXIT;
+                }
+            }
+            else if ( vsTokens[ 1].compare( "lattice") == 0 ) {
+                if ( isNumber( vsTokens[ 2 ] ) ){
+                    m_parameters->setWriteLatticeTimeStep( toDouble( vsTokens[ 2 ] ) );
+                }
+                else {
+                    m_errorHandler->error_simple_msg("Could not read number for writing the lattice. Is it a number?");
+                    EXIT;
+                }
+            }
+            else {
+                m_errorHandler->error_simple_msg("Not correct keyword for writer. Available selections are: \"log\" and \"lattice\"");
+                EXIT;
+            }
+        }
+
         if ( vsTokens[ 0].compare( m_sProcess ) == 0){
             //Set the processes to be created along with their parameters
-            vector< double > tempVec;
+            vector< any > tempVec;
             // We want the parameters
             // First is the keyword process, then the name of the process as this is defined in the REGISTER_PROCESS( e.g. Adsorption)
             // and then after 2 the parameters follow
@@ -180,7 +206,6 @@ void IO::readInputFile()
             }
             m_parameters->setProcess( vsTokens[ 1 ], tempVec );
         }
-
     }//Reading the lines
 }
 
@@ -455,7 +480,7 @@ void IO::writeLatticeInfo()
         m_OutFile << "Lattice type: " << "FCC";
 }
 
-void IO::writeLatticeHeights( double time, int timeStep )
+void IO::writeLatticeHeights( double time, double timeStep )
 {
     std::string name="Lattice_" + std::to_string( timeStep ) + ".data";
     std::ofstream file(name);
@@ -468,34 +493,6 @@ void IO::writeLatticeHeights( double time, int timeStep )
 
         file << endl;
     }
-
-    // This must be formatted output.
-    /*    m_OutFile << " --------------------------------------- " << endl;
-    for ( int i = 0; i < m_lattice->getX(); i++)
-    {
-        for (int j = 0;  j < m_lattice->getY(); j++)
-        {
-            m_OutFile
-                    << "( "
-                    << m_lattice->getSites()[ j + i*m_lattice->getX() ]->getHeight()
-                    << ", [ ";
-
-            vector<string> speciesList = m_lattice->getSite(j+i*m_lattice->getX())->getSpeciesName();
-            if (speciesList.size() > 0)
-            {
-                for (vector<string> :: iterator itr = speciesList.begin(); itr != speciesList.end(); ++itr)
-                {
-                    string s = *itr;
-
-                    m_OutFile << s << " ";
-                }
-            }
-
-            m_OutFile << "] ) ";
-        }
-        m_OutFile << endl;
-    }
-    m_OutFile << " --------------------------------------- " << endl; */
 }
 
 string IO::GetCurrentWorkingDir()

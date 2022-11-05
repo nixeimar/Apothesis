@@ -56,19 +56,19 @@ class Lattice: public Pointers
     void setSpecies(Species*);
 
     /// Returns the x dimension of the lattice.
-    inline int getX() { return m_iSizeX;} // = 0;
+    inline int getX() { return m_iSizeX;}
 
     /// Returns the y dimension of the lattice.
-    inline int getY(){ return m_iSizeY;}// = 0;
+    inline int getY(){ return m_iSizeY;}
 
     /// Returns the size of the lattice.
-    inline int getSize(){ return m_iSizeX*m_iSizeY; } // = 0;
+    inline int getSize(){ return m_iSizeX*m_iSizeY; }
 
-    /// Call update neighbours function;
-//    virtual void updateNeighbours(Site* site) = 0;
 
-//    /// Builds a  stepped surface
-//    virtual void buildSteps(int iStepX, int iStepY);
+    virtual int getNumFirstNeihgs(){;}
+
+    /// Builds a  stepped surface
+    virtual void buildSteps();
 
     /// Returns the type of the lattice
     Lattice::Type getType();
@@ -131,16 +131,19 @@ class Lattice: public Pointers
     virtual void writeLatticeHeights( double, int );
 
     /// Sets the steps of the surface in X
-    inline void setStepX( int stepX ){ m_iStepX = stepX; }
+    inline void setNumSteps( int num ){ m_iNumSteps = num; }
 
     /// Sets the steps of the surface in Y
-    inline void setStepY( int stepY ){ m_iStepY = stepY; }
+    inline void setStepHeight( int num ){ m_iStepHeight = num; }
 
     /// Returns the step in X
-    inline int getStepX(){ return m_iStepX; }
+    inline int getNumSteps(){ return m_iNumSteps; }
 
     /// Returns the step in Y
-    inline int getStepY(){ return m_iStepY; }
+    inline int getStepHeight(){ return m_iStepHeight; }
+
+    /// Prints general info for this lattice
+    void printInfo();
 
 protected:
     /// The size of the lattice in the x-dimension.
@@ -152,7 +155,6 @@ protected:
     /// The minimum initialize size of the lattice.
     int m_iHeight;
 
-
     /// The type of the lattice: BCC, FCC etc.
     Type m_Type;
 
@@ -162,10 +164,11 @@ protected:
     /// True if the lattice has steps (comes from the input file if the Step keyword is found).
     bool m_hasSteps = false;
 
-    //The info for the step surface i.e. [1 20 10]
-    int m_iStepX;
-    int m_iStepY;
-    int m_iStepZ;
+    ///The info for the step surface in X i.e. [20 1]
+    int m_iNumSteps;
+
+    ///The info for the step surface in Y i.e. [20 1]
+    int m_iStepHeight;
 
     map< string, set<int > >* m_pProcMap;
 

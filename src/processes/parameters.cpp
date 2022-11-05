@@ -22,9 +22,26 @@ namespace Utils
 
   Parameters::Parameters(Apothesis* apothesis ):Pointers(apothesis){;}
   
-  void Parameters::setProcess( string processName, vector< double > processParams )
+  void Parameters::setProcess( string processName, vector< any > processParams )
   {
     m_mProcs[ processName ] = processParams;
+  }
+
+
+  void Parameters::printInfo()
+  {
+      cout << endl;
+      cout << "--- start info simulation parameters -- " << endl;
+      cout << "---------------------------------------- " << endl;
+      cout << "Time "<< m_dTime << endl;
+      cout << "Temperature "<< m_dT << endl;
+      cout << "Pressure "<< m_dP << endl;
+      cout << "Random gen init " << m_dRand << endl;
+      cout << "Write in log every " << m_dWriteLogEvery << endl;
+      cout << "Write lattice every " << m_dWriteLatticeEvery << endl;
+      cout << "---------------------------------------- " << endl;
+      cout << "--- end simulation parameters info ----- " << endl;
+      cout << endl;
   }
 
 }

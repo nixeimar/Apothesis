@@ -21,6 +21,7 @@
 #include "pointers.h"
 #include "apothesis.h"
 #include <iostream>
+#include <any>
 
 using namespace std;
 
@@ -69,20 +70,35 @@ class Parameters: public Pointers
     /// Pi.
     const double dPi = 3.14159265;
 
-    /// R value (J/molK)
+    /// R value (J/mol K)
     const double dUniversalGasConst = 8.3145;
 
     /// Store the processes to be created by the factory method.
-    void setProcess(string, vector<double> );
+    void setProcess(string, vector< any > );
 
     /// Store the initial value for the random generator
-    inline void setRandGenInit( int num ) { m_iRand = num; }
+    inline void setRandGenInit( double val ) { m_dRand = val; }
 
     /// Store the initial value for the random generator
-    inline int getRandGenInit(){return m_iRand; }
+    inline double getRandGenInit(){return m_dRand; }
 
     /// Get the processes to be created.
-    map< string,  vector< double> > getProcesses() { return m_mProcs; }
+    map< string,  vector< any > > getProcessesInfo() { return m_mProcs; }
+
+    /// Set when to write the log
+    inline void setWriteLogTimeStep( double val ) { m_dWriteLogEvery = val; }
+
+    /// Get the time step to write lattice file
+    inline double getWriteLogTimeStep() { return m_dWriteLogEvery; }
+
+    /// Set when to write the lattice
+    inline void setWriteLatticeTimeStep( double val ) { m_dWriteLatticeEvery = val; }
+
+    /// Set when to write lattice file
+    inline double getWriteLatticeTimeStep() { return m_dWriteLatticeEvery; }
+
+    /// Print parameters info
+    void printInfo();
 
   protected:
     /// The temperature.
@@ -91,17 +107,20 @@ class Parameters: public Pointers
     /// The pressure.
     double m_dP;
 
-    /// The number of iterations to be performed.
-    double m_time;
-
     /// The time to run kmc.
-    int m_dTime;
+    double m_dTime;
 
     /// The random generator initializer
-    int m_iRand;
+    double m_dRand;
 
     /// Stores the processes as read from the input file allong with their parameters.
-    map< string,  vector< double> > m_mProcs;
+    map< string,  vector< any > > m_mProcs;
+
+    /// The time step to write to log
+    double m_dWriteLogEvery;
+
+    /// The time step to write the lattice
+    double m_dWriteLatticeEvery;
   };
 
 }

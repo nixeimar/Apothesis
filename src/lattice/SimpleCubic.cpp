@@ -24,29 +24,25 @@ SimpleCubic::SimpleCubic(Apothesis *apothesis) : Lattice(apothesis), m_iMinNeigs
     ;
 }
 
-SimpleCubic::SimpleCubic(Apothesis *apothesis, bool step, vector<int> stepInfo) : Lattice(apothesis),
-    m_bHasSteps(step),
-    m_stepInfo(stepInfo)
-{
-    buildSteps( stepInfo[ 0 ], stepInfo[ 1 ]);
-}
-
-void SimpleCubic::buildSteps(int iSize, int jSize )
-{
-    //e.g. Step 20 1 0
-    if ( m_vSites.size()%iSize != 0){
+void SimpleCubic::buildSteps()
+{    
+    int iPerStep = 0;
+    if ( m_vSites.size()%m_iNumSteps != 0){
         cout << "Cannot create  stepped surface because it cannot be divided exaclty." << endl;
         EXIT;
+    }
+    else {
+        iPerStep = m_iSizeX/m_iNumSteps;
     }
 
     int iStep = 0;
     int iHeight = 0;
 
-    //Steps in x-direction
+   //Steps in x-direction
     for (int i = 0; i < m_iSizeX; i++) {
-        if ( iStep == iSize ) {
+        if ( iStep == iPerStep ) {
             iStep = 0;
-            iHeight += jSize;
+            iHeight += m_iStepHeight;
         }
 
         for (int j = 0; j < m_iSizeY; j++)
@@ -101,7 +97,6 @@ void SimpleCubic::build()
             m_vSites[j]->setID(j);
             m_vSites[j]->setHeight(m_iHeight - 1);
             m_vSites[j]->addSpecies(m_pSpecies);
-
         }
     }
 
@@ -117,13 +112,6 @@ SimpleCubic::~SimpleCubic()
 void SimpleCubic::setSteps(bool hasSteps)
 {
     m_bHasSteps = hasSteps;
-}
-
-void SimpleCubic::setStepInfo(int sizeX, int sizeY, int sizeZ)
-{
-    m_iStepX = sizeX;
-    m_iStepY = sizeY;
-    m_iStepZ = sizeZ;
 }
 
 void SimpleCubic::mf_neigh()
