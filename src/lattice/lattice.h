@@ -64,7 +64,6 @@ class Lattice: public Pointers
     /// Returns the size of the lattice.
     inline int getSize(){ return m_iSizeX*m_iSizeY; }
 
-
     virtual int getNumFirstNeihgs(){;}
 
     /// Builds a  stepped surface
@@ -145,6 +144,9 @@ class Lattice: public Pointers
     /// Prints general info for this lattice
     void printInfo();
 
+    /// Returns the lattice type as string
+    string getTypeAsString();
+
 protected:
     /// The size of the lattice in the x-dimension.
     int m_iSizeX;
@@ -157,6 +159,9 @@ protected:
 
     /// The type of the lattice: BCC, FCC etc.
     Type m_Type;
+
+    /// The type of the lattice in string: BCC, FCC etc.
+    string m_sType;
 
     /// The sites that consist the lattice.
     vector<Site* > m_vSites;

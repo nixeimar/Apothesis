@@ -24,6 +24,9 @@ Lattice::Lattice(Apothesis *apothesis) : Pointers(apothesis),m_iStepDiff(0)
 
 void Lattice::setType(string sType)
 {
+
+    m_sType = sType;
+
     if (sType == "FCC")
         m_Type = FCC;
     else if (sType == "SimpleCubic")
@@ -48,6 +51,8 @@ vector<Site *> Lattice::getSites()
 {
     return m_vSites;
 }
+
+string Lattice::getTypeAsString(){ return  m_sType; }
 
 Lattice::Type Lattice::getType()
 {

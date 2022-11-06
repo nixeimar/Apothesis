@@ -24,7 +24,7 @@ process Adsorption simple 0.1 2.0e-3 1.0e+19 0.032
 process Desorption arrhenius 1e+13 71128 
 
 #arrhenius: v0 A exp(-nE/kT), A = exp((E-Em)/kT) -> frequency v0 [-],  E (Joules), Em [Joules]
-process Diffusion arrhenius 1e+13 71128 56902  
+#process Diffusion arrhenius 1e+13 71128 56902  
 
-write log 0.001
+write log 0.01
 write lattice 1
