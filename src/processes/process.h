@@ -26,11 +26,14 @@
 #include "site.h"
 #include "species_new.h"
 #include "aux/random_generator.h"
+#include "parameters.h"
+#include "errorhandler.h"
 
 #include "factory_process.h"
 
 using namespace std;
 using namespace SurfaceTiles;
+using namespace Utils;
 
 /** The pure virtual class from which every other process is generated.*/
 namespace MicroProcesses
@@ -60,8 +63,7 @@ public:
 
     /// Initialization for this process (e.g. temperature, pressure, mole fraction etc.)
     /// This must be for every process according to the process
-//    void init( map<string, any> params ){ m_mParams = params; }
-    void init( vector<any> params ){ m_vParams = params; }
+    virtual void init( vector<string> params ){ m_vParams = params; }
 
     /// Returns the sites that are affected by this process including the site that this process is performed.
     inline set<Site*> getAffectedSites() { return m_seAffectedSites; }
@@ -94,27 +96,38 @@ public:
     inline void setNeighs( int num ){ m_iNeighs = num; }
     inline int getNeighs(){ return m_iNeighs; }
 
+    inline void setSysParams( Utils::Parameters* p) { m_pUtilParams = p; }
+    inline void setErrorHandler( ErrorHandler* error ) { m_error = error; }
+
 protected:
-    /** Pointer to the lattice of the process */
+    ///Pointer to the lattice of the process
     Lattice* m_pLattice;
 
- //   /// Map for storing the variables for this processs
-//    map<string, any> m_mParams;
+    ///The parameters of the system and constant values
+    Utils::Parameters* m_pUtilParams;
+
+    /// Error handler for the processes
+    ErrorHandler* m_error;
 
     /// Vector storing the variables for this processs.
     /// The first position in the vector is always a string declaring the type (e.g. simple, arrhenius etc.)
     /// followed by the parameters needed for this process to perform
-    vector<any> m_vParams;
+    vector<string> m_vParams;
 
     ///A list holding all affected sites from this process
     set<Site*> m_seAffectedSites;
 
     RandomGen::RandomGenerator* m_pRandomGen;
 
+    ///The type of the process
+    string m_sType;
+
+    ///Set true if it is always possible
     bool m_bUncoAccept;
 
     bool m_bConstant;
 
+    ///The number of the neighbors used in diffusion and desorption
     int m_iNeighs;
 
 private:
@@ -123,9 +136,6 @@ private:
 
     /// The id of the process
     int m_iID;
-
-    ///The type of the process
-    string m_sType;
 
     /// Counts the times that this processes happened
     int m_iHappened;

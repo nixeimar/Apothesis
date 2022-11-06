@@ -197,12 +197,12 @@ void IO::readInputFile()
 
         if ( vsTokens[ 0].compare( m_sProcess ) == 0){
             //Set the processes to be created along with their parameters
-            vector< any > tempVec;
+            vector< string > tempVec;
             // We want the parameters
             // First is the keyword process, then the name of the process as this is defined in the REGISTER_PROCESS( e.g. Adsorption)
             // and then after 2 the parameters follow
             for ( int i = 2; i < vsTokens.size(); i++ ){
-                tempVec.push_back( toDouble( vsTokens[ i ] ) );
+                tempVec.push_back(  vsTokens[ i ] );
             }
             m_parameters->setProcess( vsTokens[ 1 ], tempVec );
         }

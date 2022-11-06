@@ -91,7 +91,7 @@ void Apothesis::init()
     pLattice->printInfo();
     pLattice->print();
 
-    //Pring paramters
+    //Prin parameters if you want
     pParameters->printInfo();
 
     //An empty set used for the initialization of the processMap
@@ -99,26 +99,31 @@ void Apothesis::init()
 
     //Create the processes
     for ( auto proc:pParameters->getProcessesInfo() ){
-        vector<any> params;
+        vector<string> params;
         if ( proc.first.compare( "Desorption" ) == 0 || proc.first.compare( "Diffusion" ) == 0 ){
             for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
-
                 auto pos = m_processMap.insert( { FactoryProcess::createProcess(proc.first), emptySet } );
                 params = proc.second;
-                params.push_back( neighs + 1 ); //Since neighbors start from 1 and not 0
-                cout << any_cast<int>(params[ params.size()-1 ]) << endl;
+                params.push_back( to_string(neighs + 1) ); //Since neighbors start from 1 and not 0
                 pos.first->first->setName( proc.first + " N:" +  to_string( neighs ) ); //The name of the actuall class used
                 pos.first->first->init( params );
                 pos.first->first->setLattice( pLattice );
                 pos.first->first->setRandomGen( pRandomGen );
+                pos.first->first->setSysParams( pParameters );
+                pos.first->first->setErrorHandler( pErrorHandler );
             }
         }
         else {
             auto pos = m_processMap.insert( { FactoryProcess::createProcess(proc.first), emptySet } );
-            pos.first->first->setName( proc.first ); //The name of the actuall class used
-            pos.first->first->init( params );
+            pos.first->first->setName( proc.first ); //The name of the actual class used
+            pos.first->first->init( proc.second );
             pos.first->first->setLattice( pLattice );
             pos.first->first->setRandomGen( pRandomGen );
+            pos.first->first->setSysParams( pParameters );
+            pos.first->first->setErrorHandler( pErrorHandler );
+
+            //Check how we will impose that
+            pos.first->first->setUncoAccepted(true);
         }
     }
 
@@ -129,32 +134,6 @@ void Apothesis::init()
                 p.second.insert( s );
         }
     }
-
-    cout << endl;
-
-    //FOr IKY ---->
-    /*    auto pos = m_processMap.insert( { FactoryProcess::createProcess("AdsroptionSimpleCubic4sMulti"), emptySet } );
-    pos.first->first->setName("AdsortpionSimpleCubinc4SMulti");
-    pos.first->first->init( params );
-    pos.first->first->setLattice( pLattice );
-    pos.first->first->setRandomGen( pRandomGen );
-
-auto des = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-    des.first->first->setName("DesorptionSimpleCubic4sMulti");
-
-//    des.first->first->setConstant( true );
-    des.first->first->init( params );
-    des.first->first->setLattice( pLattice );
-    des.first->first->setRandomGen( pRandomGen );
-    for ( Site* s:pLattice->getSites() )
-        s->setLabel("Cu"); // in all cases we start with Cu
-    for ( auto &p:m_processMap){
-        cout << p.first->getName() << endl;
-        for ( Site* s:pLattice->getSites() ){
-            if ( p.first->rules( s ) )
-                p.second.insert( s );
-        }
-    } <---------------- */
 }
 
 void Apothesis::exec()

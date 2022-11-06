@@ -61,20 +61,20 @@ class Parameters: public Pointers
     /// Get the total time
     inline double getEndTime() { return m_dTime; }
 
-    /// The Avogadro number.
+    /// The Avogadro number [1/mol]
     const double dAvogadroNum = 6.022141793e+23;
 
-    /// The boltzmann constant.
+    /// The boltzmann constant in [J/K]
     const double dkBoltz = 1.3806503e-23;
 
-    /// Pi.
+    /// Pi
     const double dPi = 3.14159265;
 
     /// R value (J/mol K)
     const double dUniversalGasConst = 8.3145;
 
     /// Store the processes to be created by the factory method.
-    void setProcess(string, vector< any > );
+    void setProcess(string, vector< string > );
 
     /// Store the initial value for the random generator
     inline void setRandGenInit( double val ) { m_dRand = val; }
@@ -83,7 +83,7 @@ class Parameters: public Pointers
     inline double getRandGenInit(){return m_dRand; }
 
     /// Get the processes to be created.
-    map< string,  vector< any > > getProcessesInfo() { return m_mProcs; }
+    map< string,  vector< string > > getProcessesInfo() { return m_mProcs; }
 
     /// Set when to write the log
     inline void setWriteLogTimeStep( double val ) { m_dWriteLogEvery = val; }
@@ -114,7 +114,7 @@ class Parameters: public Pointers
     double m_dRand;
 
     /// Stores the processes as read from the input file allong with their parameters.
-    map< string,  vector< any > > m_mProcs;
+    map< string,  vector< string > > m_mProcs;
 
     /// The time step to write to log
     double m_dWriteLogEvery;

@@ -22,7 +22,7 @@ namespace Utils
 
   Parameters::Parameters(Apothesis* apothesis ):Pointers(apothesis){;}
   
-  void Parameters::setProcess( string processName, vector< any > processParams )
+  void Parameters::setProcess( string processName, vector< string > processParams )
   {
     m_mProcs[ processName ] = processParams;
   }

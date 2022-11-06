@@ -35,16 +35,17 @@ public:
     inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
     inline double getActivationEnergy(){ return m_dActNrg; }
 
-    inline void setMolFrac( double val ){ m_dMolFrac = val; }
-    inline double getMolFrac(){ return m_dMolFrac; }
-
     inline void setTargetSite( Site* site ){ m_Site = site;}
     inline Site* getTargetSite(){ return m_Site; }
 
-    inline void setSpecies( species_new* s ){ m_Species = s; }
-    inline species_new* getSpecies(){ return m_Species; }
+    void init( vector<string> params ) override;
+
+    void simple();
 
 private:
+
+    ///The probability value
+    double m_dProb;
 
     bool mf_isInLowerStep( Site* s );
     bool mf_isInHigherStep( Site* s );
@@ -52,17 +53,30 @@ private:
     ///The activation energy of the adsoprtion process
     double m_dActNrg;
 
-    ///The mole fraction of the AdsorptionSimpleCubic process
-    double m_dMolFrac;
-
-    ///The site that AdsorptionSimpleCubic will be performed
+    ///The site that the process will be performed
     Site* m_Site;
-
-    ///The species that must adsopt
-    species_new* m_Species;
 
     /// A member function to calculate the neighbors of a given site
     int mf_calculateNeighbors(Site*);
+
+    /// For simple adsorption:
+    ///The sticking coefficient [-]
+    double m_dStick;
+
+    ///The molar fraction [-]
+    double m_dF;
+
+    ///The concentration of sites [sites/m^2]
+    double m_dCtot;
+
+    ///The molecular weight of the species [kg/mol]
+    double m_dMW;
+
+    ///The pressure
+    double m_dP;
+
+    ///The temperature
+    double m_dT;
 
     REGISTER_PROCESS( Adsorption )
 };

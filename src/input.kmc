@@ -5,7 +5,7 @@ lattice SimpleCubic 10 10 10
 steps 5 20 
 
 #total time in seconds
-time 0.001 
+time 10 
 
 #in Kelvin
 #temperature 1000
@@ -17,13 +17,13 @@ time 0.001
 random 1234
 
 #Sticking coefficient, f, C_tot, MW, 
-process Adsorption simple 101325 0.01 1e-3 1e+13 32 1000
+process Adsorption simple 101325 0.1 2.0e-3 1.0e+19 32 1000
 
 #Enenrgy (Joules), v0 (-) 
-process Desorption arrhenius 1e+12 71124 1000
+#process Desorption arrhenius 1e+12 71124 1000
 
 #Energy (Joules), v0 (-) 
-process Diffusion arrhenius 1e+12 71124 1000
+#process Diffusion arrhenius 1e+12 71124 1000
 
 write log 0.001
 write lattice 0.001

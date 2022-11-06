@@ -21,13 +21,53 @@ namespace MicroProcesses
 
 REGISTER_PROCESS_IMPL( Adsorption )
 
-Adsorption::Adsorption():m_Species(0){}
+Adsorption::Adsorption(){;}
+Adsorption::~Adsorption(){;}
 
-Adsorption::~Adsorption(){}
+void Adsorption::init( vector<string> params )
+{
+    m_vParams = params;
+
+    //In the first must always be the type```
+    m_sType = any_cast<string>(m_vParams[ 0 ]);
+    if ( m_sType.compare("simple") == 0 ){
+        m_dP = stod(m_vParams[ 1 ]);
+        m_dStick = stod(m_vParams[ 2 ]);
+        m_dF = stod(m_vParams[ 3 ]);
+        m_dCtot = stod(m_vParams[ 4 ]);
+        m_dMW = stod(m_vParams[ 5 ]);
+        m_dT = stod(m_vParams[ 6 ]);
+
+        simple();
+    }
+    else {
+        m_error->error_simple_msg("Not supported type of process: " + m_sType );
+        EXIT;
+    }
+}
+
+void Adsorption::simple()
+{
+    //These must trenafered in the global definitions
+    //      double Na = m_pUtilParams->dAvogadroNum; //6.0221417930e+23;		// Avogadro's number [1/mol]
+    //      double P = 1013;					// [Pa]
+    //      double T = any_cast<double>(m_vParams[1]); //500;						// [K]
+    //      double k = any_cast<double>(m_vParams[2]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
+    //      double s0 = any_cast<double>(m_vParams[3]); //0.1;
+    //      double C_tot = any_cast<double>(m_vParams[4]);			// [sites/m^2] Vlachos code says [moles sites/m^2]
+    //      double m = 32e-3/Na;				// [kg/mol] this is the molecular wei
+    //      double y = 2.0e-4;					// Mole fraction of the precursor on the wafer
+
+    double pi = m_pUtilParams->dPi;
+    double Na = m_pUtilParams->dAvogadroNum;
+    double mass = m_dMW/Na;
+
+    m_dProb = m_dStick*m_dF*m_dP/(m_dCtot*sqrt(2.0e0*pi*mass*m_pUtilParams->dkBoltz*m_dT) );
+}
+
 
 bool Adsorption::rules( Site* s )
 {
-    //You can always adsorb in simple cubic lattices
     return true;
 }
 
@@ -93,23 +133,6 @@ bool Adsorption::mf_isInHigherStep(Site* s)
     return false;
 }
 
-double Adsorption::getProbability(){
-
-    if ( getType().compare( "simple" ) == 0 ){
-        //These must trenafered in the global definitions
-        double Na = 6.0221417930e+23;		// Avogadro's number [1/mol]
-        double P = 101325;					// [Pa]
-        double T = any_cast<double>(m_vParams[1]); //500;						// [K]
-        double k = any_cast<double>(m_vParams[2]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
-        double s0 = any_cast<double>(m_vParams[3]); //0.1;
-        double C_tot = any_cast<double>(m_vParams[4]);			// [sites/m^2] Vlachos code says [moles sites/m^2]
-        double m = 32e-3/Na;				// [kg/mol] this is the molecular wei
-        double y = 2.0e-4;					// Mole fraction of the precursor on the wafer
-
-        return s0*y*P/(C_tot*sqrt(2.0e0*3.14159265*m*k*T) );
-    }
-
-    return -1.0;
-}
+double Adsorption::getProbability(){ return m_dProb; }
 
 }
