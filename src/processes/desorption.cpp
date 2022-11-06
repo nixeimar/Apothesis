@@ -21,14 +21,39 @@ namespace MicroProcesses
 
 REGISTER_PROCESS_IMPL(Desorption);
 
-Desorption::Desorption():m_iNeigh(0){}
-Desorption::~Desorption(){}
+Desorption::Desorption(){;}
+Desorption::~Desorption(){;}
+
+void Desorption::init(vector<string> params)
+{
+    //Here the params of this process are set and the probability is calcylated (either directly or though calling to a function.
+    m_vParams = params;
+
+    //In the first must always be the type
+    m_sType = any_cast<string>(m_vParams[ 0 ]);
+    if ( m_sType.compare("arrhenius") == 0 ){
+        m_iNumNeighs = stoi( m_vParams[3] );
+        arrhenius( stod(m_vParams[ 1 ]), stod(m_vParams[ 2 ]), m_pUtilParams->getTemperature(), m_iNumNeighs );
+    }
+    else {
+        m_error->error_simple_msg("Not supported type of process -> " + m_sProcName + " | " + m_sType );
+        EXIT;
+    }
+}
+
+void Desorption::arrhenius(double v0, double Ed, double T,  int n)
+{
+    double k = m_pUtilParams->dkBoltz;
+    Ed = Ed/m_pUtilParams->dAvogadroNum;
+
+    m_dProb = v0*exp(-(double)n*Ed/(k*T));
+}
 
 bool Desorption::rules( Site* s)
 {
-//    if ( mf_calculateNeighbors( s ) == any_cast<int>(m_mParams["neighs"] ) )
- //       return true;
-  //  return false;
+    if ( mf_calculateNeighbors( s ) == m_iNumNeighs )
+        return true;
+    return false;
 }
 
 void Desorption::perform( Site* s)
@@ -52,68 +77,35 @@ int Desorption::mf_calculateNeighbors(Site* s)
 {
 
     int neighs = 1;
-    for ( Site* neigh:s->getNeighs() ) {
-        if ( s->isLowerStep() && neigh->isHigherStep() ){
-            if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
-                neighs++;
-        }
-        else if ( neigh->isLowerStep() && s->isHigherStep() ){
-            if ( neigh->getHeight() >= s->getHeight() - m_pLattice->getStepDiff() + 1 )
-                neighs++;
-        }
-        else {
-            if ( neigh->getHeight() >= s->getHeight() )
-                neighs++;
-        }
-    }
 
-    s->setNeighsNum( neighs );
-    return neighs;
-
-    //For flat surfaces
-/*    int neighs = 1;
-    if ( mf_isInLowerStep( s ) ){
+    if ( m_pLattice->hasSteps() ){
         for ( Site* neigh:s->getNeighs() ) {
-            if ( mf_isInHigherStep( neigh ) ){
+            if ( s->isLowerStep() && neigh->isHigherStep() ){
                 if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
                     neighs++;
             }
-            else{
+            else if ( neigh->isLowerStep() && s->isHigherStep() ){
+                if ( neigh->getHeight() >= s->getHeight() - m_pLattice->getStepDiff() + 1 )
+                    neighs++;
+            }
+            else {
                 if ( neigh->getHeight() >= s->getHeight() )
                     neighs++;
             }
         }
-    }
-    else if ( mf_isInHigherStep( s ) ){
-        for ( Site* neigh:s->getNeighs() ) {
-            if ( mf_isInLowerStep( neigh ) ){
-                if ( neigh->getHeight() >= s->getHeight() - (m_pLattice->getStepDiff() + 1 ) )
-                    neighs++;
-            }
-            else{
-                if ( neigh->getHeight() >= s->getHeight() )
-                    neighs++;
-            }
-        }
+
+        s->setNeighsNum( neighs );
     }
     else {
         for ( Site* neigh:s->getNeighs() ) {
             if ( neigh->getHeight() >= s->getHeight() )
                 neighs++;
         }
+
+        s->setNeighsNum( neighs );
     }
 
-    s->setNeighsNum( neighs );
-
-    return neighs; */
-
-  //For flat surfaces
-/*    int neighs = 1;
-    for ( Site* neigh:s->getNeighs() ) {
-        if ( neigh->getHeight() >= s->getHeight() )
-            neighs++;
-    }
-    return neighs;*/
+    return neighs;
 }
 
 bool Desorption::mf_isInLowerStep(Site* s)
@@ -128,7 +120,6 @@ bool Desorption::mf_isInLowerStep(Site* s)
 bool Desorption::mf_isInHigherStep(Site* s)
 {
     for (int j = 0; j < m_pLattice->getY(); j++){
-   //     cout<< m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() << endl;
         if ( s->getID() == m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() ){
             return true;
         }
@@ -137,19 +128,6 @@ bool Desorption::mf_isInHigherStep(Site* s)
     return false;
 }
 
-double Desorption::getProbability(){
-
-    //These must trenafered in the global definitions
-    /*--- Taken from  Lam and Vlachos (2000)PHYSICAL REVIEW B, VOLUME 64, 035401 - DOI: 10.1103/PhysRevB.64.035401 ---*/
-    double Na = 6.0221417930e+23;				// Avogadro's number [1/mol]
-    double T = any_cast<double>(m_vParams[0]); //500;						// [K]
-    double k = any_cast<double>(m_vParams[1]); // 1.3806503e-23;			// Boltzmann's constant [j/K]
-    double E_d = (7.14e+4)/Na;			// [j]
-    double E = 71128/Na; //any_cast<double>(m_mParams["E"]); //71128/Na;   //(7.14e+4)/Na;			// [j] -> 17 kcal
-    double v0 = 1.0e+13;				// [s^-1]
-    /*--------------------------------------------------*/
-
-    return v0*exp(-(double)any_cast<int>(m_vParams[2])*E/(k*T));			//DesorptionSimpleCubic 1 neigh
-}
+double Desorption::getProbability(){ return m_dProb; }
 
 }

@@ -32,9 +32,6 @@ public:
     bool rules( Site* ) override;
     void perform( Site* ) override;
 
-    inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
-    inline double getActivationEnergy(){ return m_dActNrg; }
-
     inline void setTargetSite( Site* site ){ m_Site = site;}
     inline Site* getTargetSite(){ return m_Site; }
 
@@ -43,15 +40,8 @@ public:
     void simple();
 
 private:
-
-    ///The probability value
-    double m_dProb;
-
     bool mf_isInLowerStep( Site* s );
     bool mf_isInHigherStep( Site* s );
-
-    ///The activation energy of the adsoprtion process
-    double m_dActNrg;
 
     ///The site that the process will be performed
     Site* m_Site;
@@ -71,12 +61,6 @@ private:
 
     ///The molecular weight of the species [kg/mol]
     double m_dMW;
-
-    ///The pressure
-    double m_dP;
-
-    ///The temperature
-    double m_dT;
 
     REGISTER_PROCESS( Adsorption )
 };

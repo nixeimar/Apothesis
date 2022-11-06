@@ -26,17 +26,16 @@ Adsorption::~Adsorption(){;}
 
 void Adsorption::init( vector<string> params )
 {
+    //Here the params of this process are set and the probability is calcylated (either directly or though calling to a function.
     m_vParams = params;
 
     //In the first must always be the type```
     m_sType = any_cast<string>(m_vParams[ 0 ]);
     if ( m_sType.compare("simple") == 0 ){
-        m_dP = stod(m_vParams[ 1 ]);
-        m_dStick = stod(m_vParams[ 2 ]);
-        m_dF = stod(m_vParams[ 3 ]);
-        m_dCtot = stod(m_vParams[ 4 ]);
-        m_dMW = stod(m_vParams[ 5 ]);
-        m_dT = stod(m_vParams[ 6 ]);
+        m_dStick = stod(m_vParams[ 1 ]);
+        m_dF = stod(m_vParams[ 2 ]);
+        m_dCtot = stod(m_vParams[ 3 ]);
+        m_dMW = stod(m_vParams[ 4 ]);
 
         simple();
     }
@@ -61,8 +60,10 @@ void Adsorption::simple()
     double pi = m_pUtilParams->dPi;
     double Na = m_pUtilParams->dAvogadroNum;
     double mass = m_dMW/Na;
+    double T = m_pUtilParams->getTemperature();
+    double P = m_pUtilParams->getPressure();
 
-    m_dProb = m_dStick*m_dF*m_dP/(m_dCtot*sqrt(2.0e0*pi*mass*m_pUtilParams->dkBoltz*m_dT) );
+    m_dProb = m_dStick*m_dF*P/(m_dCtot*sqrt(2.0e0*pi*mass*m_pUtilParams->dkBoltz*T) );
 }
 
 

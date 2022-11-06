@@ -1,29 +1,30 @@
 #build the lattice with steps or not
 lattice SimpleCubic 10 10 10 
 
-#Steps (alaways in the x-direaction - see above 1st number), number of steps (e.g. if 10 each step will consist of two atoms), height difference (each step will increase by 20, so 1st step: 10, 2nd: 30, 3rd, 50 etc) 
-steps 5 20 
+#Steps (alaways in the x-direaction - see above 1st number), number of steps 
+#(e.g. if 10 each step will consist of two atoms), height difference (each step will increase by 20, so 1st step: 10, 2nd: 30, 3rd, 50 etc) 
+#steps 5 20 
 
 #total time in seconds
 time 10 
 
 #in Kelvin
-#temperature 1000
+temperature 700
 
 #in Pascal
-#pressure 101325
+pressure 101325
 
 #random number initialization
 random 1234
 
-#Sticking coefficient, f, C_tot, MW, 
-process Adsorption simple 101325 0.1 2.0e-3 1.0e+19 32 1000
+#simple: s0*f*P/(2*pi*MW*Ctot*kb*T) -> Sticking coefficient [-], f [-], C_tot [sites/m2], MW [gr/mol] 
+process Adsorption simple 0.1 2.0e-3 1.0e+19 32 
 
-#Enenrgy (Joules), v0 (-) 
-#process Desorption arrhenius 1e+12 71124 1000
+#arrhenius: v0 exp(-nEa/RT) -> frequency v0 [-],  E (Joules)  
+process Desorption arrhenius 1e+13 7.14e+4 
 
-#Energy (Joules), v0 (-) 
-#process Diffusion arrhenius 1e+12 71124 1000
+#arrhenius: v0 exp(-nEa/RT) -> frequency v0 [-],  E (Joules)  
+#process Diffusion arrhenius 1e+12 71124 
 
-write log 0.001
-write lattice 0.001
+write log 0.1
+write lattice 1

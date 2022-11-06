@@ -99,6 +99,9 @@ public:
     inline void setSysParams( Utils::Parameters* p) { m_pUtilParams = p; }
     inline void setErrorHandler( ErrorHandler* error ) { m_error = error; }
 
+    ///Defines an arrhenius process
+    void arrhenius();
+
 protected:
     ///Pointer to the lattice of the process
     Lattice* m_pLattice;
@@ -130,10 +133,13 @@ protected:
     ///The number of the neighbors used in diffusion and desorption
     int m_iNeighs;
 
-private:
+    ///The probability value
+    double m_dProb;
+
     /// The name of this prcess
     string m_sProcName;
 
+private:
     /// The id of the process
     int m_iID;
 

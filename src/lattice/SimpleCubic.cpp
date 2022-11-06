@@ -95,7 +95,7 @@ void SimpleCubic::build()
         for (int j = i * m_iSizeY; j < (m_iSizeY + i * m_iSizeY); j++)
         {
             m_vSites[j]->setID(j);
-            m_vSites[j]->setHeight(m_iHeight - 1);
+            m_vSites[j]->setHeight(m_iHeight);
             m_vSites[j]->addSpecies(m_pSpecies);
         }
     }

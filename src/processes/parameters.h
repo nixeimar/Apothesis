@@ -52,9 +52,6 @@ class Parameters: public Pointers
     /// Get the pressure value.
     inline double getPressure() { return m_dP; }
 
-    /// Set the total number of KMC iterations
-   // inline void setIterations( int iter ) { m_iIter = iter; }
-
     /// Set the total time for KMC
     inline void setEndTime( double time ) { m_dTime = time; }
 
@@ -101,13 +98,13 @@ class Parameters: public Pointers
     void printInfo();
 
   protected:
-    /// The temperature.
+    /// The temperature [K].
     double m_dT;
 
-    /// The pressure.
+    /// The pressure [Pascal].
     double m_dP;
 
-    /// The time to run kmc.
+    /// The time to run kmc [s].
     double m_dTime;
 
     /// The random generator initializer

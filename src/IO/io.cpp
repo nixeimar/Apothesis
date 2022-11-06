@@ -480,9 +480,9 @@ void IO::writeLatticeInfo()
         m_OutFile << "Lattice type: " << "FCC";
 }
 
-void IO::writeLatticeHeights( double time, double timeStep )
+void IO::writeLatticeHeights( double time  )
 {
-    std::string name="Lattice_" + std::to_string( timeStep ) + ".data";
+    std::string name="Lattice_" + std::to_string( time ) + ".data";
     std::ofstream file(name);
 
     file << "Time (s): " << time << endl;

@@ -28,40 +28,29 @@ public:
     Desorption();
     ~Desorption() override;
 
-    inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
-    inline double getActivationEnergy(){ return m_dActNrg; }
-
     inline void setTargetSite( Site* site ){ m_Site = site;}
     inline Site* getTargetSite(){ return m_Site; }
-
-    inline void setSpecies( species_new* s ){ m_Species = s; }
-    inline species_new* getSpecies(){ return m_Species; }
-
-    inline void setNumNeigh( int n ){ m_iNeigh = n; }
 
     double getProbability() override;
     bool rules( Site* s) override;
     void perform( Site* ) override;
+    void init(vector<string> params) override;
+
+    void arrhenius( double, double, double, int);
 
 private:
 
     bool mf_isInLowerStep( Site* s );
     bool mf_isInHigherStep( Site* s );
 
-    ///The activation energy of the adsoprtion process
-    double m_dActNrg;
-
     ///The site that adsorption will be performed
     Site* m_Site;
 
-    ///The species that must be removed from the site
-    species_new* m_Species;
-
-    ///The neighbours of this diffusion process
-    int m_iNeigh;
-
     /// A member function to calculate the neighbors of a given site
     int mf_calculateNeighbors(Site*);
+
+    /// The number of neighbours of this process
+    int m_iNumNeighs;
 
     REGISTER_PROCESS(Desorption)
 };
