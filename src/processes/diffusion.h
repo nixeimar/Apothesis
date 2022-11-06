@@ -32,27 +32,26 @@ public:
     Diffusion();
     ~Diffusion() override;
 
-    inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
-    inline double getActivationEnergy(){ return m_dActNrg; }
-
     inline void setOriginSite( Site* site ){ m_originSite = site;}
     inline Site* getOriginSite(){ return m_originSite; }
 
     inline void setTargetSite( Site* site ){ m_targetSite = site;}
     inline Site* getTargetSite(){ return m_targetSite; }
 
-    inline void setSpecies( species_new* s ){ m_Species = s; }
-    inline species_new* getSpecies(){ return m_Species; }
-
-    inline void setNeigh(int n ){ m_iNeigh = n; }
+//    inline void setNeigh(int n ){ m_iNumNeighs = n; }
 
     double getProbability() override;
     bool rules( Site* ) override;
     void perform( Site* ) override;
 
+    void init(vector<string> params) override;
+
+    void arrhenius(double v0, double E, double Em, double T,  int n);
+
 private:
-    ///The activation energy of the adsoprtion process
-    double m_dActNrg;
+
+    bool mf_isInLowerStep( Site* s );
+    bool mf_isInHigherStep( Site* s );
 
     ///The site to for the adsorption to be removed
     Site* m_originSite;
@@ -67,7 +66,7 @@ private:
     int mf_calculateNeighbors(Site*);
 
     /// The number of neighbours for calculating the probability
-    int m_iNeigh;
+    int m_iNumNeighs;
 
     REGISTER_PROCESS( Diffusion )
 };

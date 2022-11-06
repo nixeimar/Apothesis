@@ -75,7 +75,6 @@ void Desorption::perform( Site* s)
 
 int Desorption::mf_calculateNeighbors(Site* s)
 {
-
     int neighs = 1;
 
     if ( m_pLattice->hasSteps() ){

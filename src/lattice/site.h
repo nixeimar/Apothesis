@@ -176,7 +176,7 @@ protected:
     /// The height in the particular position.
     int m_iHeight;
 
-    /// The neighbours at the same level - We do not need this because we have the map (see below).
+    /// The neighbours at the same level.
     vector< Site*> m_vNeigh;
 
     /// Holds the number of the neighbours of the particular site according to each height/

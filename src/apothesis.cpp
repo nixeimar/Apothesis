@@ -162,6 +162,9 @@ void Apothesis::exec()
     for ( auto &p:m_processMap)
         output += p.first->getName() + '\t';
 
+    for ( auto &p:m_processMap)
+        output +=  p.first->getName() + " (class size)" + '\t';
+
     pIO->writeInOutput( output );
     pIO->writeLatticeHeights( m_dProcTime );
 
@@ -176,6 +179,9 @@ void Apothesis::exec()
     output = std::to_string(m_dProcTime) + '\t' + std::to_string( fabs(pProperties->getMeanDH() - aveDH1) ) + '\t' + std::to_string( pProperties->getRMS() )  + '\t' ;
     for ( auto &p:m_processMap)
         output += std::to_string( p.first->getNumEventHappened() ) + '\t';
+
+    for ( auto &p:m_processMap)
+        output += std::to_string( p.second.size() ) + '\t';
 
     pIO->writeInOutput( output );
 
@@ -263,12 +269,15 @@ void Apothesis::exec()
         timeToWriteLog += m_dt;
         timeToWriteLattice += m_dt;
 
-        cout << m_dProcTime << endl;
+        cout << "Time: " << m_dProcTime << endl;
 
         if ( timeToWriteLog >= pParameters->getWriteLogTimeStep() ){ // writeLatHeigsEvery ) {
             output = std::to_string(m_dProcTime) + '\t' + std::to_string( fabs(pProperties->getMeanDH() ) ) + '\t' + std::to_string( pProperties->getRMS() )  + '\t' ;
             for ( auto &p:m_processMap)
                 output += std::to_string( p.first->getNumEventHappened() ) + '\t';
+
+            for ( auto &p:m_processMap)
+                output += std::to_string( p.second.size() ) + '\t';
 
             pIO->writeInOutput( output );
             timeToWriteLog = 0.0;
@@ -290,7 +299,10 @@ void Apothesis::exec()
         output += std::to_string( p.first->getNumEventHappened() ) + '\t';
 
     for ( auto &p:m_processMap)
-        output += std::to_string( (double)p.first->getProbability() ) + '\t';
+        output += std::to_string( p.second.size() ) + '\t';
+
+//    for ( auto &p:m_processMap)
+//        output += std::to_string( (double)p.first->getProbability() ) + '\t';
     pIO->writeInOutput( output );
 
 }
