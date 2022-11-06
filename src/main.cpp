@@ -53,8 +53,9 @@ int main( int argc, char* argv[] )
     cout << "Initiating Apothesis" << endl;
     apothesis->init();
 
-    cout << "Executing Apothesis" << endl;
+    cout << "Apothesis runnning ..." << endl;
     apothesis->exec();
+    cout << "Apothesis finished succesfully." << endl;
 
     if ( apothesis )
       delete apothesis;

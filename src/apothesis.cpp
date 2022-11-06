@@ -92,7 +92,6 @@ void Apothesis::init()
     if ( pLattice->hasSteps() )
         pLattice->buildSteps();
     pLattice->printInfo();
-    pLattice->print();
 
     //Prin parameters if you want
     pParameters->printInfo();
@@ -284,10 +283,6 @@ void Apothesis::exec()
         timeToWriteLog += m_dt;
         timeToWriteLattice += m_dt;
 
-        cout << "Time: " << m_dProcTime << endl;
-
-        aveDH1 = 0.;
-
         if ( timeToWriteLog >= pParameters->getWriteLogTimeStep() ){ // writeLatHeigsEvery ) {
             output = std::to_string(m_dProcTime) + '\t'
                     + std::to_string( pProperties->getMeanDH() /m_dProcTime ) + '\t'
@@ -311,10 +306,7 @@ void Apothesis::exec()
         }
     }
 
-//    string latName = "lattice_" + to_string( m_dProcTime )+".xyz";
-    //pLattice->writeXYZ( latName );
     pIO->writeLatticeHeights( m_dProcTime  );
-
     output = std::to_string(m_dProcTime) + '\t'
             + std::to_string( pProperties->getMeanDH() /m_dProcTime  ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'
@@ -326,10 +318,7 @@ void Apothesis::exec()
     for ( auto &p:m_processMap)
         output += std::to_string( p.second.size() ) + '\t';
 
-//    for ( auto &p:m_processMap)
-//        output += std::to_string( (double)p.first->getProbability() ) + '\t';
     pIO->writeInOutput( output );
-
 }
 
 void Apothesis::logSuccessfulRead(bool read, string parameter)

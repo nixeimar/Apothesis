@@ -6,7 +6,7 @@ lattice SimpleCubic 10 10 10
 steps 5 20 
 
 #total time in seconds
-time 10 
+time 0.2 
 
 #T in Kelvin
 temperature 700
@@ -21,10 +21,10 @@ random 1234
 process Adsorption simple 0.1 2.0e-3 1.0e+19 0.032 
 
 #arrhenius: v0 exp(-nE/kT) -> frequency v0 [-],  E (Joules)  
-process Desorption arrhenius 1e+13 71128 
+#process Desorption arrhenius 1e+13 71128 
 
 #arrhenius: v0 A exp(-nE/kT), A = exp((E-Em)/kT) -> frequency v0 [-],  E (Joules), Em [Joules]
 #process Diffusion arrhenius 1e+13 71128 56902  
 
 write log 0.01
-write lattice 1
+write lattice 0.1
