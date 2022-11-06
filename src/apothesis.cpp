@@ -203,9 +203,9 @@ void Apothesis::exec()
 //    pLattice->writeXYZ( "initial.xzy" );
 
     // The average height for the first time
-    double aveDH1 = pProperties->getMeanDH();
+    double meanDHPrevStep = pProperties->getMeanDH();
     output = std::to_string(m_dProcTime) + '\t'
-            + std::to_string( 0.0  ) + '\t'
+            + std::to_string( pProperties->getRMS() - meanDHPrevStep ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'
             + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
@@ -237,6 +237,9 @@ void Apothesis::exec()
 
                 //3. From this process pick the random site with id and perform it:
                 Site* s = *next( p.second.begin(), m_iSiteNum );
+
+                //Compute the average height before performing the process to measure the growth rate
+                meanDHPrevStep = pProperties->getMeanDH();
 
                 p.first->perform( s );
                 tempSite = s;
@@ -283,9 +286,9 @@ void Apothesis::exec()
         timeToWriteLog += m_dt;
         timeToWriteLattice += m_dt;
 
-        if ( timeToWriteLog >= pParameters->getWriteLogTimeStep() ){ // writeLatHeigsEvery ) {
+        if ( timeToWriteLog >= pParameters->getWriteLogTimeStep() ){
             output = std::to_string(m_dProcTime) + '\t'
-                    + std::to_string( pProperties->getMeanDH() /m_dProcTime ) + '\t'
+                    + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) /m_dProcTime ) + '\t'
                     + std::to_string( pProperties->getRMS() )  + '\t'
                     + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
@@ -308,7 +311,7 @@ void Apothesis::exec()
 
     pIO->writeLatticeHeights( m_dProcTime  );
     output = std::to_string(m_dProcTime) + '\t'
-            + std::to_string( pProperties->getMeanDH() /m_dProcTime  ) + '\t'
+            + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/m_dProcTime  ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'
             + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
