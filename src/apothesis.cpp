@@ -203,6 +203,7 @@ void Apothesis::exec()
 //    pLattice->writeXYZ( "initial.xzy" );
 
     // The average height for the first time
+    double timeGrowth = 0;
     double meanDHPrevStep = pProperties->getMeanDH();
     output = std::to_string(m_dProcTime) + '\t'
             + std::to_string( pProperties->getRMS() - meanDHPrevStep ) + '\t'
@@ -240,6 +241,7 @@ void Apothesis::exec()
 
                 //Compute the average height before performing the process to measure the growth rate
                 meanDHPrevStep = pProperties->getMeanDH();
+                timeGrowth = m_dProcTime;
 
                 p.first->perform( s );
                 tempSite = s;
@@ -288,7 +290,7 @@ void Apothesis::exec()
 
         if ( timeToWriteLog >= pParameters->getWriteLogTimeStep() ){
             output = std::to_string(m_dProcTime) + '\t'
-                    + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) /m_dProcTime ) + '\t'
+                    + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) / (m_dProcTime - timeGrowth) ) + '\t'
                     + std::to_string( pProperties->getRMS() )  + '\t'
                     + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
@@ -311,7 +313,7 @@ void Apothesis::exec()
 
     pIO->writeLatticeHeights( m_dProcTime  );
     output = std::to_string(m_dProcTime) + '\t'
-            + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/m_dProcTime  ) + '\t'
+            + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/ (m_dProcTime - timeGrowth)  ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'
             + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
