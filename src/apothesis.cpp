@@ -206,7 +206,7 @@ void Apothesis::exec()
     double timeGrowth = 0;
     double meanDHPrevStep = pProperties->getMeanDH();
     output = std::to_string(m_dProcTime) + '\t'
-            + std::to_string( pProperties->getRMS() - meanDHPrevStep ) + '\t'
+            + std::to_string( 0.0  ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'
             + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
@@ -288,9 +288,12 @@ void Apothesis::exec()
         timeToWriteLog += m_dt;
         timeToWriteLattice += m_dt;
 
+
+        double test = (pProperties->getMeanDH() - meanDHPrevStep) / ((pLattice->getSize()*(m_dProcTime - timeGrowth) ) );
+
         if ( timeToWriteLog >= pParameters->getWriteLogTimeStep() ){
             output = std::to_string(m_dProcTime) + '\t'
-                    + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) / (m_dProcTime - timeGrowth) ) + '\t'
+                    + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) / ( (pLattice->getSize()*(m_dProcTime - timeGrowth) ) ) )+ '\t'
                     + std::to_string( pProperties->getRMS() )  + '\t'
                     + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
@@ -313,7 +316,7 @@ void Apothesis::exec()
 
     pIO->writeLatticeHeights( m_dProcTime  );
     output = std::to_string(m_dProcTime) + '\t'
-            + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/ (m_dProcTime - timeGrowth)  ) + '\t'
+            + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/ (pLattice->getSize())*(m_dProcTime - timeGrowth)  ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'
             + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
