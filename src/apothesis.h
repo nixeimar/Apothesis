@@ -25,7 +25,6 @@
 #include <functional>
 #include <set>
 #include <valarray>
-#include "species_new.h"
 #include "species/species.h"
 
 #define EXIT { printf("Apothesis terminated. \n"); exit( EXIT_FAILURE ); }

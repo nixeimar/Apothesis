@@ -42,8 +42,7 @@ HEADERS += apothesis.h \
            processes/io.h \
            processes/parameters.h \
            processes/process.h \
-           species/species.h \
-           species/species_new.h
+           species/species.h
 
 SOURCES += apothesis.cpp \
            IO/io.cpp \
@@ -67,5 +66,4 @@ SOURCES += apothesis.cpp \
            processes/factory_process.cpp \
            processes/parameters.cpp \
            processes/process.cpp \
-           species/species.cpp \
-           species/species_new.cpp
+           species/species.cpp

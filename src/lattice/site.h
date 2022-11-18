@@ -225,9 +225,6 @@ private:
     /// Orientation of the lattice
     string m_sOrint;
 
-    /// The species that are in this site
-    vector<species_new* > m_vSpecies;
-
     /// The 1st neighbors in the different levels
     /// below level
     /// same level

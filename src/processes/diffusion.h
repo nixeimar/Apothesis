@@ -59,9 +59,6 @@ private:
     ///The site that adsorption will be performed
     Site* m_targetSite;
 
-    ///The species that must be removed from the site
-    species_new* m_Species;
-
     /// A member function to calculate the neighbors of a given site
     int mf_calculateNeighbors(Site*);
 

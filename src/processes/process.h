@@ -24,7 +24,6 @@
 #include <any>
 #include "lattice.h"
 #include "site.h"
-#include "species_new.h"
 #include "aux/random_generator.h"
 #include "parameters.h"
 #include "errorhandler.h"

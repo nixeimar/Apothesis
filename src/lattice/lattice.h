@@ -26,7 +26,6 @@
 #include "pointers.h"
 #include "site.h"
 #include "errorhandler.h"
-#include "species_new.h"
 #include <set>
 
 using namespace std;

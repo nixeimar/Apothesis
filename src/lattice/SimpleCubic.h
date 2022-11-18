@@ -26,7 +26,6 @@
 
 #include "io.h"
 #include "lattice.h"
-#include "species_new.h"
 
 using namespace std;
 using namespace SurfaceTiles;

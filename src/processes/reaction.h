@@ -23,7 +23,6 @@
 #include <vector>
 
 #include "process.h"
-#include "species_new.h"
 
 using namespace std;
 
@@ -33,24 +32,12 @@ public:
     reaction();
     ~reaction();
 
-    inline vector< pair < double, species_new* > > getReactants(){ return m_vpReactants; }
-    inline vector< pair < double, species_new* > > getproducts(){ return m_vpProducts; }
-
-    void addReactants( const double coeff, species_new* species );
-    void addProducts( const double coeff, species_new* species );
-
     inline void setActivationEnergy( double Ea) { m_dEa = Ea; }
     inline void setPreExpFactor( double k0 ){ m_dK0 = k0; }
 
     void print();
 
 private:
-    /// The reactants participating in this reaction
-    vector< pair< double, species_new* > > m_vpReactants;
-
-    /// The products formed by this reaction
-    vector< pair< double, species_new* > > m_vpProducts;
-
     /// The activation energy of this reaction
     double m_dEa;
 
