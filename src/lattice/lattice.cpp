@@ -91,7 +91,6 @@ void Lattice::print()
             cout << m_vSites[ i*m_iSizeX + j ]->getLabel() + to_string( m_vSites[ i*m_iSizeX + j ]->getID() )  << "\t" << "( " << m_vSites[ i*m_iSizeX + j ]->getHeight() << " ) " ;
         cout  << endl;
     }
-
 }
 
 void Lattice::printNeighNum()

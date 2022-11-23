@@ -30,6 +30,7 @@
 #include "aux/random_generator.h"
 #include <bits/stdc++.h>
 #include "reader.h"
+#include "reaction.h"
 
 #include "factory_process.h"
 
@@ -93,6 +94,14 @@ void Apothesis::init()
         pLattice->buildSteps();
     pLattice->printInfo();
 
+    // Test lattice to check for the surface reaction
+    pLattice->getSite( 49 )->setLabel("CO");
+    for (Site* s:pLattice->getSite( 49 )->getNeighs() )
+        s->setLabel("XX");
+
+    pLattice->print();
+
+
     //Prin parameters if you want
     pParameters->printInfo();
 
@@ -130,6 +139,13 @@ void Apothesis::init()
             pos.first->first->init( proc.second );
         }
     }
+
+    reaction* rec = new reaction();
+    rec->setStoichiometry("CO", 1);
+    rec->setStoichiometry("XX", 1);
+    rec->setLattice( pLattice );
+
+    auto pos = m_processMap.insert( {rec, emptySet} );
 
     for ( auto &p:m_processMap ){
         for ( Site* s:pLattice->getSites() ){

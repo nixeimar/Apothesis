@@ -24,6 +24,8 @@
 
 #include "process.h"
 
+class species;
+
 using namespace std;
 
 class reaction: public Process
@@ -32,8 +34,20 @@ public:
     reaction();
     ~reaction();
 
+    void perform(Site *) override;
+    bool rules(Site *) override;
+    double getProbability() override;
+
     inline void setActivationEnergy( double Ea) { m_dEa = Ea; }
     inline void setPreExpFactor( double k0 ){ m_dK0 = k0; }
+
+    inline void setReactants(list<string> reactants) {m_lReactants = reactants;}
+    list<string> getReactants() { return m_lReactants; }
+
+    void setStoichiometry(string species, double stoichCoeff) { m_mStoichiometry[species] = stoichCoeff; }
+    map<string, double> getStoichiometry(string species, double stoichCoeff) { m_mStoichiometry; }
+
+    double getStoichCoeff( string species) { return m_mStoichiometry[species]; }
 
     void print();
 
@@ -43,6 +57,13 @@ private:
 
     /// The pre-exponential factors for this reaction
     double m_dK0;
+
+    /// The reactants participating in this reaction
+    list<string> m_lReactants;
+
+    /// The stoichiometry of the reaction e.g. map<"Cu", 2>
+    map<string, double > m_mStoichiometry;
+
 };
 
 #endif // REACTION_NEW_H

@@ -21,3 +21,38 @@ reaction::reaction(){}
 reaction::~reaction(){}
 
 
+void reaction::perform(Site *)
+{
+    ;
+
+}
+
+bool reaction::rules(Site *s)
+{
+    // Check if the site
+    if ( m_mStoichiometry.find( s->getLabel() ) == m_mStoichiometry.end() )
+        return false;
+
+    for (auto const& [key, val] : m_mStoichiometry) {
+        int iCount = 0;
+
+        if (s->getLabel().compare( key ) == 0)
+            iCount++;
+
+        for (Site* site:s->getNeighs()){
+            if ( site->getLabel().compare( key ) == 0)
+                iCount++;
+        }
+
+        if ( iCount < val)
+            return false;
+    }
+
+    return true;
+}
+
+double reaction::getProbability(){
+    return 0.;
+}
+
+

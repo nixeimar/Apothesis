@@ -1,9 +1,9 @@
 #build the lattice 
-lattice SimpleCubic 160 120 10 
+lattice SimpleCubic 10 10 10 
 
 #Create steps (alaways in the x-direaction - see above 1st number), number of steps 
 #(e.g. if 10 each step will consist of two atoms), height difference (each step will increase by 20, so 1st step: 10, 2nd: 30, 3rd, 50 etc) 
-steps 8 1 
+#steps 8 1 
 
 #total time in seconds
 time 0.2 

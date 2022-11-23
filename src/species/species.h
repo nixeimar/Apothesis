@@ -27,21 +27,11 @@ using namespace std;
 class Species
 {
 public:
-    Species
-    (
-        string name,
-        double mw,
-        double stoicCoeff,
-        int id
-    );
 
-    Species
-    (
-        string name,
-        double mw,
-        int id
-    );
-    
+    Species();
+
+    Species(string name, double mw, int id);
+
     virtual ~Species();
 
     string getName();

@@ -21,22 +21,6 @@ Species::Species
 (
     string name,
     double mw,
-    double stoicCoeff,
-    int id
-)
-:
-m_name(name),
-m_mw(mw),
-m_stoicCoeff(stoicCoeff),
-m_id(id)
-{  
-    ;
-}
-
-Species::Species
-(
-    string name,
-    double mw,
     int id
 )
 :
@@ -60,12 +44,6 @@ string Species::getName()
 double Species::getMW()
 {
     return m_mw;
-}
-
-// Return 
-double Species::getStoicCoeff()
-{
-    return m_stoicCoeff;
 }
 
 const int Species::getId()
