@@ -28,6 +28,9 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sRandom("random"),
     m_sSpecies("species"),
     m_sWrite("write"),
+    m_sAdsorption("Adsorption"),
+    m_sDesorption("Desorption"),
+    m_sDiffusion("Diffusion"),
     m_sCommentLine("#")
 {
     //Initialize the map for the lattice
@@ -46,9 +49,11 @@ void IO::init(int argc, char* argv[])
 
 string IO::getInputPath() const {;}
 
+
 void IO::readInputFile()
 {
-    list< string > lKeywords{ m_sLattice, m_sProcess, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite};
+    list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite,
+                              m_sAdsorption, m_sDesorption, m_sDiffusion};
 
     string sLine;
     while ( getline( m_InputFile, sLine ) ) {
@@ -56,58 +61,75 @@ void IO::readInputFile()
         // Remove any tabs, weird spaces etc.
         sLine = simplified( sLine );
         //cout << sLine << endl;
-        // split the line using space separator and store them to a vector of tokens
-        vector<string> vsTokens;
-        vsTokens = split( sLine, string( " " ) );
-
-        //We do not care about empty lines
-        if ( vsTokens.size() == 0 ) continue;
 
         //We do not care about comments.
-        if ( startsWith( vsTokens[ 0 ], m_sCommentLine ) ) continue;
+        if ( startsWith( sLine, m_sCommentLine ) ) continue;
+
+        // split the line using : separator and store them to a vector of tokens
+        vector<string> vsTokensBasic;
+        vsTokensBasic = split( sLine, string( ":" ) );
+
+        //We do not care about empty lines
+        if ( vsTokensBasic.size() == 0 ) continue;
 
         bool bComment = false;
-        for ( int i = 0; i< vsTokens.size(); i++){
-            if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+        for ( int i = 0; i< vsTokensBasic.size(); i++){
+            if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
                 bComment = true;
 
             // Remove the comments from the tokens so not to consider them
             if ( bComment )
-                vsTokens[ i ].clear();
+                vsTokensBasic[ i ].clear();
         }
 
         // Remove any empty parts of the vector
-        vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
-        vsTokens.erase( it, vsTokens.end() );
+        vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+        vsTokensBasic.erase( it, vsTokensBasic.end() );
 
         // Check if a token is not a keyword
-        if ( find( lKeywords.begin(), lKeywords.end(), vsTokens[ 0 ] ) == lKeywords.end() ){
-            string msg = "Unknown keyword ( " + vsTokens[ 0 ] + " )";
+        if ( find( lKeywords.begin(), lKeywords.end(), vsTokensBasic[ 0 ] ) == lKeywords.end() ){
+            string msg = "Unknown keyword ( " + vsTokensBasic[ 0 ] + " )";
             m_errorHandler->error_simple_msg( msg );
             EXIT;
         }
 
-        if ( vsTokens[ 0].compare(  m_sLattice ) == 0 ){
-            m_lattice->setType( vsTokens[1] );
+        if ( vsTokensBasic[ 0].compare(  m_sLattice ) == 0 ){
 
-            if ( isNumber( vsTokens[ 2 ] ) ){
-                m_lattice->setX( toInt( vsTokens[ 2 ] ) );
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            bool bComment = false;
+            for ( int i = 0; i< vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
+
+            int count = 0;
+
+            m_lattice->setType( vsTokens[ 0 ] );
+
+            if ( isNumber( vsTokens[ 1 ] ) ){
+                m_lattice->setX( toInt(  trim( vsTokens[ 1 ] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The x dimension of lattice is not a number.");
                 EXIT;
             }
 
-            if ( isNumber( vsTokens[ 3 ] ) ){
-                m_lattice->setY( toInt( vsTokens[ 3 ] ) );
+            if ( isNumber( vsTokens[ 2 ] ) ){
+                m_lattice->setY( toInt( trim( vsTokens[ 2 ] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The y dimension of lattice is not a number.");
                 EXIT;
             }
 
-            if ( isNumber( vsTokens[ 4 ] ) ){
-                m_lattice->setInitialHeight( toInt( vsTokens[ 4 ] ) );
+            if ( isNumber( vsTokens[ 3 ] ) ){
+                m_lattice->setInitialHeight( toInt( trim( vsTokens[ 3 ] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The height must be a  number.");
@@ -115,19 +137,32 @@ void IO::readInputFile()
             }
         }
 
-        if ( vsTokens[ 0].compare(  m_sSteps ) == 0 ){
+        if ( vsTokensBasic[ 0].compare(  m_sSteps ) == 0 ){
             m_lattice->setSteps( true );
 
-            if ( isNumber( vsTokens[ 1 ] ) ){
-                m_lattice->setNumSteps( toInt( vsTokens[ 1 ] ) );
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            bool bComment = false;
+            for ( int i = 0; i< vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
+
+            if ( isNumber( vsTokens[ 0 ] ) ){
+                m_lattice->setNumSteps( toInt( vsTokens[ 0 ] ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The x dimension of step is not a number.");
                 EXIT;
             }
 
-            if ( isNumber( vsTokens[ 2 ] ) ){
-                m_lattice->setStepHeight( toInt( vsTokens[ 2 ] ) );
+            if ( isNumber( vsTokens[ 1 ] ) ){
+                m_lattice->setStepHeight( toInt( vsTokens[ 1 ] ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The y dimension of step is not a number.");
@@ -135,9 +170,20 @@ void IO::readInputFile()
             }
         }
 
-        if ( vsTokens[ 0].compare(  m_sTemperature ) == 0 ){
-            if ( isNumber( vsTokens[ 1 ] ) ){
-                m_parameters->setTemperature( toDouble( vsTokens[ 1] ) );
+        if ( vsTokensBasic[ 0].compare(  m_sTemperature ) == 0 ){
+
+            bool bComment = false;
+            for ( int i = 0; i< vsTokensBasic.size(); i++){
+                if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokensBasic[ i ].clear();
+            }
+
+            if ( isNumber( trim(vsTokensBasic[ 1 ] ) )){
+                m_parameters->setTemperature( toDouble( trim(vsTokensBasic[ 1] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("Could not read temperature from input file. Is it a number?");
@@ -145,10 +191,21 @@ void IO::readInputFile()
             }
         }
 
-        if ( vsTokens[ 0].compare(  m_sPressure ) == 0 ){
-            if ( isNumber( vsTokens[ 1 ] ) ){
+        if ( vsTokensBasic[ 0].compare(  m_sPressure ) == 0 ){
+
+            bool bComment = false;
+            for ( int i = 0; i< vsTokensBasic.size(); i++){
+                if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokensBasic[ i ].clear();
+            }
+
+            if ( isNumber( trim(vsTokensBasic[ 1 ] ) ) ){
                 // Is this an error?
-                m_parameters->setPressure( toDouble( vsTokens[ 1] ) );
+                m_parameters->setPressure( toDouble( trim(vsTokensBasic[ 1] ) ));
             }
             else {
                 m_errorHandler->error_simple_msg("Could not read pressure from input file. Is it a number?");
@@ -156,33 +213,58 @@ void IO::readInputFile()
             }
         }
 
-        if ( vsTokens[ 0].compare( m_sTime ) == 0 ){
-            if ( isNumber( vsTokens[ 1 ] ) ){
-                m_parameters->setEndTime( toDouble( vsTokens[ 1] ) );
+        if ( vsTokensBasic[ 0].compare( m_sTime ) == 0 ){
+
+            bool bComment = false;
+            for ( int i = 0; i< vsTokensBasic.size(); i++){
+                if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokensBasic[ i ].clear();
+            }
+
+            if ( isNumber(  trim( vsTokensBasic[ 1 ] ) ) ){
+                m_parameters->setEndTime( toDouble( trim( vsTokensBasic[ 1] ) ) );
             }
             else {
-                m_errorHandler->error_simple_msg("Could not read number of KMC iterations from input file. Is it a number?");
+                m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
                 EXIT;
             }
         }
 
-        if ( vsTokens[ 0].compare( m_sRandom ) == 0){
-            m_parameters->setRandGenInit( toDouble( vsTokens[ 1] ) );
+        if ( vsTokensBasic[ 0].compare( m_sRandom ) == 0){
+            m_parameters->setRandGenInit( toDouble( trim(vsTokensBasic[ 1] ) ) );
         }
 
-        if ( vsTokens[ 0].compare( m_sWrite ) == 0){
-            if ( vsTokens[ 1].compare( "log") == 0 ) {
-                if ( isNumber( vsTokens[ 2 ] ) ){
-                    m_parameters->setWriteLogTimeStep( toDouble( vsTokens[ 2 ] ) );
+        if ( vsTokensBasic[ 0].compare( m_sWrite ) == 0){
+
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            bool bComment = false;
+            for ( int i = 0; i< vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
+
+            if ( vsTokens[ 0].compare( "log") == 0 ) {
+                if ( isNumber( trim(vsTokens[ 1 ] ) ) ){
+                    m_parameters->setWriteLogTimeStep( toDouble( trim(vsTokens[ 1 ] )) );
                 }
                 else {
                     m_errorHandler->error_simple_msg("Could not read number for writing to log. Is it a number?");
                     EXIT;
                 }
             }
-            else if ( vsTokens[ 1].compare( "lattice") == 0 ) {
-                if ( isNumber( vsTokens[ 2 ] ) ){
-                    m_parameters->setWriteLatticeTimeStep( toDouble( vsTokens[ 2 ] ) );
+            else if ( vsTokens[ 0 ].compare( "lattice") == 0 ) {
+                if ( isNumber( trim(vsTokens[ 1 ] ) ) ){
+                    m_parameters->setWriteLatticeTimeStep( toDouble( trim(vsTokens[ 1 ] ) ) );
                 }
                 else {
                     m_errorHandler->error_simple_msg("Could not read number for writing the lattice. Is it a number?");
@@ -195,7 +277,36 @@ void IO::readInputFile()
             }
         }
 
-        if ( vsTokens[ 0].compare( m_sProcess ) == 0){
+
+        if ( vsTokensBasic[ 0].compare( "Adsorption" ) == 0  ||
+             vsTokensBasic[ 0].compare( "Desorption" ) == 0  ||
+             vsTokensBasic[ 0].compare( "Diffusion" ) == 0 ) {
+            //Set the processes to be created along with their parameters
+            vector< string > tempVec;
+            // We want the parameters
+            // First is the keyword process, then the name of the process as this is defined in the REGISTER_PROCESS( e.g. Adsorption)
+            // and then after 2 the parameters follow
+
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            bool bComment = false;
+            for ( int i = 0; i< vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
+
+            for ( int i = 0; i < vsTokens.size(); i++ ){
+                tempVec.push_back(  vsTokens[ i ] );
+            }
+            m_parameters->setProcess( vsTokensBasic[ 0 ], tempVec );
+        }
+
+/*        if ( vsTokens[ 0].compare( m_sProcess ) == 0){
             //Set the processes to be created along with their parameters
             vector< string > tempVec;
             // We want the parameters
@@ -205,7 +316,7 @@ void IO::readInputFile()
                 tempVec.push_back(  vsTokens[ i ] );
             }
             m_parameters->setProcess( vsTokens[ 1 ], tempVec );
-        }
+        }*/
     }//Reading the lines
 }
 

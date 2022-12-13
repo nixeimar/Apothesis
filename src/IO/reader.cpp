@@ -395,15 +395,15 @@ pair<vector<string>,vector<string>> Reader::m_fsplitReactionKey(string reactionK
 }
 
 bool Reader::m_bisAdsorption(vector<string> reactants){
-    return (reactants.size()>1) ? (simplified(reactants[0])==m_ssiteKey || simplified(reactants[1])==m_ssiteKey): false ;
+    return (reactants.size()>1) ? (simplified(reactants[0])==m_sSiteKey || simplified(reactants[1])==m_sSiteKey): false ;
 }
 
 bool Reader::m_bisDesorption(vector<string> products){
-    return (products.size()>1) ? (simplified(products[0])==m_ssiteKey || simplified(products[1])==m_ssiteKey): false ;
+    return (products.size()>1) ? (simplified(products[0])==m_sSiteKey || simplified(products[1])==m_sSiteKey): false ;
 }
 
 bool Reader::m_bisDiffusion(vector<string> reactants, vector<string> products){
-    return (reactants.size()==1 && products.size()==1 && contains(reactants[0],m_ssiteKey) && contains(products[0],m_ssiteKey)) ;
+    return (reactants.size()==1 && products.size()==1 && contains(reactants[0],m_sSiteKey) && contains(products[0],m_sSiteKey)) ;
 }
 
 string Reader::lcMatch(string X, vector<string> vsY)

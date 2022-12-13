@@ -47,7 +47,8 @@ public:
         m_sPressureKey("pressure"),
         m_sTemperatureKey("temperature"),
         m_sTimeKey("time"),
-        m_ssiteKey("*"),
+        m_sReactionKey("reaction"),
+        m_sSiteKey("*"),
         m_sCommentLine("#")
     {
         //Initialize the map for the lattice
@@ -77,7 +78,6 @@ public:
 
     /// Check if a string contains another string and remove it.
     void eraseSubstring(string &, const string &);
-
 
     /// Check if a string contains another string. TODO: This should be transferred to a generic string class).
     bool contains(string, string, CASE cas = Insensitive);
@@ -183,7 +183,10 @@ private:
     string m_sDebugKey;
 
     /// Reaction site key
-    string m_ssiteKey;
+    string m_sSiteKey;
+
+    /// Reaction site key
+    string m_sReactionKey;
 
     /// Comment
     string m_sCommentLine;
