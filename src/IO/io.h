@@ -139,7 +139,7 @@ class IO: public Pointers
     ///  Check of a string starts with a certain string. TODO: This should be transferred to a generic string class).
     inline bool startsWith( string str, string substr )
       {
-      if ( str.find( substr ) != string::npos )
+      if ( str.find( substr, 0 ) == 0 ) //string::npos )
         return true;
       else
         return false;

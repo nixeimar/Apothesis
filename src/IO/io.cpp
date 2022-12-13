@@ -72,7 +72,7 @@ void IO::readInputFile()
         //We do not care about empty lines
         if ( vsTokensBasic.size() == 0 ) continue;
 
-        bool bComment = false;
+/*        bool bComment = false;
         for ( int i = 0; i< vsTokensBasic.size(); i++){
             if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
                 bComment = true;
@@ -80,7 +80,7 @@ void IO::readInputFile()
             // Remove the comments from the tokens so not to consider them
             if ( bComment )
                 vsTokensBasic[ i ].clear();
-        }
+        }*/
 
         // Remove any empty parts of the vector
         vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
@@ -107,6 +107,10 @@ void IO::readInputFile()
                 if ( bComment )
                     vsTokens[ i ].clear();
             }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vsTokensBasic.erase( it, vsTokens.end() );
 
             int count = 0;
 
@@ -153,6 +157,10 @@ void IO::readInputFile()
                     vsTokens[ i ].clear();
             }
 
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+            vsTokensBasic.erase( it, vsTokensBasic.end() );
+
             if ( isNumber( vsTokens[ 0 ] ) ){
                 m_lattice->setNumSteps( toInt( vsTokens[ 0 ] ) );
             }
@@ -182,6 +190,10 @@ void IO::readInputFile()
                     vsTokensBasic[ i ].clear();
             }
 
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+            vsTokensBasic.erase( it, vsTokensBasic.end() );
+
             if ( isNumber( trim(vsTokensBasic[ 1 ] ) )){
                 m_parameters->setTemperature( toDouble( trim(vsTokensBasic[ 1] ) ) );
             }
@@ -202,6 +214,10 @@ void IO::readInputFile()
                 if ( bComment )
                     vsTokensBasic[ i ].clear();
             }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+            vsTokensBasic.erase( it, vsTokensBasic.end() );
 
             if ( isNumber( trim(vsTokensBasic[ 1 ] ) ) ){
                 // Is this an error?
@@ -224,6 +240,10 @@ void IO::readInputFile()
                 if ( bComment )
                     vsTokensBasic[ i ].clear();
             }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+            vsTokensBasic.erase( it, vsTokensBasic.end() );
 
             if ( isNumber(  trim( vsTokensBasic[ 1 ] ) ) ){
                 m_parameters->setEndTime( toDouble( trim( vsTokensBasic[ 1] ) ) );
@@ -252,6 +272,10 @@ void IO::readInputFile()
                 if ( bComment )
                     vsTokens[ i ].clear();
             }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vsTokens.erase( it, vsTokens.end() );
 
             if ( vsTokens[ 0].compare( "log") == 0 ) {
                 if ( isNumber( trim(vsTokens[ 1 ] ) ) ){
@@ -299,6 +323,10 @@ void IO::readInputFile()
                 if ( bComment )
                     vsTokens[ i ].clear();
             }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vsTokens.erase( it, vsTokens.end() );
 
             for ( int i = 0; i < vsTokens.size(); i++ ){
                 tempVec.push_back(  vsTokens[ i ] );
