@@ -118,11 +118,6 @@ class Parameters: public Pointers
 
     /// The time step to write the lattice
     double m_dWriteLatticeEvery;
-
-    // Here the reaction table should be. It holds the reactions (rows) and the species (columns)
-    // so as to hold the stoichoiometric coefficients.
-//    vector< vector <double> > m_dvReactionTable;
-
   };
 
 }

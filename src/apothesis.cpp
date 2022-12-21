@@ -110,7 +110,33 @@ void Apothesis::init()
 
     //Create the processes
     for ( auto proc:pParameters->getProcessesInfo() ){
-        vector<string> params;
+
+        if ( pIO->contains( proc.first, "+" ) && pIO->contains( proc.first, "->") && !pIO->contains( proc.first, "*" ) ) {
+             cout << "This is a reaction " + proc.first << endl;
+        }
+        else if ( pIO->contains( proc.first, "+" ) && pIO->contains( proc.first, "->") && pIO->contains( proc.first, "*" ) ){
+
+            if ( pIO->contains( pIO->split( proc.first, "->")[ 0 ], "*" ) ) {
+                Adsorption *a = new Adsorption();
+
+//                a->setSpecies( )
+
+
+                cout << "This is adsorption " + proc.first << endl;
+            }
+            else if ( pIO->contains( pIO->split( proc.first, "->")[ 1 ], "*" ) ) {
+
+                cout << "This is desorption " + proc.first << endl;
+            }
+
+        }
+        else {
+            cout << "This is diffusion " + proc.first << endl;
+        }
+
+
+
+/*        vector<string> params;
         if ( proc.first.compare( "Desorption" ) == 0 || proc.first.compare( "Diffusion" ) == 0 ){
             for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
                 auto pos = m_processMap.insert( { FactoryProcess::createProcess(proc.first), emptySet } );
@@ -137,8 +163,10 @@ void Apothesis::init()
             pos.first->first->setUncoAccepted(true);
 
             pos.first->first->init( proc.second );
-        }
+        }*/
     }
+
+    exit;
 
     reaction* rec = new reaction();
     rec->setStoichiometry("CO", 1);

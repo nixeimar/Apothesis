@@ -39,7 +39,13 @@ public:
 
     void simple();
 
+    inline void setSpecies(string s){ m_sSpecies = s;}
+    inline string getSpecies(){ return m_sSpecies;}
+
 private:
+
+    string m_sSpecies;
+
     bool mf_isInLowerStep( Site* s );
     bool mf_isInHigherStep( Site* s );
 
