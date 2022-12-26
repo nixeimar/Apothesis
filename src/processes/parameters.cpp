@@ -27,7 +27,6 @@ namespace Utils
     m_mProcs[ processName ] = processParams;
   }
 
-
   void Parameters::printInfo()
   {
       cout << endl;

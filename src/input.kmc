@@ -18,7 +18,7 @@ pressure: 101325
 random: 1234
 
 #simple s0*f*P/(2*pi*MW*Ctot*kb*T) -> Sticking coefficient [-], f [-], C_tot [sites/m2], MW [kg/mol] 
-A + * -> A(s): simple 0.1 2.0e-3 1.0e+19 0.032 #testing
+A + 2 * -> A(s): simple 0.1 2.0e-3 1.0e+19 0.032 
 
 #arrhenius v0 exp(-nE/kT) -> frequency v0 [-],  E [Joules]  
 C(s) -> C + *: arrhenius 1e+13 71128 
@@ -26,10 +26,10 @@ C(s) -> C + *: arrhenius 1e+13 71128
 #arrhenius v0 A exp(-nE/kT), A = exp((E-Em)/kT) -> frequency v0 [-],  E (Joules), Em [Joules]
 #process Diffusion: arrhenius 1e+13 71128 56902  
 C(s) -> C(s): arrhenius 1e+13 71128 
-  
-
-#This should bbe the reaction 
-A(s) + B(s) -> C(s): arrhenius 1e_13 7118 
+  		
+#This should bbe the reaction 												
+3 CO2(s) + B(s) -> AB(s): arrhenius 1e_13 7118 
  
 write: log 0.0000001
 write: lattice 0.001
+

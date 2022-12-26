@@ -316,7 +316,6 @@ void IO::readInputFile()
             continue;
         }
 
-
         if ( vsTokensBasic[ 0].compare( m_sAdsorption ) == 0  ||
              vsTokensBasic[ 0].compare( m_sDesorption ) == 0  ||
              vsTokensBasic[ 0].compare( m_sDiffusion ) == 0 ) {
@@ -704,5 +703,47 @@ void IO::closeRoughnessFile()
     if ( m_RoughnessFile.is_open( ) )
         m_RoughnessFile.close();
 }
+
+vector<string> IO::getReactants( string process ) {
+    vector<string> parts = split(process, "->");
+    vector<string> temp = split(parts[ 0 ], "+");
+    vector<string> reactants;
+
+    for ( string str:temp)
+        reactants.push_back( simplified( str ) );
+
+// We actually need this since it will give us the numnber of sites a compound can cover
+//   reactants.erase( remove(reactants.begin(), reactants.end(), "*"), reactants.end());
+
+    return reactants;
+}
+
+pair<string, double> IO::analyzeReactant( string reactant ) {
+
+    string coefficient;
+    string symbol;
+    bool firstFound = false;
+
+    for (char ch:reactant){
+        if ( !firstFound && (isdigit(ch) || ch == '.' ) )
+            coefficient.push_back( ch );
+        else {
+            firstFound = true;
+            symbol.push_back( ch );
+        }
+    }
+
+    pair<string, double> react;
+    react.first = trim(symbol);
+
+    if ( coefficient.empty() )
+        react.second = 1.0;
+    else
+        react.second = toDouble( coefficient );
+
+    return react;
+}
+
+
 
 

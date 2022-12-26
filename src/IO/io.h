@@ -171,6 +171,12 @@ class IO: public Pointers
     /// Set lattice using input info
     void initializeLattice();
 
+    /// Given a process of the form A + * -> A(s) or A(s) -> A + * or A(s) -> A(s) or A(s) + B(s) -> AB(s) returns the reactants without the "*" included.
+    vector<string> getReactants( string process );
+
+    /// Given a reactant e.g. 2A it returns the 2 as stoichiometric coefficient and the A as the reactant
+    pair<string, double>  analyzeReactant( string reactant );
+
   protected:
     /// The type of lattice
     string m_sLatticeType;

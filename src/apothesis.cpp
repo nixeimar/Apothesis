@@ -95,9 +95,9 @@ void Apothesis::init()
     pLattice->printInfo();
 
     // Test lattice to check for the surface reaction
-    pLattice->getSite( 49 )->setLabel("CO");
-    for (Site* s:pLattice->getSite( 49 )->getNeighs() )
-        s->setLabel("XX");
+//    pLattice->getSite( 49 )->setLabel("CO");
+//   for (Site* s:pLattice->getSite( 49 )->getNeighs() )
+//       s->setLabel("XX");
 
     pLattice->print();
 
@@ -111,26 +111,47 @@ void Apothesis::init()
     //Create the processes
     for ( auto proc:pParameters->getProcessesInfo() ){
 
+        //This is for the reactions
         if ( pIO->contains( proc.first, "+" ) && pIO->contains( proc.first, "->") && !pIO->contains( proc.first, "*" ) ) {
              cout << "This is a reaction " + proc.first << endl;
+
+             map<string, double> reactants;
+             for (string react: pIO->getReactants( proc.first ) )
+                  reactants.insert( pIO->analyzeReactant( react ) );
+
+             cout << "OK1" << endl;
         }
+        //This is for the adsorption & desorption
         else if ( pIO->contains( proc.first, "+" ) && pIO->contains( proc.first, "->") && pIO->contains( proc.first, "*" ) ){
 
             if ( pIO->contains( pIO->split( proc.first, "->")[ 0 ], "*" ) ) {
-                Adsorption *a = new Adsorption();
 
-//                a->setSpecies( )
+                map<string, double> reactants;
+                for (string react: pIO->getReactants( proc.first ) )
+                     reactants.insert( pIO->analyzeReactant( react ) );
 
+                cout << "OK2" << endl;
+
+                 Adsorption *a = new Adsorption();
 
                 cout << "This is adsorption " + proc.first << endl;
             }
             else if ( pIO->contains( pIO->split( proc.first, "->")[ 1 ], "*" ) ) {
 
                 cout << "This is desorption " + proc.first << endl;
+
+                vector<string> reactants = pIO->getReactants( proc.first );
+                cout << "OK2" << endl;
+
             }
 
         }
         else {
+            //This is for the diffusion
+
+            vector<string> reactants = pIO->getReactants( proc.first );
+            cout << "OK2" << endl;
+
             cout << "This is diffusion " + proc.first << endl;
         }
 
