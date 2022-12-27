@@ -119,6 +119,7 @@ protected:
     ///A list holding all affected sites from this process
     set<Site*> m_seAffectedSites;
 
+    ///The random generator
     RandomGen::RandomGenerator* m_pRandomGen;
 
     ///The type of the process

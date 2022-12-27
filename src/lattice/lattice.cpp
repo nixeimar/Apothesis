@@ -67,7 +67,6 @@ Lattice::Type Lattice::getType()
     }
 }
 
-
 void Lattice::buildSteps(){;}
 
 
@@ -80,12 +79,6 @@ Site* Lattice::getSite(int i, int j)
 
 void Lattice::print()
 {
-/*    for (int i = 0; i < m_iSizeY; i++){
-        for (int j = 0; j < m_iSizeX; j++)
-            cout << m_vSites[ i*m_iSizeX + j ]->getID() << "\t" << "( " << m_vSites[ i*m_iSizeX + j ]->getHeight() << " )" ;
-        cout  << endl;
-    }*/
-
     for (int i = 0; i < m_iSizeY; i++){
         for (int j = 0; j < m_iSizeX; j++)
             cout << m_vSites[ i*m_iSizeX + j ]->getLabel() + to_string( m_vSites[ i*m_iSizeX + j ]->getID() )  << "\t" << "( " << m_vSites[ i*m_iSizeX + j ]->getHeight() << " ) " ;
@@ -141,6 +134,7 @@ void Lattice::printInfo() {
     cout << "Type: "; cout << getType() << endl;
     cout << "Size X: "; cout << getX() << endl;
     cout << "Size Y: "; cout << getY() << endl;
+    cout << "Lattice species: "; cout << getLabels() << endl;
 
     if ( hasSteps() ) {
         cout << "Number of steps: "; cout << getNumSteps() << endl;

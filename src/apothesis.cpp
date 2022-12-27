@@ -89,20 +89,17 @@ void Apothesis::init()
     pRandomGen->init( pParameters->getRandGenInit() );
 
     //Create the lattice
+    pLattice->setLabels( pParameters->getLatticeLabels() );
     pLattice->build();
     if ( pLattice->hasSteps() )
         pLattice->buildSteps();
-    pLattice->printInfo();
 
-    // Test lattice to check for the surface reaction
-//    pLattice->getSite( 49 )->setLabel("CO");
-//   for (Site* s:pLattice->getSite( 49 )->getNeighs() )
-//       s->setLabel("XX");
+    //Print lattice info: To be move in debug version
+    pLattice->printInfo();
 
     pLattice->print();
 
-
-    //Prin parameters if you want
+    //Print parameters to check: To be move in debug version
     pParameters->printInfo();
 
     //An empty set used for the initialization of the processMap

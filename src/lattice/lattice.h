@@ -54,6 +54,12 @@ class Lattice: public Pointers
     /// Sets the species on lattice sites.
     void setSpecies(Species*);
 
+    /// Stores the species on lattice sites.
+    inline void setLabels( string species ) { m_sLabel = species; }
+
+    /// Get the species of the lattice sites.
+    inline string getLabels() { return m_sLabel; }
+
     /// Returns the x dimension of the lattice.
     inline int getX() { return m_iSizeX;}
 
@@ -183,6 +189,9 @@ protected:
 
     /// The height differences between the first and last step
     int m_iStepDiff;
+
+    /// The label of the lattice species
+    string m_sLabel;
   };
 
 #endif // LATTICE_H

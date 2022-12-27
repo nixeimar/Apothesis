@@ -28,21 +28,25 @@ public:
     Adsorption();
     ~Adsorption() override;
 
-    double getProbability() override;
     bool rules( Site* ) override;
     void perform( Site* ) override;
+    void init( vector<string> params ) override;
+    double getProbability() override;
 
     inline void setTargetSite( Site* site ){ m_Site = site;}
     inline Site* getTargetSite(){ return m_Site; }
 
-    void init( vector<string> params ) override;
-
-    void simple();
 
     inline void setSpecies(string s){ m_sSpecies = s;}
     inline string getSpecies(){ return m_sSpecies;}
 
+    void arrhenius();
+    void simple();
+
+
 private:
+
+    void (Adsorption::*m_ftype)();
 
     string m_sSpecies;
 

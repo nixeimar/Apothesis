@@ -97,6 +97,12 @@ class Parameters: public Pointers
     /// Print parameters info
     void printInfo();
 
+    /// The label for the species in the lattice
+    inline void setLatticeLabels( string label ){ m_sLatticeLabel = label; }
+
+    /// The label for the species in the lattice
+    inline string getLatticeLabels(){ return m_sLatticeLabel; }
+
   protected:
     /// The temperature [K].
     double m_dT;
@@ -118,6 +124,9 @@ class Parameters: public Pointers
 
     /// The time step to write the lattice
     double m_dWriteLatticeEvery;
+
+    /// The label of the lattice species
+    string m_sLatticeLabel;
   };
 
 }

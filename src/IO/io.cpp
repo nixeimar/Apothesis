@@ -73,7 +73,7 @@ void IO::readInputFile()
         if ( vsTokensBasic.size() == 0 ) continue;
 
         bool bComment = false;
-        for ( int i = 0; i< vsTokensBasic.size(); i++){
+        for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
             if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
                 bComment = true;
 
@@ -91,7 +91,7 @@ void IO::readInputFile()
             if ( find( lKeywords.begin(), lKeywords.end(), vsTokensBasic[ 0 ] ) == lKeywords.end() ){
                 string msg = "Unknown keyword ( " + vsTokensBasic[ 0 ] + " )";
                 m_errorHandler->error_simple_msg( msg );
-                EXIT;
+                EXIT
             }
         }
 
@@ -101,7 +101,7 @@ void IO::readInputFile()
             vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
 
             bool bComment = false;
-            for ( int i = 0; i< vsTokens.size(); i++){
+            for ( unsigned int i = 0; i< vsTokens.size(); i++){
                 if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
                     bComment = true;
 
@@ -114,8 +114,6 @@ void IO::readInputFile()
             vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
             vsTokensBasic.erase( it, vsTokens.end() );
 
-            int count = 0;
-
             m_lattice->setType( vsTokens[ 0 ] );
 
             if ( isNumber( vsTokens[ 1 ] ) ){
@@ -123,7 +121,7 @@ void IO::readInputFile()
             }
             else {
                 m_errorHandler->error_simple_msg("The x dimension of lattice is not a number.");
-                EXIT;
+                EXIT
             }
 
             if ( isNumber( vsTokens[ 2 ] ) ){
@@ -131,7 +129,7 @@ void IO::readInputFile()
             }
             else {
                 m_errorHandler->error_simple_msg("The y dimension of lattice is not a number.");
-                EXIT;
+                EXIT
             }
 
             if ( isNumber( vsTokens[ 3 ] ) ){
@@ -139,7 +137,14 @@ void IO::readInputFile()
             }
             else {
                 m_errorHandler->error_simple_msg("The height must be a  number.");
-                EXIT;
+                EXIT
+            }
+
+            if ( !vsTokens[ 4 ].empty() )
+                m_parameters->setLatticeLabels( vsTokens[4] ) ;
+            else {
+                m_errorHandler->error_simple_msg("You must specify a species that the lattice is composed off.");
+                EXIT
             }
 
             continue;
@@ -152,7 +157,7 @@ void IO::readInputFile()
             vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
 
             bool bComment = false;
-            for ( int i = 0; i< vsTokens.size(); i++){
+            for ( unsigned int i = 0; i< vsTokens.size(); i++){
                 if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
                     bComment = true;
 
@@ -170,7 +175,7 @@ void IO::readInputFile()
             }
             else {
                 m_errorHandler->error_simple_msg("The x dimension of step is not a number.");
-                EXIT;
+                EXIT
             }
 
             if ( isNumber( vsTokens[ 1 ] ) ){
@@ -178,7 +183,7 @@ void IO::readInputFile()
             }
             else {
                 m_errorHandler->error_simple_msg("The y dimension of step is not a number.");
-                EXIT;
+                EXIT
             }
 
             continue;
@@ -187,7 +192,7 @@ void IO::readInputFile()
         if ( vsTokensBasic[ 0].compare(  m_sTemperature ) == 0 ){
 
             bool bComment = false;
-            for ( int i = 0; i< vsTokensBasic.size(); i++){
+            for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
                 if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
                     bComment = true;
 
@@ -205,7 +210,7 @@ void IO::readInputFile()
             }
             else {
                 m_errorHandler->error_simple_msg("Could not read temperature from input file. Is it a number?");
-                EXIT;
+                EXIT
             }
 
             continue;
@@ -214,7 +219,7 @@ void IO::readInputFile()
         if ( vsTokensBasic[ 0].compare(  m_sPressure ) == 0 ){
 
             bool bComment = false;
-            for ( int i = 0; i< vsTokensBasic.size(); i++){
+            for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
                 if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
                     bComment = true;
 
@@ -233,7 +238,7 @@ void IO::readInputFile()
             }
             else {
                 m_errorHandler->error_simple_msg("Could not read pressure from input file. Is it a number?");
-                EXIT;
+                EXIT
             }
 
             continue;
@@ -242,7 +247,7 @@ void IO::readInputFile()
         if ( vsTokensBasic[ 0].compare( m_sTime ) == 0 ){
 
             bool bComment = false;
-            for ( int i = 0; i< vsTokensBasic.size(); i++){
+            for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
                 if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
                     bComment = true;
 
@@ -260,7 +265,7 @@ void IO::readInputFile()
             }
             else {
                 m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
-                EXIT;
+                EXIT
             }
 
             continue;
@@ -277,7 +282,7 @@ void IO::readInputFile()
             vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
 
             bool bComment = false;
-            for ( int i = 0; i< vsTokens.size(); i++){
+            for ( unsigned int i = 0; i< vsTokens.size(); i++){
                 if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
                     bComment = true;
 
@@ -296,7 +301,7 @@ void IO::readInputFile()
                 }
                 else {
                     m_errorHandler->error_simple_msg("Could not read number for writing to log. Is it a number?");
-                    EXIT;
+                    EXIT
                 }
             }
             else if ( vsTokens[ 0 ].compare( "lattice") == 0 ) {
@@ -305,12 +310,12 @@ void IO::readInputFile()
                 }
                 else {
                     m_errorHandler->error_simple_msg("Could not read number for writing the lattice. Is it a number?");
-                    EXIT;
+                    EXIT
                 }
             }
             else {
                 m_errorHandler->error_simple_msg("Not correct keyword for writer. Available selections are: \"log\" and \"lattice\"");
-                EXIT;
+                EXIT
             }
 
             continue;
@@ -330,7 +335,7 @@ void IO::readInputFile()
             vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
 
             bool bComment = false;
-            for ( int i = 0; i< vsTokens.size(); i++){
+            for ( unsigned int i = 0; i< vsTokens.size(); i++){
                 if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
                     bComment = true;
 
@@ -343,7 +348,7 @@ void IO::readInputFile()
             vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
-            for ( int i = 0; i < vsTokens.size(); i++ ){
+            for ( unsigned int i = 0; i < vsTokens.size(); i++ ){
                 tempVec.push_back(  vsTokens[ i ] );
             }
             m_parameters->setProcess( vsTokensBasic[ 0 ], tempVec );
@@ -367,7 +372,7 @@ void IO::readInputFile()
             vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
 
             bool bComment = false;
-            for ( int i = 0; i< vsTokens.size(); i++){
+            for ( unsigned int i = 0; i < vsTokens.size(); i++){
                 if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
                     bComment = true;
 
@@ -380,7 +385,7 @@ void IO::readInputFile()
             vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
-            for ( int i = 0; i < vsTokens.size(); i++ ){
+            for ( unsigned int i = 0; i < vsTokens.size(); i++ ){
                 tempVec.push_back(  vsTokens[ i ] );
             }
             m_parameters->setProcess( vsTokensBasic[ 0 ], tempVec );
@@ -397,7 +402,7 @@ void IO::openInputFile( string file )
 
     if ( !m_InputFile.is_open() ) {
         m_errorHandler->error_simple_msg( "Cannot open file input.kmc" ) ;
-        EXIT;
+        EXIT
     }
 }
 
@@ -407,7 +412,7 @@ void IO::openRoughnessFile( string file )
 
     if ( !m_RoughnessFile.is_open() ) {
         m_errorHandler->error_simple_msg( "Cannot open file " + file ) ;
-        EXIT;
+        EXIT
     }
 }
 
