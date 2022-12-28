@@ -171,11 +171,21 @@ class IO: public Pointers
     /// Set lattice using input info
     void initializeLattice();
 
-    /// Given a process of the form A + * -> A(s) or A(s) -> A + * or A(s) -> A(s) or A(s) + B(s) -> AB(s) returns the reactants without the "*" included.
+    /// Given a process of the form A + * -> A(s) or A(s) -> A + * or A(s) -> A(s) or A(s) + B(s) -> AB(s) returns the reactants with the "*" included.
     vector<string> getReactants( string process );
 
+    /// Given a process of the form A + * -> A(s) or A(s) -> A + * or A(s) -> A(s) or A(s) + B(s) -> AB(s) returns the products with the "*" included.
+    vector<string> getProducts( string process );
+
     /// Given a reactant e.g. 2A it returns the 2 as stoichiometric coefficient and the A as the reactant
-    pair<string, double>  analyzeReactant( string reactant );
+    pair<string, double> analyzeCompound( string reactant );
+
+    // Trim from both ends (in place)
+    static inline string trim(std::string &s) {
+        rtrim(s);
+        ltrim(s);
+        return s;
+    }
 
   protected:
     /// The type of lattice
@@ -247,14 +257,6 @@ class IO: public Pointers
             return !std::isspace(ch);
         }).base(), s.end());
     }
-
-    // trim from both ends (in place)
-    static inline string trim(std::string &s) {
-        rtrim(s);
-        ltrim(s);
-        return s;
-    }
-
 };
 
 #endif // IO_H

@@ -29,7 +29,7 @@ void SimpleCubic::buildSteps()
     int iPerStep = 0;
     if ( m_vSites.size()%m_iNumSteps != 0){
         cout << "Cannot create  stepped surface because it cannot be divided exaclty." << endl;
-        EXIT;
+        EXIT
     }
     else {
         iPerStep = m_iSizeX/m_iNumSteps;
@@ -70,13 +70,13 @@ void SimpleCubic::build()
     if (m_Type == NONE)
     {
         cout << "Not supported lattice type" << endl;
-        EXIT;
+        EXIT
     }
 
     if (m_iSizeX == 0 || m_iSizeY == 0)
     {
         m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
-        EXIT;
+        EXIT
     }
 
     if (m_iHeight < 5)

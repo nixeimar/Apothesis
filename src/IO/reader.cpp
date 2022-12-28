@@ -82,7 +82,7 @@ void Reader::openInputFile(string path){
     if (!m_inputFile.is_open())
     {
       m_errorHandler->error_simple_msg("Cannot open file input.kmc.");
-      EXIT;
+      EXIT
     }
 }
 
@@ -129,7 +129,7 @@ void Reader::initializeLattice(){
     default:
     {
       cout<<"Unresolvable lattice type found. Exiting..."<<endl;
-      EXIT;
+      EXIT
     }
     }
 
@@ -184,7 +184,7 @@ void Reader::m_fsetLattice(vector<string> vsTokens){
     else
     {
       m_errorHandler->error_simple_msg("The x dimension of lattice is not a number.");
-      EXIT;
+      EXIT
     }
 
     if (isNumber(vsTokens[3]))
@@ -195,7 +195,7 @@ void Reader::m_fsetLattice(vector<string> vsTokens){
     else
     {
       m_errorHandler->error_simple_msg("The y dimension of lattice is not a number.");
-      EXIT;
+      EXIT
     }
 
     if (isNumber(vsTokens[4]))
@@ -206,7 +206,7 @@ void Reader::m_fsetLattice(vector<string> vsTokens){
     else
     {
       m_errorHandler->error_simple_msg("The height must be a number.");
-      EXIT;
+      EXIT
     }
 }
 
@@ -435,7 +435,7 @@ void Reader::m_fsetTime(string time){
     else
     {
       m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
-      EXIT;
+      EXIT
     }
 }
 
@@ -449,7 +449,7 @@ void Reader::m_fsetPressure(string pressure){
     else
     {
       m_errorHandler->error_simple_msg("Could not read pressure from input file. Is it a number?");
-      EXIT;
+      EXIT
     }
 }
 
@@ -463,7 +463,7 @@ void Reader::m_fsetTemperature(string temperature){
     else
     {
       m_errorHandler->error_simple_msg("Could not read temperature from input file. Is it a number?");
-      EXIT;
+      EXIT
     }
 }
 
@@ -477,7 +477,7 @@ void Reader::m_fsetDebugMode(string debugMode){
     else
     {
       m_errorHandler->error_simple_msg("Could not read debug mode.");
-      EXIT;
+      EXIT
     }
 }
 

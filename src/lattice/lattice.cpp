@@ -118,7 +118,7 @@ void Lattice::printNeighs( int ID )
     }
     else {
         cout << "Cannot print neighs because ID exceeds the available number of sites." << endl;
-        EXIT;
+        EXIT
     }
 
 }

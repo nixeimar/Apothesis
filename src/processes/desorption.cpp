@@ -37,7 +37,7 @@ void Desorption::init(vector<string> params)
     }
     else {
         m_error->error_simple_msg("Not supported type of process -> " + m_sProcName + " | " + m_sType );
-        EXIT;
+        EXIT
     }
 }
 

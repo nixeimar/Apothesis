@@ -360,8 +360,6 @@ void IO::readInputFile()
         // For the reactions
         if (  contains(vsTokensBasic[ 0], "->" ) ){
 
- //           if ( contains( vsTokensBasic[0], "+" ) )
-
             //Set the processes to be created along with their parameters
             vector< string > tempVec;
             // We want the parameters
@@ -723,7 +721,18 @@ vector<string> IO::getReactants( string process ) {
     return reactants;
 }
 
-pair<string, double> IO::analyzeReactant( string reactant ) {
+vector<string> IO::getProducts( string process ) {
+    vector<string> parts = split(process, "->");
+    vector<string> temp = split(parts[ 1 ], "+");
+    vector<string> products;
+
+    for ( string str:temp)
+        products.push_back( simplified( str ) );
+
+    return products;
+}
+
+pair<string, double> IO::analyzeCompound( string reactant ) {
 
     string coefficient;
     string symbol;

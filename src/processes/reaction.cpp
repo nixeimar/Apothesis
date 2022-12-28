@@ -17,17 +17,17 @@
 
 #include "reaction.h"
 
-reaction::reaction(){}
-reaction::~reaction(){}
+Reaction::Reaction(){}
+Reaction::~Reaction(){}
 
 
-void reaction::perform(Site *)
+void Reaction::perform(Site *)
 {
     ;
 
 }
 
-bool reaction::rules(Site *s)
+bool Reaction::rules(Site *s)
 {
     // Check if the site
     if ( m_mStoichiometry.find( s->getLabel() ) == m_mStoichiometry.end() )
@@ -51,7 +51,7 @@ bool reaction::rules(Site *s)
     return true;
 }
 
-double reaction::getProbability(){
+double Reaction::getProbability(){
     return 0.;
 }
 

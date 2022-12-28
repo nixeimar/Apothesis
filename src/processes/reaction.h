@@ -28,11 +28,11 @@ class species;
 
 using namespace std;
 
-class reaction: public Process
+class Reaction: public Process
 {
 public:
-    reaction();
-    ~reaction();
+    Reaction();
+    ~Reaction();
 
     void perform(Site *) override;
     bool rules(Site *) override;

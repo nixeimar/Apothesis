@@ -34,12 +34,12 @@ void Diffusion::init(vector<string> params)
     //In the first must always be the type
     m_sType = any_cast<string>(m_vParams[ 0 ]);
     if ( m_sType.compare("arrhenius") == 0 ){
-        m_iNumNeighs = stoi( m_vParams[4] );
+        m_iNumNeighs = stoi( m_vParams[3] );
         arrhenius( stod(m_vParams[ 1 ]), stod(m_vParams[ 2 ]), stod(m_vParams[ 3 ]), m_pUtilParams->getTemperature(), m_iNumNeighs );
     }
     else {
         m_error->error_simple_msg("Not supported type of process -> " + m_sProcName + " | " + m_sType );
-        EXIT;
+        EXIT
     }
 
     cout << endl;
@@ -100,7 +100,7 @@ void Diffusion::perform( Site* s)
         adsorbSite = s->getNeighs().at( m_pRandomGen->getIntRandom(0, m_iNumNeighs-2) );
     else{
         cout << "The random generator has not been defined." << endl;
-        EXIT;
+        EXIT
     }
 
     //----- This is adsoprtion ------------------------------------------------------------->

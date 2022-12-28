@@ -36,19 +36,43 @@ public:
     inline void setTargetSite( Site* site ){ m_Site = site;}
     inline Site* getTargetSite(){ return m_Site; }
 
+    /// The arrhenius type for the adsorption process rate i.e.
+    /// arrhenius v0 A exp(-nE/kT), A = exp((E-Em)/kT) -> frequency v0 [-],  E (Joules), Em [Joules]
+    void arrheniusType();
 
-    inline void setSpecies(string s){ m_sSpecies = s;}
-    inline string getSpecies(){ return m_sSpecies;}
+    /// Constant value for the adsorption process rate i.e.
+    /// constant 1.0 [ML/s]
+    void constantType();
 
-    void arrhenius();
-    void simple();
+    /// The simple type for the adsorption process rate i.e.
+    /// simple s0*f*P/(2*pi*MW*Ctot*kb*T) -> Sticking coefficient [-], f [-], C_tot [sites/m2], MW [kg/mol]
+    void simpleType();
 
+    /// The uncoditional rule. The process is accepted without checked.
+    bool uncoRule(Site* s);
+
+    /// The basic rule for accepting this process.
+    /// Check if the site is empty (i.e. the label is the same as the lattice species)
+    /// then returns true (the processes can be performed).
+    bool basicRule( Site* s);
+
+    /// The process is PVD
+    void performPVD(Site*);
+
+    /// The process is PVD or CVD
+    void performCVDALD(Site*);
+
+    /// Sets the specific adsorption species label according to the input
+    void setAdrorbedLabel(string label){ m_sAdrorbedLabel = label;}
 
 private:
 
-    void (Adsorption::*m_ftype)();
+    /// The label of the species after it is adsorbed (i.e. it inlcudes *)
+    string m_sAdrorbedLabel;
 
-    string m_sSpecies;
+    void (Adsorption::*m_fType)();
+    bool (Adsorption::*m_fRules)(Site*);
+    void (Adsorption::*m_fPerform)(Site*);
 
     bool mf_isInLowerStep( Site* s );
     bool mf_isInHigherStep( Site* s );

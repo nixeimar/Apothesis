@@ -55,7 +55,7 @@ public:
     virtual bool rules( Site* ) = 0;
 
     /// Set the type of the process
-    virtual void setType(string type) { m_sType; }
+    virtual void setType( string type) { m_sType = type; }
 
     /// Returns the type of the process
     virtual string getType() { return m_sType; }
@@ -84,9 +84,6 @@ public:
     /// Set the random generator
     inline void setRandomGen( RandomGen::RandomGenerator* randgen ) { m_pRandomGen = randgen; }
 
-    inline void setUncoAccepted( bool isUncoAccepted) { m_bUncoAccept = isUncoAccepted; }
-    inline bool isUncoAccepted() { return m_bUncoAccept; }
-
     inline void setConstant( bool isConst =false ){ m_bConstant = isConst; }
 
     //If this process is supposed to be constant (i.e. independent of coverage)
@@ -100,6 +97,9 @@ public:
 
     ///Defines an arrhenius process
     void arrhenius();
+
+    inline void setUncoAccepted( bool isUncoAccepted) { m_bUncoAccept = isUncoAccepted; }
+    inline bool isUncoAccepted() { return m_bUncoAccept; }
 
 protected:
     ///Pointer to the lattice of the process
@@ -125,9 +125,6 @@ protected:
     ///The type of the process
     string m_sType;
 
-    ///Set true if it is always possible
-    bool m_bUncoAccept;
-
     bool m_bConstant;
 
     ///The number of the neighbors used in diffusion and desorption
@@ -138,6 +135,9 @@ protected:
 
     /// The name of this prcess
     string m_sProcName;
+
+    ///Set true if it is always possible
+    bool m_bUncoAccept;
 
 private:
     /// The id of the process

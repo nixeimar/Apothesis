@@ -36,12 +36,12 @@ void FCC::build()
             cout << "Error:The size of the lattice must be an even number in each direction." << endl;
             for ( int i = 0; i < m_vSites.size(); i++)
                 delete m_vSites[ i ];
-            EXIT;
+            EXIT
         }
 
         if ( m_iSizeX == 0 || m_iSizeY == 0) {
             m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
-            EXIT;
+            EXIT
         }
 
         if ( m_iHeight < 5) {
@@ -502,12 +502,12 @@ void FCC::mf_neigh_110()
     for ( int i = 0; i < getSize(); i++){
         if ( m_vSites[ i ]->get1stNeihbors()[ 0 ].size() != 4 ){
             cout << "Check level 0 neighs in site: " << i << endl;
-            EXIT;
+            EXIT
         }
 
         if ( m_vSites[ i ]->get1stNeihbors()[ 0 ].size() != 4 ){
             cout << "Check level 0 neighs in site: " << i << endl;
-            EXIT;
+            EXIT
         }
     }
 }

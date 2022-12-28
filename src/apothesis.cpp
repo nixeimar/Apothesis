@@ -35,6 +35,7 @@
 #include "factory_process.h"
 
 #include <numeric>
+#include <algorithm>
 
 using namespace MicroProcesses;
 
@@ -108,53 +109,117 @@ void Apothesis::init()
     //Create the processes
     for ( auto proc:pParameters->getProcessesInfo() ){
 
-        //This is for the reactions
-        if ( pIO->contains( proc.first, "+" ) && pIO->contains( proc.first, "->") && !pIO->contains( proc.first, "*" ) ) {
-             cout << "This is a reaction " + proc.first << endl;
+        string process = m_fAnalyzeProc( proc.first );
 
-             map<string, double> reactants;
-             for (string react: pIO->getReactants( proc.first ) )
-                  reactants.insert( pIO->analyzeReactant( react ) );
+        if ( process.compare("Adsorption") == 0 ){
+            cout << "This is adsorption " + proc.first << endl;
 
-             cout << "OK1" << endl;
+            map<string, double> reactants;
+            for (string react: pIO->getReactants( proc.first ) )
+                reactants.insert( pIO->analyzeCompound( react ) );
+
+            map<string, double> products;
+            for (string react: pIO->getProducts( proc.first ) )
+                products.insert( pIO->analyzeCompound( react ) );
+
+            Adsorption* a = new Adsorption();
+            //The name of the actual class used
+            a->setName( proc.first );
+            a->setLattice( pLattice );
+            a->setRandomGen( pRandomGen );
+            a->setErrorHandler( pErrorHandler );
+            a->setSysParams( pParameters ); //These are the systems and constants parameters
+            a->init( proc.second ); //These are the process per se parameters
+
+            m_processMap.insert( {a, emptySet} );
         }
-        //This is for the adsorption & desorption
-        else if ( pIO->contains( proc.first, "+" ) && pIO->contains( proc.first, "->") && pIO->contains( proc.first, "*" ) ){
+        else if ( process.compare("Reaction") == 0 ){
+            cout << "This is reaction " + proc.first << endl;
 
-            if ( pIO->contains( pIO->split( proc.first, "->")[ 0 ], "*" ) ) {
+            Reaction* r = new Reaction();
+            //The name of the actual class used
+            r->setName( proc.first );
+            r->setLattice( pLattice );
+            r->setRandomGen( pRandomGen );
+            r->setErrorHandler( pErrorHandler );
+            r->setSysParams( pParameters ); //These are the systems and constants parameters
+            r->init( proc.second ); //These are the process per se parameters
 
-                map<string, double> reactants;
-                for (string react: pIO->getReactants( proc.first ) )
-                     reactants.insert( pIO->analyzeReactant( react ) );
-
-                cout << "OK2" << endl;
-
-                 Adsorption *a = new Adsorption();
-
-                cout << "This is adsorption " + proc.first << endl;
-            }
-            else if ( pIO->contains( pIO->split( proc.first, "->")[ 1 ], "*" ) ) {
-
-                cout << "This is desorption " + proc.first << endl;
-
-                vector<string> reactants = pIO->getReactants( proc.first );
-                cout << "OK2" << endl;
-
-            }
-
+            m_processMap.insert( {r, emptySet} );
         }
-        else {
-            //This is for the diffusion
+        else if ( process.compare("Desorption") == 0 ){
+            cout << "This is desorption " + proc.first << endl;
 
-            vector<string> reactants = pIO->getReactants( proc.first );
-            cout << "OK2" << endl;
+            if (proc.second.at( proc.second.size() - 1 ).compare("all") != 0){
 
+                proc.second.push_back( to_string(1) );
+
+                Desorption* des = new Desorption();
+                des->setName( proc.first );
+                des->setLattice( pLattice );
+                des->setRandomGen( pRandomGen );
+                des->setErrorHandler( pErrorHandler );
+                des->setSysParams( pParameters ); //These are the systems and constants parameters
+                des->init( proc.second ); //These are the process per se parameters
+
+                m_processMap.insert( {des, emptySet} );
+
+            } else {
+                for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
+
+                    proc.second.pop_back();
+                    proc.second.push_back( to_string(neighs + 1) );
+
+                    Desorption* des = new Desorption();
+                    des->setName( proc.first );
+                    des->setLattice( pLattice );
+                    des->setRandomGen( pRandomGen );
+                    des->setErrorHandler( pErrorHandler );
+                    des->setSysParams( pParameters ); //These are the systems and constants parameters
+                    des->init( proc.second ); //These are the process per se parameters
+
+                    m_processMap.insert( {des, emptySet} );
+                }
+            }
+        }
+        else if ( process.compare("Diffusion") == 0 ){
             cout << "This is diffusion " + proc.first << endl;
+
+            if (proc.second.at( proc.second.size() - 1 ).compare("all") != 0){
+
+                proc.second.push_back( to_string(1) );
+
+                Diffusion* dif = new Diffusion();
+                dif->setName( proc.first );
+                dif->setLattice( pLattice );
+                dif->setRandomGen( pRandomGen );
+                dif->setErrorHandler( pErrorHandler );
+                dif->setSysParams( pParameters ); //These are the systems and constants parameters
+                dif->init( proc.second ); //These are the process per se parameters
+
+                m_processMap.insert( {dif, emptySet} );
+
+            } else {
+
+                for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
+
+                    proc.second.pop_back();
+                    proc.second.push_back( to_string(neighs + 1) );
+
+                    Diffusion* dif = new Diffusion();
+                    dif->setName( proc.first + "( " + to_string(neighs + 1) + " )"  );
+                    dif->setLattice( pLattice );
+                    dif->setRandomGen( pRandomGen );
+                    dif->setErrorHandler( pErrorHandler );
+                    dif->setSysParams( pParameters ); //These are the systems and constants parameters
+                    dif->init( proc.second ); //These are the process per se parameters
+
+                    m_processMap.insert( {dif, emptySet} );
+                }
+            }
         }
 
-
-
-/*        vector<string> params;
+        /*        vector<string> params;
         if ( proc.first.compare( "Desorption" ) == 0 || proc.first.compare( "Diffusion" ) == 0 ){
             for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
                 auto pos = m_processMap.insert( { FactoryProcess::createProcess(proc.first), emptySet } );
@@ -184,15 +249,7 @@ void Apothesis::init()
         }*/
     }
 
-    exit;
-
-    reaction* rec = new reaction();
-    rec->setStoichiometry("CO", 1);
-    rec->setStoichiometry("XX", 1);
-    rec->setLattice( pLattice );
-
-    auto pos = m_processMap.insert( {rec, emptySet} );
-
+    //Partition the lattice sites depending on the rules of each process
     for ( auto &p:m_processMap ){
         for ( Site* s:pLattice->getSites() ){
             if ( p.first->rules( s ) )
@@ -208,7 +265,12 @@ void Apothesis::init()
     for (pair<Process*, set< Site* > > p:m_processMap)
         m_dRTot += p.first->getProbability()*(double)p.second.size();
 
+
+    //Start writing in the output log
     //Write initialization info to log
+    pIO->writeLogOutput("Apothesis build on " __TIMESTAMP__);
+    pIO->writeLogOutput("-------------------------------------------------");
+    pIO->writeLogOutput("");
     pIO->writeLogOutput("End time " + to_string( m_dEndTime ) + " sec");
     pIO->writeLogOutput("Temperature " + to_string( pParameters->getTemperature() ) + " K");
     pIO->writeLogOutput("Pressure " + to_string( pParameters->getPressure() ) + " P");
@@ -255,14 +317,12 @@ void Apothesis::init()
 
 void Apothesis::exec()
 {
-    Site* tempSite = 0;
-
     double timeToWriteLog = 0;
     double timeToWriteLattice = 0;
 
     string output ="";
 
-//    pLattice->writeXYZ( "initial.xzy" );
+    //    pLattice->writeXYZ( "initial.xzy" );
 
     // The average height for the first time
     double timeGrowth = 0;
@@ -293,7 +353,7 @@ void Apothesis::exec()
             if ( m_dRandom <= m_dSum ){
 
                 // Calculate the average Height before
-//                aveDH1 = pProperties->getMeanDH();
+                //                aveDH1 = pProperties->getMeanDH();
 
                 //Get a random number which is the ID of the site where this process can performed
                 m_iSiteNum = pRandomGen->getIntRandom(0, p.second.size() - 1 );
@@ -306,7 +366,7 @@ void Apothesis::exec()
                 timeGrowth = m_dProcTime;
 
                 p.first->perform( s );
-                tempSite = s;
+
                 //Count the event for this class
                 p.first->eventHappened();
 
@@ -410,4 +470,33 @@ map<string, Species *> Apothesis::getAllSpecies()
 Species *Apothesis::getSpecies(string species)
 {
     return m_species[species];
+}
+
+string Apothesis::m_fAnalyzeProc(string process){
+
+    vector<string> parts = pIO->split( process, "->");
+
+    //It is reaction or adsoprtion
+    if ( pIO->contains( parts[0], "+" ) ){
+
+        vector<string> reactants = pIO->split( parts[ 0 ], "+" );
+        for (string s:reactants){
+            pIO->trim(s);
+            if (  s.compare("*") == 0 )
+                return "Adsorption";
+        }
+
+        return "Reaction";
+    }
+    else {
+
+        vector<string> products = pIO->split( parts[ 1 ], "+" );
+        for (string s:products){
+            pIO->trim(s);
+            if (  s.compare("*") == 0 )
+                return "Desorption";
+        }
+
+        return "Diffusion";
+    }
 }
