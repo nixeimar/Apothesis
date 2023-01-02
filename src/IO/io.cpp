@@ -28,9 +28,7 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sRandom("random"),
     m_sSpecies("species"),
     m_sWrite("write"),
-    m_sAdsorption("Adsorption"),
-    m_sDesorption("Desorption"),
-    m_sDiffusion("Diffusion"),
+    m_sGrowth("growth"),
     m_sCommentLine("#")
 {
     //Initialize the map for the lattice
@@ -52,8 +50,7 @@ string IO::getInputPath() const {;}
 
 void IO::readInputFile()
 {
-    list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite,
-                              m_sAdsorption, m_sDesorption, m_sDiffusion};
+    list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth};
 
     string sLine;
     while ( getline( m_InputFile, sLine ) ) {
@@ -150,6 +147,31 @@ void IO::readInputFile()
             continue;
         }
 
+        if (vsTokensBasic[ 0].compare(  m_sGrowth ) == 0){
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
+
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vsTokens.erase( it, vsTokens.end() );
+
+            for (string s:vsTokens )
+                m_parameters->insertInGrowthSpecies(s);
+
+            continue;
+        }
+
         if ( vsTokensBasic[ 0].compare(  m_sSteps ) == 0 ){
             m_lattice->setSteps( true );
 
@@ -167,8 +189,8 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
-            vsTokensBasic.erase( it, vsTokensBasic.end() );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vsTokens.erase( it, vsTokens.end() );
 
             if ( isNumber( vsTokens[ 0 ] ) ){
                 m_lattice->setNumSteps( toInt( vsTokens[ 0 ] ) );
@@ -321,7 +343,7 @@ void IO::readInputFile()
             continue;
         }
 
-        if ( vsTokensBasic[ 0].compare( m_sAdsorption ) == 0  ||
+/*        if ( vsTokensBasic[ 0].compare( m_sAdsorption ) == 0  ||
              vsTokensBasic[ 0].compare( m_sDesorption ) == 0  ||
              vsTokensBasic[ 0].compare( m_sDiffusion ) == 0 ) {
 
@@ -355,7 +377,7 @@ void IO::readInputFile()
 
             continue;
         }
-        cout << vsTokensBasic[ 0 ] << endl;
+        cout << vsTokensBasic[ 0 ] << endl; */
 
         // For the reactions
         if (  contains(vsTokensBasic[ 0], "->" ) ){

@@ -102,6 +102,7 @@ public:
     inline bool isUncoAccepted() { return m_bUncoAccept; }
 
 protected:
+
     ///Pointer to the lattice of the process
     Lattice* m_pLattice;
 

@@ -1,11 +1,14 @@
-#build the lattice 
+#The growing film
+growth: A
+
+#Build the lattice 
 lattice: SimpleCubic 10 10 10 A 
 
 #Create steps (alaways in the x-direaction - see above 1st number), number of steps 
 #(e.g. if 10 each step will consist of two atoms), height difference (each step will increase by 20, so 1st step: 10, 2nd: 30, 3rd, 50 etc) 
 steps: 5 1 
 
-#total time in seconds
+#Total time in seconds
 time: 0.01 
 
 #T in Kelvin
@@ -14,25 +17,25 @@ temperature: 700
 #P in Pascal
 pressure: 101325
 
-#random number initialization
+#Random number initialization
 random: 1234
 
-#simple s0*f*P/(2*pi*MW*Ctot*kb*T) -> Sticking coefficient [-], f [-], C_tot [sites/m2], MW [kg/mol] 
+#Simple s0*f*P/(2*pi*MW*Ctot*kb*T) -> Sticking coefficient [-], f [-], C_tot [sites/m2], MW [kg/mol] 
 A + * -> A*: simple 0.1 2.0e-3 1.0e+19 0.032 unco
 
-#arrhenius v0 exp(-nE/kT) -> frequency v0 [-],  E [Joules]  
-#A* -> A + *: arrhenius 1e+13 71128 all
+#Arrhenius v0 exp(-nE/kT) -> frequency v0 [-],  E [Joules]  
+A* -> A + *: arrhenius 1e+13 71128 all
 
-#arrhenius v0 exp(-nE/kT) -> frequency v0 [-],  E [Joules]  
-#D* -> D + *: arrhenius 1e+13 71128 
-
-#arrhenius v0 A exp(-nE/kT), A = exp((E-Em)/kT) -> frequency v0 [-],  E (Joules), Em [Joules]
+#Arrhenius v0 A exp(-nE/kT), A = exp((E-Em)/kT) -> frequency v0 [-],  E (Joules), Em [Joules]
 #process Diffusion: arrhenius 1e+13 71128 56902  
-A* -> A*: arrhenius 1e+13 71128 all
+#A* -> A*: arrhenius 1e+13 71128 
   		
 #This should be the reaction 												
 #CO2* + B* -> AB*: arrhenius 1e_13 7118 
- 
+
+#Time to write in log 
 write: log 0.0000001
+
+#Time to write the lattice heights & species
 write: lattice 0.001
 

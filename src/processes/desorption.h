@@ -38,7 +38,21 @@ public:
 
     void arrhenius( double, double, double, int);
 
+    /// The process is PVD
+    void performPVD(Site*);
+
+    /// The process is CVD or ALD
+    void performCVDALD(Site*);
+
+    /// Sets the specific adsorption species label according to the input
+    void setDesorbed(string desorbed){ m_sDesorbed = desorbed;}
+
 private:
+
+    /// Pointers to functions in order to switch between different functions
+    void (Desorption::*m_fType)();
+    bool (Desorption::*m_fRules)(Site*);
+    void (Desorption::*m_fPerform)(Site*);
 
     bool mf_isInLowerStep( Site* s );
     bool mf_isInHigherStep( Site* s );
@@ -51,6 +65,11 @@ private:
 
     /// The number of neighbours of this process
     int m_iNumNeighs;
+
+    bool mf_isPartOfGrowth();
+
+    /// The species to be asdorbed
+    string m_sDesorbed;
 
     REGISTER_PROCESS(Desorption)
 };

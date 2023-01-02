@@ -240,9 +240,8 @@ class IO: public Pointers
     /// Writer keyword
     string m_sWrite;
 
-    string m_sAdsorption;
-    string m_sDesorption;
-    string m_sDiffusion;
+    /// The keyword for storing the species fomring the growing film
+    string m_sGrowth;
 
     // trim from start (in place)
     static inline void ltrim(std::string &s) {

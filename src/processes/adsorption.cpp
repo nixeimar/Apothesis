@@ -56,20 +56,27 @@ void Adsorption::init( vector<string> params )
     //Check what process should be performed.
     //Adsorption in PVD will lead to increasing the height of the site
     //Adsorption in CVD will change the label of the site
-
-    //if ( m_pLattice->getLabels()+"*")
-    m_fPerform = &Adsorption::performPVD;
-
-
+    if ( mf_isPartOfGrowth() )
+        m_fPerform = &Adsorption::performPVD;
+    else
+        m_fPerform = &Adsorption::performCVDALD;
 
     (this->*m_fType)();
 }
 
-
+/// This apply for every lattice without a rule.
 bool Adsorption::uncoRule( Site* ){ return true; }
 
+bool Adsorption::mf_isPartOfGrowth(){
+    if (std::find(m_pUtilParams->getGrowthSpecies().begin(), m_pUtilParams->getGrowthSpecies().end(), m_sAdsorbed ) != m_pUtilParams->getGrowthSpecies().end())
+        return true;
+
+    return false;
+}
+
+/// Growth only if the species participating are the same as the growth species e.g. when you assume a Cu lattice but C growth.
 bool Adsorption::basicRule( Site* s){
-    if ( s->getLabel().compare( m_pLattice->getLabels() ) == 0 )
+    if ( !s->isOccupied() )
         return true;
 
     return false;
@@ -106,8 +113,6 @@ bool Adsorption::rules( Site* s )
 {
     (this->*m_fRules)(s);
 }
-
-
 void Adsorption::performPVD(Site *s) {
     //For PVD results
     s->increaseHeight( 1 );
@@ -121,13 +126,14 @@ void Adsorption::performPVD(Site *s) {
 }
 
 void Adsorption::performCVDALD(Site *s) {
+    //Here must hold the previous site in order to appear in case of multiple species forming the growing film
 
-//    s->setLabel();
+    s->setOccupied( true );
+    s->setBelowLabel( s->getLabel() );
+    s->setLabel( m_sAdsorbed );
 
-    for ( Site* neigh:s->getNeighs() ) {
-        mf_calculateNeighbors( neigh );
+    for ( Site* neigh:s->getNeighs() )
         m_seAffectedSites.insert( neigh ) ;
-    }
 }
 
 void Adsorption::perform( Site* s )

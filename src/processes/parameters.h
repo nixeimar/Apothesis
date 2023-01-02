@@ -20,10 +20,12 @@
 
 #include "pointers.h"
 #include "apothesis.h"
+#include "site.h"
 #include <iostream>
 #include <any>
 
 using namespace std;
+using namespace SurfaceTiles;
 
 namespace Utils {
 
@@ -103,6 +105,12 @@ class Parameters: public Pointers
     /// The label for the species in the lattice
     inline string getLatticeLabels(){ return m_sLatticeLabel; }
 
+    /// Instert a species that participates in the growth of the film
+    inline void insertInGrowthSpecies( string s ){ m_vsGrowthSpecies.push_back( s ); }
+
+    /// Returns the species that participates in the growth of the film
+    inline vector<string> getGrowthSpecies(){ return m_vsGrowthSpecies; }
+
   protected:
     /// The temperature [K].
     double m_dT;
@@ -127,6 +135,9 @@ class Parameters: public Pointers
 
     /// The label of the lattice species
     string m_sLatticeLabel;
+
+    /// The species participating in the growth of the surface
+    vector<string> m_vsGrowthSpecies;
   };
 
 }

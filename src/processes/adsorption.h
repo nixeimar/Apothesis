@@ -59,17 +59,21 @@ public:
     /// The process is PVD
     void performPVD(Site*);
 
-    /// The process is PVD or CVD
+    /// The process is CVD or ALD
     void performCVDALD(Site*);
 
     /// Sets the specific adsorption species label according to the input
-    void setAdrorbedLabel(string label){ m_sAdrorbedLabel = label;}
+    void setAdrorbed(string adsorbed){ m_sAdsorbed = adsorbed;}
+
+    /// Set the number of sites that this adsorbed occupies.
+    inline void setNumSites( int i ) { m_iNumSites = i;}
+
+    /// Get the number of sites that this adsorbed occupies.
+    inline int getNumSites() { return m_iNumSites;}
 
 private:
 
-    /// The label of the species after it is adsorbed (i.e. it inlcudes *)
-    string m_sAdrorbedLabel;
-
+    /// Pointers to functions in order to switch between different functions
     void (Adsorption::*m_fType)();
     bool (Adsorption::*m_fRules)(Site*);
     void (Adsorption::*m_fPerform)(Site*);
@@ -95,6 +99,14 @@ private:
 
     ///The molecular weight of the species [kg/mol]
     double m_dMW;
+
+    bool mf_isPartOfGrowth();
+
+    /// The species to be asdorbed
+    string m_sAdsorbed;
+
+    /// The number or sites occupied by this species (currently only 1 is supported).
+    int m_iNumSites;
 
     REGISTER_PROCESS( Adsorption )
 };

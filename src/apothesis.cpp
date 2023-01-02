@@ -92,6 +92,14 @@ void Apothesis::init()
     //Create the lattice
     pLattice->setLabels( pParameters->getLatticeLabels() );
     pLattice->build();
+
+    // TODO: Here we must take into account the case of two or more species participating in the film growth
+    // and the user should give the per cent of each species in t=0s e.g. 0.8Ga 0.2As
+    for ( Site* s:pLattice->getSites() ){
+        s->setLabel(  pParameters->getLatticeLabels() );
+        s->setBelowLabel(  pParameters->getLatticeLabels() );
+    }
+
     if ( pLattice->hasSteps() )
         pLattice->buildSteps();
 
@@ -111,19 +119,27 @@ void Apothesis::init()
 
         string process = m_fAnalyzeProc( proc.first );
 
+        map<string, double> reactants;
+        for (string react: pIO->getReactants( proc.first ) )
+            reactants.insert( pIO->analyzeCompound( react ) );
+
+        map<string, double> products;
+        for (string react: pIO->getProducts( proc.first ) )
+            products.insert( pIO->analyzeCompound( react ) );
+
+
         if ( process.compare("Adsorption") == 0 ){
-            cout << "This is adsorption " + proc.first << endl;
-
-            map<string, double> reactants;
-            for (string react: pIO->getReactants( proc.first ) )
-                reactants.insert( pIO->analyzeCompound( react ) );
-
-            map<string, double> products;
-            for (string react: pIO->getProducts( proc.first ) )
-                products.insert( pIO->analyzeCompound( react ) );
 
             Adsorption* a = new Adsorption();
             //The name of the actual class used
+
+            for ( pair<string, int> s: reactants) {
+                if ( s.first.compare("*") != 0 )
+                    a->setAdrorbed( s.first );
+                else
+                    a->setNumSites( s.second );
+            }
+
             a->setName( proc.first );
             a->setLattice( pLattice );
             a->setRandomGen( pRandomGen );
@@ -134,7 +150,6 @@ void Apothesis::init()
             m_processMap.insert( {a, emptySet} );
         }
         else if ( process.compare("Reaction") == 0 ){
-            cout << "This is reaction " + proc.first << endl;
 
             Reaction* r = new Reaction();
             //The name of the actual class used
@@ -148,7 +163,6 @@ void Apothesis::init()
             m_processMap.insert( {r, emptySet} );
         }
         else if ( process.compare("Desorption") == 0 ){
-            cout << "This is desorption " + proc.first << endl;
 
             if (proc.second.at( proc.second.size() - 1 ).compare("all") != 0){
 
@@ -183,7 +197,6 @@ void Apothesis::init()
             }
         }
         else if ( process.compare("Diffusion") == 0 ){
-            cout << "This is diffusion " + proc.first << endl;
 
             if (proc.second.at( proc.second.size() - 1 ).compare("all") != 0){
 
@@ -264,7 +277,6 @@ void Apothesis::init()
     m_dRTot = 0.0;
     for (pair<Process*, set< Site* > > p:m_processMap)
         m_dRTot += p.first->getProbability()*(double)p.second.size();
-
 
     //Start writing in the output log
     //Write initialization info to log

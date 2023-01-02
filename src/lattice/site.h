@@ -153,6 +153,12 @@ public:
     /// Testing: geting species formula
     inline string getLabel(){ return m_sLabel; }
 
+    /// Testing: adding species formula
+    inline void setBelowLabel( string formula ){ m_sBelowLabel = formula; }
+
+    /// Testing: geting species formula
+    inline string getBelowLabel(){ return m_sBelowLabel; }
+
     /// This site is coupled with another one (for dimmer formation)
     inline void setCoupledSite(Site* s){ m_pCoupledSite = s; }
 
@@ -162,16 +168,18 @@ public:
     /// Remove the coupled site
     inline void removeCouple(){ m_pCoupledSite = nullptr; }
 
+    /// Sets if this site is occupied by a species or not
+    inline void setOccupied( bool occupied ){ m_bIsOccupied = occupied; }
+
+    /// Checks if this site is occupied by a species or not
+    inline bool isOccupied(){ return m_bIsOccupied; }
+
 protected:
     //The lattice type that this site belongs to
     //LatticeType m_LatticeType;
 
     /// The ID of the site.
     int m_iID;
-
-    /// The indexes coming from the vector.
-    int m_iIIndex;
-    int m_iJIndex;
 
     /// The height in the particular position.
     int m_iHeight;
@@ -182,7 +190,6 @@ protected:
     /// Holds the number of the neighbours of the particular site according to each height/
     int m_iNumNeighs;
 
-    //TODO: get rid of map?
     /// A map that holds the neighbour sites according to their orientation.
     map< NeighPoisition, Site*> m_mapNeigh;
 
@@ -215,8 +222,11 @@ protected:
     /// The number of second neighs
     int m_iSecondNeighs;
 
-    /// Test ...
+    /// The label of this site
     string m_sLabel;
+
+    /// The label of the site below this site (in case of multiple species growth)
+    string m_sBelowLabel;
 
     /// Coupled site
     Site* m_pCoupledSite;

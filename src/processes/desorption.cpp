@@ -39,7 +39,25 @@ void Desorption::init(vector<string> params)
         m_error->error_simple_msg("Not supported type of process -> " + m_sProcName + " | " + m_sType );
         EXIT
     }
+
+
+    //Check what process should be performed.
+    //Desorption in PVD will lead to increasing the height of the site
+    //Desorption in CVD will change the label of the site
+    if ( mf_isPartOfGrowth() )
+        m_fPerform = &Desorption::performPVD;
+    else
+        m_fPerform = &Desorption::performCVDALD;
+
 }
+
+bool Desorption::mf_isPartOfGrowth(){
+    if (std::find(m_pUtilParams->getGrowthSpecies().begin(), m_pUtilParams->getGrowthSpecies().end(), m_sDesorbed ) != m_pUtilParams->getGrowthSpecies().end())
+        return true;
+
+    return false;
+}
+
 
 void Desorption::arrhenius(double v0, double Ed, double T,  int n)
 {
@@ -58,6 +76,10 @@ bool Desorption::rules( Site* s)
 
 void Desorption::perform( Site* s)
 {
+    (this->*m_fPerform)(s);
+}
+
+void Desorption::performPVD(Site *s) {
     //For PVD results
     s->decreaseHeight( 1 );
     mf_calculateNeighbors( s ) ;
@@ -72,6 +94,18 @@ void Desorption::perform( Site* s)
         }
     }
 }
+
+void Desorption::performCVDALD(Site *s) {
+
+    s->setOccupied( false );
+    s->setLabel( s->getBelowLabel() );
+
+    m_seAffectedSites.insert( s );
+    for ( Site* neigh:s->getNeighs() )
+        m_seAffectedSites.insert( neigh );
+
+}
+
 
 int Desorption::mf_calculateNeighbors(Site* s)
 {
