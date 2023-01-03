@@ -28,7 +28,7 @@ A* -> A + *: arrhenius 1e+13 71128 all
 
 #Arrhenius v0 A exp(-nE/kT), A = exp((E-Em)/kT) -> frequency v0 [-],  E (Joules), Em [Joules]
 #process Diffusion: arrhenius 1e+13 71128 56902  
-#A* -> A*: arrhenius 1e+13 71128 
+A* -> A*: arrhenius 1e+13 71128 all
   		
 #This should be the reaction 												
 #CO2* + B* -> AB*: arrhenius 1e_13 7118 

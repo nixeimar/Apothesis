@@ -38,24 +38,29 @@ public:
 
     void arrhenius( double, double, double, int);
 
-    /// The process is PVD
-    void performPVD(Site*);
-
-    /// The process is CVD or ALD
-    void performCVDALD(Site*);
-
     /// Sets the specific adsorption species label according to the input
     void setDesorbed(string desorbed){ m_sDesorbed = desorbed;}
 
 private:
 
     /// Pointers to functions in order to switch between different functions
-    void (Desorption::*m_fType)();
     bool (Desorption::*m_fRules)(Site*);
     void (Desorption::*m_fPerform)(Site*);
 
     bool mf_isInLowerStep( Site* s );
     bool mf_isInHigherStep( Site* s );
+
+    /// If the keyword 'all' is used then the rule is based on the neighbours
+    bool mf_allRule(Site* s);
+
+    /// Returns always true - this is actually as having uncoditional acceptance
+    bool mf_basicRule(Site* s);
+
+    /// The process is PVD
+    void mf_performPVD(Site*);
+
+    /// The process is CVD or ALD
+    void mf_performCVDALD(Site*);
 
     ///The site that adsorption will be performed
     Site* m_Site;

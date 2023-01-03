@@ -42,7 +42,29 @@ void Diffusion::init(vector<string> params)
         EXIT
     }
 
+
+    //Create the rule for the adsoprtion process.
+    if (m_vParams[ m_vParams.size() - 1 ].compare( "all" ) == 0 )
+        m_fRules = &Diffusion::mf_allRule;
+    else
+        m_fRules = &Diffusion::mf_basicRule;
+
+    //Check what process should be performed.
+    //Desorption in PVD will lead to increasing the height of the site
+    //Desorption in CVD will change the label of the site
+    if ( mf_isPartOfGrowth() )
+        m_fPerform = &Diffusion::mf_performPVD;
+    else
+        m_fPerform = &Diffusion::mf_performCVDALD;
+
     cout << endl;
+}
+
+bool Diffusion::mf_isPartOfGrowth(){
+    if (std::find(m_pUtilParams->getGrowthSpecies().begin(), m_pUtilParams->getGrowthSpecies().end(), m_sDiffused ) != m_pUtilParams->getGrowthSpecies().end())
+        return true;
+
+    return false;
 }
 
 void Diffusion::arrhenius(double v0, double E, double Em, double T,  int n)
@@ -69,7 +91,6 @@ void Diffusion::arrhenius(double v0, double E, double Em, double T,  int n)
     //  return 0;// A*v0*exp( -(double)any_cast<int>(m_mParams["neighs"])*E/(k*T) );
     //----------------------------------------------------------------------------------------//
 
-
     double k = m_pUtilParams->dkBoltz;
     E = E/m_pUtilParams->dAvogadroNum;
     Em = Em/m_pUtilParams->dAvogadroNum;
@@ -77,8 +98,19 @@ void Diffusion::arrhenius(double v0, double E, double Em, double T,  int n)
     m_dProb = v0*A*exp(-(double)n*E/(k*T));
 }
 
-void Diffusion::perform( Site* s)
-{
+bool Diffusion::mf_allRule(Site* s){
+    if ( s->getNeighsNum() == m_iNumNeighs )
+        return true;
+    return false;}
+
+bool Diffusion::mf_basicRule(Site* s){
+    return true;
+}
+
+void Diffusion::mf_performCVDALD( Site* s){
+}
+
+void Diffusion::mf_performPVD( Site* s){
     //----- This is desorption ------------------------------------------------------------->
     s->decreaseHeight( 1 );
     mf_calculateNeighbors( s ) ;
@@ -113,6 +145,11 @@ void Diffusion::perform( Site* s)
         m_seAffectedSites.insert( neigh ) ;
     }
     //--------------------------------------------------------------------------------------<
+}
+
+void Diffusion::perform( Site* s)
+{
+    (this->*m_fPerform)(s);
 }
 
 int Diffusion::mf_calculateNeighbors(Site* s)
@@ -171,9 +208,7 @@ bool Diffusion::mf_isInHigherStep(Site* s)
 
 bool Diffusion::rules( Site* s)
 {
-    if ( s->getNeighsNum() == m_iNumNeighs )
-        return true;
-    return false;
+    (this->*m_fRules)(s);
 }
 
 double Diffusion::getProbability(){ m_dProb; }

@@ -169,6 +169,12 @@ void Apothesis::init()
                 proc.second.push_back( to_string(1) );
 
                 Desorption* des = new Desorption();
+
+                for ( pair<string, int> s: products) {
+                    if ( s.first.compare("*") != 0 )
+                        des->setDesorbed( s.first );
+                }
+
                 des->setName( proc.first );
                 des->setLattice( pLattice );
                 des->setRandomGen( pRandomGen );
@@ -183,9 +189,16 @@ void Apothesis::init()
 
                     proc.second.pop_back();
                     proc.second.push_back( to_string(neighs + 1) );
+                    proc.second.push_back( "all" );
 
                     Desorption* des = new Desorption();
-                    des->setName( proc.first );
+
+                    for ( pair<string, int> s: products) {
+                        if ( s.first.compare("*") != 0 )
+                            des->setDesorbed( s.first );
+                    }
+
+                    des->setName( proc.first + " (" + to_string(neighs + 1) + " N)" );
                     des->setLattice( pLattice );
                     des->setRandomGen( pRandomGen );
                     des->setErrorHandler( pErrorHandler );
@@ -203,6 +216,17 @@ void Apothesis::init()
                 proc.second.push_back( to_string(1) );
 
                 Diffusion* dif = new Diffusion();
+
+                for ( pair<string, int> s: products) {
+                    if ( s.first.compare("*") != 0 ) {
+
+                        std::string::size_type i = s.first.find("*");
+                        if (i != std::string::npos)
+                            dif->setDiffused( s.first.erase(i, s.first.length() ) );
+
+                    }
+                }
+
                 dif->setName( proc.first );
                 dif->setLattice( pLattice );
                 dif->setRandomGen( pRandomGen );
@@ -218,8 +242,20 @@ void Apothesis::init()
 
                     proc.second.pop_back();
                     proc.second.push_back( to_string(neighs + 1) );
+                    proc.second.push_back( "all" );
 
                     Diffusion* dif = new Diffusion();
+
+                    for ( pair<string, int> s: products) {
+                        if ( s.first.compare("*") != 0 ) {
+
+                            std::string::size_type i = s.first.find("*");
+                            if (i != std::string::npos)
+                                dif->setDiffused( s.first.erase(i, s.first.length() ) );
+
+                        }
+                    }
+
                     dif->setName( proc.first + "( " + to_string(neighs + 1) + " )"  );
                     dif->setLattice( pLattice );
                     dif->setRandomGen( pRandomGen );

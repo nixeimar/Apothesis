@@ -40,14 +40,19 @@ void Desorption::init(vector<string> params)
         EXIT
     }
 
+    //Create the rule for the adsoprtion process.
+    if (m_vParams[ m_vParams.size() - 1 ].compare( "all" ) == 0 )
+        m_fRules = &Desorption::mf_allRule;
+    else
+        m_fRules = &Desorption::mf_basicRule;
 
     //Check what process should be performed.
     //Desorption in PVD will lead to increasing the height of the site
     //Desorption in CVD will change the label of the site
     if ( mf_isPartOfGrowth() )
-        m_fPerform = &Desorption::performPVD;
+        m_fPerform = &Desorption::mf_performPVD;
     else
-        m_fPerform = &Desorption::performCVDALD;
+        m_fPerform = &Desorption::mf_performCVDALD;
 
 }
 
@@ -57,7 +62,6 @@ bool Desorption::mf_isPartOfGrowth(){
 
     return false;
 }
-
 
 void Desorption::arrhenius(double v0, double Ed, double T,  int n)
 {
@@ -69,17 +73,28 @@ void Desorption::arrhenius(double v0, double Ed, double T,  int n)
 
 bool Desorption::rules( Site* s)
 {
+    (this->*m_fRules)(s);
+}
+
+/// This apply for every lattice without a rule.
+bool Desorption::mf_allRule( Site* s){
     if ( mf_calculateNeighbors( s ) == m_iNumNeighs )
         return true;
     return false;
 }
+
+// This apply for every lattice without a rule.
+bool Desorption::mf_basicRule( Site* s){
+    return true;
+}
+
 
 void Desorption::perform( Site* s)
 {
     (this->*m_fPerform)(s);
 }
 
-void Desorption::performPVD(Site *s) {
+void Desorption::mf_performPVD(Site *s) {
     //For PVD results
     s->decreaseHeight( 1 );
     mf_calculateNeighbors( s ) ;
@@ -95,7 +110,7 @@ void Desorption::performPVD(Site *s) {
     }
 }
 
-void Desorption::performCVDALD(Site *s) {
+void Desorption::mf_performCVDALD(Site *s) {
 
     s->setOccupied( false );
     s->setLabel( s->getBelowLabel() );
@@ -103,9 +118,7 @@ void Desorption::performCVDALD(Site *s) {
     m_seAffectedSites.insert( s );
     for ( Site* neigh:s->getNeighs() )
         m_seAffectedSites.insert( neigh );
-
 }
-
 
 int Desorption::mf_calculateNeighbors(Site* s)
 {

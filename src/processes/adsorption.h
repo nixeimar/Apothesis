@@ -48,20 +48,6 @@ public:
     /// simple s0*f*P/(2*pi*MW*Ctot*kb*T) -> Sticking coefficient [-], f [-], C_tot [sites/m2], MW [kg/mol]
     void simpleType();
 
-    /// The uncoditional rule. The process is accepted without checked.
-    bool uncoRule(Site* s);
-
-    /// The basic rule for accepting this process.
-    /// Check if the site is empty (i.e. the label is the same as the lattice species)
-    /// then returns true (the processes can be performed).
-    bool basicRule( Site* s);
-
-    /// The process is PVD
-    void performPVD(Site*);
-
-    /// The process is CVD or ALD
-    void performCVDALD(Site*);
-
     /// Sets the specific adsorption species label according to the input
     void setAdrorbed(string adsorbed){ m_sAdsorbed = adsorbed;}
 
@@ -80,6 +66,20 @@ private:
 
     bool mf_isInLowerStep( Site* s );
     bool mf_isInHigherStep( Site* s );
+
+    /// The process is PVD
+    void mf_performPVD(Site*);
+
+    /// The process is CVD or ALD
+    void mf_performCVDALD(Site*);
+
+    /// The uncoditional rule. The process is accepted without checked.
+    bool mf_uncoRule(Site* s);
+
+    /// The basic rule for accepting this process.
+    /// Check if the site is empty (i.e. the label is the same as the lattice species)
+    /// then returns true (the processes can be performed).
+    bool mf_basicRule( Site* s);
 
     ///The site that the process will be performed
     Site* m_Site;

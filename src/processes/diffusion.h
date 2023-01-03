@@ -48,10 +48,31 @@ public:
 
     void arrhenius(double v0, double E, double Em, double T,  int n);
 
+    /// Sets the specific adsorption species label according to the input
+    void setDiffused(string diffused){ m_sDiffused = diffused;}
+
 private:
 
     bool mf_isInLowerStep( Site* s );
     bool mf_isInHigherStep( Site* s );
+
+    /// Pointers to functions in order to switch between different functions
+    bool (Diffusion::*m_fRules)(Site*);
+    void (Diffusion::*m_fPerform)(Site*);
+
+    bool mf_isPartOfGrowth();
+
+    /// If the keyword 'all' is used then the rule is based on the neighbours
+    bool mf_allRule(Site* s);
+
+    /// Returns always true - this is actually as having uncoditional acceptance
+    bool mf_basicRule(Site* s);
+
+    /// The process is PVD
+    void mf_performPVD(Site*);
+
+    /// The process is CVD or ALD
+    void mf_performCVDALD(Site*);
 
     ///The site to for the adsorption to be removed
     Site* m_originSite;
@@ -64,6 +85,9 @@ private:
 
     /// The number of neighbours for calculating the probability
     int m_iNumNeighs;
+
+    /// The label of the diffused species
+    string m_sDiffused;
 
     REGISTER_PROCESS( Diffusion )
 };

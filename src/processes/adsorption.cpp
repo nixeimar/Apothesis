@@ -49,34 +49,32 @@ void Adsorption::init( vector<string> params )
 
     //Create the rule for the adsoprtion process.
     if (m_vParams[ m_vParams.size() - 1 ].compare( "unco" ) == 0 )
-        m_fRules = &Adsorption::uncoRule;
+        m_fRules = &Adsorption::mf_uncoRule;
     else
-        m_fRules = &Adsorption::basicRule;
+        m_fRules = &Adsorption::mf_basicRule;
 
     //Check what process should be performed.
     //Adsorption in PVD will lead to increasing the height of the site
     //Adsorption in CVD will change the label of the site
     if ( mf_isPartOfGrowth() )
-        m_fPerform = &Adsorption::performPVD;
+        m_fPerform = &Adsorption::mf_performPVD;
     else
-        m_fPerform = &Adsorption::performCVDALD;
+        m_fPerform = &Adsorption::mf_performCVDALD;
 
     (this->*m_fType)();
 }
 
-/// This apply for every lattice without a rule.
-bool Adsorption::uncoRule( Site* ){ return true; }
+bool Adsorption::mf_uncoRule( Site* ){ return true; }
 
-bool Adsorption::mf_isPartOfGrowth(){
-    if (std::find(m_pUtilParams->getGrowthSpecies().begin(), m_pUtilParams->getGrowthSpecies().end(), m_sAdsorbed ) != m_pUtilParams->getGrowthSpecies().end())
+bool Adsorption::mf_basicRule( Site* s){
+    if ( !s->isOccupied() )
         return true;
 
     return false;
 }
 
-/// Growth only if the species participating are the same as the growth species e.g. when you assume a Cu lattice but C growth.
-bool Adsorption::basicRule( Site* s){
-    if ( !s->isOccupied() )
+bool Adsorption::mf_isPartOfGrowth(){
+    if (std::find(m_pUtilParams->getGrowthSpecies().begin(), m_pUtilParams->getGrowthSpecies().end(), m_sAdsorbed ) != m_pUtilParams->getGrowthSpecies().end())
         return true;
 
     return false;
@@ -113,7 +111,7 @@ bool Adsorption::rules( Site* s )
 {
     (this->*m_fRules)(s);
 }
-void Adsorption::performPVD(Site *s) {
+void Adsorption::mf_performPVD(Site *s) {
     //For PVD results
     s->increaseHeight( 1 );
     mf_calculateNeighbors( s );
@@ -125,7 +123,7 @@ void Adsorption::performPVD(Site *s) {
     }
 }
 
-void Adsorption::performCVDALD(Site *s) {
+void Adsorption::mf_performCVDALD(Site *s) {
     //Here must hold the previous site in order to appear in case of multiple species forming the growing film
 
     s->setOccupied( true );
