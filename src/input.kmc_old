@@ -1,0 +1,21 @@
+build_lattice SimpleCubic 10 10 10
+lattice_species A
+steps 20 1 0
+
+nspecies 1
+A 32
+
+nprocesses 2
+
+A + * -> A*, simple 0.1 1.0 1.0e+19
+A* -> A + *, simple 1.0e+13 1.0e+13
+A* -> A*, simple 7.14e+4 7.14e+4
+
+#The (A) here should not be imported by the user (it should be implied)
+
+#Settings
+time  0.001
+temperature 1000
+pressure 101325
+debug  On
+
