@@ -343,42 +343,6 @@ void IO::readInputFile()
             continue;
         }
 
-/*        if ( vsTokensBasic[ 0].compare( m_sAdsorption ) == 0  ||
-             vsTokensBasic[ 0].compare( m_sDesorption ) == 0  ||
-             vsTokensBasic[ 0].compare( m_sDiffusion ) == 0 ) {
-
-            //Set the processes to be created along with their parameters
-            vector< string > tempVec;
-            // We want the parameters
-            // First is the keyword process, then the name of the process as this is defined in the REGISTER_PROCESS( e.g. Adsorption)
-            // and then after 2 the parameters follow
-
-            vector<string> vsTokens;
-            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
-
-            bool bComment = false;
-            for ( unsigned int i = 0; i< vsTokens.size(); i++){
-                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
-                    bComment = true;
-
-                // Remove the comments from the tokens so not to consider them
-                if ( bComment )
-                    vsTokens[ i ].clear();
-            }
-
-            // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
-            vsTokens.erase( it, vsTokens.end() );
-
-            for ( unsigned int i = 0; i < vsTokens.size(); i++ ){
-                tempVec.push_back(  vsTokens[ i ] );
-            }
-            m_parameters->setProcess( vsTokensBasic[ 0 ], tempVec );
-
-            continue;
-        }
-        cout << vsTokensBasic[ 0 ] << endl; */
-
         // For the reactions
         if (  contains(vsTokensBasic[ 0], "->" ) ){
 
