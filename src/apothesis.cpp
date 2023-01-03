@@ -223,7 +223,6 @@ void Apothesis::init()
                         std::string::size_type i = s.first.find("*");
                         if (i != std::string::npos)
                             dif->setDiffused( s.first.erase(i, s.first.length() ) );
-
                     }
                 }
 
@@ -267,35 +266,6 @@ void Apothesis::init()
                 }
             }
         }
-
-        /*        vector<string> params;
-        if ( proc.first.compare( "Desorption" ) == 0 || proc.first.compare( "Diffusion" ) == 0 ){
-            for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
-                auto pos = m_processMap.insert( { FactoryProcess::createProcess(proc.first), emptySet } );
-                params = proc.second;
-                params.push_back( to_string(neighs + 1) ); //Since neighbors start from 1 and not 0
-                pos.first->first->setName( proc.first + " N:" +  to_string( neighs + 1 ) ); //The name of the actuall class used
-                pos.first->first->setLattice( pLattice );
-                pos.first->first->setRandomGen( pRandomGen );
-                pos.first->first->setSysParams( pParameters );
-                pos.first->first->setErrorHandler( pErrorHandler );
-
-                pos.first->first->init( params );
-            }
-        }
-        else {
-            auto pos = m_processMap.insert( { FactoryProcess::createProcess(proc.first), emptySet } );
-            pos.first->first->setName( proc.first ); //The name of the actual class used
-            pos.first->first->setLattice( pLattice );
-            pos.first->first->setRandomGen( pRandomGen );
-            pos.first->first->setErrorHandler( pErrorHandler );
-            pos.first->first->setSysParams( pParameters );
-
-            //Check how we will impose that
-            pos.first->first->setUncoAccepted(true);
-
-            pos.first->first->init( proc.second );
-        }*/
     }
 
     //Partition the lattice sites depending on the rules of each process
