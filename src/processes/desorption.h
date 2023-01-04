@@ -41,6 +41,9 @@ public:
     /// Sets the specific adsorption species label according to the input
     void setDesorbed(string desorbed){ m_sDesorbed = desorbed;}
 
+    /// If keyrowd "all" is added then this is true
+    inline void setAllNeighs( bool all ){  m_bAllNeihs = all; }
+
 private:
 
     /// Pointers to functions in order to switch between different functions
@@ -75,6 +78,9 @@ private:
 
     /// The species to be asdorbed
     string m_sDesorbed;
+
+    /// If the user has "all" keyword this is set to true
+    bool m_bAllNeihs;
 
     REGISTER_PROCESS(Desorption)
 };

@@ -51,6 +51,9 @@ public:
     /// Sets the specific adsorption species label according to the input
     void setDiffused(string diffused){ m_sDiffused = diffused;}
 
+    /// If keyrowd "all" is added then this is true
+    inline void setAllNeighs( bool all ){  m_bAllNeihs = all; }
+
 private:
 
     bool mf_isInLowerStep( Site* s );
@@ -88,6 +91,9 @@ private:
 
     /// The label of the diffused species
     string m_sDiffused;
+
+    /// If the user has "all" keyword this is set to true
+    bool m_bAllNeihs;
 
     REGISTER_PROCESS( Diffusion )
 };

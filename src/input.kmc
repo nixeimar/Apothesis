@@ -2,17 +2,17 @@
 growth: A
 
 #Build the lattice 
-lattice: SimpleCubic 10 10 10 A 
+lattice: SimpleCubic 160 120 10 A 
 
 #Create steps (alaways in the x-direaction - see above 1st number), number of steps 
 #(e.g. if 10 each step will consist of two atoms), height difference (each step will increase by 20, so 1st step: 10, 2nd: 30, 3rd, 50 etc) 
-steps: 5 1 
+steps: 8 1 
 
 #Total time in seconds
-time: 0.01 
+time: 0.0000001 
 
 #T in Kelvin
-temperature: 700
+temperature: 500
 
 #P in Pascal
 pressure: 101325
@@ -28,13 +28,13 @@ A* -> A + *: arrhenius 1e+13 71128 all
 
 #Arrhenius v0 A exp(-nE/kT), A = exp((E-Em)/kT) -> frequency v0 [-],  E (Joules), Em [Joules]
 #process Diffusion: arrhenius 1e+13 71128 56902  
-A* -> A*: arrhenius 1e+13 71128 all
+#A* -> A*: arrhenius 1e+13 71128 all
   		
 #This should be the reaction 												
 #CO2* + B* -> AB*: arrhenius 1e_13 7118 
 
 #Time to write in log 
-write: log 0.0000001
+write: log 0.001
 
 #Time to write the lattice heights & species
 write: lattice 0.001

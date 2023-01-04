@@ -44,7 +44,7 @@ void Diffusion::init(vector<string> params)
 
 
     //Create the rule for the adsoprtion process.
-    if (m_vParams[ m_vParams.size() - 1 ].compare( "all" ) == 0 )
+    if ( m_bAllNeihs )
         m_fRules = &Diffusion::mf_allRule;
     else
         m_fRules = &Diffusion::mf_basicRule;

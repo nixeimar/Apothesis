@@ -106,7 +106,7 @@ void Apothesis::init()
     //Print lattice info: To be move in debug version
     pLattice->printInfo();
 
-    pLattice->print();
+    //pLattice->print();
 
     //Print parameters to check: To be move in debug version
     pParameters->printInfo();
@@ -189,7 +189,6 @@ void Apothesis::init()
 
                     proc.second.pop_back();
                     proc.second.push_back( to_string(neighs + 1) );
-                    proc.second.push_back( "all" );
 
                     Desorption* des = new Desorption();
 
@@ -198,6 +197,7 @@ void Apothesis::init()
                             des->setDesorbed( s.first );
                     }
 
+                    des->setAllNeighs(true);
                     des->setName( proc.first + " (" + to_string(neighs + 1) + " N)" );
                     des->setLattice( pLattice );
                     des->setRandomGen( pRandomGen );
@@ -241,7 +241,6 @@ void Apothesis::init()
 
                     proc.second.pop_back();
                     proc.second.push_back( to_string(neighs + 1) );
-                    proc.second.push_back( "all" );
 
                     Diffusion* dif = new Diffusion();
 
@@ -255,6 +254,7 @@ void Apothesis::init()
                         }
                     }
 
+                    dif->setAllNeighs(true);
                     dif->setName( proc.first + "( " + to_string(neighs + 1) + " )"  );
                     dif->setLattice( pLattice );
                     dif->setRandomGen( pRandomGen );

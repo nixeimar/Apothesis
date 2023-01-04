@@ -21,8 +21,8 @@ namespace MicroProcesses
 
 REGISTER_PROCESS_IMPL(Desorption);
 
-Desorption::Desorption(){;}
-Desorption::~Desorption(){;}
+Desorption::Desorption():m_bAllNeihs(false){}
+Desorption::~Desorption(){}
 
 void Desorption::init(vector<string> params)
 {
@@ -31,6 +31,7 @@ void Desorption::init(vector<string> params)
 
     //In the first must always be the type
     m_sType = any_cast<string>(m_vParams[ 0 ]);
+
     if ( m_sType.compare("arrhenius") == 0 ){
         m_iNumNeighs = stoi( m_vParams[3] );
         arrhenius( stod(m_vParams[ 1 ]), stod(m_vParams[ 2 ]), m_pUtilParams->getTemperature(), m_iNumNeighs );
@@ -41,7 +42,7 @@ void Desorption::init(vector<string> params)
     }
 
     //Create the rule for the adsoprtion process.
-    if (m_vParams[ m_vParams.size() - 1 ].compare( "all" ) == 0 )
+    if ( m_bAllNeihs )
         m_fRules = &Desorption::mf_allRule;
     else
         m_fRules = &Desorption::mf_basicRule;

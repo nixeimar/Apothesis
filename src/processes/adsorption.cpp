@@ -49,7 +49,7 @@ void Adsorption::init( vector<string> params )
 
     //Create the rule for the adsoprtion process.
     if (m_vParams[ m_vParams.size() - 1 ].compare( "unco" ) == 0 ){
-        setUncoAccepted( true );
+        //setUncoAccepted( true );
         m_fRules = &Adsorption::mf_uncoRule;
     }
     else
