@@ -9,7 +9,7 @@ lattice: SimpleCubic 160 120 10 A
 steps: 8 1 
 
 #Total time in seconds
-time: 0.0000001 
+time: 0.00001 
 
 #T in Kelvin
 temperature: 500
@@ -21,7 +21,7 @@ pressure: 101325
 random: 1234
 
 #Simple s0*f*P/(2*pi*MW*Ctot*kb*T) -> Sticking coefficient [-], f [-], C_tot [sites/m2], MW [kg/mol] 
-A + * -> A*: simple 0.1 2.0e-3 1.0e+19 0.032 unco
+A + * -> A*: simple 0.1 2.0e-4 1.0e+19 0.032 unco
 
 #Arrhenius v0 exp(-nE/kT) -> frequency v0 [-],  E [Joules]  
 A* -> A + *: arrhenius 1e+13 71128 all

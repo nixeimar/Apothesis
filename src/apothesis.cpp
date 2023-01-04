@@ -141,6 +141,7 @@ void Apothesis::init()
             }
 
             a->setName( proc.first );
+            a->setUncoAccepted( true);
             a->setLattice( pLattice );
             a->setRandomGen( pRandomGen );
             a->setErrorHandler( pErrorHandler );
@@ -417,7 +418,7 @@ void Apothesis::exec()
 
                 //5. Compute dt = -ln(ksi)/Rtot
                 m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
-//                cout << m_dt << endl;
+              //  cout << m_dt << endl;
                 break;
             }
         }

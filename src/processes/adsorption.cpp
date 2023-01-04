@@ -121,7 +121,7 @@ void Adsorption::mf_performPVD(Site *s) {
 
     for ( Site* neigh:s->getNeighs() ) {
         mf_calculateNeighbors( neigh );
-        m_seAffectedSites.insert( neigh ) ;
+        m_seAffectedSites.insert( neigh );
     }
 }
 
