@@ -89,7 +89,6 @@ bool Desorption::mf_basicRule( Site* s){
     return true;
 }
 
-
 void Desorption::perform( Site* s)
 {
     (this->*m_fPerform)(s);
@@ -111,8 +110,8 @@ void Desorption::mf_performPVD(Site *s) {
     }
 }
 
-void Desorption::mf_performCVDALD(Site *s) {
-
+void Desorption::mf_performCVDALD(Site *s)
+{
     s->setOccupied( false );
     s->setLabel( s->getBelowLabel() );
 
