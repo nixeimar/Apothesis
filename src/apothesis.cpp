@@ -417,6 +417,7 @@ void Apothesis::exec()
 
                 //5. Compute dt = -ln(ksi)/Rtot
                 m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
+                //cout << m_dt << endl;
                 break;
             }
         }
