@@ -48,12 +48,14 @@ void Adsorption::init( vector<string> params )
     }
 
     //Create the rule for the adsoprtion process.
-    if (m_vParams[ m_vParams.size() - 1 ].compare( "unco" ) == 0 ){
+    if ( m_iNumSites == 1 && mf_isPartOfGrowth() ){
         setUncoAccepted( true );
         m_fRules = &Adsorption::mf_uncoRule;
     }
-    else
+    else if ( m_iNumSites > 1 && mf_isPartOfGrowth() ){
         m_fRules = &Adsorption::mf_basicRule;
+    }
+    else{}
 
     //Check what process should be performed.
     //Adsorption in PVD will lead to increasing the height of the site
@@ -69,7 +71,7 @@ void Adsorption::init( vector<string> params )
 bool Adsorption::mf_uncoRule( Site* ){ return true; }
 
 bool Adsorption::mf_basicRule( Site* s){
-    if ( !s->isOccupied() )
+    if ( mf_calculateNeighbors(s) == m_iNumSites )
         return true;
 
     return false;
@@ -104,7 +106,7 @@ void Adsorption::simpleType()
 }
 
 //ToDo: To be implemented and checked
-void Adsorption::arrheniusType(){; }
+void Adsorption::arrheniusType(){;}
 
 //ToDo: To be implemented and checked
 void Adsorption::constantType(){; }
@@ -127,7 +129,6 @@ void Adsorption::mf_performPVD(Site *s) {
 
 void Adsorption::mf_performCVDALD(Site *s) {
     //Here must hold the previous site in order to appear in case of multiple species forming the growing film
-
     s->setOccupied( true );
     s->setBelowLabel( s->getLabel() );
     s->setLabel( m_sAdsorbed );
