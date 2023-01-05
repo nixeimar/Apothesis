@@ -39,6 +39,8 @@ void Desorption::init(vector<string> params)
     else if (m_sType.compare("constant") == 0){
         m_dDesorptionRate = stod( m_vParams[1] );
         m_fType = &Desorption::mf_constantType;
+
+        (this->*m_fType)();
     }
     else {
         m_error->error_simple_msg("Not supported type of process -> " + m_sProcName + " | " + m_sType );
@@ -59,6 +61,9 @@ void Desorption::init(vector<string> params)
     else
         m_fPerform = &Desorption::mf_performCVDALD;
 
+
+    cout << m_dProb << endl;
+    cout << endl;
 }
 
 bool Desorption::mf_isPartOfGrowth(){
