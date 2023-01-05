@@ -118,7 +118,7 @@ private:
     int m_nSpecies;
 
     /// Analyzes the process and returns its type: Adsorption, Desorption, Diffusion or Reaction
-    string m_fAnalyzeProc(string);
+    string mf_analyzeProc(string);
 
     //
     double m_dRTot;

@@ -71,11 +71,18 @@ void Adsorption::init( vector<string> params )
 bool Adsorption::mf_uncoRule( Site* ){ return true; }
 
 bool Adsorption::mf_basicRule( Site* s){
-    if ( mf_calculateNeighbors(s) == m_iNumSites )
+    if ( mf_calculateNeighbors(s) == m_iNumSites)
         return true;
 
     return false;
 }
+
+//bool Adsorption::mf_difSpeciesRule( Site* s){
+    //1. Calculate if there are sites at the same height and not oocupied - their number is defined by stoichiometry of the adsorption reaction
+    //2. If 1 holds then return true
+    //1. Return false
+
+//}
 
 bool Adsorption::mf_isPartOfGrowth(){
     if (std::find(m_pUtilParams->getGrowthSpecies().begin(), m_pUtilParams->getGrowthSpecies().end(), m_sAdsorbed ) != m_pUtilParams->getGrowthSpecies().end())
@@ -117,13 +124,44 @@ bool Adsorption::rules( Site* s )
 }
 void Adsorption::mf_performPVD(Site *s) {
     //For PVD results
-    s->increaseHeight( 1 );
-    mf_calculateNeighbors( s );
-    m_seAffectedSites.insert( s ) ;
+    if ( m_iNumSites == 1) {
+        s->increaseHeight( 1 );
+        mf_calculateNeighbors( s );
+        m_seAffectedSites.insert( s ) ;
 
-    for ( Site* neigh:s->getNeighs() ) {
-        mf_calculateNeighbors( neigh );
-        m_seAffectedSites.insert( neigh );
+        for ( Site* neigh:s->getNeighs() ) {
+            mf_calculateNeighbors( neigh );
+            m_seAffectedSites.insert( neigh );
+        }
+    }
+    else {
+
+        //Needs check!
+        s->increaseHeight( 1 );
+        mf_calculateNeighbors( s );
+        m_seAffectedSites.insert( s ) ;
+
+        for ( Site* neigh:s->getNeighs() ) {
+            mf_calculateNeighbors( neigh );
+            m_seAffectedSites.insert( neigh );
+        }
+
+        vector<Site*> neighs = s->getNeighs();
+
+        for ( int i = 0 ; i < m_iNumSites; i++) {
+            int ranNum = m_pRandomGen->getIntRandom( 0,  neighs.size()-1 );
+            Site* neigh = s->getNeighs()[ ranNum ];
+            neigh->increaseHeight(1);
+            mf_calculateNeighbors( neigh );
+            m_seAffectedSites.insert( neigh ) ;
+
+            for ( Site* neigh2:neigh->getNeighs() ) {
+                mf_calculateNeighbors( neigh2 );
+                m_seAffectedSites.insert( neigh2 );
+            }
+
+            neighs.erase( find( neighs.begin(), neighs.end(), neighs[ ranNum ] ) );
+        }
     }
 }
 
@@ -144,7 +182,7 @@ void Adsorption::perform( Site* s )
 
 int Adsorption::mf_calculateNeighbors(Site* s)
 {
-    int neighs = 1;
+    int neighs = 0;
 
     if (m_pLattice->hasSteps() ){
         for ( Site* neigh:s->getNeighs() ) {
@@ -162,7 +200,7 @@ int Adsorption::mf_calculateNeighbors(Site* s)
             }
         }
     } else {
-        int neighs = 1;
+        int neighs = 0;
         for ( Site* neigh:s->getNeighs() ) {
             if ( neigh->getHeight() >= s->getHeight() )
                 neighs++;
@@ -185,7 +223,7 @@ bool Adsorption::mf_isInLowerStep(Site* s)
 bool Adsorption::mf_isInHigherStep(Site* s)
 {
     for (int j = 0; j < m_pLattice->getY(); j++)
-        if ( s->getID() == s->getID() == m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() )
+        if ( s->getID() == m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() )
             return true;
 
     return false;

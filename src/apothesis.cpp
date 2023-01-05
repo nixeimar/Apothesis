@@ -117,7 +117,7 @@ void Apothesis::init()
     //Create the processes
     for ( auto proc:pParameters->getProcessesInfo() ){
 
-        string process = m_fAnalyzeProc( proc.first );
+        string process = mf_analyzeProc( proc.first );
 
         map<string, double> reactants;
         for (string react: pIO->getReactants( proc.first ) )
@@ -141,7 +141,6 @@ void Apothesis::init()
             }
 
             a->setName( proc.first );
-            a->setUncoAccepted( true);
             a->setLattice( pLattice );
             a->setRandomGen( pRandomGen );
             a->setErrorHandler( pErrorHandler );
@@ -189,7 +188,7 @@ void Apothesis::init()
                 for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
 
                     proc.second.pop_back();
-                    proc.second.push_back( to_string(neighs + 1) );
+                    proc.second.push_back( to_string(neighs) );
 
                     Desorption* des = new Desorption();
 
@@ -241,7 +240,7 @@ void Apothesis::init()
                 for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
 
                     proc.second.pop_back();
-                    proc.second.push_back( to_string(neighs + 1) );
+                    proc.second.push_back( to_string(neighs) );
 
                     Diffusion* dif = new Diffusion();
 
@@ -407,14 +406,8 @@ void Apothesis::exec()
 
                 //4. Re-compute the processes rates and re-compute Rtot (see ppt).
                 m_dRTot = 0.0;
-                for (pair<Process*, set< Site* > > p3:m_processMap){
-                    if ( p3.first->isConstant() ){
-                        if ( p3.second.size() != 0 )
-                            m_dRTot += p3.first->getProbability();
-                    }
-                    else
-                        m_dRTot += p3.first->getProbability()*(double)p3.second.size();
-                }
+                for (pair<Process*, set< Site* > > p3:m_processMap)
+                    m_dRTot += p3.first->getProbability()*(double)p3.second.size();
 
                 //5. Compute dt = -ln(ksi)/Rtot
                 m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
@@ -492,7 +485,7 @@ Species *Apothesis::getSpecies(string species)
     return m_species[species];
 }
 
-string Apothesis::m_fAnalyzeProc(string process){
+string Apothesis::mf_analyzeProc(string process){
 
     vector<string> parts = pIO->split( process, "->");
 
@@ -502,7 +495,7 @@ string Apothesis::m_fAnalyzeProc(string process){
         vector<string> reactants = pIO->split( parts[ 0 ], "+" );
         for (string s:reactants){
             pIO->trim(s);
-            if (  s.compare("*") == 0 )
+            if (  pIO->analyzeCompound( s ).first.compare("*") == 0 )
                 return "Adsorption";
         }
 

@@ -34,7 +34,7 @@ void Desorption::init(vector<string> params)
 
     if ( m_sType.compare("arrhenius") == 0 ){
         m_iNumNeighs = stoi( m_vParams[3] );
-        arrhenius( stod(m_vParams[ 1 ]), stod(m_vParams[ 2 ]), m_pUtilParams->getTemperature(), m_iNumNeighs );
+        arrhenius( stod(m_vParams[ 1 ]), stod(m_vParams[ 2 ]), m_pUtilParams->getTemperature(), (m_iNumNeighs + 1) );
     }
     else {
         m_error->error_simple_msg("Not supported type of process -> " + m_sProcName + " | " + m_sType );
@@ -122,7 +122,7 @@ void Desorption::mf_performCVDALD(Site *s)
 
 int Desorption::mf_calculateNeighbors(Site* s)
 {
-    int neighs = 1;
+    int neighs = 0;
 
     if ( m_pLattice->hasSteps() ){
         for ( Site* neigh:s->getNeighs() ) {

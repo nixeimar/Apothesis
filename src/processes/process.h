@@ -84,19 +84,11 @@ public:
     /// Set the random generator
     inline void setRandomGen( RandomGen::RandomGenerator* randgen ) { m_pRandomGen = randgen; }
 
-    inline void setConstant( bool isConst =false ){ m_bConstant = isConst; }
-
-    //If this process is supposed to be constant (i.e. independent of coverage)
-    inline bool isConstant(){ return m_bConstant;}
-
     inline void setNeighs( int num ){ m_iNeighs = num; }
     inline int getNeighs(){ return m_iNeighs; }
 
     inline void setSysParams( Utils::Parameters* p) { m_pUtilParams = p; }
     inline void setErrorHandler( ErrorHandler* error ) { m_error = error; }
-
-    ///Defines an arrhenius process
-    void arrhenius();
 
     inline void setUncoAccepted( bool isUncoAccepted) { m_bUncoAccept = isUncoAccepted; }
     inline bool isUncoAccepted() { return m_bUncoAccept; }
@@ -126,9 +118,7 @@ protected:
     ///The type of the process
     string m_sType;
 
-    bool m_bConstant;
-
-    ///The number of the neighbors used in diffusion and desorption
+    ///The number of the neighbors. These are the neighbours at the same level (i.e. the same height)
     int m_iNeighs;
 
     ///The probability value
