@@ -40,7 +40,11 @@ void Adsorption::init( vector<string> params )
         m_dCtot = stod(m_vParams[ 3 ]);
         m_dMW = stod(m_vParams[ 4 ]);
 
-        m_fType = &Adsorption::simpleType;
+        m_fType = &Adsorption::mf_simpleType;
+    }
+    else if (  m_sType.compare("constant") == 0  ) {
+        m_fType = &Adsorption::mf_constantType;
+        m_dAdsorptionRate = stod(m_vParams[ 1 ]);
     }
     else {
         m_error->error_simple_msg("Not supported type of process: " + m_sType );
@@ -66,6 +70,13 @@ void Adsorption::init( vector<string> params )
         m_fPerform = &Adsorption::mf_performCVDALD;
 
     (this->*m_fType)();
+
+    cout << m_dProb << endl;
+    cout << endl;
+}
+
+void Adsorption::mf_constantType(){
+    m_dProb = m_dAdsorptionRate*m_pLattice->getSize();
 }
 
 bool Adsorption::mf_uncoRule( Site* ){ return true; }
@@ -91,7 +102,7 @@ bool Adsorption::mf_isPartOfGrowth(){
     return false;
 }
 
-void Adsorption::simpleType()
+void Adsorption::mf_simpleType()
 {
     //These must trenafered in the global definitions
     //      double Na = m_pUtilParams->dAvogadroNum; //6.0221417930e+23;		// Avogadro's number [1/mol]

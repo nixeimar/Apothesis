@@ -36,6 +36,10 @@ void Desorption::init(vector<string> params)
         m_iNumNeighs = stoi( m_vParams[3] );
         arrhenius( stod(m_vParams[ 1 ]), stod(m_vParams[ 2 ]), m_pUtilParams->getTemperature(), (m_iNumNeighs + 1) );
     }
+    else if (m_sType.compare("constant") == 0){
+        m_dDesorptionRate = stod( m_vParams[1] );
+        m_fType = &Desorption::mf_constantType;
+    }
     else {
         m_error->error_simple_msg("Not supported type of process -> " + m_sProcName + " | " + m_sType );
         EXIT
@@ -62,6 +66,10 @@ bool Desorption::mf_isPartOfGrowth(){
         return true;
 
     return false;
+}
+
+void Desorption::mf_constantType(){
+    m_dProb = m_dDesorptionRate*m_pLattice->getSize();
 }
 
 void Desorption::arrhenius(double v0, double Ed, double T,  int n)

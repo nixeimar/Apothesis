@@ -47,8 +47,11 @@ public:
 private:
 
     /// Pointers to functions in order to switch between different functions
+    void (Desorption::*m_fType)();
     bool (Desorption::*m_fRules)(Site*);
     void (Desorption::*m_fPerform)(Site*);
+
+    void mf_constantType();
 
     bool mf_isInLowerStep( Site* s );
     bool mf_isInHigherStep( Site* s );
@@ -81,6 +84,9 @@ private:
 
     /// If the user has "all" keyword this is set to true
     bool m_bAllNeihs;
+
+    /// The desorption rate given as input from the user with the constant keyword
+    double m_dDesorptionRate;
 
     REGISTER_PROCESS(Desorption)
 };

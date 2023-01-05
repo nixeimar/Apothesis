@@ -35,13 +35,12 @@ void Diffusion::init(vector<string> params)
     m_sType = any_cast<string>(m_vParams[ 0 ]);
     if ( m_sType.compare("arrhenius") == 0 ){
         m_iNumNeighs = stoi( m_vParams[3] );
-        arrhenius( stod(m_vParams[ 1 ]), stod(m_vParams[ 2 ]), stod(m_vParams[ 3 ]), m_pUtilParams->getTemperature(), m_iNumNeighs );
+        arrhenius( stod(m_vParams[ 1 ]), stod(m_vParams[ 2 ]), stod(m_vParams[ 3 ]), m_pUtilParams->getTemperature(), m_iNumNeighs+1 );
     }
     else {
         m_error->error_simple_msg("Not supported type of process -> " + m_sProcName + " | " + m_sType );
         EXIT
     }
-
 
     //Create the rule for the adsoprtion process.
     if ( m_bAllNeihs )
@@ -154,7 +153,7 @@ void Diffusion::perform( Site* s)
 
 int Diffusion::mf_calculateNeighbors(Site* s)
 {
-    int neighs = 1;
+    int neighs = 0;
 
     if ( m_pLattice->hasSteps() ){
         for ( Site* neigh:s->getNeighs() ) {

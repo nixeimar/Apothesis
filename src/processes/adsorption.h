@@ -44,10 +44,6 @@ public:
     /// constant 1.0 [ML/s]
     void constantType();
 
-    /// The simple type for the adsorption process rate i.e.
-    /// simple s0*f*P/(2*pi*MW*Ctot*kb*T) -> Sticking coefficient [-], f [-], C_tot [sites/m2], MW [kg/mol]
-    void simpleType();
-
     /// Sets the specific adsorption species label according to the input
     void setAdrorbed(string adsorbed){ m_sAdsorbed = adsorbed;}
 
@@ -64,8 +60,12 @@ private:
     bool (Adsorption::*m_fRules)(Site*);
     void (Adsorption::*m_fPerform)(Site*);
 
-    bool mf_isInLowerStep( Site* s );
-    bool mf_isInHigherStep( Site* s );
+    /// The simple type for the adsorption process rate i.e.
+    /// simple s0*f*P/(2*pi*MW*Ctot*kb*T) -> Sticking coefficient [-], f [-], C_tot [sites/m2], MW [kg/mol]
+    void mf_simpleType();
+
+    /// Constant type
+    void mf_constantType();
 
     /// The process is PVD
     void mf_performPVD(Site*);
@@ -80,6 +80,9 @@ private:
     /// Check if the site is empty (i.e. the label is the same as the lattice species)
     /// then returns true (the processes can be performed).
     bool mf_basicRule( Site* s);
+
+    bool mf_isInLowerStep( Site* s );
+    bool mf_isInHigherStep( Site* s );
 
     ///The site that the process will be performed
     Site* m_Site;
@@ -107,6 +110,9 @@ private:
 
     /// The number or sites occupied by this species (currently only 1 is supported).
     int m_iNumSites;
+
+    /// The adsorption rate given as input from the user with the constant keyword
+    double m_dAdsorptionRate;
 
     REGISTER_PROCESS( Adsorption )
 };
