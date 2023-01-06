@@ -249,11 +249,8 @@ void Adsorption::mf_multiSpeciesAdsorption(Site *s) {
 
     vector<Site*> neighs = s->getNeighs();
 
-    // Because one is already occupied above
-    //    for ( int i = 0 ; i < m_iNumSites-1; i++) {
-
     int iNum = 0;
-    while (iNum != m_iNumSites-1) {
+    while (iNum != m_iNumSites-1 ) {
         int ranNum = m_pRandomGen->getIntRandom( 0,  neighs.size()-1 );
 
         Site* neigh = neighs[ ranNum ];
