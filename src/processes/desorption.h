@@ -80,8 +80,6 @@ private:
     /// The number of neighbours of this process
     int m_iNumNeighs;
 
-    bool mf_isPartOfGrowth();
-
     /// The species to be asdorbed
     string m_sDesorbed;
 

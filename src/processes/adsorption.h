@@ -105,9 +105,6 @@ private:
     /// Calculates the neighbors of a given site
     int mf_calculateNeighbors(Site*);
 
-    /// Checks if the neighbour sites have the same height as needed for a species occuping more that 1 sites to adsorb
-    bool mf_hasSameHeight(Site* s);
-
     /// For simple adsorption:
     ///The sticking coefficient [-]
     double m_dStick;
@@ -120,8 +117,6 @@ private:
 
     ///The molecular weight of the species [kg/mol]
     double m_dMW;
-
-    bool mf_isPartOfGrowth();
 
     /// The species to be asdorbed
     string m_sAdsorbed;

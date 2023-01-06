@@ -20,39 +20,21 @@
 Reaction::Reaction(){}
 Reaction::~Reaction(){}
 
-
-void Reaction::perform(Site *)
-{
-    ;
+void Reaction::init(vector<string> params){
 
 }
 
+
 bool Reaction::rules(Site *s)
 {
-    // Check if the site
-    if ( m_mStoichiometry.find( s->getLabel() ) == m_mStoichiometry.end() )
-        return false;
 
-    for (auto const& [key, val] : m_mStoichiometry) {
-        int iCount = 0;
+}
 
-        if (s->getLabel().compare( key ) == 0)
-            iCount++;
-
-        for (Site* site:s->getNeighs()){
-            if ( site->getLabel().compare( key ) == 0)
-                iCount++;
-        }
-
-        if ( iCount < val)
-            return false;
-    }
-
-    return true;
+void Reaction::perform(Site *)
+{
 }
 
 double Reaction::getProbability(){
     return 0.;
 }
-
 

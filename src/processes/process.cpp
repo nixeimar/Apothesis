@@ -19,3 +19,12 @@
 
 Process::Process():m_iHappened(0),m_bUncoAccept(false){}
 Process::~Process(){}
+
+bool Process::isPartOfGrowth( string name){
+    for ( string species: m_pUtilParams->getGrowthSpecies() ){
+        if ( species.compare( name ) == 0 )
+            return true;
+    }
+
+    return false;
+}

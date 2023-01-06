@@ -63,7 +63,7 @@ private:
     bool (Diffusion::*m_fRules)(Site*);
     void (Diffusion::*m_fPerform)(Site*);
 
-    bool mf_isPartOfGrowth();
+    bool isPartOfGrowth();
 
     /// If the keyword 'all' is used then the rule is based on the neighbours
     bool mf_allRule(Site* s);

@@ -51,7 +51,7 @@ void Diffusion::init(vector<string> params)
     //Check what process should be performed.
     //Desorption in PVD will lead to increasing the height of the site
     //Desorption in CVD will change the label of the site
-    if ( mf_isPartOfGrowth() )
+    if ( isPartOfGrowth() )
         m_fPerform = &Diffusion::mf_performPVD;
     else
         m_fPerform = &Diffusion::mf_performCVDALD;
@@ -59,7 +59,7 @@ void Diffusion::init(vector<string> params)
     cout << endl;
 }
 
-bool Diffusion::mf_isPartOfGrowth(){
+bool Diffusion::isPartOfGrowth(){
     if (std::find(m_pUtilParams->getGrowthSpecies().begin(), m_pUtilParams->getGrowthSpecies().end(), m_sDiffused ) != m_pUtilParams->getGrowthSpecies().end())
         return true;
 

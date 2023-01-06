@@ -52,15 +52,15 @@ void Adsorption::init( vector<string> params )
     }
 
     //Create the rule for the adsoprtion process.
-    if ( m_iNumSites == 1 && mf_isPartOfGrowth() ){
+    if ( m_iNumSites == 1 && isPartOfGrowth( m_sAdsorbed ) ){
         setUncoAccepted( true );
         m_fRules = &Adsorption::mf_uncoRule;
     }
-    else if ( m_iNumSites > 1 && mf_isPartOfGrowth() )
+    else if ( m_iNumSites > 1 && isPartOfGrowth( m_sAdsorbed ) )
         m_fRules = &Adsorption::mf_basicRule;
-    else if ( m_iNumSites == 1 && !mf_isPartOfGrowth() )
+    else if ( m_iNumSites == 1 && !isPartOfGrowth( m_sAdsorbed ) )
         m_fRules = &Adsorption::mf_multiSpeciesSimpleRule;
-    else if ( m_iNumSites > 1 && !mf_isPartOfGrowth() )
+    else if ( m_iNumSites > 1 && !isPartOfGrowth( m_sAdsorbed ) )
         m_fRules = &Adsorption::mf_multiSpeciesRule;
     else {
         m_error->error_simple_msg("The rule for this process has not been defined.");
@@ -70,13 +70,13 @@ void Adsorption::init( vector<string> params )
     //Check what process should be performed.
     //Adsorption in PVD will lead to increasing the height of the site
     //Adsorption in CVD/ALD will only change the label of the site
-    if ( m_iNumSites == 1  && mf_isPartOfGrowth() )
+    if ( m_iNumSites == 1  && isPartOfGrowth(m_sAdsorbed) )
         m_fPerform = &Adsorption::mf_signleSpeciesSimpleAdsorption;
-    else if ( m_iNumSites > 1  && mf_isPartOfGrowth() )
+    else if ( m_iNumSites > 1  && isPartOfGrowth( m_sAdsorbed ) )
         m_fPerform = &Adsorption::mf_signleSpeciesAdsorption;
-    else if ( m_iNumSites == 1 && !mf_isPartOfGrowth() )
+    else if ( m_iNumSites == 1 && !isPartOfGrowth(m_sAdsorbed) )
         m_fPerform = &Adsorption::mf_multiSpeciesSimpleAdsorption;
-    else if ( m_iNumSites > 1 && !mf_isPartOfGrowth() )
+    else if ( m_iNumSites > 1 && !isPartOfGrowth(m_sAdsorbed) )
         m_fPerform = &Adsorption::mf_multiSpeciesAdsorption;
     else {
         m_error->error_simple_msg("The process is not defined | " + m_sProcName );
@@ -112,49 +112,26 @@ bool Adsorption::mf_multiSpeciesSimpleRule( Site* s){
 bool Adsorption::mf_multiSpeciesRule( Site* s){
 
     //1. If the species is not occupied
-    //2. and if neighbours equal to the sites needed by m_iNumSites are vacant, return true
+    //2. and if neighbours equal to the sites needed by m_iNumSites are vacant
+    //3. and have the same height return true
     //3. Return false
 
-    if ( !s->isOccupied() && mf_vacantSitesExist(s) && mf_hasSameHeight(s) )
-        return true;
+    if ( s->isOccupied() || !mf_vacantSitesExist(s) )
+        return false;
 
-    return false;
-}
-
-bool Adsorption::mf_hasSameHeight(Site* s){
-    int iCount = 0;
-    for (Site* neigh:s->getNeighs() ){
-        if ( s->getHeight() == neigh->getHeight() )
-            iCount++;
-    }
-
-    // Because one is s we say m_iNumSites-1
-    if ( iCount >= m_iNumSites-1 )
-        return true;
-
-    return false;
+    return true;
 }
 
 bool Adsorption::mf_vacantSitesExist( Site* s) {
     int iCount = 0;
     for (Site* neigh:s->getNeighs() ){
-        if ( !neigh->isOccupied() )
+        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() )
             iCount++;
     }
 
     // Because one is s we say m_iNumSites-1
     if ( iCount >= m_iNumSites-1 )
         return true;
-
-    return false;
-}
-
-bool Adsorption::mf_isPartOfGrowth(){
-
-    for ( string species: m_pUtilParams->getGrowthSpecies() ){
-        if ( species.compare( m_sAdsorbed ) == 0 )
-            return true;
-    }
 
     return false;
 }

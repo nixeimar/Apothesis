@@ -48,9 +48,9 @@ void Desorption::init(vector<string> params)
     }
 
     //Create the rule for the adsoprtion process.
-    if ( m_bAllNeihs &&  mf_isPartOfGrowth() )
+    if ( m_bAllNeihs &&  isPartOfGrowth( m_sDesorbed ) )
         m_fRules = &Desorption::mf_allRule;
-    else if ( !m_bAllNeihs &&  mf_isPartOfGrowth() )
+    else if ( !m_bAllNeihs &&  isPartOfGrowth( m_sDesorbed ) )
         m_fRules = &Desorption::mf_basicRule;
     else
         m_fRules = &Desorption::mf_difSpeciesRule;
@@ -59,19 +59,10 @@ void Desorption::init(vector<string> params)
     //Check what process should be performed.
     //Desorption in PVD will lead to increasing the height of the site
     //Desorption in CVD/ALD will only change the label of the site
-    if ( mf_isPartOfGrowth() )
+    if ( isPartOfGrowth( m_sDesorbed ) )
         m_fPerform = &Desorption::mf_singleSpeciesSimpleDesorption;
     else
         m_fPerform = &Desorption::mf_multiSpeciesSimpleDesorption;
-}
-
-bool Desorption::mf_isPartOfGrowth(){
-    for ( string species: m_pUtilParams->getGrowthSpecies() ){
-        if ( species.compare( m_sDesorbed ) == 0 )
-            return true;
-    }
-
-    return false;
 }
 
 bool Desorption::mf_difSpeciesRule( Site* s){

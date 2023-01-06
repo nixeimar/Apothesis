@@ -54,12 +54,6 @@ public:
     /// The rules for this type of process e.g. the neighbour of site Site.
     virtual bool rules( Site* ) = 0;
 
-    /// Set the type of the process
-    virtual void setType( string type) { m_sType = type; }
-
-    /// Returns the type of the process
-    virtual string getType() { return m_sType; }
-
     /// Initialization for this process (e.g. temperature, pressure, mole fraction etc.)
     /// This must be for every process according to the process
     virtual void init( vector<string> params ){ m_vParams = params; }
@@ -83,9 +77,6 @@ public:
 
     /// Set the random generator
     inline void setRandomGen( RandomGen::RandomGenerator* randgen ) { m_pRandomGen = randgen; }
-
-    inline void setNeighs( int num ){ m_iNeighs = num; }
-    inline int getNeighs(){ return m_iNeighs; }
 
     inline void setSysParams( Utils::Parameters* p) { m_pUtilParams = p; }
     inline void setErrorHandler( ErrorHandler* error ) { m_error = error; }
@@ -129,6 +120,9 @@ protected:
 
     ///Set true if it is always possible
     bool m_bUncoAccept;
+
+    /// Checks if the specific species is part of the growing film
+    bool isPartOfGrowth( string name);
 
 private:
     /// The id of the process
