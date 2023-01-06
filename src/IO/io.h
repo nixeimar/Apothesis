@@ -156,6 +156,9 @@ class IO: public Pointers
     /// Write the height of each site
     void writeLatticeHeights( double time );
 
+    /// Write the sepcies in each site
+    void writeLatticeSpecies( double time );
+
     /// Export the lattice in xyz format. Not implemented yet
     void exportLatticeXYZ();
 

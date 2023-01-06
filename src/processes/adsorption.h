@@ -68,10 +68,16 @@ private:
     void mf_constantType();
 
     /// The process is PVD
-    void mf_performPVD(Site*);
+    void mf_signleSpeciesSimpleAdsorption(Site*);
+
+    /// The process is PVD for multiple sites
+    void mf_signleSpeciesAdsorption(Site*);
 
     /// The process is CVD or ALD
-    void mf_performCVDALD(Site*);
+    void mf_multiSpeciesSimpleAdsorption(Site*);
+
+    /// The process is CVD or ALD for multiple sites
+    void mf_multiSpeciesAdsorption(Site*);
 
     /// The uncoditional rule. The process is accepted without checked.
     bool mf_uncoRule(Site* s);
@@ -81,14 +87,26 @@ private:
     /// then returns true (the processes can be performed).
     bool mf_basicRule( Site* s);
 
+    /// For adsorbing different species the sites must not be occupied (and TODO: the height must be the same)
+    bool mf_multiSpeciesRule(Site* s);
+
+    /// For adsorbing different species in a single site must not be occupied (and TODO: the height must be the same)
+    bool mf_multiSpeciesSimpleRule(Site* s);
+
+    /// Counts the available for adsorption sites based on if they are occupied or not
+    bool mf_vacantSitesExist(Site* s);
+
     bool mf_isInLowerStep( Site* s );
     bool mf_isInHigherStep( Site* s );
 
     ///The site that the process will be performed
     Site* m_Site;
 
-    /// A member function to calculate the neighbors of a given site
+    /// Calculates the neighbors of a given site
     int mf_calculateNeighbors(Site*);
+
+    /// Checks if the neighbour sites have the same height as needed for a species occuping more that 1 sites to adsorb
+    bool mf_hasSameHeight(Site* s);
 
     /// For simple adsorption:
     ///The sticking coefficient [-]

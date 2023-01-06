@@ -48,26 +48,39 @@ void Desorption::init(vector<string> params)
     }
 
     //Create the rule for the adsoprtion process.
-    if ( m_bAllNeihs )
+    if ( m_bAllNeihs &&  mf_isPartOfGrowth() )
         m_fRules = &Desorption::mf_allRule;
-    else
+    else if ( !m_bAllNeihs &&  mf_isPartOfGrowth() )
         m_fRules = &Desorption::mf_basicRule;
+    else
+        m_fRules = &Desorption::mf_difSpeciesRule;
+
 
     //Check what process should be performed.
     //Desorption in PVD will lead to increasing the height of the site
-    //Desorption in CVD will change the label of the site
+    //Desorption in CVD/ALD will only change the label of the site
     if ( mf_isPartOfGrowth() )
-        m_fPerform = &Desorption::mf_performPVD;
+        m_fPerform = &Desorption::mf_singleSpeciesSimpleDesorption;
     else
-        m_fPerform = &Desorption::mf_performCVDALD;
-
-
-    cout << m_dProb << endl;
-    cout << endl;
+        m_fPerform = &Desorption::mf_multiSpeciesSimpleDesorption;
 }
 
 bool Desorption::mf_isPartOfGrowth(){
-    if (std::find(m_pUtilParams->getGrowthSpecies().begin(), m_pUtilParams->getGrowthSpecies().end(), m_sDesorbed ) != m_pUtilParams->getGrowthSpecies().end())
+    for ( string species: m_pUtilParams->getGrowthSpecies() ){
+        if ( species.compare( m_sDesorbed ) == 0 )
+            return true;
+    }
+
+    return false;
+}
+
+bool Desorption::mf_difSpeciesRule( Site* s){
+
+    //1. Calculate if there are sites at the same height and not oocupied - their number is defined by stoichiometry of the adsorption reaction
+    //2. If 1 holds then return true
+    //1. Return false
+
+    if ( s->isOccupied() )
         return true;
 
     return false;
@@ -97,7 +110,7 @@ bool Desorption::mf_allRule( Site* s){
     return false;
 }
 
-// This apply for every lattice without a rule.
+// This apply for every lattice without a rule which is actually just pick a site and apply it
 bool Desorption::mf_basicRule( Site* s){
     return true;
 }
@@ -107,7 +120,7 @@ void Desorption::perform( Site* s)
     (this->*m_fPerform)(s);
 }
 
-void Desorption::mf_performPVD(Site *s) {
+void Desorption::mf_singleSpeciesSimpleDesorption(Site *s) {
     //For PVD results
     s->decreaseHeight( 1 );
     mf_calculateNeighbors( s ) ;
@@ -123,7 +136,7 @@ void Desorption::mf_performPVD(Site *s) {
     }
 }
 
-void Desorption::mf_performCVDALD(Site *s)
+void Desorption::mf_multiSpeciesSimpleDesorption(Site *s)
 {
     s->setOccupied( false );
     s->setLabel( s->getBelowLabel() );

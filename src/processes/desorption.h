@@ -62,11 +62,14 @@ private:
     /// Returns always true - this is actually as having uncoditional acceptance
     bool mf_basicRule(Site* s);
 
+    /// For desorbing different species the site must be occupied
+    bool mf_difSpeciesRule(Site* s);
+
     /// The process is PVD
-    void mf_performPVD(Site*);
+    void mf_singleSpeciesSimpleDesorption(Site*);
 
     /// The process is CVD or ALD
-    void mf_performCVDALD(Site*);
+    void mf_multiSpeciesSimpleDesorption(Site*);
 
     ///The site that adsorption will be performed
     Site* m_Site;

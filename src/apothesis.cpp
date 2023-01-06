@@ -98,6 +98,7 @@ void Apothesis::init()
     for ( Site* s:pLattice->getSites() ){
         s->setLabel(  pParameters->getLatticeLabels() );
         s->setBelowLabel(  pParameters->getLatticeLabels() );
+        s->setOccupied( false ); //Start from clear surface
     }
 
     if ( pLattice->hasSteps() )
@@ -131,13 +132,12 @@ void Apothesis::init()
         if ( process.compare("Adsorption") == 0 ){
 
             Adsorption* a = new Adsorption();
-            //The name of the actual class used
 
-            for ( pair<string, int> s: reactants) {
-                if ( s.first.compare("*") != 0 )
-                    a->setAdrorbed( s.first );
-                else
-                    a->setNumSites( s.second );
+            for ( pair<string, int> s: products) {
+                std::string::size_type i = s.first.find("*");
+                if (i != std::string::npos)
+                    a->setAdrorbed( s.first.erase(i, s.first.length() ) );
+                a->setNumSites( s.second );
             }
 
             a->setName( proc.first );
@@ -331,6 +331,7 @@ void Apothesis::init()
 
     pIO->writeInOutput( output );
     pIO->writeLatticeHeights( m_dProcTime );
+    pIO->writeLatticeSpecies( m_dProcTime  );
 }
 
 void Apothesis::exec()
@@ -423,9 +424,6 @@ void Apothesis::exec()
         timeToWriteLog += m_dt;
         timeToWriteLattice += m_dt;
 
-
-        double test = (pProperties->getMeanDH() - meanDHPrevStep) / ((pLattice->getSize()*(m_dProcTime - timeGrowth) ) );
-
         if ( timeToWriteLog >= pParameters->getWriteLogTimeStep() ){
             output = std::to_string(m_dProcTime) + '\t'
                     + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) / ( (pLattice->getSize()*(m_dProcTime - timeGrowth) ) ) )+ '\t'
@@ -443,8 +441,8 @@ void Apothesis::exec()
         }
 
         if ( timeToWriteLattice >= pParameters->getWriteLatticeTimeStep() ) {
-            string latName = "lattice_" + to_string( m_dProcTime )+".xyz";
             pIO->writeLatticeHeights( m_dProcTime  );
+            pIO->writeLatticeSpecies( m_dProcTime  );
             timeToWriteLattice = 0.0;
         }
     }
