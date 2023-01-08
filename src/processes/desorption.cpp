@@ -38,7 +38,7 @@ void Desorption::init(vector<string> params)
     }
     else if (m_sType.compare("constant") == 0){
         m_dDesorptionRate = stod( m_vParams[1] );
-        m_fType = &Desorption::mf_constantType;
+        m_fType = &Desorption::constantType;
 
         (this->*m_fType)();
     }
@@ -49,23 +49,23 @@ void Desorption::init(vector<string> params)
 
     //Create the rule for the adsoprtion process.
     if ( m_bAllNeihs &&  isPartOfGrowth( m_sDesorbed ) )
-        m_fRules = &Desorption::mf_allRule;
+        m_fRules = &Desorption::allRule;
     else if ( !m_bAllNeihs &&  isPartOfGrowth( m_sDesorbed ) )
-        m_fRules = &Desorption::mf_basicRule;
+        m_fRules = &Desorption::basicRule;
     else
-        m_fRules = &Desorption::mf_difSpeciesRule;
+        m_fRules = &Desorption::difSpeciesRule;
 
 
     //Check what process should be performed.
     //Desorption in PVD will lead to increasing the height of the site
     //Desorption in CVD/ALD will only change the label of the site
     if ( isPartOfGrowth( m_sDesorbed ) )
-        m_fPerform = &Desorption::mf_singleSpeciesSimpleDesorption;
+        m_fPerform = &Desorption::singleSpeciesSimpleDesorption;
     else
-        m_fPerform = &Desorption::mf_multiSpeciesSimpleDesorption;
+        m_fPerform = &Desorption::multiSpeciesSimpleDesorption;
 }
 
-bool Desorption::mf_difSpeciesRule( Site* s){
+bool Desorption::difSpeciesRule( Site* s){
 
     //1. Calculate if there are sites at the same height and not oocupied - their number is defined by stoichiometry of the adsorption reaction
     //2. If 1 holds then return true
@@ -77,7 +77,7 @@ bool Desorption::mf_difSpeciesRule( Site* s){
     return false;
 }
 
-void Desorption::mf_constantType(){
+void Desorption::constantType(){
     m_dProb = m_dDesorptionRate*m_pLattice->getSize();
 }
 
@@ -95,14 +95,14 @@ bool Desorption::rules( Site* s)
 }
 
 /// This apply for every lattice without a rule.
-bool Desorption::mf_allRule( Site* s){
-    if ( mf_calculateNeighbors( s ) == m_iNumNeighs )
+bool Desorption::allRule( Site* s){
+    if ( calculateNeighbors( s ) == m_iNumNeighs )
         return true;
     return false;
 }
 
 // This apply for every lattice without a rule which is actually just pick a site and apply it
-bool Desorption::mf_basicRule( Site* s){
+bool Desorption::basicRule( Site* s){
     return true;
 }
 
@@ -111,23 +111,23 @@ void Desorption::perform( Site* s)
     (this->*m_fPerform)(s);
 }
 
-void Desorption::mf_singleSpeciesSimpleDesorption(Site *s) {
+void Desorption::singleSpeciesSimpleDesorption(Site *s) {
     //For PVD results
     s->decreaseHeight( 1 );
-    mf_calculateNeighbors( s ) ;
+    calculateNeighbors( s ) ;
     m_seAffectedSites.insert( s );
     for ( Site* neigh:s->getNeighs() ) {
-        mf_calculateNeighbors( neigh );
+        calculateNeighbors( neigh );
         m_seAffectedSites.insert( neigh );
 
         for ( Site* firstNeigh:neigh->getNeighs() ){
-            firstNeigh->setNeighsNum( mf_calculateNeighbors( firstNeigh ) );
+            firstNeigh->setNeighsNum( calculateNeighbors( firstNeigh ) );
             m_seAffectedSites.insert( firstNeigh );
         }
     }
 }
 
-void Desorption::mf_multiSpeciesSimpleDesorption(Site *s)
+void Desorption::multiSpeciesSimpleDesorption(Site *s)
 {
     s->setOccupied( false );
     s->setLabel( s->getBelowLabel() );
@@ -137,7 +137,7 @@ void Desorption::mf_multiSpeciesSimpleDesorption(Site *s)
         m_seAffectedSites.insert( neigh );
 }
 
-int Desorption::mf_calculateNeighbors(Site* s)
+int Desorption::calculateNeighbors(Site* s)
 {
     int neighs = 0;
 
@@ -171,7 +171,7 @@ int Desorption::mf_calculateNeighbors(Site* s)
     return neighs;
 }
 
-bool Desorption::mf_isInLowerStep(Site* s)
+bool Desorption::isInLowerStep(Site* s)
 {
     for (int j = 0; j < m_pLattice->getY(); j++)
         if ( s->getID() == m_pLattice->getSite( j, 0 )->getID() )
@@ -180,7 +180,7 @@ bool Desorption::mf_isInLowerStep(Site* s)
     return false;
 }
 
-bool Desorption::mf_isInHigherStep(Site* s)
+bool Desorption::isInHigherStep(Site* s)
 {
     for (int j = 0; j < m_pLattice->getY(); j++){
         if ( s->getID() == m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() ){

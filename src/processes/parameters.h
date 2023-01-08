@@ -138,6 +138,9 @@ class Parameters: public Pointers
 
     /// The species participating in the growth of the surface
     vector<string> m_vsGrowthSpecies;
+
+    /// Map of the reactions which holds the reactants enumerated
+    map<string, int> m_mReactants;
   };
 
 }

@@ -36,13 +36,6 @@ public:
     inline void setTargetSite( Site* site ){ m_Site = site;}
     inline Site* getTargetSite(){ return m_Site; }
 
-    /// The arrhenius type for the adsorption process rate i.e.
-    /// arrhenius v0 A exp(-nE/kT), A = exp((E-Em)/kT) -> frequency v0 [-],  E (Joules), Em [Joules]
-    void arrheniusType();
-
-    /// Constant value for the adsorption process rate i.e.
-    /// constant 1.0 [ML/s]
-    void constantType();
 
     /// Sets the specific adsorption species label according to the input
     void setAdrorbed(string adsorbed){ m_sAdsorbed = adsorbed;}
@@ -62,48 +55,56 @@ private:
 
     /// The simple type for the adsorption process rate i.e.
     /// simple s0*f*P/(2*pi*MW*Ctot*kb*T) -> Sticking coefficient [-], f [-], C_tot [sites/m2], MW [kg/mol]
-    void mf_simpleType();
+    void simpleType();
 
-    /// Constant type
-    void mf_constantType();
+    /// The arrhenius type for the adsorption process rate i.e.
+    /// arrhenius v0 A exp(-nE/kT), A = exp((E-Em)/kT) -> frequency v0 [-],  E (Joules), Em [Joules]
+    void arrheniusType();
+
+    /// Constant value for the adsorption process rate i.e.
+    /// constant 1.0 [ML/s]
+    void constantType();
 
     /// The process is PVD
-    void mf_signleSpeciesSimpleAdsorption(Site*);
+    void signleSpeciesSimpleAdsorption(Site*);
 
     /// The process is PVD for multiple sites
-    void mf_signleSpeciesAdsorption(Site*);
+    void signleSpeciesAdsorption(Site*);
 
     /// The process is CVD or ALD
-    void mf_multiSpeciesSimpleAdsorption(Site*);
+    void multiSpeciesSimpleAdsorption(Site*);
 
     /// The process is CVD or ALD for multiple sites
-    void mf_multiSpeciesAdsorption(Site*);
+    void multiSpeciesAdsorption(Site*);
 
     /// The uncoditional rule. The process is accepted without checked.
-    bool mf_uncoRule(Site* s);
+    bool uncoRule(Site* s);
 
     /// The basic rule for accepting this process.
     /// Check if the site is empty (i.e. the label is the same as the lattice species)
     /// then returns true (the processes can be performed).
-    bool mf_basicRule( Site* s);
+    bool basicRule( Site* s);
 
     /// For adsorbing different species the sites must not be occupied (and TODO: the height must be the same)
-    bool mf_multiSpeciesRule(Site* s);
+    bool multiSpeciesRule(Site* s);
 
     /// For adsorbing different species in a single site must not be occupied (and TODO: the height must be the same)
-    bool mf_multiSpeciesSimpleRule(Site* s);
+    bool multiSpeciesSimpleRule(Site* s);
 
     /// Counts the available for adsorption sites based on if they are occupied or not
-    bool mf_vacantSitesExist(Site* s);
+    bool vacantSitesExist(Site* s);
 
-    bool mf_isInLowerStep( Site* s );
-    bool mf_isInHigherStep( Site* s );
+    /// Checks if the site is in lower step (only for simple cubic lattice)
+    bool isInLowerStep( Site* s );
+
+    /// Checks if the site is in higher step (only for simple cubic lattice)
+    bool isInHigherStep( Site* s );
 
     ///The site that the process will be performed
     Site* m_Site;
 
     /// Calculates the neighbors of a given site
-    int mf_calculateNeighbors(Site*);
+    int calculateNeighbors(Site*);
 
     /// For simple adsorption:
     ///The sticking coefficient [-]

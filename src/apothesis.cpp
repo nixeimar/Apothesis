@@ -120,25 +120,29 @@ void Apothesis::init()
 
         string process = mf_analyzeProc( proc.first );
 
-        map<string, double> reactants;
+        map<string, int> reactants;
         for (string react: pIO->getReactants( proc.first ) )
             reactants.insert( pIO->analyzeCompound( react ) );
 
-        map<string, double> products;
-        for (string react: pIO->getProducts( proc.first ) )
-            products.insert( pIO->analyzeCompound( react ) );
-
+        map<string, int> products;
+        for (string prod: pIO->getProducts( proc.first ) )
+            products.insert( pIO->analyzeCompound( prod ) );
 
         if ( process.compare("Adsorption") == 0 ){
 
             Adsorption* a = new Adsorption();
 
             for ( pair<string, int> s: products) {
-                std::string::size_type i = s.first.find("*");
-                if (i != std::string::npos)
-                    a->setAdrorbed( s.first.erase(i, s.first.length() ) );
+                a->setAdrorbed( s.first );
                 a->setNumSites( s.second );
             }
+
+//            for ( pair<string, int> s: products) {
+//                std::string::size_type i = s.first.find("*");
+//                if (i != std::string::npos)
+//                    a->setAdrorbed( s.first.erase(i, s.first.length() ) );
+//                a->setNumSites( s.second );
+//           }
 
             a->setName( proc.first );
             a->setLattice( pLattice );
@@ -158,6 +162,9 @@ void Apothesis::init()
             r->setRandomGen( pRandomGen );
             r->setErrorHandler( pErrorHandler );
             r->setSysParams( pParameters ); //These are the systems and constants parameters
+            r->setReactants( reactants );
+            r->setProducts( products );
+
             r->init( proc.second ); //These are the process per se parameters
 
             m_processMap.insert( {r, emptySet} );

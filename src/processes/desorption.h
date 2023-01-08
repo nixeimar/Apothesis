@@ -36,8 +36,6 @@ public:
     void perform( Site* ) override;
     void init(vector<string> params) override;
 
-    void arrhenius( double, double, double, int);
-
     /// Sets the specific adsorption species label according to the input
     void setDesorbed(string desorbed){ m_sDesorbed = desorbed;}
 
@@ -51,31 +49,40 @@ private:
     bool (Desorption::*m_fRules)(Site*);
     void (Desorption::*m_fPerform)(Site*);
 
-    void mf_constantType();
 
-    bool mf_isInLowerStep( Site* s );
-    bool mf_isInHigherStep( Site* s );
+    /// Arrhenius type rate
+    void arrhenius( double, double, double, int);
+
+    /// Constant value for the adsorption process rate i.e.
+    /// constant 1.0 [ML/s]
+    void constantType();
+
+    /// Checks if the site is in lower step (only for simple cubic lattice)
+    bool isInLowerStep( Site* s );
+
+    /// Checks if the site is in higher step (only for simple cubic lattice)
+    bool isInHigherStep( Site* s );
 
     /// If the keyword 'all' is used then the rule is based on the neighbours
-    bool mf_allRule(Site* s);
+    bool allRule(Site* s);
 
     /// Returns always true - this is actually as having uncoditional acceptance
-    bool mf_basicRule(Site* s);
+    bool basicRule(Site* s);
 
     /// For desorbing different species the site must be occupied
-    bool mf_difSpeciesRule(Site* s);
+    bool difSpeciesRule(Site* s);
 
     /// The process is PVD
-    void mf_singleSpeciesSimpleDesorption(Site*);
+    void singleSpeciesSimpleDesorption(Site*);
 
     /// The process is CVD or ALD
-    void mf_multiSpeciesSimpleDesorption(Site*);
+    void multiSpeciesSimpleDesorption(Site*);
 
     ///The site that adsorption will be performed
     Site* m_Site;
 
     /// A member function to calculate the neighbors of a given site
-    int mf_calculateNeighbors(Site*);
+    int calculateNeighbors(Site*);
 
     /// The number of neighbours of this process
     int m_iNumNeighs;

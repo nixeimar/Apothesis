@@ -21,6 +21,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <deque>
 
 #include "process.h"
 
@@ -39,21 +40,31 @@ public:
     double getProbability() override;
     void init(vector<string> params) override;
 
-    inline void setReactants( vector<pair<string, double> > reactants ) {m_vReactants = reactants;}
-    inline void setProducts( vector<pair<string, double> > products ) {m_vProducts = products;}
+    inline void setReactants( map<string, int> reactants ) {m_mReactants = reactants;}
+    inline void setProducts(  map<string, int> products ) {m_mProducts = products;}
 
 private:
-    /// The activation energy of this reaction
-    double m_dEa;
+    /// Pointers to functions in order to switch between different functions
+    void (Desorption::*m_fType)();
+    bool (Desorption::*m_fRules)(Site*);
+    void (Desorption::*m_fPerform)(Site*);
 
-    /// The pre-exponential factors for this reaction
-    double m_dK0;
+    /// Arrhenius type rate
+    void arrheniusType( double, double, double);
+
+    /// Constant rate
+    void constantType();
 
     /// The reactants participating in this reaction
-    vector< pair<string, double> > m_vReactants;
+    map<string, int> m_mReactants;
 
     /// The products of this reaction
-    vector< pair<string, double> > m_vProducts;
+    map<string, int> m_mProducts;
+
+    /// Checks if s is a reactant
+    bool isReactant(Site* s);
+
+    double m_dReactionRate;
 };
 
 #endif // REACTION_NEW_H

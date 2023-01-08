@@ -40,10 +40,10 @@ void Adsorption::init( vector<string> params )
         m_dCtot = stod(m_vParams[ 3 ]);
         m_dMW = stod(m_vParams[ 4 ]);
 
-        m_fType = &Adsorption::mf_simpleType;
+        m_fType = &Adsorption::simpleType;
     }
     else if (  m_sType.compare("constant") == 0  ) {
-        m_fType = &Adsorption::mf_constantType;
+        m_fType = &Adsorption::constantType;
         m_dAdsorptionRate = stod(m_vParams[ 1 ]);
     }
     else {
@@ -54,14 +54,14 @@ void Adsorption::init( vector<string> params )
     //Create the rule for the adsoprtion process.
     if ( m_iNumSites == 1 && isPartOfGrowth( m_sAdsorbed ) ){
         setUncoAccepted( true );
-        m_fRules = &Adsorption::mf_uncoRule;
+        m_fRules = &Adsorption::uncoRule;
     }
     else if ( m_iNumSites > 1 && isPartOfGrowth( m_sAdsorbed ) )
-        m_fRules = &Adsorption::mf_basicRule;
+        m_fRules = &Adsorption::basicRule;
     else if ( m_iNumSites == 1 && !isPartOfGrowth( m_sAdsorbed ) )
-        m_fRules = &Adsorption::mf_multiSpeciesSimpleRule;
+        m_fRules = &Adsorption::multiSpeciesSimpleRule;
     else if ( m_iNumSites > 1 && !isPartOfGrowth( m_sAdsorbed ) )
-        m_fRules = &Adsorption::mf_multiSpeciesRule;
+        m_fRules = &Adsorption::multiSpeciesRule;
     else {
         m_error->error_simple_msg("The rule for this process has not been defined.");
         EXIT
@@ -71,13 +71,13 @@ void Adsorption::init( vector<string> params )
     //Adsorption in PVD will lead to increasing the height of the site
     //Adsorption in CVD/ALD will only change the label of the site
     if ( m_iNumSites == 1  && isPartOfGrowth(m_sAdsorbed) )
-        m_fPerform = &Adsorption::mf_signleSpeciesSimpleAdsorption;
+        m_fPerform = &Adsorption::signleSpeciesSimpleAdsorption;
     else if ( m_iNumSites > 1  && isPartOfGrowth( m_sAdsorbed ) )
-        m_fPerform = &Adsorption::mf_signleSpeciesAdsorption;
+        m_fPerform = &Adsorption::signleSpeciesAdsorption;
     else if ( m_iNumSites == 1 && !isPartOfGrowth(m_sAdsorbed) )
-        m_fPerform = &Adsorption::mf_multiSpeciesSimpleAdsorption;
+        m_fPerform = &Adsorption::multiSpeciesSimpleAdsorption;
     else if ( m_iNumSites > 1 && !isPartOfGrowth(m_sAdsorbed) )
-        m_fPerform = &Adsorption::mf_multiSpeciesAdsorption;
+        m_fPerform = &Adsorption::multiSpeciesAdsorption;
     else {
         m_error->error_simple_msg("The process is not defined | " + m_sProcName );
         EXIT
@@ -86,20 +86,20 @@ void Adsorption::init( vector<string> params )
     (this->*m_fType)();
 }
 
-void Adsorption::mf_constantType(){
+void Adsorption::constantType(){
     m_dProb = m_dAdsorptionRate*m_pLattice->getSize();
 }
 
-bool Adsorption::mf_uncoRule( Site* ){ return true; }
+bool Adsorption::uncoRule( Site* ){ return true; }
 
-bool Adsorption::mf_basicRule( Site* s){
-    if ( mf_calculateNeighbors(s) == m_iNumSites)
+bool Adsorption::basicRule( Site* s){
+    if ( calculateNeighbors(s) == m_iNumSites)
         return true;
 
     return false;
 }
 
-bool Adsorption::mf_multiSpeciesSimpleRule( Site* s){
+bool Adsorption::multiSpeciesSimpleRule( Site* s){
     //1. If the species is not occupied return true
     //2. Return false
 
@@ -109,20 +109,20 @@ bool Adsorption::mf_multiSpeciesSimpleRule( Site* s){
     return false;
 }
 
-bool Adsorption::mf_multiSpeciesRule( Site* s){
+bool Adsorption::multiSpeciesRule( Site* s){
 
     //1. If the species is not occupied
     //2. and if neighbours equal to the sites needed by m_iNumSites are vacant
     //3. and have the same height return true
     //3. Return false
 
-    if ( s->isOccupied() || !mf_vacantSitesExist(s) )
+    if ( s->isOccupied() || !vacantSitesExist(s) )
         return false;
 
     return true;
 }
 
-bool Adsorption::mf_vacantSitesExist( Site* s) {
+bool Adsorption::vacantSitesExist( Site* s) {
     int iCount = 0;
     for (Site* neigh:s->getNeighs() ){
         if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() )
@@ -136,7 +136,7 @@ bool Adsorption::mf_vacantSitesExist( Site* s) {
     return false;
 }
 
-void Adsorption::mf_simpleType()
+void Adsorption::simpleType()
 {
     double pi = m_pUtilParams->dPi;
     double Na = m_pUtilParams->dAvogadroNum; // Avogadro's number [1/mol]
@@ -150,22 +150,19 @@ void Adsorption::mf_simpleType()
 //ToDo: To be implemented and checked
 void Adsorption::arrheniusType(){;}
 
-//ToDo: To be implemented and checked
-void Adsorption::constantType(){; }
-
 bool Adsorption::rules( Site* s )
 {
     (this->*m_fRules)(s);
 }
 
-void Adsorption::mf_signleSpeciesAdsorption(Site *s) {
+void Adsorption::signleSpeciesAdsorption(Site *s) {
     //Needs check!
     s->increaseHeight( 1 );
-    mf_calculateNeighbors( s );
+    calculateNeighbors( s );
     m_seAffectedSites.insert( s ) ;
 
     for ( Site* neigh:s->getNeighs() ) {
-        mf_calculateNeighbors( neigh );
+        calculateNeighbors( neigh );
         m_seAffectedSites.insert( neigh );
     }
 
@@ -176,11 +173,11 @@ void Adsorption::mf_signleSpeciesAdsorption(Site *s) {
         int ranNum = m_pRandomGen->getIntRandom( 0,  neighs.size()-1 );
         Site* neigh = neighs[ ranNum ];
         neigh->increaseHeight(1);
-        mf_calculateNeighbors( neigh );
+        calculateNeighbors( neigh );
         m_seAffectedSites.insert( neigh ) ;
 
         for ( Site* neigh2:neigh->getNeighs() ) {
-            mf_calculateNeighbors( neigh2 );
+            calculateNeighbors( neigh2 );
             m_seAffectedSites.insert( neigh2 );
         }
 
@@ -188,18 +185,18 @@ void Adsorption::mf_signleSpeciesAdsorption(Site *s) {
     }
 }
 
-void Adsorption::mf_signleSpeciesSimpleAdsorption(Site *s) {
+void Adsorption::signleSpeciesSimpleAdsorption(Site *s) {
     s->increaseHeight( 1 );
-    mf_calculateNeighbors( s );
+    calculateNeighbors( s );
     m_seAffectedSites.insert( s ) ;
 
     for ( Site* neigh:s->getNeighs() ) {
-        mf_calculateNeighbors( neigh );
+        calculateNeighbors( neigh );
         m_seAffectedSites.insert( neigh );
     }
 }
 
-void Adsorption::mf_multiSpeciesSimpleAdsorption(Site *s) {
+void Adsorption::multiSpeciesSimpleAdsorption(Site *s) {
     //Here must hold the previous site in order to appear in case of multiple species forming the growing film
     s->setOccupied( true );
     s->setBelowLabel( s->getLabel() );
@@ -214,7 +211,7 @@ void Adsorption::mf_multiSpeciesSimpleAdsorption(Site *s) {
 //void Adsorption::mf_multiSpeciesAdsorption(Site *s) {
 
 
-void Adsorption::mf_multiSpeciesAdsorption(Site *s) {
+void Adsorption::multiSpeciesAdsorption(Site *s) {
     //Here must hold the previous site in order to appear in case of multiple species forming the growing film
     s->setOccupied( true );
     s->setBelowLabel( s->getLabel() );
@@ -254,7 +251,7 @@ void Adsorption::perform( Site* s )
     (this->*m_fPerform)(s);
 }
 
-int Adsorption::mf_calculateNeighbors(Site* s)
+int Adsorption::calculateNeighbors(Site* s)
 {
     int neighs = 0;
 
@@ -285,7 +282,7 @@ int Adsorption::mf_calculateNeighbors(Site* s)
     return neighs;
 }
 
-bool Adsorption::mf_isInLowerStep(Site* s)
+bool Adsorption::isInLowerStep(Site* s)
 {
     for (int j = 0; j < m_pLattice->getY(); j++)
         if ( s->getID() == m_pLattice->getSite( j, 0 )->getID() )
@@ -294,7 +291,7 @@ bool Adsorption::mf_isInLowerStep(Site* s)
     return false;
 }
 
-bool Adsorption::mf_isInHigherStep(Site* s)
+bool Adsorption::isInHigherStep(Site* s)
 {
     for (int j = 0; j < m_pLattice->getY(); j++)
         if ( s->getID() == m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() )
