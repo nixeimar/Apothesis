@@ -133,14 +133,9 @@ void Reaction::catalysis(Site *s){
 
     int lucky = m_pRandomGen->getIntRandom(0, m_idReacting[ s->getID() ].size() );
 
-    set<int>::iterator iter =  m_idReacting[ s->getID() ].find(lucky);
-    int setint = 0;
-    if (iter != m_idReacting[ s->getID() ].end()) {
-        setint = *iter;
-        m_idReacting[ s->getID() ].erase( iter );
-    }
+    int x = *std::next(m_idReacting[ s->getID() ].begin(), lucky );
 
-    Site* otherSite =  m_pLattice->getSite( setint );
+    Site* otherSite =  m_pLattice->getSite( x );
 
     otherSite->setOccupied( false );
     otherSite->setLabel( otherSite->getBelowLabel() );
@@ -150,6 +145,7 @@ void Reaction::catalysis(Site *s){
         m_seAffectedSites.insert( neigh );
 
     m_idReacting[ otherSite->getID() ].erase( s->getID() );
+    m_idReacting[  s->getID() ].erase( otherSite->getID() );
 }
 
 double Reaction::getProbability(){ return m_dProb; }
