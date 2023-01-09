@@ -34,7 +34,7 @@ void Desorption::init(vector<string> params)
 
     if ( m_sType.compare("arrhenius") == 0 ){
         m_iNumNeighs = stoi( m_vParams[3] );
-        arrhenius( stod(m_vParams[ 1 ]), stod(m_vParams[ 2 ]), m_pUtilParams->getTemperature(), (m_iNumNeighs + 1) );
+        arrheniusType( stod(m_vParams[ 1 ]), stod(m_vParams[ 2 ]), m_pUtilParams->getTemperature(), (m_iNumNeighs + 1) );
     }
     else if (m_sType.compare("constant") == 0){
         m_dDesorptionRate = stod( m_vParams[1] );
@@ -81,7 +81,7 @@ void Desorption::constantType(){
     m_dProb = m_dDesorptionRate*m_pLattice->getSize();
 }
 
-void Desorption::arrhenius(double v0, double Ed, double T,  int n)
+void Desorption::arrheniusType(double v0, double Ed, double T,  int n)
 {
     double k = m_pUtilParams->dkBoltz;
     Ed = Ed/m_pUtilParams->dAvogadroNum;

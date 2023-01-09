@@ -45,15 +45,18 @@ public:
 
 private:
     /// Pointers to functions in order to switch between different functions
-    void (Desorption::*m_fType)();
-    bool (Desorption::*m_fRules)(Site*);
-    void (Desorption::*m_fPerform)(Site*);
+    void (Reaction::*m_fType)();
+    bool (Reaction::*m_fRules)(Site*);
+    void (Reaction::*m_fPerform)(Site*);
 
     /// Arrhenius type rate
     void arrheniusType( double, double, double);
 
     /// Constant rate
     void constantType();
+
+    /// Reactions without growth taken into account
+    void catalysis(Site* s);
 
     /// The reactants participating in this reaction
     map<string, int> m_mReactants;
@@ -65,6 +68,9 @@ private:
     bool isReactant(Site* s);
 
     double m_dReactionRate;
+
+    vector< set<int> > m_idReacting;
+
 };
 
 #endif // REACTION_NEW_H

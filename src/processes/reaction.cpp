@@ -44,18 +44,14 @@ void Reaction::init(vector<string> params){
         EXIT
     }
 
-    //Create the rule for the adsoprtion process.
-/*    if ( m_bAllNeihs &&  isPartOfGrowth( m_sDesorbed ) )
-        m_fRules = &Desorption::mf_allRule;
-    else if ( !m_bAllNeihs &&  isPartOfGrowth( m_sDesorbed ) )
-        m_fRules = &Desorption::mf_basicRule;
-    else
-        m_fRules = &Desorption::mf_difSpeciesRule;*/
+    m_idReacting.resize( m_pLattice->getSize() );
+
+    m_fPerform = &Reaction::catalysis;
 }
 
-
-void Reaction::constantType(){}
-
+void Reaction::constantType(){
+    m_dProb = m_dReactionRate*m_pLattice->getSize();
+}
 
 void Reaction::arrheniusType(double v0, double Ed, double T)
 {
@@ -72,9 +68,10 @@ bool Reaction::rules(Site *s)
         return false;
     else {
 
+        int id = -1;
+
         // First search for the site
         int stoichio = m_mReactants[ s->getLabel() ];
-
         if ( stoichio == 1) {
             //Search for the other sites
             for ( pair<string, int> r:m_mReactants ){
@@ -90,8 +87,10 @@ bool Reaction::rules(Site *s)
                             if ( neigh->getLabel().compare( r.first ) == 0 ) {
                                 iCount++;
 
-                                if ( iCount == stoichio )
+                                if ( iCount == stoichio ){
+                                    id = neigh->getID();
                                     break;
+                                }
                             }
                         }
                     }
@@ -100,6 +99,9 @@ bool Reaction::rules(Site *s)
                         return false;
                 }
             }
+
+            m_idReacting[ s->getID() ].insert( id );
+            m_idReacting[ id ].insert( s->getID() );
         }
     }
 
@@ -117,11 +119,38 @@ bool Reaction::isReactant(Site* s){
 
 void Reaction::perform(Site *s)
 {
-
-
+    (this->*m_fPerform)(s);
 }
 
-double Reaction::getProbability(){
-    return 0.;
+void Reaction::catalysis(Site *s){
+
+    s->setOccupied(false);
+    s->setLabel( s->getBelowLabel() );
+
+    m_seAffectedSites.insert( s );
+    for ( Site* neigh:s->getNeighs() )
+        m_seAffectedSites.insert( neigh );
+
+    int lucky = m_pRandomGen->getIntRandom(0, m_idReacting[ s->getID() ].size() );
+
+    set<int>::iterator iter =  m_idReacting[ s->getID() ].find(lucky);
+    int setint = 0;
+    if (iter != m_idReacting[ s->getID() ].end()) {
+        setint = *iter;
+        m_idReacting[ s->getID() ].erase( iter );
+    }
+
+    Site* otherSite =  m_pLattice->getSite( setint );
+
+    otherSite->setOccupied( false );
+    otherSite->setLabel( otherSite->getBelowLabel() );
+
+    m_seAffectedSites.insert( otherSite );
+    for ( Site* neigh:otherSite->getNeighs() )
+        m_seAffectedSites.insert( neigh );
+
+    m_idReacting[ otherSite->getID() ].erase( s->getID() );
 }
+
+double Reaction::getProbability(){ return m_dProb; }
 

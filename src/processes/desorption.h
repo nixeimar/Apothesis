@@ -49,9 +49,8 @@ private:
     bool (Desorption::*m_fRules)(Site*);
     void (Desorption::*m_fPerform)(Site*);
 
-
     /// Arrhenius type rate
-    void arrhenius( double, double, double, int);
+    void arrheniusType( double, double, double, int);
 
     /// Constant value for the adsorption process rate i.e.
     /// constant 1.0 [ML/s]
