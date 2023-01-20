@@ -62,8 +62,9 @@ public:
     /// Write the lattice in XYZ format in a filename
     void writeXYZ( string );
 
-
     void buildSteps(int, int);
+
+    unordered_map<string, double > computeCoverages( vector<string> species ) override;
 
 protected:
     /// Build the first neighbours for the FCC(100) lattice.

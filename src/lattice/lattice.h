@@ -152,6 +152,9 @@ class Lattice: public Pointers
     /// Returns the lattice type as string
     string getTypeAsString();
 
+    /// Returns the coverages of each species adsorbed
+    virtual unordered_map<string, double > computeCoverages( vector<string> species ){}
+
 protected:
     /// The size of the lattice in the x-dimension.
     int m_iSizeX;
@@ -192,6 +195,9 @@ protected:
 
     /// The label of the lattice species
     string m_sLabel;
+
+    /// The coveraages at each time
+    unordered_map<string, double> m_mCoverages;
   };
 
 #endif // LATTICE_H

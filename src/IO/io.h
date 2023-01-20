@@ -243,8 +243,14 @@ class IO: public Pointers
     /// Writer keyword
     string m_sWrite;
 
-    /// The keyword for storing the species fomring the growing film
+    /// The keyword for the species fomring the growing film
     string m_sGrowth;
+
+    /// The keyword for the precursors forming the film
+    string m_sPrecursors;
+
+    /// The keyword for reporting additionl properties (currently only supports coverages)
+    string m_sReport;
 
     // trim from start (in place)
     static inline void ltrim(std::string &s) {

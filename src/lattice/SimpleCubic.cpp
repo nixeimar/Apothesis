@@ -335,3 +335,20 @@ int SimpleCubic::calculateNeighNum( int id )
     m_vSites[ id ]->setNeighsNum( neighs );
     return neighs;
 }
+
+unordered_map<string, double> SimpleCubic::computeCoverages( vector<string> species ) {
+    for ( string name:species){
+        m_mCoverages[ name ] = 0.;
+
+        int iCount = 0;
+        for ( int i =0; i< getSize(); i++){
+            if ( m_vSites[ i ]->getLabel().compare( name ) == 0 )
+                iCount++;
+        }
+
+        m_mCoverages[ name ] = (double)iCount/getSize();
+    }
+
+    return m_mCoverages;
+}
+

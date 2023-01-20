@@ -65,9 +65,11 @@ public:
 
   void writeLatticeHeights( double, int );
 
+  inline int getNumFirstNeihgs() override { return 5; }
+
   inline bool isStepped(){return m_bHasSteps;}
 
-  inline int getNumFirstNeihgs() override { return 5; }
+  unordered_map<string, double> computeCoverages( vector<string> species) override;
 
 protected:
   /// Build the neighbours for the BCC lattice for each site.

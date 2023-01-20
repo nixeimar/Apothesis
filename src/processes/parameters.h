@@ -111,6 +111,12 @@ class Parameters: public Pointers
     /// Returns the species that participates in the growth of the film
     inline vector<string> getGrowthSpecies(){ return m_vsGrowthSpecies; }
 
+    /// The species to compute coverage for
+    inline void setCoverageSpecies( vector<string> species ){ m_vCovSpecies = species; }
+
+    /// Returns the species for which to compute coverage for
+    inline vector<string> getCoverageSpecies(){ return m_vCovSpecies; }
+
   protected:
     /// The temperature [K].
     double m_dT;
@@ -141,6 +147,10 @@ class Parameters: public Pointers
 
     /// Map of the reactions which holds the reactants enumerated
     map<string, int> m_mReactants;
+
+    /// The species to compute coverage for
+    vector<string> m_vCovSpecies;
+
   };
 
 }

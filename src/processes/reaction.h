@@ -40,14 +40,26 @@ public:
     double getProbability() override;
     void init(vector<string> params) override;
 
-    inline void setReactants( map<string, int> reactants ) {m_mReactants = reactants;}
-    inline void setProducts(  map<string, int> products ) {m_mProducts = products;}
+    inline void setReactants( unordered_map<string, int> reactants ) {m_mReactants = reactants;}
+    inline void setProducts(  unordered_map<string, int> products ) {m_mProducts = products;}
+
+    inline void setReactants( vector<string> reactants ) { m_vReactants = reactants;}
+    inline void setProducts( vector<string> products ) { m_vProducts = products;}
+
+    inline void setCoefReactants( vector<int> coefReactants ) { m_vCoefReactants = coefReactants;}
+    inline void setCoefProducts( vector<int> coefProducts ) { m_vCoefProducts = coefProducts;}
 
 private:
     /// Pointers to functions in order to switch between different functions
     void (Reaction::*m_fType)();
     bool (Reaction::*m_fRules)(Site*);
     void (Reaction::*m_fPerform)(Site*);
+
+    vector<string> m_vReactants;
+    vector<int> m_vCoefReactants;
+
+    vector<string> m_vProducts;
+    vector<int> m_vCoefProducts;
 
     /// Arrhenius type rate
     void arrheniusType( double, double, double);
@@ -58,19 +70,37 @@ private:
     /// Reactions without growth taken into account
     void catalysis(Site* s);
 
+    /// 1-1 Reaction, e.g. A* + B* -> AB*
+    void reaction11(Site* s);
+    bool rule11(Site* s);
+
+    bool simpleRule(Site* s);
+
     /// The reactants participating in this reaction
-    map<string, int> m_mReactants;
+    unordered_map<string, int> m_mReactants;
 
     /// The products of this reaction
-    map<string, int> m_mProducts;
+    unordered_map<string, int> m_mProducts;
 
     /// Checks if s is a reactant
     bool isReactant(Site* s);
 
     double m_dReactionRate;
 
+    /// Hold the species that can participate in this reaction.
     vector< set<int> > m_idReacting;
 
+    /// If true it leads to growth.
+    bool m_bLeadsToGrowth;
+
+    /// Checks if all reactants stoichiometric coefficients are one.
+    bool allReactCoeffOne();
+
+    /// Holds the species what to be tranformed according to the reaction e.g. A + B -> C + D, then A will be replaced by C and b by D and so on and so forth.
+    unordered_map<string, string> m_mTransformationMatrix;
+
+    /// Constructs the transformation matrix.
+    void buildTransformationMatrix();
 };
 
 #endif // REACTION_NEW_H

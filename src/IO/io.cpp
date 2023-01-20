@@ -29,7 +29,9 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sSpecies("species"),
     m_sWrite("write"),
     m_sGrowth("growth"),
-    m_sCommentLine("#")
+    m_sCommentLine("#"),
+    m_sPrecursors("precursors"),
+    m_sReport("report")
 {
     //Initialize the map for the lattice
     m_mLatticeType[ "NONE" ] = Lattice::NONE;
@@ -50,7 +52,7 @@ string IO::getInputPath() const {;}
 
 void IO::readInputFile()
 {
-    list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth};
+    list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport};
 
     string sLine;
     while ( getline( m_InputFile, sLine ) ) {
@@ -375,6 +377,21 @@ void IO::readInputFile()
             m_parameters->setProcess( vsTokensBasic[ 0 ], tempVec );
 
             continue;
+        }
+
+
+        if ( vsTokensBasic[ 0].compare( m_sReport ) == 0){
+
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            vector<string> species;
+            if ( vsTokens[0].compare("coverage") == 0){
+                for ( int i = 1; i< vsTokens.size(); i++)
+                    species.push_back( vsTokens[i] );
+            }
+
+            m_parameters->setCoverageSpecies( species);
         }
 
     }//Reading the lines
@@ -715,9 +732,6 @@ vector<string> IO::getReactants( string process ) {
 
     for ( string str:temp)
         reactants.push_back( simplified( str ) );
-
-// We actually need this since it will give us the numnber of sites a compound can cover
-//   reactants.erase( remove(reactants.begin(), reactants.end(), "*"), reactants.end());
 
     return reactants;
 }

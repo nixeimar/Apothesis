@@ -100,16 +100,13 @@ public:
 
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
-    map< MicroProcesses::Process*, set< SurfaceTiles::Site* > > m_processMap;
+    unordered_map< MicroProcesses::Process*, set< SurfaceTiles::Site* > > m_processMap;
 
     /// The number of flags given by the user
     int m_iArgc;
 
     /// The flags given by the user
     char** m_vcArgv;
-
-    // map of species
-    map<string, Species*> m_species;
 
     // Set debug mode
     bool m_debugMode;
@@ -120,16 +117,15 @@ private:
     /// Analyzes the process and returns its type: Adsorption, Desorption, Diffusion or Reaction
     string mf_analyzeProc(string);
 
-    //
     double m_dRTot;
-    double m_dEndTime; // = 0.01;
+    double m_dEndTime;
     double m_dProcTime;
-    double m_dProcRate; // = 0.0;
-    double m_dt; // = 0.0;
-    double m_dRandom; // = 0;
-    double m_dSum; // = 0.0;
-    int m_iSiteNum; // = 0;
-    int n;
+    double m_dProcRate;
+    double m_dt;
+    double m_dRandom;
+    double m_dSum;
+    int m_iSiteNum;
+    bool m_bReportCoverages;
 };
 
 #endif // KMC_H

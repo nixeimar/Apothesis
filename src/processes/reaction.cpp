@@ -17,14 +17,14 @@
 
 #include "reaction.h"
 
-Reaction::Reaction(){}
+Reaction::Reaction(): m_bLeadsToGrowth(false){}
 Reaction::~Reaction(){}
 
 void Reaction::init(vector<string> params){
     //Here the params of this process are set and the probability is calcylated (either directly or though calling to a function.
     m_vParams = params;
 
-    if ( m_mProducts.size() == 0 || m_mReactants.size() == 0){
+    if ( m_vProducts.size() == 0 || m_vReactants.size() == 0 || m_mProducts.size() == 0 || m_mReactants.size() == 0){
         m_error->error_simple_msg("No reactants or products defined for reaction | " + m_sProcName );
         EXIT
     }
@@ -44,9 +44,58 @@ void Reaction::init(vector<string> params){
         EXIT
     }
 
+    //Holds species info in the case of 1-1 reaction e.g. A+B->AB
     m_idReacting.resize( m_pLattice->getSize() );
 
-    m_fPerform = &Reaction::catalysis;
+    vector<string> gSpecies = m_pUtilParams->getGrowthSpecies();
+
+    buildTransformationMatrix();
+
+    if ( gSpecies.size() <= 0 )
+        m_bLeadsToGrowth = false;
+    else {
+        for ( string rs:m_vReactants) {
+            for ( string gs:gSpecies ){
+                if ( gs.compare( rs) == 0 ) {
+                    m_bLeadsToGrowth = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    if ( !m_bLeadsToGrowth ) {
+        m_fRules = &Reaction::simpleRule;
+        m_fPerform = &Reaction::catalysis;
+    }
+    else {
+
+        if ( allReactCoeffOne() && m_vReactants.size() == 2 && m_vProducts.size() <= 2  ){
+            m_fRules = &Reaction::rule11;
+            m_fPerform = &Reaction::reaction11;
+        }
+    }
+}
+
+void Reaction::buildTransformationMatrix(){
+    int iCount = 0;
+    for (string r:m_vReactants ) {
+        if ( iCount < m_vProducts.size() ) {
+            m_mTransformationMatrix[ r ] = m_vProducts[ iCount ];
+        }
+        else
+            m_mTransformationMatrix[ r ] = "";
+
+        iCount++;
+    }
+}
+
+bool Reaction::allReactCoeffOne(){
+    for ( int i:m_vCoefReactants )
+        if ( i != 1 )
+            return false;
+
+    return true;
 }
 
 void Reaction::constantType(){
@@ -61,8 +110,20 @@ void Reaction::arrheniusType(double v0, double Ed, double T)
     m_dProb = v0*exp(-Ed/(k*T));
 }
 
-bool Reaction::rules(Site *s)
-{
+void Reaction::reaction11( Site* s){
+
+}
+
+//Reaction A* + B* -> AB*
+bool Reaction::rule11( Site* s){
+    if ( !s->isOccupied() ) return false;
+    if ( !isReactant( s ) )
+        return false;
+
+    return true;
+}
+
+bool Reaction::simpleRule(Site* s){
     if ( !s->isOccupied() ) return false;
     if ( !isReactant( s ) )
         return false;
@@ -106,6 +167,11 @@ bool Reaction::rules(Site *s)
     }
 
     return true;
+}
+
+bool Reaction::rules(Site *s)
+{
+    (this->*m_fRules)(s);
 }
 
 bool Reaction::isReactant(Site* s){
