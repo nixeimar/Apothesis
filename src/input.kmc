@@ -1,5 +1,5 @@
 #Build the lattice 
-lattice: SimpleCubic 25 25 10 A 
+lattice: SimpleCubic 200 200 10 A 
 
 #The growing film
 #growth: CO2
@@ -9,7 +9,7 @@ lattice: SimpleCubic 25 25 10 A
 #steps: 2 1 
 
 #Total time in seconds
-time: 5
+time: 1
 
 #T in Kelvin
 temperature: 500
@@ -27,7 +27,7 @@ random: 1234
 CO + * -> CO*: constant 0.5 #0.389
 
 #Constant is a constant value in [ML/s]	
-O2 + 2* -> 2O*: constant 0.25 #0.611
+O2 + 2* -> 2O*: constant 0.5 #0.611
 		  		
 #A reaction 												
 CO* + O* -> CO2: constant 0.25e+5
@@ -43,7 +43,7 @@ CO* + O* -> CO2: constant 0.25e+5
 write: log 0.001
 
 #Time to write the lattice heights & species
-write: lattice 0.001
+write: lattice 0.1
 
 #Report the coverage of certain species. The time will follow the write in log file
 report: coverage CO* O*

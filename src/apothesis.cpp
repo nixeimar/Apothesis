@@ -516,7 +516,6 @@ void Apothesis::exec()
         }
     }
 
-    pIO->writeLatticeHeights( m_dProcTime  );
     output = std::to_string(m_dProcTime) + '\t'
             + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/ (pLattice->getSize())*(m_dProcTime - timeGrowth)  ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'
@@ -536,6 +535,9 @@ void Apothesis::exec()
     }
 
     pIO->writeInOutput( output );
+
+    pIO->writeLatticeHeights( m_dProcTime  );
+    pIO->writeLatticeSpecies( m_dProcTime  );
 }
 
 void Apothesis::logSuccessfulRead(bool read, string parameter)

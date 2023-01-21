@@ -78,7 +78,7 @@ bool Desorption::difSpeciesRule( Site* s){
 }
 
 void Desorption::constantType(){
-    m_dProb = m_dDesorptionRate*m_pLattice->getSize();
+    m_dProb = m_dDesorptionRate; //*m_pLattice->getSize(); -> To be checked if needed.
 }
 
 void Desorption::arrheniusType(double v0, double Ed, double T,  int n)

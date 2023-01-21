@@ -87,7 +87,7 @@ void Adsorption::init( vector<string> params )
 }
 
 void Adsorption::constantType(){
-    m_dProb = m_dAdsorptionRate*m_pLattice->getSize();
+    m_dProb = m_dAdsorptionRate; //*m_pLattice->getSize(); -> To be checked if needed.
 }
 
 bool Adsorption::uncoRule( Site* ){ return true; }
