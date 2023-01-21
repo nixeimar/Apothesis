@@ -375,6 +375,7 @@ void Apothesis::init()
     for ( auto &p:m_processMap)
         output +=  p.first->getName() + " (class size)" + '\t';
 
+    m_bHasGrowth = pParameters->getGrowthSpecies().size() > 0 ? true : false;
     m_bReportCoverages = pParameters->getCoverageSpecies().size() > 0 ? true : false;
 
     // If the user wants the coverages to be reported
@@ -385,8 +386,12 @@ void Apothesis::init()
     }
 
     pIO->writeInOutput( output );
-    pIO->writeLatticeHeights( m_dProcTime );
-    pIO->writeLatticeSpecies( m_dProcTime  );
+
+    if ( m_bHasGrowth )
+        pIO->writeLatticeHeights( m_dProcTime );
+
+    if ( m_bReportCoverages )
+        pIO->writeLatticeSpecies( m_dProcTime  );
 }
 
 void Apothesis::exec()
@@ -510,8 +515,13 @@ void Apothesis::exec()
         }
 
         if ( timeToWriteLattice >= pParameters->getWriteLatticeTimeStep() ) {
-            pIO->writeLatticeHeights( m_dProcTime  );
-            pIO->writeLatticeSpecies( m_dProcTime  );
+
+            if ( m_bHasGrowth )
+                pIO->writeLatticeHeights( m_dProcTime );
+
+            if ( m_bReportCoverages )
+                pIO->writeLatticeSpecies( m_dProcTime  );
+
             timeToWriteLattice = 0.0;
         }
     }
@@ -536,8 +546,11 @@ void Apothesis::exec()
 
     pIO->writeInOutput( output );
 
-    pIO->writeLatticeHeights( m_dProcTime  );
-    pIO->writeLatticeSpecies( m_dProcTime  );
+    if ( m_bHasGrowth )
+        pIO->writeLatticeHeights( m_dProcTime );
+
+    if ( m_bReportCoverages )
+        pIO->writeLatticeSpecies( m_dProcTime  );
 }
 
 void Apothesis::logSuccessfulRead(bool read, string parameter)

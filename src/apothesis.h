@@ -126,6 +126,7 @@ private:
     double m_dSum;
     int m_iSiteNum;
     bool m_bReportCoverages;
+    bool m_bHasGrowth;
 };
 
 #endif // KMC_H
