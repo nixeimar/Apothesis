@@ -122,7 +122,7 @@ private:
     /// The species to be asdorbed
     string m_sAdsorbed;
 
-    /// The number or sites occupied by this species (currently only 1 is supported).
+    /// The number or sites occupied by this species.
     int m_iNumSites;
 
     /// The adsorption rate given as input from the user with the constant keyword

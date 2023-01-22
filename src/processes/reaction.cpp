@@ -1,4 +1,4 @@
-//============================================================================
+    //============================================================================
 //    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
@@ -125,8 +125,8 @@ bool Reaction::rule11( Site* s){
 
 bool Reaction::simpleRule(Site* s){
     if ( !s->isOccupied() ) return false;
-    if ( !isReactant( s ) )
-        return false;
+
+    if ( !isReactant( s ) ) return false;
     else {
 
         int id = -1;

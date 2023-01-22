@@ -94,7 +94,6 @@ bool Desorption::rules( Site* s)
     (this->*m_fRules)(s);
 }
 
-/// This apply for every lattice without a rule.
 bool Desorption::allRule( Site* s){
     if ( calculateNeighbors( s ) == m_iNumNeighs )
         return true;
