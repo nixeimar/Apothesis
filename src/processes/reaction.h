@@ -71,8 +71,8 @@ private:
     void catalysis(Site* s);
 
     /// 1-1 Reaction, e.g. A* + B* -> AB*
-    void reaction11(Site* s);
-    bool rule11(Site* s);
+    void oneOneReaction(Site* s);
+    bool oneOneRule(Site* s);
 
     bool simpleRule(Site* s);
 
@@ -82,7 +82,7 @@ private:
     /// The products of this reaction
     unordered_map<string, int> m_mProducts;
 
-    /// Checks if s is a reactant
+    /// Checks if the site is a reactant
     bool isReactant(Site* s);
 
     double m_dReactionRate;

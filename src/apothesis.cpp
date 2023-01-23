@@ -406,7 +406,11 @@ void Apothesis::exec()
     // The average height for the first time
     double timeGrowth = 0;
     double meanDHPrevStep = pProperties->getMeanDH();
-    output = std::to_string(m_dProcTime) + '\t'
+
+    ostringstream streamObj;
+    streamObj.precision(15);
+    streamObj << m_dProcTime;
+    output = streamObj.str() + '\t'
             + std::to_string( 0.0  ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'
             + std::to_string( pProperties->getMicroroughness() )  + '\t';
@@ -479,7 +483,7 @@ void Apothesis::exec()
 
                 //5. Compute dt = -ln(ksi)/Rtot
                 m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
-//                cout << m_dt << endl;
+                cout << m_dt << endl;
                 break;
             }
         }
@@ -492,7 +496,11 @@ void Apothesis::exec()
         timeToWriteLattice += m_dt;
 
         if ( timeToWriteLog >= pParameters->getWriteLogTimeStep() ){
-            output = std::to_string(m_dProcTime) + '\t'
+
+            ostringstream streamObj;
+            streamObj.precision(15);
+            streamObj << m_dProcTime;
+            output = streamObj.str() + '\t'
                     + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) / ( (pLattice->getSize()*(m_dProcTime - timeGrowth) ) ) )+ '\t'
                     + std::to_string( pProperties->getRMS() )  + '\t'
                     + std::to_string( pProperties->getMicroroughness() )  + '\t';
@@ -526,7 +534,10 @@ void Apothesis::exec()
         }
     }
 
-    output = std::to_string(m_dProcTime) + '\t'
+    ostringstream streamObjEnd;
+    streamObjEnd.precision(15);
+    streamObjEnd << m_dProcTime;
+    output = streamObjEnd.str() + '\t'
             + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/ (pLattice->getSize())*(m_dProcTime - timeGrowth)  ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'
             + std::to_string( pProperties->getMicroroughness() )  + '\t';

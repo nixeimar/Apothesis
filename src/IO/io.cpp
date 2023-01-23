@@ -670,7 +670,12 @@ void IO::writeLatticeInfo()
 
 void IO::writeLatticeHeights( double time  )
 {
-    std::string name="Height_" + std::to_string( time ) + ".dat";
+    ostringstream streamObj;
+    //Add double to stream
+    streamObj.precision(15);
+    streamObj << time;
+
+    std::string name="SurfaceSpecies_" + streamObj.str() + ".dat";
     std::ofstream file(name);
 
     file << "Time (s): " << time << endl;
@@ -683,12 +688,19 @@ void IO::writeLatticeHeights( double time  )
     }
 }
 
+
 void IO::writeLatticeSpecies( double time  )
 {
-    std::string name="SurfaceSpecies_" + std::to_string( time ) + ".dat";
-    std::ofstream file(name);
+    // Create an output string stream
+    ostringstream streamObj;
+    //Add double to stream
+    streamObj.precision(15);
+    streamObj << time;
 
+    std::string name="SurfaceSpecies_" + streamObj.str() + ".dat";
+    std::ofstream file(name);
     file << "Time (s): " << time << endl;
+    file.precision(10);
 
     for (int i = 0; i < m_lattice->getY(); i++){
         for (int j = 0; j < m_lattice->getX(); j++)

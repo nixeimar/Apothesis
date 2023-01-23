@@ -1,4 +1,4 @@
-    //============================================================================
+//============================================================================
 //    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
@@ -71,8 +71,8 @@ void Reaction::init(vector<string> params){
     else {
 
         if ( allReactCoeffOne() && m_vReactants.size() == 2 && m_vProducts.size() <= 2  ){
-            m_fRules = &Reaction::rule11;
-            m_fPerform = &Reaction::reaction11;
+            m_fRules = &Reaction::oneOneRule;
+            m_fPerform = &Reaction::oneOneReaction;
         }
     }
 }
@@ -99,7 +99,7 @@ bool Reaction::allReactCoeffOne(){
 }
 
 void Reaction::constantType(){
-    m_dProb = m_dReactionRate*m_pLattice->getSize();
+    m_dProb = m_dReactionRate; //*m_pLattice->getSize();
 }
 
 void Reaction::arrheniusType(double v0, double Ed, double T)
@@ -110,12 +110,12 @@ void Reaction::arrheniusType(double v0, double Ed, double T)
     m_dProb = v0*exp(-Ed/(k*T));
 }
 
-void Reaction::reaction11( Site* s){
+void Reaction::oneOneReaction( Site* s){
 
 }
 
 //Reaction A* + B* -> AB*
-bool Reaction::rule11( Site* s){
+bool Reaction::oneOneRule( Site* s){
     if ( !s->isOccupied() ) return false;
     if ( !isReactant( s ) )
         return false;
@@ -128,45 +128,26 @@ bool Reaction::simpleRule(Site* s){
 
     if ( !isReactant( s ) ) return false;
     else {
-
-        int id = -1;
-
-        // First search for the site
-        int stoichio = m_mReactants[ s->getLabel() ];
-        if ( stoichio == 1) {
-            //Search for the other sites
-            for ( pair<string, int> r:m_mReactants ){
-
-                if ( r.first.compare( s->getLabel() ) != 0 ){
-
-                    // First search for the site
-                    double stoichio = r.second;
-
-                    double iCount = 0;
-                    for (Site* neigh:s->getNeighs() ){
-                        if ( neigh->isOccupied() ) {
-                            if ( neigh->getLabel().compare( r.first ) == 0 ) {
-                                iCount++;
-
-                                if ( iCount == stoichio ){
-                                    id = neigh->getID();
-                                    break;
-                                }
-                            }
-                        }
+        //Search for the other sites
+        for ( pair<string, int> r:m_mReactants ){
+            if ( r.first.compare( s->getLabel() ) != 0 ){
+                for (Site* neigh:s->getNeighs() ){
+                    if ( neigh->getLabel().compare( r.first ) == 0 ) {
+                        m_idReacting[ s->getID() ].insert( neigh->getID() );
+                        m_idReacting[ neigh->getID() ].insert( s->getID() );
                     }
-
-                    if ( iCount != stoichio )
-                        return false;
+                    else {
+                        m_idReacting[ s->getID() ].erase( neigh->getID() );
+                        m_idReacting[ neigh->getID() ].erase( s->getID() );
+                    }
                 }
             }
-
-            m_idReacting[ s->getID() ].insert( id );
-            m_idReacting[ id ].insert( s->getID() );
         }
     }
 
-    return true;
+    if (  m_idReacting[ s->getID() ].size() != 0 )
+        return true;
+    return false;
 }
 
 bool Reaction::rules(Site *s)
@@ -190,6 +171,11 @@ void Reaction::perform(Site *s)
 
 void Reaction::catalysis(Site *s){
 
+    if ( s->getID() == 88 )
+        cout << endl;
+
+    string test = s->getLabel();
+
     s->setOccupied(false);
     s->setLabel( s->getBelowLabel() );
 
@@ -197,11 +183,36 @@ void Reaction::catalysis(Site *s){
     for ( Site* neigh:s->getNeighs() )
         m_seAffectedSites.insert( neigh );
 
-    int lucky = m_pRandomGen->getIntRandom(0, m_idReacting[ s->getID() ].size() );
+    int lucky = m_pRandomGen->getIntRandom(0, m_idReacting[ s->getID() ].size() - 1 );
 
     int x = *std::next(m_idReacting[ s->getID() ].begin(), lucky );
 
     Site* otherSite =  m_pLattice->getSite( x );
+
+    if ( !isReactant(otherSite )){
+
+        cout << test << " " << otherSite->getLabel() << endl;
+        cout << s->getID() << " " << otherSite->getID() << endl;
+
+        cout << "Oh! Fuck!" << endl;
+
+        otherSite->setOccupied( false );
+        otherSite->setLabel( "X" );
+
+        std::string name="SurfaceSpecies_" + std::to_string( 11111111 ) + ".dat";
+        std::ofstream file(name);
+
+        file << "Time (s): " << time << endl;
+
+        for (int i = 0; i < m_pLattice->getY(); i++){
+            for (int j = 0; j < m_pLattice->getX(); j++)
+                file << m_pLattice->getSite( i*m_pLattice->getX() + j )->getLabel() << " " ;
+
+            file << endl;
+        }
+
+        EXIT;
+    }
 
     otherSite->setOccupied( false );
     otherSite->setLabel( otherSite->getBelowLabel() );
@@ -210,8 +221,8 @@ void Reaction::catalysis(Site *s){
     for ( Site* neigh:otherSite->getNeighs() )
         m_seAffectedSites.insert( neigh );
 
-    m_idReacting[ otherSite->getID() ].erase( s->getID() );
     m_idReacting[  s->getID() ].erase( otherSite->getID() );
+    m_idReacting[ otherSite->getID() ].erase( s->getID() );
 }
 
 double Reaction::getProbability(){ return m_dProb; }

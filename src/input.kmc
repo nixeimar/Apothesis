@@ -1,5 +1,5 @@
 #Build the lattice 
-lattice: SimpleCubic 5 5 10 A 
+lattice: SimpleCubic 100 100 10 A 
 
 #The growing film
 #growth: CO2
@@ -24,13 +24,13 @@ random: 1234
 #A + * -> A*: simple 0.1 2.0e-4 1.0e+19 0.032 
 
 #Constant is a constant value in [ML/s]
-#CO + * -> CO*: constant 0.5 #0.389
+CO + * -> CO*: constant 0.5 #0.389
 
 #Constant is a constant value in [ML/s]	
 O2 + 2* -> 2O*: constant 0.5 #0.611
 		  		
 #A reaction 												
-#CO* + O* -> CO2: constant 0.25e+15
+CO* + O* -> CO2: constant 1.e+5
 
 #Example of growth reaction. The 1sr reactant is tranformed to the 1st product, the 2nd reactan to the 2nd product etc. 
 #If #Reactants > #Products then only the first Nth reactants are tranformed to the (N-x) reactants. 
@@ -40,10 +40,10 @@ O2 + 2* -> 2O*: constant 0.5 #0.611
 
 
 #Time to write in log 
-write: log 0.1
+write: log 0.001
 
 #Time to write the lattice heights & species
-write: lattice 0.1
+write: lattice 10
 
 #Report the coverage of certain species. The time will follow the write in log file
 report: coverage CO* O*
