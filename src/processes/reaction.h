@@ -101,6 +101,8 @@ private:
 
     /// Constructs the transformation matrix.
     void buildTransformationMatrix();
+
+    void computeClassSize();
 };
 
 #endif // REACTION_NEW_H

@@ -17,7 +17,7 @@
 
 #include "process.h"
 
-Process::Process():m_iHappened(0),m_bUncoAccept(false){}
+Process::Process():m_iHappened(0),m_bUncoAccept(false), m_iNumSites(1), m_iClassSize(0){}
 Process::~Process(){}
 
 bool Process::isPartOfGrowth( string name){

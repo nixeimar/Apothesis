@@ -143,11 +143,17 @@ bool Reaction::simpleRule(Site* s){
                 }
             }
         }
-    }
+    }    
 
     if (  m_idReacting[ s->getID() ].size() != 0 )
         return true;
     return false;
+}
+
+void Reaction::computeClassSize(){
+    for ( int i=0; i< m_idReacting.size(); i++){
+        m_iClassSize += 2*m_idReacting[ i ].size();
+    }
 }
 
 bool Reaction::rules(Site *s)
@@ -170,8 +176,6 @@ void Reaction::perform(Site *s)
 }
 
 void Reaction::catalysis(Site *s){
-    string test = s->getLabel();
-
     s->setOccupied(false);
     s->setLabel( s->getBelowLabel() );
 
@@ -179,19 +183,22 @@ void Reaction::catalysis(Site *s){
     for ( Site* neigh:s->getNeighs() )
         m_seAffectedSites.insert( neigh );
 
+    if ( m_idReacting[ s->getID() ].size() == 0 ){
+        cout << "There is a problem ..." << endl;
+        EXIT
+    }
+
     int lucky = m_pRandomGen->getIntRandom(0, m_idReacting[ s->getID() ].size() - 1 );
 
-    int x = *std::next(m_idReacting[ s->getID() ].begin(), lucky );
-
+    int x = *std::next( m_idReacting[ s->getID() ].begin(), lucky );
     Site* otherSite =  m_pLattice->getSite( x );
 
     //Simple check
     if ( !isReactant(otherSite )){
 
-        cout << test << " " << otherSite->getLabel() << endl;
         cout << s->getID() << " " << otherSite->getID() << endl;
 
-        cout << "Oh! Fuck!" << endl;
+        cout << "Problem with performing reaction!" << endl;
 
         otherSite->setOccupied( false );
         otherSite->setLabel( "X" );
@@ -217,9 +224,6 @@ void Reaction::catalysis(Site *s){
     m_seAffectedSites.insert( otherSite );
     for ( Site* neigh:otherSite->getNeighs() )
         m_seAffectedSites.insert( neigh );
-
-    m_idReacting[  s->getID() ].erase( otherSite->getID() );
-    m_idReacting[ otherSite->getID() ].erase( s->getID() );
 }
 
 double Reaction::getProbability(){ return m_dProb; }

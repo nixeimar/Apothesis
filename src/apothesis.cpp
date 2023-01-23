@@ -374,7 +374,6 @@ void Apothesis::init()
     }
     pIO->writeInOutput( toWrite );
 
-
     pIO->writeInOutput(" ");
     pIO->writeLogOutput("Processes");
     for (auto proc:pParameters->getProcessesInfo() ) {

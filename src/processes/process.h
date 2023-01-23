@@ -84,6 +84,11 @@ public:
     inline void setUncoAccepted( bool isUncoAccepted) { m_bUncoAccept = isUncoAccepted; }
     inline bool isUncoAccepted() { return m_bUncoAccept; }
 
+    inline int getNeededSites(){ return m_iNumSites; }
+
+    inline int getClassSize() { return m_iClassSize; }
+    inline void setClassSize( int classSize ) { m_iClassSize = classSize; }
+
 protected:
 
     ///Pointer to the lattice of the process
@@ -123,6 +128,12 @@ protected:
 
     /// Checks if the specific species is part of the growing film
     bool isPartOfGrowth( string name);
+
+    /// The number or sites occupied by this species
+    int m_iNumSites;
+
+    /// The size of the class that this process can be performed
+    int m_iClassSize;
 
 private:
     /// The id of the process
