@@ -314,6 +314,28 @@ void Apothesis::init()
         }
     }
 
+
+/*    pLattice->getSite( 1)->setOccupied(true);
+    pLattice->getSite( 1)->setLabel("CO*");
+    pLattice->getSite( 2)->setOccupied(true);
+    pLattice->getSite( 2)->setLabel("O*");
+
+    pLattice->getSite( 7)->setOccupied(true);
+    pLattice->getSite( 7)->setLabel("O*");
+    pLattice->getSite( 12)->setOccupied(true);
+    pLattice->getSite( 12)->setLabel("CO*");
+
+    pLattice->getSite( 23)->setOccupied(true);
+    pLattice->getSite( 23)->setLabel("O*");
+    pLattice->getSite( 24)->setOccupied(true);
+    pLattice->getSite( 24)->setLabel("O*");
+
+
+    pLattice->getSite( 18)->setOccupied(true);
+    pLattice->getSite( 18)->setLabel("O*");
+    pLattice->getSite( 19)->setOccupied(true);
+    pLattice->getSite( 19)->setLabel("CO*");*/
+
     //Partition the lattice sites depending on the rules of each process
     for ( auto &p:m_processMap ){
         for ( Site* s:pLattice->getSites() ){
@@ -408,9 +430,9 @@ void Apothesis::exec()
     double meanDHPrevStep = pProperties->getMeanDH();
 
     ostringstream streamObj;
-    streamObj.precision(15);
-    streamObj << m_dProcTime;
-    output = streamObj.str() + '\t'
+//    streamObj.precision(15);
+//    streamObj << m_dProcTime;
+    output = std::to_string( m_dProcTime ) + '\t'
             + std::to_string( 0.0  ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'
             + std::to_string( pProperties->getMicroroughness() )  + '\t';
@@ -483,7 +505,7 @@ void Apothesis::exec()
 
                 //5. Compute dt = -ln(ksi)/Rtot
                 m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
-                cout << m_dt << endl;
+//                cout << m_dt << endl;
                 break;
             }
         }
@@ -498,9 +520,10 @@ void Apothesis::exec()
         if ( timeToWriteLog >= pParameters->getWriteLogTimeStep() ){
 
             ostringstream streamObj;
-            streamObj.precision(15);
-            streamObj << m_dProcTime;
-            output = streamObj.str() + '\t'
+//            streamObj.precision(15);
+//            streamObj << m_dProcTime;
+//            output = streamObj.str() + '\t'
+            output = std::to_string( m_dProcTime ) + '\t'
                     + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) / ( (pLattice->getSize()*(m_dProcTime - timeGrowth) ) ) )+ '\t'
                     + std::to_string( pProperties->getRMS() )  + '\t'
                     + std::to_string( pProperties->getMicroroughness() )  + '\t';
@@ -534,10 +557,11 @@ void Apothesis::exec()
         }
     }
 
-    ostringstream streamObjEnd;
-    streamObjEnd.precision(15);
-    streamObjEnd << m_dProcTime;
-    output = streamObjEnd.str() + '\t'
+    //ostringstream streamObjEnd;
+    //streamObjEnd.precision(15);
+    //streamObjEnd << m_dProcTime;
+    //output = streamObjEnd.str() + '\t'
+    output = std::to_string( m_dProcTime ) + '\t'
             + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/ (pLattice->getSize())*(m_dProcTime - timeGrowth)  ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'
             + std::to_string( pProperties->getMicroroughness() )  + '\t';

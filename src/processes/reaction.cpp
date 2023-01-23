@@ -136,7 +136,7 @@ bool Reaction::simpleRule(Site* s){
                         m_idReacting[ s->getID() ].insert( neigh->getID() );
                         m_idReacting[ neigh->getID() ].insert( s->getID() );
                     }
-                    else {
+                    else if ( m_idReacting[ s->getID() ].size() > 0 ) {
                         m_idReacting[ s->getID() ].erase( neigh->getID() );
                         m_idReacting[ neigh->getID() ].erase( s->getID() );
                     }
@@ -170,10 +170,6 @@ void Reaction::perform(Site *s)
 }
 
 void Reaction::catalysis(Site *s){
-
-    if ( s->getID() == 88 )
-        cout << endl;
-
     string test = s->getLabel();
 
     s->setOccupied(false);
@@ -189,6 +185,7 @@ void Reaction::catalysis(Site *s){
 
     Site* otherSite =  m_pLattice->getSite( x );
 
+    //Simple check
     if ( !isReactant(otherSite )){
 
         cout << test << " " << otherSite->getLabel() << endl;
@@ -199,7 +196,7 @@ void Reaction::catalysis(Site *s){
         otherSite->setOccupied( false );
         otherSite->setLabel( "X" );
 
-        std::string name="SurfaceSpecies_" + std::to_string( 11111111 ) + ".dat";
+        std::string name = std::string("SurfaceSpecies") + std::string("ERROR") + std::string(".dat");
         std::ofstream file(name);
 
         file << "Time (s): " << time << endl;
