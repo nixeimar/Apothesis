@@ -150,7 +150,7 @@ void Apothesis::init()
 
             } else {
 
-                for ( int neighs = 1; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
+                for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
 
                     proc.second.pop_back();
                     proc.second.push_back( to_string(neighs) );

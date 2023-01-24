@@ -24,10 +24,10 @@ random: 1234
 #A + * -> A*: simple 0.1 2.0e-4 1.0e+19 0.032 
 
 #Constant is a constant value in [ML/s]
-CO + * -> CO*: constant 0.5 #0.389
+CO + * -> CO*: constant 0.55 #0.389
 
 #Constant is a constant value in [ML/s]	
-O2 + 2* -> 2O*: constant 0.125 all #0.611
+O2 + 2* -> 2O*: constant 0.1125 all #0.611
 		  		
 #A reaction 												
 CO* + O* -> CO2: constant 1.e+5
