@@ -44,9 +44,6 @@ void Reaction::init(vector<string> params){
         EXIT
     }
 
-    //Holds species info in the case of 1-1 reaction e.g. A+B->AB
-    m_idReacting.resize( m_pLattice->getSize() );
-
     vector<string> gSpecies = m_pUtilParams->getGrowthSpecies();
 
     buildTransformationMatrix();
@@ -129,32 +126,12 @@ bool Reaction::simpleRule(Site* s){
     if ( !isReactant( s ) ) return false;
     else {
         //Search for the other sites
-        for ( pair<string, int> r:m_mReactants ){
-            if ( r.first.compare( s->getLabel() ) != 0 ){
-                for (Site* neigh:s->getNeighs() ){
-                    if ( neigh->getLabel().compare( r.first ) == 0 ) {
-                        return true;
-//                        m_idReacting[ s->getID() ].insert( neigh->getID() );
-//                        m_idReacting[ neigh->getID() ].insert( s->getID() );
-                    }
-            /*        else if ( m_idReacting[ s->getID() ].size() > 0 ) {
-                        m_idReacting[ s->getID() ].erase( neigh->getID() );
-                        m_idReacting[ neigh->getID() ].erase( s->getID() );
-                    }*/
-                }
-            }
+        for ( Site* s1:s->getNeighs() ) {
+            if ( s1->getLabel().compare( s->getLabel() ) != 0 && isReactant( s1 ) )
+                return true;
         }
-    }    
-
-//    if (  m_idReacting[ s->getID() ].size() != 0 )
-//        return true;
-    return false;
-}
-
-void Reaction::computeClassSize(){
-    for ( int i=0; i< m_idReacting.size(); i++){
-        m_iClassSize += 2*m_idReacting[ i ].size();
     }
+    return false;
 }
 
 bool Reaction::rules(Site *s)
@@ -177,17 +154,6 @@ void Reaction::perform(Site *s)
 }
 
 void Reaction::catalysis(Site *s){
-    s->setOccupied(false);
-    s->setLabel( s->getBelowLabel() );
-
-    m_seAffectedSites.insert( s );
-    for ( Site* neigh:s->getNeighs() )
-        m_seAffectedSites.insert( neigh );
-
-/*    if ( m_idReacting[ s->getID() ].size() == 0 ){
-        cout << "There is a problem ..." << endl;
-        EXIT
-    }*/
 
     vector<Site* > potSites;
     for ( Site* s1:s->getNeighs() ) {
@@ -195,28 +161,14 @@ void Reaction::catalysis(Site *s){
             potSites.push_back( s1 );
     }
 
-
     int lucky = m_pRandomGen->getIntRandom(0, potSites.size() - 1 );
+    Site* otherSite = potSites[ lucky ];
 
-    Site* otherSite =  m_pLattice->getSite( potSites[ lucky ]->getID() );
-    otherSite->setOccupied( false );
-    otherSite->setLabel( otherSite->getBelowLabel() );
-
-    m_seAffectedSites.insert( otherSite );
-    for ( Site* neigh:otherSite->getNeighs() )
-        m_seAffectedSites.insert( neigh );
-
-
-/*    int lucky = m_pRandomGen->getIntRandom(0, m_idReacting[ s->getID() ].size() - 1 );
-    int x = *std::next( m_idReacting[ s->getID() ].begin(), lucky );
-    Site* otherSite =  m_pLattice->getSite( x );
-
-    //Simple check
     if ( !isReactant(otherSite ) || otherSite->getLabel().compare( s->getLabel() ) == 0){
 
         cout << s->getID() << " " << otherSite->getID() << endl;
 
-        cout << "Problem with performing reaction!" << endl;
+        cout << "Problem with performing reaction." << endl;
 
         otherSite->setOccupied( false );
         otherSite->setLabel( "X" );
@@ -236,12 +188,17 @@ void Reaction::catalysis(Site *s){
         EXIT;
     }
 
+    s->setOccupied(false);
+    s->setLabel( s->getBelowLabel() );
+    m_seAffectedSites.insert( s );
+    for ( Site* neigh:s->getNeighs() )
+        m_seAffectedSites.insert( neigh );
+
     otherSite->setOccupied( false );
     otherSite->setLabel( otherSite->getBelowLabel() );
-
     m_seAffectedSites.insert( otherSite );
     for ( Site* neigh:otherSite->getNeighs() )
-        m_seAffectedSites.insert( neigh ); */
+        m_seAffectedSites.insert( neigh );
 }
 
 double Reaction::getProbability(){ return m_dProb; }

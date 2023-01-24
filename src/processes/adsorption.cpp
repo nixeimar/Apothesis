@@ -207,10 +207,6 @@ void Adsorption::multiSpeciesSimpleAdsorption(Site *s) {
         m_seAffectedSites.insert( neigh ) ;
 }
 
-//CHECK: We can include a process for the adsorption of multiple species at once.
-//void Adsorption::mf_multiSpeciesAdsorption(Site *s) {
-
-
 void Adsorption::multiSpeciesAdsorption(Site *s) {
     //Here must hold the previous site in order to appear in case of multiple species forming the growing film
     s->setOccupied( true );

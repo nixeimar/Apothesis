@@ -87,9 +87,6 @@ private:
 
     double m_dReactionRate;
 
-    /// Hold the species that can participate in this reaction.
-    vector< set<int> > m_idReacting;
-
     /// If true it leads to growth.
     bool m_bLeadsToGrowth;
 
@@ -101,8 +98,6 @@ private:
 
     /// Constructs the transformation matrix.
     void buildTransformationMatrix();
-
-    void computeClassSize();
 };
 
 #endif // REACTION_NEW_H
