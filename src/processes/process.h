@@ -84,7 +84,9 @@ public:
     inline void setUncoAccepted( bool isUncoAccepted) { m_bUncoAccept = isUncoAccepted; }
     inline bool isUncoAccepted() { return m_bUncoAccept; }
 
-    inline int getNeededSites(){ return m_iNumSites; }
+    inline int getNeededSites(){
+            return m_iNumSites;
+    }
 
     inline int getClassSize() { return m_iClassSize; }
     inline void setClassSize( int classSize ) { m_iClassSize = classSize; }

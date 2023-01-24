@@ -429,9 +429,10 @@ void Apothesis::exec()
     double meanDHPrevStep = pProperties->getMeanDH();
 
     ostringstream streamObj;
-//    streamObj.precision(15);
-//    streamObj << m_dProcTime;
-    output = std::to_string( m_dProcTime ) + '\t'
+    streamObj.precision(15);
+    streamObj << m_dProcTime;
+    //output = std::to_string( m_dProcTime ) + '\t'
+    output = streamObj.str() + '\t'
             + std::to_string( 0.0  ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'
             + std::to_string( pProperties->getMicroroughness() )  + '\t';
@@ -497,7 +498,7 @@ void Apothesis::exec()
                     }
                 }
 
-                //4. Re-compute the processes rates and re-compute Rtot (see ppt).
+                //4. Re-compute the processes rates and re-compute Rtot (see ppt)
                 m_dRTot = 0.0;
                 for (pair<Process*, set< Site* > > p3:m_processMap)
                     m_dRTot += p3.first->getProbability()*(double)p3.second.size();
@@ -519,10 +520,10 @@ void Apothesis::exec()
         if ( timeToWriteLog >= pParameters->getWriteLogTimeStep() ){
 
             ostringstream streamObj;
-//            streamObj.precision(15);
-//            streamObj << m_dProcTime;
-//            output = streamObj.str() + '\t'
-            output = std::to_string( m_dProcTime ) + '\t'
+            streamObj.precision(15);
+            streamObj << m_dProcTime;
+//            output = std::to_string( m_dProcTime ) + '\t'
+            output = streamObj.str() + '\t'
                     + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) / ( (pLattice->getSize()*(m_dProcTime - timeGrowth) ) ) )+ '\t'
                     + std::to_string( pProperties->getRMS() )  + '\t'
                     + std::to_string( pProperties->getMicroroughness() )  + '\t';
@@ -556,11 +557,11 @@ void Apothesis::exec()
         }
     }
 
-    //ostringstream streamObjEnd;
-    //streamObjEnd.precision(15);
-    //streamObjEnd << m_dProcTime;
-    //output = streamObjEnd.str() + '\t'
-    output = std::to_string( m_dProcTime ) + '\t'
+    ostringstream streamObjEnd;
+    streamObjEnd.precision(15);
+    streamObjEnd << m_dProcTime;
+//            output = std::to_string( m_dProcTime ) + '\t'
+    output = streamObjEnd.str() + '\t'
             + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/ (pLattice->getSize())*(m_dProcTime - timeGrowth)  ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'
             + std::to_string( pProperties->getMicroroughness() )  + '\t';

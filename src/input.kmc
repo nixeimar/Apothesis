@@ -1,5 +1,5 @@
 #Build the lattice 
-lattice: SimpleCubic 100 100 10 A 
+lattice: SimpleCubic 50 50 10 A 
 
 #The growing film
 #growth: CO2
@@ -40,10 +40,10 @@ CO* + O* -> CO2: constant 1.e+5
 
 
 #Time to write in log 
-write: log 0.001
+write: log 1e-20
 
 #Time to write the lattice heights & species
-write: lattice 10
+write: lattice 1e-20
 
 #Report the coverage of certain species. The time will follow the write in log file
 report: coverage CO* O*
