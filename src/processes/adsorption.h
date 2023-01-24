@@ -46,6 +46,9 @@ public:
     /// Get the number of sites that this adsorbed occupies.
     inline int getNumSites() { return m_iNumSites;}
 
+    /// If keyrowd "all" is added then this is true
+    inline void setAllNeighs( bool all ){  m_bAllNeihs = all; }
+
 private:
 
     /// Pointers to functions in order to switch between different functions
@@ -94,6 +97,9 @@ private:
     /// Counts the available for adsorption sites based on if they are occupied or not
     bool vacantSitesExist(Site* s);
 
+    /// Counts the vacants sites
+    int countVacantSites( Site* s);
+
     /// Checks if the site is in lower step (only for simple cubic lattice)
     bool isInLowerStep( Site* s );
 
@@ -124,6 +130,12 @@ private:
 
     /// The adsorption rate given as input from the user with the constant keyword
     double m_dAdsorptionRate;
+
+    /// If the user has "all" keyword this is set to true
+    bool m_bAllNeihs;
+
+    /// The number of neighbours of this process
+    int m_iNumNeighs;
 
     REGISTER_PROCESS( Adsorption )
 };

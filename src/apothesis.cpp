@@ -130,21 +130,49 @@ void Apothesis::init()
             for (string prod: pIO->getProducts( proc.first ) )
                 products.insert( pIO->analyzeCompound( prod ) );
 
-            Adsorption* a = new Adsorption();
 
-            for ( pair<string, int> s: products) {
-                a->setAdrorbed( s.first );
-                a->setNumSites( s.second );
+            if (proc.second.at( proc.second.size() - 1 ).compare("all") != 0){
+
+                Adsorption* a = new Adsorption();
+                for ( pair<string, int> s: products) {
+                    a->setAdrorbed( s.first );
+                    a->setNumSites( s.second );
+                }
+
+                a->setName( proc.first );
+                a->setLattice( pLattice );
+                a->setRandomGen( pRandomGen );
+                a->setErrorHandler( pErrorHandler );
+                a->setSysParams( pParameters ); //These are the systems and constants parameters
+                a->init( proc.second ); //These are the process per se parameters
+
+                m_processMap.insert( {a, emptySet} );
+
+            } else {
+
+                for ( int neighs = 1; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
+
+                    proc.second.pop_back();
+                    proc.second.push_back( to_string(neighs) );
+
+                    Adsorption* a = new Adsorption();
+
+                    for ( pair<string, int> s: products) {
+                        a->setAdrorbed( s.first );
+                        a->setNumSites( s.second );
+                    }
+
+                    a->setAllNeighs(true);
+                    a->setName( proc.first + " (" + to_string(neighs) + " N)" );
+                    a->setLattice( pLattice );
+                    a->setRandomGen( pRandomGen );
+                    a->setErrorHandler( pErrorHandler );
+                    a->setSysParams( pParameters ); //These are the systems and constants parameters
+                    a->init( proc.second ); //These are the process per se parameters
+
+                    m_processMap.insert( {a, emptySet} );
+                }
             }
-
-            a->setName( proc.first );
-            a->setLattice( pLattice );
-            a->setRandomGen( pRandomGen );
-            a->setErrorHandler( pErrorHandler );
-            a->setSysParams( pParameters ); //These are the systems and constants parameters
-            a->init( proc.second ); //These are the process per se parameters
-
-            m_processMap.insert( {a, emptySet} );
         }
         else if ( process.compare("Reaction") == 0 ){
 
@@ -315,7 +343,7 @@ void Apothesis::init()
     }
 
 
-/*    pLattice->getSite( 1)->setOccupied(true);
+    /*    pLattice->getSite( 1)->setOccupied(true);
     pLattice->getSite( 1)->setLabel("CO*");
     pLattice->getSite( 2)->setOccupied(true);
     pLattice->getSite( 2)->setLabel("O*");
@@ -505,7 +533,7 @@ void Apothesis::exec()
 
                 //5. Compute dt = -ln(ksi)/Rtot
                 m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
-//                cout << m_dt << endl;
+                //                cout << m_dt << endl;
                 break;
             }
         }
@@ -522,7 +550,7 @@ void Apothesis::exec()
             ostringstream streamObj;
             streamObj.precision(15);
             streamObj << m_dProcTime;
-//            output = std::to_string( m_dProcTime ) + '\t'
+            //            output = std::to_string( m_dProcTime ) + '\t'
             output = streamObj.str() + '\t'
                     + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) / ( (pLattice->getSize()*(m_dProcTime - timeGrowth) ) ) )+ '\t'
                     + std::to_string( pProperties->getRMS() )  + '\t'
@@ -560,7 +588,7 @@ void Apothesis::exec()
     ostringstream streamObjEnd;
     streamObjEnd.precision(15);
     streamObjEnd << m_dProcTime;
-//            output = std::to_string( m_dProcTime ) + '\t'
+    //            output = std::to_string( m_dProcTime ) + '\t'
     output = streamObjEnd.str() + '\t'
             + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/ (pLattice->getSize())*(m_dProcTime - timeGrowth)  ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'

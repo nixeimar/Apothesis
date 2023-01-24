@@ -21,7 +21,7 @@ namespace MicroProcesses
 
 REGISTER_PROCESS_IMPL( Adsorption )
 
-Adsorption::Adsorption(){}
+Adsorption::Adsorption():m_bAllNeihs(false), m_iNumNeighs(1){}
 
 Adsorption::~Adsorption(){}
 
@@ -40,11 +40,17 @@ void Adsorption::init( vector<string> params )
         m_dCtot = stod(m_vParams[ 3 ]);
         m_dMW = stod(m_vParams[ 4 ]);
 
+        if ( m_bAllNeihs )
+            m_iNumNeighs = stoi( m_vParams[5] );
+
         m_fType = &Adsorption::simpleType;
     }
     else if (  m_sType.compare("constant") == 0  ) {
         m_fType = &Adsorption::constantType;
         m_dAdsorptionRate = stod(m_vParams[ 1 ]);
+
+        if ( m_bAllNeihs )
+            m_iNumNeighs = stoi( m_vParams[2] );
     }
     else {
         m_error->error_simple_msg("Not supported type of process: " + m_sType );
@@ -87,7 +93,7 @@ void Adsorption::init( vector<string> params )
 }
 
 void Adsorption::constantType(){
-    m_dProb = m_dAdsorptionRate; //*m_pLattice->getSize(); -> To be checked if needed.
+    m_dProb = m_dAdsorptionRate*m_iNumNeighs; //*m_pLattice->getSize(); -> To be checked if needed.
 }
 
 bool Adsorption::uncoRule( Site* ){ return true; }
@@ -116,10 +122,20 @@ bool Adsorption::multiSpeciesRule( Site* s){
     //3. and have the same height return true
     //3. Return false
 
-    if ( s->isOccupied() || !vacantSitesExist(s) )
+    if ( s->isOccupied() || !vacantSitesExist(s) || countVacantSites(s) != m_iNumNeighs )
         return false;
 
     return true;
+}
+
+int Adsorption::countVacantSites( Site* s){
+    int iCount = 0;
+    for (Site* neigh:s->getNeighs() ){
+        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() )
+            iCount++;
+    }
+
+    return iCount;
 }
 
 bool Adsorption::vacantSitesExist( Site* s) {
