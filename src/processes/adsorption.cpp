@@ -21,7 +21,7 @@ namespace MicroProcesses
 
 REGISTER_PROCESS_IMPL( Adsorption )
 
-Adsorption::Adsorption():m_bAllNeihs(false), m_iNumNeighs(1){}
+Adsorption::Adsorption(){}
 
 Adsorption::~Adsorption(){}
 
@@ -40,17 +40,11 @@ void Adsorption::init( vector<string> params )
         m_dCtot = stod(m_vParams[ 3 ]);
         m_dMW = stod(m_vParams[ 4 ]);
 
-        if ( m_bAllNeihs )
-            m_iNumNeighs = stoi( m_vParams[5] );
-
         m_fType = &Adsorption::simpleType;
     }
     else if (  m_sType.compare("constant") == 0  ) {
-        m_fType = &Adsorption::constantType;
         m_dAdsorptionRate = stod(m_vParams[ 1 ]);
-
-        if ( m_bAllNeihs )
-            m_iNumNeighs = stoi( m_vParams[2] );
+        m_fType = &Adsorption::constantType;
     }
     else {
         m_error->error_simple_msg("Not supported type of process: " + m_sType );
@@ -93,7 +87,7 @@ void Adsorption::init( vector<string> params )
 }
 
 void Adsorption::constantType(){
-    m_dProb = m_dAdsorptionRate*m_iNumNeighs; //*m_pLattice->getSize(); -> To be checked if needed.
+    m_dProb = m_dAdsorptionRate*m_iNumVacant; //*m_pLattice->getSize(); -> To be checked if needed.
 }
 
 bool Adsorption::uncoRule( Site* ){ return true; }
@@ -108,7 +102,6 @@ bool Adsorption::basicRule( Site* s){
 bool Adsorption::multiSpeciesSimpleRule( Site* s){
     //1. If the species is not occupied return true
     //2. Return false
-
     if ( !s->isOccupied() )
         return true;
 
@@ -120,9 +113,8 @@ bool Adsorption::multiSpeciesRule( Site* s){
     //1. If the species is not occupied
     //2. and if neighbours equal to the sites needed by m_iNumSites are vacant
     //3. and have the same height return true
-    //3. Return false
-
-    if ( s->isOccupied() || !vacantSitesExist(s) || countVacantSites(s) != m_iNumNeighs )
+    //4. Return false
+    if ( s->isOccupied() || countVacantSites(s) != m_iNumVacant )
         return false;
 
     return true;
@@ -131,25 +123,11 @@ bool Adsorption::multiSpeciesRule( Site* s){
 int Adsorption::countVacantSites( Site* s){
     int iCount = 0;
     for (Site* neigh:s->getNeighs() ){
-        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() )
+        if ( !neigh->isOccupied() && s->getHeight() >= neigh->getHeight() )
             iCount++;
     }
 
     return iCount;
-}
-
-bool Adsorption::vacantSitesExist( Site* s) {
-    int iCount = 0;
-    for (Site* neigh:s->getNeighs() ){
-        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() )
-            iCount++;
-    }
-
-    // Because one is s we say m_iNumSites-1
-    if ( iCount >= m_iNumSites-1 )
-        return true;
-
-    return false;
 }
 
 void Adsorption::simpleType()
@@ -164,7 +142,7 @@ void Adsorption::simpleType()
 }
 
 //ToDo: To be implemented and checked
-void Adsorption::arrheniusType(){;}
+void Adsorption::arrheniusType(){}
 
 bool Adsorption::rules( Site* s )
 {
@@ -312,6 +290,6 @@ bool Adsorption::isInHigherStep(Site* s)
     return false;
 }
 
-double Adsorption::getProbability(){ return m_dProb; }
+double Adsorption::getRateConstant(){ return m_dProb; }
 
 }

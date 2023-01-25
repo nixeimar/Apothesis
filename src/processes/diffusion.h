@@ -40,7 +40,7 @@ public:
 
 //    inline void setNeigh(int n ){ m_iNumNeighs = n; }
 
-    double getProbability() override;
+    double getRateConstant() override;
     bool rules( Site* ) override;
     void perform( Site* ) override;
 

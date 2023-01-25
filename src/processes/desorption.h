@@ -31,7 +31,7 @@ public:
     inline void setTargetSite( Site* site ){ m_Site = site;}
     inline Site* getTargetSite(){ return m_Site; }
 
-    double getProbability() override;
+    double getRateConstant() override;
     bool rules( Site* s) override;
     void perform( Site* ) override;
     void init(vector<string> params) override;

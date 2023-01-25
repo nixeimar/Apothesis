@@ -46,7 +46,7 @@ public:
     virtual ~Process();
 
     ///Get probability
-    virtual double getProbability() = 0;
+    virtual double getRateConstant() = 0;
 
     /// Perform this process in the site and compute/store the affected sites
     virtual void perform( Site* ) = 0;
@@ -84,12 +84,8 @@ public:
     inline void setUncoAccepted( bool isUncoAccepted) { m_bUncoAccept = isUncoAccepted; }
     inline bool isUncoAccepted() { return m_bUncoAccept; }
 
-    inline int getNeededSites(){
-            return m_iNumSites;
-    }
-
-    inline int getClassSize() { return m_iClassSize; }
-    inline void setClassSize( int classSize ) { m_iClassSize = classSize; }
+    inline void setNumVacantSites( int i){ m_iNumVacant = i;}
+    inline int getNumVacantSites(){ return m_iNumVacant;}
 
 protected:
 
@@ -131,11 +127,14 @@ protected:
     /// Checks if the specific species is part of the growing film
     bool isPartOfGrowth( string name);
 
-    /// The number or sites occupied by this species
+    /// The number of sites occupied by the process (default 1)
     int m_iNumSites;
 
-    /// The size of the class that this process can be performed
-    int m_iClassSize;
+    /// The number of neighbours of this process (default 1)
+    int m_iNumNeighs;
+
+    /// The number of vacant sites of this process (default 1)
+    int m_iNumVacant;
 
 private:
     /// The id of the process

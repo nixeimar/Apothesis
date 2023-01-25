@@ -210,6 +210,6 @@ bool Diffusion::rules( Site* s)
     (this->*m_fRules)(s);
 }
 
-double Diffusion::getProbability(){ m_dProb; }
+double Diffusion::getRateConstant(){ m_dProb; }
 
 }

@@ -190,6 +190,6 @@ bool Desorption::isInHigherStep(Site* s)
     return false;
 }
 
-double Desorption::getProbability(){ return m_dProb; }
+double Desorption::getRateConstant(){ return m_dProb; }
 
 }

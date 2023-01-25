@@ -31,7 +31,7 @@ public:
     bool rules( Site* ) override;
     void perform( Site* ) override;
     void init( vector<string> params ) override;
-    double getProbability() override;
+    double getRateConstant() override;
 
     inline void setTargetSite( Site* site ){ m_Site = site;}
     inline Site* getTargetSite(){ return m_Site; }
@@ -45,9 +45,6 @@ public:
 
     /// Get the number of sites that this adsorbed occupies.
     inline int getNumSites() { return m_iNumSites;}
-
-    /// If keyrowd "all" is added then this is true
-    inline void setAllNeighs( bool all ){  m_bAllNeihs = all; }
 
 private:
 
@@ -94,9 +91,6 @@ private:
     /// For adsorbing different species in a single site must not be occupied (and TODO: the height must be the same)
     bool multiSpeciesSimpleRule(Site* s);
 
-    /// Counts the available for adsorption sites based on if they are occupied or not
-    bool vacantSitesExist(Site* s);
-
     /// Counts the vacants sites
     int countVacantSites( Site* s);
 
@@ -130,12 +124,6 @@ private:
 
     /// The adsorption rate given as input from the user with the constant keyword
     double m_dAdsorptionRate;
-
-    /// If the user has "all" keyword this is set to true
-    bool m_bAllNeihs;
-
-    /// The number of neighbours of this process
-    int m_iNumNeighs;
 
     REGISTER_PROCESS( Adsorption )
 };

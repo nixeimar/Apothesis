@@ -140,12 +140,18 @@ bool Reaction::rules(Site *s)
 }
 
 bool Reaction::isReactant(Site* s){
-    for ( pair<string, double> p:m_mReactants ) {
-        if ( p.first.compare( s->getLabel() ) == 0 )
-            return true;
-    }
 
+    auto it = m_mReactants.find( s->getLabel() );
+    if ( it != m_mReactants.end() )
+        return true;
     return false;
+
+//    for ( pair<string, double> p:m_mReactants ) {
+//        if ( p.first.compare( s->getLabel() ) == 0 )
+//            return true;
+//    }
+
+ //   return false;
 }
 
 void Reaction::perform(Site *s)
@@ -201,5 +207,5 @@ void Reaction::catalysis(Site *s){
         m_seAffectedSites.insert( neigh );
 }
 
-double Reaction::getProbability(){ return m_dProb; }
+double Reaction::getRateConstant(){ return m_dProb; }
 
