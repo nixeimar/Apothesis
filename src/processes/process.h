@@ -84,6 +84,10 @@ public:
     inline void setUncoAccepted( bool isUncoAccepted) { m_bUncoAccept = isUncoAccepted; }
     inline bool isUncoAccepted() { return m_bUncoAccept; }
 
+
+    inline void setNumNeighs( int i){ m_iNumNeighs = i;}
+    inline int getNumNeighs(){ return m_iNumNeighs;}
+
     inline void setNumVacantSites( int i){ m_iNumVacant = i;}
     inline int getNumVacantSites(){ return m_iNumVacant;}
 
@@ -111,9 +115,6 @@ protected:
 
     ///The type of the process
     string m_sType;
-
-    ///The number of the neighbors. These are the neighbours at the same level (i.e. the same height)
-    int m_iNeighs;
 
     ///The probability value
     double m_dProb;

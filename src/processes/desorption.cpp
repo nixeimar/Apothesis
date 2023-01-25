@@ -33,22 +33,24 @@ void Desorption::init(vector<string> params)
     m_sType = any_cast<string>(m_vParams[ 0 ]);
 
     if ( m_sType.compare("arrhenius") == 0 ){
-        m_iNumNeighs = stoi( m_vParams[3] );
-        arrheniusType( stod(m_vParams[ 1 ]), stod(m_vParams[ 2 ]), m_pUtilParams->getTemperature(), (m_iNumNeighs + 1) );
+        m_dv0 = stod(m_vParams[ 1 ]);
+        m_dEd = stod(m_vParams[ 2 ]);
+        m_fType = &Desorption::arrheniusType;
     }
     else if (m_sType.compare("constant") == 0){
         m_dDesorptionRate = stod( m_vParams[1] );
         m_fType = &Desorption::constantType;
-
-        (this->*m_fType)();
     }
     else {
         m_error->error_simple_msg("Not supported type of process -> " + m_sProcName + " | " + m_sType );
         EXIT
     }
 
+    //Set the type of the process
+    (this->*m_fType)();
+
     //Create the rule for the adsoprtion process.
-    if ( m_bAllNeihs &&  isPartOfGrowth( m_sDesorbed ) )
+    if ( m_bAllNeihs && isPartOfGrowth( m_sDesorbed ) )
         m_fRules = &Desorption::allRule;
     else if ( !m_bAllNeihs &&  isPartOfGrowth( m_sDesorbed ) )
         m_fRules = &Desorption::basicRule;
@@ -81,12 +83,13 @@ void Desorption::constantType(){
     m_dProb = m_dDesorptionRate; //*m_pLattice->getSize(); -> To be checked if needed.
 }
 
-void Desorption::arrheniusType(double v0, double Ed, double T,  int n)
+void Desorption::arrheniusType()
 {
+    double T = m_pUtilParams->getTemperature();
     double k = m_pUtilParams->dkBoltz;
-    Ed = Ed/m_pUtilParams->dAvogadroNum;
+    double Ed = m_dEd/m_pUtilParams->dAvogadroNum;
 
-    m_dProb = v0*exp(-(double)n*Ed/(k*T));
+    m_dProb = m_dv0*exp(-(double)(m_iNumNeighs + 1)*Ed/(k*T));
 }
 
 bool Desorption::rules( Site* s)

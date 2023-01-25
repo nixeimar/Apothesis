@@ -44,6 +44,7 @@ void Adsorption::init( vector<string> params )
     }
     else if (  m_sType.compare("constant") == 0  ) {
         m_dAdsorptionRate = stod(m_vParams[ 1 ]);
+
         m_fType = &Adsorption::constantType;
     }
     else {
@@ -87,7 +88,7 @@ void Adsorption::init( vector<string> params )
 }
 
 void Adsorption::constantType(){
-    m_dProb = m_dAdsorptionRate*m_iNumVacant; //*m_pLattice->getSize(); -> To be checked if needed.
+    m_dProb = m_dAdsorptionRate*m_iNumVacant;
 }
 
 bool Adsorption::uncoRule( Site* ){ return true; }

@@ -50,7 +50,7 @@ private:
     void (Desorption::*m_fPerform)(Site*);
 
     /// Arrhenius type rate
-    void arrheniusType( double, double, double, int);
+    void arrheniusType();
 
     /// Constant value for the adsorption process rate i.e.
     /// constant 1.0 [ML/s]
@@ -94,6 +94,12 @@ private:
 
     /// The desorption rate given as input from the user with the constant keyword
     double m_dDesorptionRate;
+
+    /// The vibrational frequency  (if arrhenius)
+    double m_dv0;
+
+    /// The activation energy of the process (if arrhenius)
+    double m_dEd;
 
     REGISTER_PROCESS(Desorption)
 };
