@@ -150,10 +150,7 @@ void Apothesis::init()
 
             } else {
 
-                for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
-
-                    proc.second.pop_back();
-                    proc.second.push_back( to_string(neighs) );
+                for ( int vacant = 0; vacant < pLattice->getNumFirstNeihgs(); vacant++) {
 
                     Adsorption* a = new Adsorption();
 
@@ -162,8 +159,8 @@ void Apothesis::init()
                         a->setNumSites( s.second );
                     }
 
-                    a->setAllNeighs(true);
-                    a->setName( proc.first + " (" + to_string(neighs) + " N)" );
+                    a->setNumVacantSites( vacant );
+                    a->setName( proc.first + " (" + to_string(vacant) + " N)" );
                     a->setLattice( pLattice );
                     a->setRandomGen( pRandomGen );
                     a->setErrorHandler( pErrorHandler );
@@ -252,9 +249,6 @@ void Apothesis::init()
             } else {
                 for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
 
-                    proc.second.pop_back();
-                    proc.second.push_back( to_string(neighs) );
-
                     Desorption* des = new Desorption();
 
                     for ( pair<string, int> s: products) {
@@ -262,6 +256,7 @@ void Apothesis::init()
                             des->setDesorbed( s.first );
                     }
 
+                    des->setNumNeighs( neighs );
                     des->setAllNeighs(true);
                     des->setName( proc.first + " (" + to_string(neighs + 1) + " N)" );
                     des->setLattice( pLattice );
@@ -378,7 +373,7 @@ void Apothesis::init()
     //Calculate first time the total probability (R) for apothesis to start --------------------------//
     m_dRTot = 0.0;
     for (pair<Process*, set< Site* > > p:m_processMap)
-        m_dRTot += p.first->getProbability()*(double)p.second.size();
+        m_dRTot += p.first->getRateConstant()*(double)p.second.size();
 
     //Start writing in the output log
     //Write initialization info to log
@@ -486,7 +481,7 @@ void Apothesis::exec()
         m_dRandom = pRandomGen->getDoubleRandom();
 
         for ( auto &p:m_processMap){
-            m_dProcRate = p.first->getProbability()*(double)p.second.size();
+            m_dProcRate = p.first->getRateConstant()*(double)p.second.size();
             m_dSum += m_dProcRate/m_dRTot;
 
             //2. Pick a process according to the rates
@@ -529,11 +524,11 @@ void Apothesis::exec()
                 //4. Re-compute the processes rates and re-compute Rtot (see ppt)
                 m_dRTot = 0.0;
                 for (pair<Process*, set< Site* > > p3:m_processMap)
-                    m_dRTot += p3.first->getProbability()*(double)p3.second.size();
+                    m_dRTot += p3.first->getRateConstant()*(double)p3.second.size();
 
                 //5. Compute dt = -ln(ksi)/Rtot
                 m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
-                //                cout << m_dt << endl;
+//                                cout << m_dt << endl;
                 break;
             }
         }
