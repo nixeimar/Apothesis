@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -24,29 +24,25 @@ SimpleCubic::SimpleCubic(Apothesis *apothesis) : Lattice(apothesis), m_iMinNeigs
     ;
 }
 
-SimpleCubic::SimpleCubic(Apothesis *apothesis, bool step, vector<int> stepInfo) : Lattice(apothesis),
-    m_bHasSteps(step),
-    m_stepInfo(stepInfo)
-{
-    ;
-}
-
-void SimpleCubic::buildSteps(int iSize, int jSize, int kSize)
-{
-    //e.g. Step 20 1 0
-    if ( m_vSites.size()%iSize != 0){
+void SimpleCubic::buildSteps()
+{    
+    int iPerStep = 0;
+    if ( m_vSites.size()%m_iNumSteps != 0){
         cout << "Cannot create  stepped surface because it cannot be divided exaclty." << endl;
-        EXIT;
+        EXIT
+    }
+    else {
+        iPerStep = m_iSizeX/m_iNumSteps;
     }
 
     int iStep = 0;
     int iHeight = 0;
 
-    //Steps in x-direction
+   //Steps in x-direction
     for (int i = 0; i < m_iSizeX; i++) {
-        if ( iStep == iSize ) {
+        if ( iStep == iPerStep ) {
             iStep = 0;
-            iHeight += jSize;
+            iHeight += m_iStepHeight;
         }
 
         for (int j = 0; j < m_iSizeY; j++)
@@ -55,22 +51,17 @@ void SimpleCubic::buildSteps(int iSize, int jSize, int kSize)
         iStep++;
     }
 
-//    print();
-
     for ( int i = 0; i< m_vSites.size(); i++)
         calculateNeighNum( i );
 
     int h = getSite( m_iSizeY-1, m_iSizeX-1)->getHeight() ;
     m_iStepDiff = abs( getSite( m_iSizeY-1, m_iSizeX-1)->getHeight() - getSite( 0, 0 )->getHeight() ) + 1;
 
-//    printNeighNum();
-
     for (int j = 0; j < m_iSizeY; j++){
         getSite( j, 0 )->setLowerStep( true );
         getSite( j, m_iSizeX - 1  )->setHigherStep( true );
     }
 }
-
 
 void SimpleCubic::setInitialHeight(int height) { m_iHeight = height; }
 
@@ -79,13 +70,13 @@ void SimpleCubic::build()
     if (m_Type == NONE)
     {
         cout << "Not supported lattice type" << endl;
-        EXIT;
+        EXIT
     }
 
     if (m_iSizeX == 0 || m_iSizeY == 0)
     {
         m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
-        EXIT;
+        EXIT
     }
 
     if (m_iHeight < 5)
@@ -104,11 +95,19 @@ void SimpleCubic::build()
         for (int j = i * m_iSizeY; j < (m_iSizeY + i * m_iSizeY); j++)
         {
             m_vSites[j]->setID(j);
-            m_vSites[j]->setHeight(m_iHeight - 1);
+            m_vSites[j]->setHeight(m_iHeight);
+            m_vSites[j]->addSpecies(m_pSpecies);
         }
     }
 
     mf_neigh();
+
+    // Here we set the label of the species
+    for (int i = 0; i < m_iSizeY; i++){
+        for (int j = 0; j < m_iSizeX; j++)
+            m_vSites[ i*m_iSizeX + j ]->setLabel( m_sLabel );
+    }
+
 }
 
 SimpleCubic::~SimpleCubic()
@@ -120,13 +119,6 @@ SimpleCubic::~SimpleCubic()
 void SimpleCubic::setSteps(bool hasSteps)
 {
     m_bHasSteps = hasSteps;
-}
-
-void SimpleCubic::setStepInfo(int sizeX, int sizeY, int sizeZ)
-{
-    m_iStepX = sizeX;
-    m_iStepY = sizeY;
-    m_iStepZ = sizeZ;
 }
 
 void SimpleCubic::mf_neigh()
@@ -343,3 +335,20 @@ int SimpleCubic::calculateNeighNum( int id )
     m_vSites[ id ]->setNeighsNum( neighs );
     return neighs;
 }
+
+unordered_map<string, double> SimpleCubic::computeCoverages( vector<string> species ) {
+    for ( string name:species){
+        m_mCoverages[ name ] = 0.;
+
+        int iCount = 0;
+        for ( int i =0; i< getSize(); i++){
+            if ( m_vSites[ i ]->getLabel().compare( name ) == 0 )
+                iCount++;
+        }
+
+        m_mCoverages[ name ] = (double)iCount/getSize();
+    }
+
+    return m_mCoverages;
+}
+

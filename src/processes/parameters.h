@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -20,9 +20,12 @@
 
 #include "pointers.h"
 #include "apothesis.h"
+#include "site.h"
 #include <iostream>
+#include <any>
 
 using namespace std;
+using namespace SurfaceTiles;
 
 namespace Utils {
 
@@ -51,48 +54,103 @@ class Parameters: public Pointers
     /// Get the pressure value.
     inline double getPressure() { return m_dP; }
 
-    /// Set the total number of KMC iterations
-   // inline void setIterations( int iter ) { m_iIter = iter; }
-
     /// Set the total time for KMC
     inline void setEndTime( double time ) { m_dTime = time; }
 
     /// Get the total time
     inline double getEndTime() { return m_dTime; }
 
-    /// The Avogadro number.
+    /// The Avogadro number [1/mol]
     const double dAvogadroNum = 6.022141793e+23;
 
-    /// The boltzmann constant.
+    /// The boltzmann constant in [J/K]
     const double dkBoltz = 1.3806503e-23;
 
-    /// Pi.
+    /// Pi
     const double dPi = 3.14159265;
 
-    /// R value (J/molK)
+    /// R value (J/mol K)
     const double dUniversalGasConst = 8.3145;
 
     /// Store the processes to be created by the factory method.
-    void setProcess(string, vector<double> );
+    void setProcess(string, vector< string > );
+
+    /// Store the initial value for the random generator
+    inline void setRandGenInit( double val ) { m_dRand = val; }
+
+    /// Store the initial value for the random generator
+    inline double getRandGenInit(){return m_dRand; }
 
     /// Get the processes to be created.
-    map< string,  vector< double> > getProcesses() { return m_mProcs; }
+    map< string,  vector< string > > getProcessesInfo() { return m_mProcs; }
+
+    /// Set when to write the log
+    inline void setWriteLogTimeStep( double val ) { m_dWriteLogEvery = val; }
+
+    /// Get the time step to write lattice file
+    inline double getWriteLogTimeStep() { return m_dWriteLogEvery; }
+
+    /// Set when to write the lattice
+    inline void setWriteLatticeTimeStep( double val ) { m_dWriteLatticeEvery = val; }
+
+    /// Set when to write lattice file
+    inline double getWriteLatticeTimeStep() { return m_dWriteLatticeEvery; }
+
+    /// Print parameters info
+    void printInfo();
+
+    /// The label for the species in the lattice
+    inline void setLatticeLabels( string label ){ m_sLatticeLabel = label; }
+
+    /// The label for the species in the lattice
+    inline string getLatticeLabels(){ return m_sLatticeLabel; }
+
+    /// Instert a species that participates in the growth of the film
+    inline void insertInGrowthSpecies( string s ){ m_vsGrowthSpecies.push_back( s ); }
+
+    /// Returns the species that participates in the growth of the film
+    inline vector<string> getGrowthSpecies(){ return m_vsGrowthSpecies; }
+
+    /// The species to compute coverage for
+    inline void setCoverageSpecies( vector<string> species ){ m_vCovSpecies = species; }
+
+    /// Returns the species for which to compute coverage for
+    inline vector<string> getCoverageSpecies(){ return m_vCovSpecies; }
 
   protected:
-    /// The temperature.
+    /// The temperature [K].
     double m_dT;
 
-    /// The pressure.
+    /// The pressure [Pascal].
     double m_dP;
 
-    /// The number of iterations to be performed.
-    double m_time;
+    /// The time to run kmc [s].
+    double m_dTime;
 
-    /// The time to run kmc.
-    int m_dTime;
+    /// The random generator initializer
+    double m_dRand;
 
     /// Stores the processes as read from the input file allong with their parameters.
-    map< string,  vector< double> > m_mProcs;
+    map< string,  vector< string > > m_mProcs;
+
+    /// The time step to write to log
+    double m_dWriteLogEvery;
+
+    /// The time step to write the lattice
+    double m_dWriteLatticeEvery;
+
+    /// The label of the lattice species
+    string m_sLatticeLabel;
+
+    /// The species participating in the growth of the surface
+    vector<string> m_vsGrowthSpecies;
+
+    /// Map of the reactions which holds the reactants enumerated
+    map<string, int> m_mReactants;
+
+    /// The species to compute coverage for
+    vector<string> m_vCovSpecies;
+
   };
 
 }

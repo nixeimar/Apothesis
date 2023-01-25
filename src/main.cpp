@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -53,8 +53,9 @@ int main( int argc, char* argv[] )
     cout << "Initiating Apothesis" << endl;
     apothesis->init();
 
-    cout << "Executing Apothesis" << endl;
+    cout << "Apothesis runnning ..." << endl;
     apothesis->exec();
+    cout << "Apothesis finished succesfully." << endl;
 
     if ( apothesis )
       delete apothesis;

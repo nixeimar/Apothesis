@@ -22,6 +22,10 @@ void Reader::parseFile(){
             //Cml reader constructor
             //xyz reader constructor
         }
+        if (vsTokens[0].compare(m_sLatticeKey) == 0)
+        {
+            m_fsetLatticeSpecies(vsTokens[1]);
+        }
 
         if(vsTokens[0].compare(m_sNSpeciesKey)==0){
             vector<string> specLines;
@@ -78,10 +82,11 @@ void Reader::openInputFile(string path){
     if (!m_inputFile.is_open())
     {
       m_errorHandler->error_simple_msg("Cannot open file input.kmc.");
-      EXIT;
+      EXIT
     }
 }
 
+//Todo: Remove this from here!  It is initialization ...
 void Reader::initializeLattice(){
 
     switch (m_LatticeType[m_sLatticeType])
@@ -103,12 +108,13 @@ void Reader::initializeLattice(){
       }
 
     }
-    case Lattice::BCC:
+    case Lattice::SimpleCubic:
     {
       if (m_bSteps)
       {
-        SimpleCubic *lattice = new SimpleCubic(m_apothesis, true, m_vSteps);
-        m_apothesis->pLattice = lattice;
+          ;
+//        SimpleCubic *lattice = new SimpleCubic(m_apothesis, true, m_vSteps);
+ //       m_apothesis->pLattice = lattice;
 
       }
       else
@@ -116,14 +122,14 @@ void Reader::initializeLattice(){
         SimpleCubic *lattice = new SimpleCubic(m_apothesis);
         m_apothesis->pLattice = lattice;
       }
-      m_lattice->setType("BCC");
+      m_lattice->setType("SimpleCubic");
 
       break;
     }
     default:
     {
       cout<<"Unresolvable lattice type found. Exiting..."<<endl;
-      EXIT;
+      EXIT
     }
     }
 
@@ -132,8 +138,6 @@ void Reader::initializeLattice(){
     m_lattice->setX(m_vLatticeDims[0]);
     m_lattice->setY(m_vLatticeDims[1]);
     m_lattice->setInitialHeight(m_vLatticeDims[2]);
-
-
 }
 
 vector<string> Reader::inputFileLines()
@@ -156,11 +160,11 @@ vector<string> Reader::inputFileLines()
       continue;
 
     //We do not care about comments.
-    if (startsWith(vsTokens[0], m_sCommentLine))
+    if (startsWith( vsTokens[0], m_sCommentLine))
       continue;
 
     //Fill the vector
-    lines.push_back(line);
+    lines.push_back( line );
 
   }
   return lines;
@@ -180,7 +184,7 @@ void Reader::m_fsetLattice(vector<string> vsTokens){
     else
     {
       m_errorHandler->error_simple_msg("The x dimension of lattice is not a number.");
-      EXIT;
+      EXIT
     }
 
     if (isNumber(vsTokens[3]))
@@ -191,7 +195,7 @@ void Reader::m_fsetLattice(vector<string> vsTokens){
     else
     {
       m_errorHandler->error_simple_msg("The y dimension of lattice is not a number.");
-      EXIT;
+      EXIT
     }
 
     if (isNumber(vsTokens[4]))
@@ -202,11 +206,19 @@ void Reader::m_fsetLattice(vector<string> vsTokens){
     else
     {
       m_errorHandler->error_simple_msg("The height must be a number.");
-      EXIT;
+      EXIT
     }
 }
 
+
+void Reader::m_fsetLatticeSpecies(string token){
+
+    m_sLatticeSpecies=token;
+    std::cout << "lattice species : "<< m_sLatticeSpecies << std::endl;
+}
+
 void Reader::m_fsetSteps(vector<string> vsTokens){
+
     m_bSteps=false;
     if (isNumber(vsTokens[1]) && isNumber(vsTokens[2]) && isNumber(vsTokens[3]))
     {
@@ -235,9 +247,7 @@ void Reader::m_fsetSpecies(vector<string> lines){
                 m_errorHandler->error_simple_msg("Missing mw for species "+ vsTokens[0] + "is not a number");
             }
         }
-
     }
-
 }
 
 void Reader::m_fsetProcesses(vector<string> lines){
@@ -260,6 +270,22 @@ void Reader::m_fidentifyProcess(string processKey, int id){
 
     string procName;
     if(m_bisAdsorption(reactants)){
+
+        //To Christianna: Check this
+
+        //What are the parameters for adsorption:
+        //Type: default simple (other should be e.g. Arrhenius type)
+        //Mole fraction (if simple):  default = 1.0
+        //Sticking (if simple): default = 1.0
+        //Number of sites to occupy: default = 1 (taken from the stoichiometry)
+
+        //m_processes.push_front( FactoryProcess::createProcess("Adsorption") );
+        //m_processes.front()->setParameter("f", 0.1);
+        //m_processes.front()->setParameter("simple", true);
+        //m_processes.front()->setParameter("site", "A");
+        //m_processes.front()->setParameter("sticking", "A");
+        //m_processes.front()->setParameter("ctot", 1e-13);
+
         procName="Adsorption"+to_string(id);
     }else if(m_bisDesorption(products)){
         procName="Desorption"+to_string(id);
@@ -369,15 +395,15 @@ pair<vector<string>,vector<string>> Reader::m_fsplitReactionKey(string reactionK
 }
 
 bool Reader::m_bisAdsorption(vector<string> reactants){
-    return (reactants.size()>1) ? (simplified(reactants[0])==m_ssiteKey || simplified(reactants[1])==m_ssiteKey): false ;
+    return (reactants.size()>1) ? (simplified(reactants[0])==m_sSiteKey || simplified(reactants[1])==m_sSiteKey): false ;
 }
 
 bool Reader::m_bisDesorption(vector<string> products){
-    return (products.size()>1) ? (simplified(products[0])==m_ssiteKey || simplified(products[1])==m_ssiteKey): false ;
+    return (products.size()>1) ? (simplified(products[0])==m_sSiteKey || simplified(products[1])==m_sSiteKey): false ;
 }
 
 bool Reader::m_bisDiffusion(vector<string> reactants, vector<string> products){
-    return (reactants.size()==1 && products.size()==1 && contains(reactants[0],m_ssiteKey) && contains(products[0],m_ssiteKey)) ;
+    return (reactants.size()==1 && products.size()==1 && contains(reactants[0],m_sSiteKey) && contains(products[0],m_sSiteKey)) ;
 }
 
 string Reader::lcMatch(string X, vector<string> vsY)
@@ -399,7 +425,6 @@ string Reader::lcMatch(string X, vector<string> vsY)
 
 }
 
-
 void Reader::m_fsetTime(string time){
     if (isNumber(time))
     {
@@ -410,7 +435,7 @@ void Reader::m_fsetTime(string time){
     else
     {
       m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
-      EXIT;
+      EXIT
     }
 }
 
@@ -424,7 +449,7 @@ void Reader::m_fsetPressure(string pressure){
     else
     {
       m_errorHandler->error_simple_msg("Could not read pressure from input file. Is it a number?");
-      EXIT;
+      EXIT
     }
 }
 
@@ -438,7 +463,7 @@ void Reader::m_fsetTemperature(string temperature){
     else
     {
       m_errorHandler->error_simple_msg("Could not read temperature from input file. Is it a number?");
-      EXIT;
+      EXIT
     }
 }
 
@@ -452,7 +477,7 @@ void Reader::m_fsetDebugMode(string debugMode){
     else
     {
       m_errorHandler->error_simple_msg("Could not read debug mode.");
-      EXIT;
+      EXIT
     }
 }
 
@@ -691,6 +716,10 @@ double Reader::getTime(){
 
 string Reader::getDebugMode(){
     return m_sDebugMode;
+}
+
+string Reader::getLatticeSpecies(){
+    return m_sLatticeSpecies;
 }
 
 map<string,double> Reader::getSpecies(){

@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -62,7 +62,9 @@ public:
     /// Write the lattice in XYZ format in a filename
     void writeXYZ( string );
 
-    void buildSteps(int, int, int){}
+    void buildSteps(int, int);
+
+    unordered_map<string, double > computeCoverages( vector<string> species ) override;
 
 protected:
     /// Build the first neighbours for the FCC(100) lattice.

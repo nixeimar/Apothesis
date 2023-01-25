@@ -17,10 +17,19 @@
 #include "errorhandler.h"
 #include "parameters.h"
 
+#include "factory_process.h"
+#include "adsorption.h"
+#include "desorption.h"
+#include "diffusion.h"
+#include "reaction.h"
+
 #define EXIT { printf("Apothesis terminated. \n"); exit( EXIT_FAILURE ); }
 
 using namespace std;
 using namespace Utils;
+
+//The reader should return a Map with the processes & a Map with the physical parameters (T, P etc)
+
 
 class Reader: public Pointers
 {
@@ -31,19 +40,21 @@ public:
     explicit Reader(Apothesis *apothesis): Pointers(apothesis),
         m_sBuildKey("build_lattice"),
         m_sReadKey("read_lattice"),
+        m_sLatticeKey("lattice_species"),
         m_sStepKey("steps"),
         m_sNSpeciesKey("nspecies"),
         m_sNProcKey("nprocesses"),
         m_sPressureKey("pressure"),
         m_sTemperatureKey("temperature"),
         m_sTimeKey("time"),
-        m_ssiteKey("*"),
+        m_sReactionKey("reaction"),
+        m_sSiteKey("*"),
         m_sCommentLine("#")
     {
         //Initialize the map for the lattice
         m_apothesis=apothesis;
         m_LatticeType["NONE"] = Lattice::NONE;
-        m_LatticeType["BCC"] = Lattice::BCC;
+        m_LatticeType["SimpleCubic"] = Lattice::SimpleCubic;
         m_LatticeType["FCC"] = Lattice::FCC;
     }
 
@@ -67,7 +78,6 @@ public:
 
     /// Check if a string contains another string and remove it.
     void eraseSubstring(string &, const string &);
-
 
     /// Check if a string contains another string. TODO: This should be transferred to a generic string class).
     bool contains(string, string, CASE cas = Insensitive);
@@ -112,6 +122,9 @@ public:
     ///retunrs simulation debug mode
     string getDebugMode();
 
+    /// Returns species that consist the lattice
+    string getLatticeSpecies();
+
     /// Returns species map species name and mw
     map<string,double> getSpecies();
 
@@ -145,6 +158,9 @@ private:
     /// Step lattice keyword
     string m_sStepKey;
 
+    /// Lattice species keyword
+    string m_sLatticeKey;
+
     /// Read lattice from file keyword
     string m_sReadKey;
 
@@ -167,7 +183,10 @@ private:
     string m_sDebugKey;
 
     /// Reaction site key
-    string m_ssiteKey;
+    string m_sSiteKey;
+
+    /// Reaction site key
+    string m_sReactionKey;
 
     /// Comment
     string m_sCommentLine;
@@ -203,6 +222,9 @@ private:
     /// Lattice build steps
     vector<int> m_vSteps;
 
+    /// The type of lattice
+    string m_sLatticeSpecies;
+
     /// Do lattice build steps
     bool m_bSteps;
 
@@ -211,6 +233,9 @@ private:
 
     /// Set lattice info
     void m_fsetLattice(vector<string>);
+
+    /// Set lattice species
+    void m_fsetLatticeSpecies(string);
 
     /// Set species info
     void m_fsetSpecies(vector<string>);
@@ -257,10 +282,11 @@ private:
     ///Diffusion
     bool m_bisDiffusion(vector<string>,vector<string>);
 
+    /// The process list which holds all the processes defined by the user.
+    list<MicroProcesses::Process*> m_processes;
+
     ///Apothesis member variable
     Apothesis * m_apothesis;
-
-
 };
 
 #endif // TXTREADER_H

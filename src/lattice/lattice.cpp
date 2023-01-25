@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -24,10 +24,13 @@ Lattice::Lattice(Apothesis *apothesis) : Pointers(apothesis),m_iStepDiff(0)
 
 void Lattice::setType(string sType)
 {
+
+    m_sType = sType;
+
     if (sType == "FCC")
         m_Type = FCC;
-    else if (sType == "BCC")
-        m_Type = BCC;
+    else if (sType == "SimpleCubic")
+        m_Type = SimpleCubic;
     else
         m_Type = NONE;
 }
@@ -38,6 +41,8 @@ void Lattice::setY(int y) { m_iSizeY = y; }
 
 void Lattice::setInitialHeight(int height) { m_iHeight = height; }
 
+void Lattice::setSpecies(Species * s) { m_pSpecies = s; }
+
 Lattice::~Lattice()
 {
 }
@@ -47,18 +52,23 @@ vector<Site *> Lattice::getSites()
     return m_vSites;
 }
 
+string Lattice::getTypeAsString(){ return  m_sType; }
+
 Lattice::Type Lattice::getType()
 {
     switch (m_Type)
     {
     case FCC:
         return FCC;
-    case BCC:
-        return BCC;
+    case SimpleCubic:
+        return SimpleCubic;
     default:
         return NONE;
     }
 }
+
+void Lattice::buildSteps(){;}
+
 
 Site* Lattice::getSite(int id) { return m_vSites[id]; }
 
@@ -69,18 +79,11 @@ Site* Lattice::getSite(int i, int j)
 
 void Lattice::print()
 {
-/*    for (int i = 0; i < m_iSizeY; i++){
-        for (int j = 0; j < m_iSizeX; j++)
-            cout << m_vSites[ i*m_iSizeX + j ]->getID() << "\t" << "( " << m_vSites[ i*m_iSizeX + j ]->getHeight() << " )" ;
-        cout  << endl;
-    }*/
-
     for (int i = 0; i < m_iSizeY; i++){
         for (int j = 0; j < m_iSizeX; j++)
             cout << m_vSites[ i*m_iSizeX + j ]->getLabel() + to_string( m_vSites[ i*m_iSizeX + j ]->getID() )  << "\t" << "( " << m_vSites[ i*m_iSizeX + j ]->getHeight() << " ) " ;
         cout  << endl;
     }
-
 }
 
 void Lattice::printNeighNum()
@@ -115,10 +118,29 @@ void Lattice::printNeighs( int ID )
     }
     else {
         cout << "Cannot print neighs because ID exceeds the available number of sites." << endl;
-        EXIT;
+        EXIT
     }
 
 }
 
 void Lattice::writeXYZ( string filename ){;}
 void Lattice::writeLatticeHeights( double, int ){;}
+
+void Lattice::printInfo() {
+
+    cout << endl;
+    cout << "--- start info lattice parameteres ----- " << endl;
+    cout << "---------------------------------------- " << endl;
+    cout << "Type: "; cout << getType() << endl;
+    cout << "Size X: "; cout << getX() << endl;
+    cout << "Size Y: "; cout << getY() << endl;
+    cout << "Lattice species: "; cout << getLabels() << endl;
+
+    if ( hasSteps() ) {
+        cout << "Number of steps: "; cout << getNumSteps() << endl;
+        cout << "Step height: "; cout << getStepHeight() << endl;
+    }
+    cout << "--- end lattice parameters info -------- " << endl;
+    cout << endl;
+}
+

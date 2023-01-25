@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@
 
 #include "io.h"
 #include "lattice.h"
-#include "species_new.h"
 
 using namespace std;
 using namespace SurfaceTiles;
@@ -38,15 +37,10 @@ public:
   /// Constructor
   SimpleCubic(Apothesis *apothesis);
 
-  /// Constructor
-  SimpleCubic(Apothesis *apothesis, bool step, vector<int> stepInfo);
-
   /// Distructor.
   virtual ~SimpleCubic();
 
   void setSteps(bool hasSteps);
-
-  void setStepInfo(int sizeX, int sizeY, int sizeZ);
 
   /// Sets the type of the lattice.
   void setType(string);
@@ -60,16 +54,22 @@ public:
   /// Build the lattice with an intitial height.
   void build() override;
 
+  /// Create stepped surface
+  void buildSteps() override;
+
   /// Sets the minimun initial height for the lattice.
   void setInitialHeight(int height);
 
   /// Calculate the number of neighbor based on the height
   int calculateNeighNum( int id );
 
-  /// Create stepped surface
-  void buildSteps(int, int, int);
-
   void writeLatticeHeights( double, int );
+
+  inline int getNumFirstNeihgs() override { return 5; }
+
+  inline bool isStepped(){return m_bHasSteps;}
+
+  unordered_map<string, double> computeCoverages( vector<string> species) override;
 
 protected:
   /// Build the neighbours for the BCC lattice for each site.
@@ -79,6 +79,7 @@ protected:
   void mf_buildNeighbours();
 
 private:
+
   bool m_bHasSteps = false;
 
   vector<int> m_stepInfo;

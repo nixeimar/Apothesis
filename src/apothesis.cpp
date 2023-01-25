@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -26,14 +26,16 @@
 #include "process.h"
 #include "species.h"
 #include "string.h"
-#include "reaction_new.h"
+#include "reaction.h"
 #include "aux/random_generator.h"
 #include <bits/stdc++.h>
 #include "reader.h"
+#include "reaction.h"
 
 #include "factory_process.h"
 
 #include <numeric>
+#include <algorithm>
 
 using namespace MicroProcesses;
 
@@ -55,19 +57,11 @@ Apothesis::Apothesis(int argc, char *argv[])
     pRandomGen = new RandomGen::RandomGenerator( this );
 
     /* This must be constructed before the input */
+    pLattice = new SimpleCubic(this);
 
     // Create input instance
     pIO = new IO(this);
-    pReader = new Reader(this);
-
-    //This should come from the user
-    pReader->setInputPath("./input.kmc");
-    pReader->parseFile();
-
-    //For building with steps surface. Works only for simple cubic
-    //pLattice->buildSteps( 20, 1, 0);
-    pLattice->build();
-    std::cout << "Finished building the lattice" << std::endl;
+    pIO->init(m_iArgc, m_vcArgv);
 
     // initialize number of species
     m_nSpecies = 0;
@@ -78,249 +72,423 @@ Apothesis::~Apothesis()
     delete pIO;
     delete pReader;
     delete pLattice;
+    delete pParameters;
+    delete pErrorHandler;
+    delete pRandomGen;
 }
 
 void Apothesis::init()
 {
-    cout << "Opening output file" << endl;
-    /// The output file name will come from the user and will have the extenstion .log
-    /// This would come as a parameter from the user from the args (also the input).
-    /// Now both are hard copied.
+    //Read the input file
+    pIO->readInputFile();
 
-    if (!pIO->outputOpen())
+    //Open the output file
+    if ( !pIO->outputOpen() )
         pIO->openOutputFile("Output");
 
-    // Initialize Random generator.
-    pRandomGen->init( 21321200 );
+    // Initialize Random generator
+    pRandomGen->init( pParameters->getRandGenInit() );
 
-    //To Deifilia: This must be created for each process in order to pass
-    //the parameters from the input file to the porcess
-    map<string, any> params;
+    //Create the lattice
+    pLattice->setLabels( pParameters->getLatticeLabels() );
+    pLattice->build();
 
-//        params.insert( {"T", 473.} );
-//        params.insert( {"f", 0.0000593894333333333} ); //
-//       params.insert( {"s0",  0.0262442285521079} ); //
+    // TODO: Here we must take into account the case of two or more species participating in the film growth
+    // and the user should give the per cent of each species in t=0s e.g. 0.8Ga 0.2As
+    for ( Site* s:pLattice->getSites() ){
+        s->setLabel(  pParameters->getLatticeLabels() );
+        s->setBelowLabel(  pParameters->getLatticeLabels() );
+        s->setOccupied( false ); //Start from clear surface
+    }
 
-    params.insert( {"T", 533.} );
-    params.insert( {"f", 0.0000340636296296296} ); //Arrhenius
-    params.insert( {"s0", 0.137295210293006} ); //Arrhenius
+    if ( pLattice->hasSteps() )
+        pLattice->buildSteps();
 
-//    params.insert( {"f", 0.0000397675925925926} ); //LH
-//    params.insert( {"s0", 0.0976139043395484} ); //LH
+    //Print lattice info: To be move in debug version
+    pLattice->printInfo();
 
-    //    params.insert( {"T", 573.} );
-    //   params.insert( {"f", 0.0000399932074074074} ); //LH
-    //    params.insert( {"s0", 0.0946803966934485} ); //LH
+    //pLattice->print();
 
-  //  params.insert( {"T", 623.} );
-  //  params.insert( {"f", 0.000012289962962963} );//Arrhenius
-//   params.insert( {"s0", 0.670471054574958} ); //Arrhenius
+    //Print parameters to check: To be move in debug version
+    pParameters->printInfo();
 
-//      params.insert( {"f", 0.0000401917740740741} ); //LH
-//      params.insert( {"s0", 0.0913294779849493} ); //LH
-
-    params.insert( {"P", 1333.22} );
-    params.insert( {"C_tot", 2.0e+19} ); //For Cu
-    params.insert( {"k", 1.3806503e-23} );
-    params.insert( {"Na", 6.0221417930e+23} );
-
-    double Ed = 7.14e+4/6.0221417930e+23;
-    params.insert( {"E_d", Ed } );
-    params.insert( {"Na", 6.0221417930e+23} );
-
-    double Em = 4.28e+4/6.0221417930e+23;
-    params.insert( {"E_m", Em } );
-
+    //An empty set used for the initialization of the processMap
     set< Site* > emptySet;
 
-    //FOr IKY ---->
-/*    auto pos = m_processMap.insert( { FactoryProcess::createProcess("AdsroptionSimpleCubic4sMulti"), emptySet } );
-    pos.first->first->setName("AdsortpionSimpleCubinc4SMulti");
-    pos.first->first->init( params );
-    pos.first->first->setLattice( pLattice );
-    pos.first->first->setRandomGen( pRandomGen );
-    auto des = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-    des.first->first->setName("DesorptionSimpleCubic4sMulti");
-//    des.first->first->setConstant( true );
-    des.first->first->init( params );
-    des.first->first->setLattice( pLattice );
-    des.first->first->setRandomGen( pRandomGen );
-    for ( Site* s:pLattice->getSites() )
-        s->setLabel("Cu"); // in all cases we start with Cu
-    for ( auto &p:m_processMap){
-        cout << p.first->getName() << endl;
-        for ( Site* s:pLattice->getSites() ){
-            if ( p.first->rules( s ) )
-                p.second.insert( s );
-        }
-    } <---------------- */
+    //Create the processes
+    for ( auto proc:pParameters->getProcessesInfo() ){
+
+        string process = mf_analyzeProc( proc.first );
+
+        if ( process.compare("Adsorption") == 0 ){
+
+            unordered_map<string, int> reactants;
+            for (string react: pIO->getReactants( proc.first ) )
+                reactants.insert( pIO->analyzeCompound( react ) );
+
+            unordered_map<string, int> products;
+            for (string prod: pIO->getProducts( proc.first ) )
+                products.insert( pIO->analyzeCompound( prod ) );
 
 
-        auto pos = m_processMap.insert( { FactoryProcess::createProcess("AdsroptionSimpleCubic4sMulti"), emptySet } );
-        pos.first->first->setName("AdsortpionSimpleCubinc4SMulti");
-        pos.first->first->init( params );
-        pos.first->first->setLattice( pLattice );
-        pos.first->first->setRandomGen( pRandomGen );
+            if (proc.second.at( proc.second.size() - 1 ).compare("all") != 0){
 
-        auto des = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-        des.first->first->setName("0Neighs");
-    //    des.first->first->setConstant( true );
-        des.first->first->init( params );
-        des.first->first->setLattice( pLattice );
-        des.first->first->setRandomGen( pRandomGen );
-        des.first->first->setNeighs( 0 );
+                Adsorption* a = new Adsorption();
+                for ( pair<string, int> s: products) {
+                    a->setAdrorbed( s.first );
+                    a->setNumSites( s.second );
+                }
 
-        auto des1 = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-        des1.first->first->setName("1Neighs");
-    //    des.first->first->setConstant( true );
-        des1.first->first->init( params );
-        des1.first->first->setLattice( pLattice );
-        des1.first->first->setRandomGen( pRandomGen );
-        des1.first->first->setNeighs( 1 );
+                a->setName( proc.first );
+                a->setLattice( pLattice );
+                a->setRandomGen( pRandomGen );
+                a->setErrorHandler( pErrorHandler );
+                a->setSysParams( pParameters ); //These are the systems and constants parameters
+                a->init( proc.second ); //These are the process per se parameters
 
-        auto des2 = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-        des2.first->first->setName("2Neighs");
-    //    des.first->first->setConstant( true );
-        des2.first->first->init( params );
-        des2.first->first->setLattice( pLattice );
-        des2.first->first->setRandomGen( pRandomGen );
-        des2.first->first->setNeighs( 2 );
+                m_processMap.insert( {a, emptySet} );
 
-        auto des3 = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-        des3.first->first->setName("3Neighs");
-    //    des.first->first->setConstant( true );
-        des3.first->first->init( params );
-        des3.first->first->setLattice( pLattice );
-        des3.first->first->setRandomGen( pRandomGen );
-        des3.first->first->setNeighs( 3 );
+            } else {
 
-        auto des4 = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-        des4.first->first->setName("4Neighs");
-    //    des.first->first->setConstant( true );
-        des4.first->first->init( params );
-        des4.first->first->setLattice( pLattice );
-        des4.first->first->setRandomGen( pRandomGen );
-        des4.first->first->setNeighs( 4 );
+                for ( int vacant = 0; vacant < pLattice->getNumFirstNeihgs(); vacant++) {
 
-        auto des5 = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-        des5.first->first->setName("5Neighs");
-    //    des.first->first->setConstant( true );
-        des5.first->first->init( params );
-        des5.first->first->setLattice( pLattice );
-        des5.first->first->setRandomGen( pRandomGen );
-        des5.first->first->setNeighs( 5 );
+                    Adsorption* a = new Adsorption();
 
-        auto des6 = m_processMap.insert( { FactoryProcess::createProcess("DesorptionSimpleCubic4sMulti"), emptySet } );
-        des6.first->first->setName("6Neighs");
-    //    des.first->first->setConstant( true );
-        des6.first->first->init( params );
-        des6.first->first->setLattice( pLattice );
-        des6.first->first->setRandomGen( pRandomGen );
-        des6.first->first->setNeighs( 6 );
+                    for ( pair<string, int> s: products) {
+                        a->setAdrorbed( s.first );
+                        a->setNumSites( s.second );
+                    }
 
-        for ( Site* s:pLattice->getSites() )
-            s->setLabel("Cu"); // in all cases we start with Cu
+                    a->setNumVacantSites( vacant );
+                    a->setName( proc.first + " (" + to_string(vacant) + " N)" );
+                    a->setLattice( pLattice );
+                    a->setRandomGen( pRandomGen );
+                    a->setErrorHandler( pErrorHandler );
+                    a->setSysParams( pParameters ); //These are the systems and constants parameters
+                    a->init( proc.second ); //These are the process per se parameters
 
-        for ( auto &p:m_processMap){
-            cout << p.first->getName() << endl;
-            for ( Site* s:pLattice->getSites() ){
-                if ( p.first->rules( s ) )
-                    p.second.insert( s );
+                    m_processMap.insert( {a, emptySet} );
+                }
             }
         }
+        else if ( process.compare("Reaction") == 0 ){
+
+            vector<string> reactants;
+            vector<int> coefReactants;
+
+            for (string react: pIO->getReactants( proc.first ) ){
+                reactants.push_back(  pIO->analyzeCompound( react ).first  );
+                coefReactants.push_back(  pIO->analyzeCompound( react ).second  );
+            }
+
+            vector<string> products;
+            vector<int> coefProducts;
+
+            for (string react: pIO->getProducts( proc.first ) ){
+                products.push_back(  pIO->analyzeCompound( react ).first  );
+                coefProducts.push_back(  pIO->analyzeCompound( react ).second  );
+            }
+
+            unordered_map<string, int> reactantsmap;
+            for (string react: pIO->getReactants( proc.first ) )
+                reactantsmap.insert( pIO->analyzeCompound( react ) );
+
+            unordered_map<string, int> productsmap;
+            for (string prod: pIO->getProducts( proc.first ) )
+                productsmap.insert( pIO->analyzeCompound( prod ) );
+
+            Reaction* r = new Reaction();
+            //The name of the actual class used
+            r->setName( proc.first );
+            r->setLattice( pLattice );
+            r->setRandomGen( pRandomGen );
+            r->setErrorHandler( pErrorHandler );
+            r->setSysParams( pParameters );
+            r->setReactants( reactantsmap );
+            r->setReactants( reactants );
+            r->setProducts( productsmap);
+            r->setProducts( products);
+            r->setCoefReactants( coefReactants );
+            r->setCoefProducts( coefProducts );
+
+            r->init( proc.second ); //These are the process per se parameters
+
+            m_processMap.insert( {r, emptySet} );
+        }
+        else if ( process.compare("Desorption") == 0 ){
+
+            unordered_map<string, int> reactants;
+            for (string react: pIO->getReactants( proc.first ) )
+                reactants.insert( pIO->analyzeCompound( react ) );
+
+            unordered_map<string, int> products;
+            for (string prod: pIO->getProducts( proc.first ) )
+                products.insert( pIO->analyzeCompound( prod ) );
 
 
-    /*    auto pos = m_processMap.insert( { FactoryProcess::createProcess("AdsortpionFCC1102SMulti"), emptySet } );
-    pos.first->first->setName("AdsortpionFCC1102SMulti");
-    pos.first->first->init( params );
-    pos.first->first->setLattice( pLattice );
-    pos.first->first->setRandomGen( pRandomGen );
-    auto des = m_processMap.insert( { FactoryProcess::createProcess("DesorptionFCC110Multi"), emptySet } );
-    string name = "Desorption HAMD"; //+ std::to_string( i );
-    des.first->first->setName( name );
-    des.first->first->init( params );
-    for ( Site* s:pLattice->getSites() )
-        s->setLabel("Cu"); // in all cases we start with Cu
-    for ( auto &p:m_processMap){
-        cout << p.first->getName() << endl;
+            if (proc.second.at( proc.second.size() - 1 ).compare("all") != 0){
+
+                proc.second.push_back( to_string(1) );
+
+                Desorption* des = new Desorption();
+
+                for ( pair<string, int> s: products) {
+                    if ( s.first.compare("*") != 0 )
+                        des->setDesorbed( s.first );
+                }
+
+                des->setName( proc.first );
+                des->setLattice( pLattice );
+                des->setRandomGen( pRandomGen );
+                des->setErrorHandler( pErrorHandler );
+                des->setSysParams( pParameters ); //These are the systems and constants parameters
+                des->init( proc.second ); //These are the process per se parameters
+
+                m_processMap.insert( {des, emptySet} );
+
+            } else {
+                for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
+
+                    Desorption* des = new Desorption();
+
+                    for ( pair<string, int> s: products) {
+                        if ( s.first.compare("*") != 0 )
+                            des->setDesorbed( s.first );
+                    }
+
+                    des->setNumNeighs( neighs );
+                    des->setAllNeighs(true);
+                    des->setName( proc.first + " (" + to_string(neighs + 1) + " N)" );
+                    des->setLattice( pLattice );
+                    des->setRandomGen( pRandomGen );
+                    des->setErrorHandler( pErrorHandler );
+                    des->setSysParams( pParameters ); //These are the systems and constants parameters
+                    des->init( proc.second ); //These are the process per se parameters
+
+                    m_processMap.insert( {des, emptySet} );
+                }
+            }
+        }
+        else if ( process.compare("Diffusion") == 0 ){
+
+            unordered_map<string, int> reactants;
+            for (string react: pIO->getReactants( proc.first ) )
+                reactants.insert( pIO->analyzeCompound( react ) );
+
+            unordered_map<string, int> products;
+            for (string prod: pIO->getProducts( proc.first ) )
+                products.insert( pIO->analyzeCompound( prod ) );
+
+
+            if (proc.second.at( proc.second.size() - 1 ).compare("all") != 0){
+
+                proc.second.push_back( to_string(1) );
+
+                Diffusion* dif = new Diffusion();
+
+                for ( pair<string, int> s: products) {
+                    if ( s.first.compare("*") != 0 ) {
+
+                        std::string::size_type i = s.first.find("*");
+                        if (i != std::string::npos)
+                            dif->setDiffused( s.first.erase(i, s.first.length() ) );
+                    }
+                }
+
+                dif->setName( proc.first );
+                dif->setLattice( pLattice );
+                dif->setRandomGen( pRandomGen );
+                dif->setErrorHandler( pErrorHandler );
+                dif->setSysParams( pParameters ); //These are the systems and constants parameters
+                dif->init( proc.second ); //These are the process per se parameters
+
+                m_processMap.insert( {dif, emptySet} );
+
+            } else {
+
+                for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
+
+                    proc.second.pop_back();
+                    proc.second.push_back( to_string(neighs) );
+
+                    Diffusion* dif = new Diffusion();
+
+                    for ( pair<string, int> s: products) {
+                        if ( s.first.compare("*") != 0 ) {
+
+                            std::string::size_type i = s.first.find("*");
+                            if (i != std::string::npos)
+                                dif->setDiffused( s.first.erase(i, s.first.length() ) );
+
+                        }
+                    }
+
+                    dif->setAllNeighs(true);
+                    dif->setName( proc.first + "( " + to_string(neighs + 1) + " )"  );
+                    dif->setLattice( pLattice );
+                    dif->setRandomGen( pRandomGen );
+                    dif->setErrorHandler( pErrorHandler );
+                    dif->setSysParams( pParameters ); //These are the systems and constants parameters
+                    dif->init( proc.second ); //These are the process per se parameters
+
+                    m_processMap.insert( {dif, emptySet} );
+                }
+            }
+        }
+    }
+
+
+    /*    pLattice->getSite( 1)->setOccupied(true);
+    pLattice->getSite( 1)->setLabel("CO*");
+    pLattice->getSite( 2)->setOccupied(true);
+    pLattice->getSite( 2)->setLabel("O*");
+
+    pLattice->getSite( 7)->setOccupied(true);
+    pLattice->getSite( 7)->setLabel("O*");
+    pLattice->getSite( 12)->setOccupied(true);
+    pLattice->getSite( 12)->setLabel("CO*");
+
+    pLattice->getSite( 23)->setOccupied(true);
+    pLattice->getSite( 23)->setLabel("O*");
+    pLattice->getSite( 24)->setOccupied(true);
+    pLattice->getSite( 24)->setLabel("O*");
+
+
+    pLattice->getSite( 18)->setOccupied(true);
+    pLattice->getSite( 18)->setLabel("O*");
+    pLattice->getSite( 19)->setOccupied(true);
+    pLattice->getSite( 19)->setLabel("CO*");*/
+
+    //Partition the lattice sites depending on the rules of each process
+    for ( auto &p:m_processMap ){
         for ( Site* s:pLattice->getSites() ){
             if ( p.first->rules( s ) )
                 p.second.insert( s );
         }
-    } -- > Enable for FCC */
+    }
 
-//    pLattice->print();
-    cout << " Lets see! " << endl;
-}
+    //The end time of the simulation
+    m_dEndTime = pParameters->getEndTime();
 
-void Apothesis::exec()
-{
-    Site* tempSite = 0;
-    //--------------- Open files for writting ---------------------->
-    pIO->openRoughnessFile( "testRough" );
-    pIO->writeLogOutput("Running " + to_string( m_dEndTime ) + " sec");
-
-    //Calculate first time the total probability (R) --------------------------//
+    //Calculate first time the total probability (R) for apothesis to start --------------------------//
     m_dRTot = 0.0;
     for (pair<Process*, set< Site* > > p:m_processMap)
-        m_dRTot += p.first->getProbability()*(double)p.second.size();
+        m_dRTot += p.first->getRateConstant()*(double)p.second.size();
 
-    m_dEndTime = 10;
+    //Start writing in the output log
+    //Write initialization info to log
+    pIO->writeLogOutput("Apothesis build on " __TIMESTAMP__);
+    pIO->writeLogOutput("-------------------------------------------------");
+    pIO->writeLogOutput("");
+    pIO->writeLogOutput("End time " + to_string( m_dEndTime ) + " sec");
+    pIO->writeLogOutput("Temperature " + to_string( pParameters->getTemperature() ) + " K");
+    pIO->writeLogOutput("Pressure " + to_string( pParameters->getPressure() ) + " P");
+    pIO->writeLogOutput("Random init num " + to_string( pParameters->getRandGenInit() ) );
+
+    string toWrite = "\n";
+    toWrite = "Lattice " +  pLattice->getTypeAsString() + " ";
+    toWrite += to_string( pLattice->getX() ) + " ";
+    toWrite += to_string( pLattice->getY() ) + " ";
+
+    if ( pLattice->hasSteps() ) {
+        toWrite += "stepped  ";
+        toWrite += to_string( pLattice->getNumSteps() ) + " ";
+        toWrite += to_string( pLattice->getStepHeight() ) + " ";
+    }
+    pIO->writeInOutput( toWrite );
+
+    pIO->writeInOutput(" ");
+    pIO->writeLogOutput("Processes");
+    for (auto proc:pParameters->getProcessesInfo() ) {
+        toWrite = "";
+        toWrite = proc.first + " ";
+        for ( string str:proc.second ) {
+            toWrite += str + " ";
+        }
+        pIO->writeLogOutput( toWrite );
+    }
 
     pIO->writeInOutput( "\n" );
     pIO->writeInOutput( "********************************************************************" );
-    string output = "Time (s)"s + '\t' + "Growth rate (Ang/min)" + '\t' + "RMS (-)" + '\t' ;
+
+    string output = "Time (s)"s + '\t' + "Growth rate (ML/s)" + '\t' + "RMS (-)" + '\t' + "Micro-roughness (-)" + '\t';
 
     for ( auto &p:m_processMap)
         output += p.first->getName() + '\t';
 
     for ( auto &p:m_processMap)
-        output += "Coverage " + p.first->getName() + '\t';
+        output +=  p.first->getName() + " (class size)" + '\t';
+
+    m_bHasGrowth = pParameters->getGrowthSpecies().size() > 0 ? true : false;
+    m_bReportCoverages = pParameters->getCoverageSpecies().size() > 0 ? true : false;
+
+    // If the user wants the coverages to be reported
+    if ( m_bReportCoverages ){
+        unordered_map<string, double> covs = pLattice->computeCoverages( pParameters->getCoverageSpecies() );
+        for ( auto &p:covs)
+            output +=  p.first + " (coverage)" + '\t';
+    }
+
     pIO->writeInOutput( output );
 
-    int iTimeStep = 0;
-    pIO->writeLatticeHeights( m_dProcTime, iTimeStep );
+    if ( m_bHasGrowth )
+        pIO->writeLatticeHeights( m_dProcTime );
 
-    double writeLatHeigsEvery = 0.001; //in s
-    double timeToWrite = 0;
+    if ( m_bReportCoverages )
+        pIO->writeLatticeSpecies( m_dProcTime  );
+}
 
-    pLattice->writeXYZ( "initial.xzy" );
+void Apothesis::exec()
+{
+    double timeToWriteLog = 0;
+    double timeToWriteLattice = 0;
+
+    string output ="";
+
+    //    pLattice->writeXYZ( "initial.xzy" );
 
     // The average height for the first time
-    double aveDH1 = pProperties->getMeanDH();
+    double timeGrowth = 0;
+    double meanDHPrevStep = pProperties->getMeanDH();
 
-    output = std::to_string(m_dProcTime) + '\t' + std::to_string( fabs(pProperties->getMeanDH() - aveDH1)*2.55*60 ) + '\t' + std::to_string( pProperties->getRMS() )  + '\t' ;
+    ostringstream streamObj;
+    streamObj.precision(15);
+    streamObj << m_dProcTime;
+    //output = std::to_string( m_dProcTime ) + '\t'
+    output = streamObj.str() + '\t'
+            + std::to_string( 0.0  ) + '\t'
+            + std::to_string( pProperties->getRMS() )  + '\t'
+            + std::to_string( pProperties->getMicroroughness() )  + '\t';
+
     for ( auto &p:m_processMap)
         output += std::to_string( p.first->getNumEventHappened() ) + '\t';
 
     for ( auto &p:m_processMap)
-        output += std::to_string( (double)p.second.size()/(double)pLattice->getSize() ) + '\t';
-    pIO->writeInOutput( output );
+        output += std::to_string( p.second.size() ) + '\t';
 
-    double oldTime = 0.0;
-    double oldAve = 0.0;
+    if ( m_bReportCoverages ) {
+        unordered_map<string, double> covs = pLattice->computeCoverages( pParameters->getCoverageSpecies() );
+
+        for ( auto &p:covs)
+            output += std::to_string( p.second ) + '\t';
+    }
+
+    pIO->writeInOutput( output );
 
     while ( m_dProcTime <= m_dEndTime ){
         //1. Get a random numbers
         m_dSum = 0.0;
         m_dRandom = pRandomGen->getDoubleRandom();
-        oldTime = m_dProcTime;
-        oldAve = pProperties->getMeanDH();
-        for ( auto &p:m_processMap){
-            if ( !p.first->isConstant() )
-                m_dProcRate = p.first->getProbability()*(double)p.second.size();
-            else {
-                if ( !p.second.empty() )
-                    m_dProcRate = p.first->getProbability();
-            }
 
+        for ( auto &p:m_processMap){
+            m_dProcRate = p.first->getRateConstant()*(double)p.second.size();
             m_dSum += m_dProcRate/m_dRTot;
 
             //2. Pick a process according to the rates
             if ( m_dRandom <= m_dSum ){
 
-                // Calculate the average Height before the
-                aveDH1 = pProperties->getMeanDH();
+                // Calculate the average Height before
+                //                aveDH1 = pProperties->getMeanDH();
 
                 //Get a random number which is the ID of the site where this process can performed
                 m_iSiteNum = pRandomGen->getIntRandom(0, p.second.size() - 1 );
@@ -328,10 +496,12 @@ void Apothesis::exec()
                 //3. From this process pick the random site with id and perform it:
                 Site* s = *next( p.second.begin(), m_iSiteNum );
 
-                cout << "Performing: " << p.first->getName() << endl;
+                //Compute the average height before performing the process to measure the growth rate
+                meanDHPrevStep = pProperties->getMeanDH();
+                timeGrowth = m_dProcTime;
 
                 p.first->perform( s );
-                tempSite = s;
+
                 //Count the event for this class
                 p.first->eventHappened();
 
@@ -351,76 +521,94 @@ void Apothesis::exec()
                     }
                 }
 
-                //4. Re-compute the processes rates and re-compute Rtot (see ppt).
+                //4. Re-compute the processes rates and re-compute Rtot (see ppt)
                 m_dRTot = 0.0;
-                for (pair<Process*, set< Site* > > p3:m_processMap){
-                    if ( p3.first->isConstant() ){
-                        if ( p3.second.size() != 0 )
-                            m_dRTot += p3.first->getProbability();
-                    }
-                    else
-                        m_dRTot += p3.first->getProbability()*(double)p3.second.size();
-                }
-
-               pLattice->print();
-
-               for (auto &p2:m_processMap)
-                   cout << p2.first->getName() << " " << p2.second.size() << endl;
-
-
-                cout << "Timestep: " << iTimeStep << endl;
+                for (pair<Process*, set< Site* > > p3:m_processMap)
+                    m_dRTot += p3.first->getRateConstant()*(double)p3.second.size();
 
                 //5. Compute dt = -ln(ksi)/Rtot
                 m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
+//                                cout << m_dt << endl;
                 break;
             }
         }
 
         //6. advance time: time += dt;
         m_dProcTime += m_dt;
-        timeToWrite += m_dt;
 
-        cout << m_dProcTime << endl;
+        //Here compute the time for writing
+        timeToWriteLog += m_dt;
+        timeToWriteLattice += m_dt;
 
- //       for (auto &p2:m_processMap)
- //           cout << p2.first->getName() << " " << p2.second.size() << endl;
+        if ( timeToWriteLog >= pParameters->getWriteLogTimeStep() ){
 
+            ostringstream streamObj;
+            streamObj.precision(15);
+            streamObj << m_dProcTime;
+            //            output = std::to_string( m_dProcTime ) + '\t'
+            output = streamObj.str() + '\t'
+                    + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) / ( (pLattice->getSize()*(m_dProcTime - timeGrowth) ) ) )+ '\t'
+                    + std::to_string( pProperties->getRMS() )  + '\t'
+                    + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
-        //Write the lattice heights
-        iTimeStep++;
-
-        if ( timeToWrite >= writeLatHeigsEvery ) {
-            string latName = "lattice_" + to_string( m_dProcTime )+".xyz";
- //           pLattice->writeXYZ( latName );
- //          pLattice->writeLatticeHeights( m_dProcTime, iTimeStep );
-
-            output = std::to_string(m_dProcTime) + '\t' + std::to_string( 2.55*fabs(pProperties->getMeanDH() ) ) + '\t' + std::to_string( pProperties->getRMS() )  + '\t' ;
             for ( auto &p:m_processMap)
                 output += std::to_string( p.first->getNumEventHappened() ) + '\t';
 
             for ( auto &p:m_processMap)
-                output += p.first->getName() + '\t' + std::to_string( (double)p.first->getProbability()*p.second.size() ) + '\t';
-            pIO->writeInOutput( output );
+                output += std::to_string( p.second.size() ) + '\t';
 
-            timeToWrite = 0.0;
+            if ( m_bReportCoverages ) {
+                unordered_map<string, double> covs = pLattice->computeCoverages( pParameters->getCoverageSpecies() );
+
+                for ( auto &p:covs)
+                    output += std::to_string( p.second ) + '\t';
+            }
+
+            pIO->writeInOutput( output );
+            timeToWriteLog = 0.0;
+        }
+
+        if ( timeToWriteLattice >= pParameters->getWriteLatticeTimeStep() ) {
+
+            if ( m_bHasGrowth )
+                pIO->writeLatticeHeights( m_dProcTime );
+
+            if ( m_bReportCoverages )
+                pIO->writeLatticeSpecies( m_dProcTime  );
+
+            timeToWriteLattice = 0.0;
         }
     }
 
-    string latName = "lattice_" + to_string( m_dProcTime )+".xyz";
-    pLattice->writeXYZ( latName );
+    ostringstream streamObjEnd;
+    streamObjEnd.precision(15);
+    streamObjEnd << m_dProcTime;
+    //            output = std::to_string( m_dProcTime ) + '\t'
+    output = streamObjEnd.str() + '\t'
+            + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/ (pLattice->getSize())*(m_dProcTime - timeGrowth)  ) + '\t'
+            + std::to_string( pProperties->getRMS() )  + '\t'
+            + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
-    pIO->writeLatticeHeights( m_dProcTime, iTimeStep );
-
-    //    output = std::to_string(m_dProcTime) + '\t' + std::to_string( 2.55*60.*fabs(pProperties->getMeanDH() - aveDH1)/m_dt ) + '\t' + std::to_string( pProperties->getRMS() )  + '\t' ;
-    output = std::to_string(m_dProcTime) + '\t' + std::to_string( 2.55*fabs(pProperties->getMeanDH() ) ) + '\t' + std::to_string( pProperties->getRMS() )  + '\t' ;
     for ( auto &p:m_processMap)
         output += std::to_string( p.first->getNumEventHappened() ) + '\t';
 
     for ( auto &p:m_processMap)
-        output += p.first->getName() + '\t' + std::to_string( (double)p.first->getProbability() ) + '\t';
+        output += std::to_string( p.second.size() ) + '\t';
+
+    if ( m_bReportCoverages ) {
+        unordered_map<string, double> covs = pLattice->computeCoverages( pParameters->getCoverageSpecies() );
+
+        for ( auto &p:covs)
+            output += std::to_string( p.second ) + '\t';
+    }
+
     pIO->writeInOutput( output );
 
-    //    pLattice->print();
+    if ( m_bHasGrowth )
+        pIO->writeLatticeHeights( m_dProcTime );
+
+    if ( m_bReportCoverages )
+        pIO->writeLatticeSpecies( m_dProcTime  );
 }
 
 void Apothesis::logSuccessfulRead(bool read, string parameter)
@@ -434,12 +622,31 @@ void Apothesis::logSuccessfulRead(bool read, string parameter)
          : pErrorHandler->error_simple_msg("No " + parameter + " found in input file");
 }
 
-map<string, Species *> Apothesis::getAllSpecies()
-{
-    return m_species;
-}
+string Apothesis::mf_analyzeProc(string process){
 
-Species *Apothesis::getSpecies(string species)
-{
-    return m_species[species];
+    vector<string> parts = pIO->split( process, "->");
+
+    //It is reaction or adsoprtion
+    if ( pIO->contains( parts[0], "+" ) ){
+
+        vector<string> reactants = pIO->split( parts[ 0 ], "+" );
+        for (string s:reactants){
+            pIO->trim(s);
+            if (  pIO->analyzeCompound( s ).first.compare("*") == 0 )
+                return "Adsorption";
+        }
+
+        return "Reaction";
+    }
+    else {
+
+        vector<string> products = pIO->split( parts[ 1 ], "+" );
+        for (string s:products){
+            pIO->trim(s);
+            if (  s.compare("*") == 0 )
+                return "Desorption";
+        }
+
+        return "Diffusion";
+    }
 }

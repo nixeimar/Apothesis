@@ -28,7 +28,7 @@ HEADERS += apothesis.h \
            aux/random_generator.h \
            aux/randomc.h \
            pointers.h \
-           processes/reaction_new.h \
+           processes/reaction.h \
            properties.h \
            register.h \
            error/errorhandler.h \
@@ -42,8 +42,7 @@ HEADERS += apothesis.h \
            processes/io.h \
            processes/parameters.h \
            processes/process.h \
-           species/species.h \
-           species/species_new.h
+           species/species.h
 
 SOURCES += apothesis.cpp \
            IO/io.cpp \
@@ -56,7 +55,7 @@ SOURCES += apothesis.cpp \
            lattice/lattice.cpp \
            main.cpp \
            processes/abstract_process.cpp \
-           processes/reaction_new.cpp \
+           processes/reaction.cpp \
            properties.cpp \
            error/errorhandler.cpp \
            lattice/FCC.cpp \
@@ -67,5 +66,4 @@ SOURCES += apothesis.cpp \
            processes/factory_process.cpp \
            processes/parameters.cpp \
            processes/process.cpp \
-           species/species.cpp \
-           species/species_new.cpp
+           species/species.cpp

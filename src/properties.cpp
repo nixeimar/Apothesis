@@ -61,7 +61,7 @@ double Properties::getMeanDH()
 
         mean = sum/iCount;
     }
-    else if ( m_lattice->getType() == Lattice::BCC ){
+    else if ( m_lattice->getType() == Lattice::SimpleCubic ){
         for (unsigned int i=0; i< m_lattice->getSize(); i++)
             sum += m_lattice->getSite( i )->getHeight();
 

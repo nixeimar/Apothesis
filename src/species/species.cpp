@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -16,22 +16,6 @@
 //============================================================================
 
 #include "species.h"
-
-Species::Species
-(
-    string name,
-    double mw,
-    double stoicCoeff,
-    int id
-)
-:
-m_name(name),
-m_mw(mw),
-m_stoicCoeff(stoicCoeff),
-m_id(id)
-{  
-    ;
-}
 
 Species::Species
 (
@@ -60,12 +44,6 @@ string Species::getName()
 double Species::getMW()
 {
     return m_mw;
-}
-
-// Return 
-double Species::getStoicCoeff()
-{
-    return m_stoicCoeff;
 }
 
 const int Species::getId()

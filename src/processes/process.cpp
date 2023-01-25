@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -17,5 +17,14 @@
 
 #include "process.h"
 
-Process::Process():m_iHappened(0),m_bUncoAccept(false){}
+Process::Process():m_iHappened(0),m_bUncoAccept(false), m_iNumSites(1),  m_iNumNeighs(1), m_iNumVacant(1) {}
 Process::~Process(){}
+
+bool Process::isPartOfGrowth( string name){
+    for ( string species: m_pUtilParams->getGrowthSpecies() ){
+        if ( species.compare( name ) == 0 )
+            return true;
+    }
+
+    return false;
+}

@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 #ifndef PROPERTIES_H
 #define PROPERTIES_H
 
-#include "pointers.h"
+#include "pointers.h"`
 #include "apothesis.h"
 
 #include "lattice/lattice.h"

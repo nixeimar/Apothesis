@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -28,40 +28,78 @@ public:
     Desorption();
     ~Desorption() override;
 
-    inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
-    inline double getActivationEnergy(){ return m_dActNrg; }
-
     inline void setTargetSite( Site* site ){ m_Site = site;}
     inline Site* getTargetSite(){ return m_Site; }
 
-    inline void setSpecies( species_new* s ){ m_Species = s; }
-    inline species_new* getSpecies(){ return m_Species; }
-
-    inline void setNumNeigh( int n ){ m_iNeigh = n; }
-
-    double getProbability() override;
+    double getRateConstant() override;
     bool rules( Site* s) override;
     void perform( Site* ) override;
+    void init(vector<string> params) override;
+
+    /// Sets the specific adsorption species label according to the input
+    void setDesorbed(string desorbed){ m_sDesorbed = desorbed;}
+
+    /// If keyrowd "all" is added then this is true
+    inline void setAllNeighs( bool all ){  m_bAllNeihs = all; }
 
 private:
 
-    bool mf_isInLowerStep( Site* s );
-    bool mf_isInHigherStep( Site* s );
+    /// Pointers to functions in order to switch between different functions
+    void (Desorption::*m_fType)();
+    bool (Desorption::*m_fRules)(Site*);
+    void (Desorption::*m_fPerform)(Site*);
 
-    ///The activation energy of the adsoprtion process
-    double m_dActNrg;
+    /// Arrhenius type rate
+    void arrheniusType();
+
+    /// Constant value for the adsorption process rate i.e.
+    /// constant 1.0 [ML/s]
+    void constantType();
+
+    /// Checks if the site is in lower step (only for simple cubic lattice)
+    bool isInLowerStep( Site* s );
+
+    /// Checks if the site is in higher step (only for simple cubic lattice)
+    bool isInHigherStep( Site* s );
+
+    /// If the keyword 'all' is used then the rule is based on the neighbours
+    bool allRule(Site* s);
+
+    /// Returns always true - this is actually as having uncoditional acceptance
+    bool basicRule(Site* s);
+
+    /// For desorbing different species the site must be occupied
+    bool difSpeciesRule(Site* s);
+
+    /// The process is PVD
+    void singleSpeciesSimpleDesorption(Site*);
+
+    /// The process is CVD or ALD
+    void multiSpeciesSimpleDesorption(Site*);
 
     ///The site that adsorption will be performed
     Site* m_Site;
 
-    ///The species that must be removed from the site
-    species_new* m_Species;
-
-    ///The neighbours of this diffusion process
-    int m_iNeigh;
-
     /// A member function to calculate the neighbors of a given site
-    int mf_calculateNeighbors(Site*);
+    int calculateNeighbors(Site*);
+
+    /// The number of neighbours of this process
+    int m_iNumNeighs;
+
+    /// The species to be asdorbed
+    string m_sDesorbed;
+
+    /// If the user has "all" keyword this is set to true
+    bool m_bAllNeihs;
+
+    /// The desorption rate given as input from the user with the constant keyword
+    double m_dDesorptionRate;
+
+    /// The vibrational frequency  (if arrhenius)
+    double m_dv0;
+
+    /// The activation energy of the process (if arrhenius)
+    double m_dEd;
 
     REGISTER_PROCESS(Desorption)
 };

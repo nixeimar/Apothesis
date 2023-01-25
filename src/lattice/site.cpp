@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ namespace SurfaceTiles
   void Site::addSpecies(Species *s)
   {
     m_species.push_back(s);
-    m_mapSpecies[s->getId()]++;
+//    m_mapSpecies[s->getId()]++;
   }
 
   void Site::removeSpecies(Species *s)

@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -36,12 +36,12 @@ void FCC::build()
             cout << "Error:The size of the lattice must be an even number in each direction." << endl;
             for ( int i = 0; i < m_vSites.size(); i++)
                 delete m_vSites[ i ];
-            EXIT;
+            EXIT
         }
 
         if ( m_iSizeX == 0 || m_iSizeY == 0) {
             m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
-            EXIT;
+            EXIT
         }
 
         if ( m_iHeight < 5) {
@@ -110,6 +110,8 @@ FCC::~FCC()
     for ( int i = 0; i<getSize(); i++)
         delete m_vSites[i];
 }
+
+void FCC::buildSteps( int iSizeX, int iSizeY ){;}
 
 void FCC::mf_neigh_100()
 {
@@ -500,12 +502,12 @@ void FCC::mf_neigh_110()
     for ( int i = 0; i < getSize(); i++){
         if ( m_vSites[ i ]->get1stNeihbors()[ 0 ].size() != 4 ){
             cout << "Check level 0 neighs in site: " << i << endl;
-            EXIT;
+            EXIT
         }
 
         if ( m_vSites[ i ]->get1stNeihbors()[ 0 ].size() != 4 ){
             cout << "Check level 0 neighs in site: " << i << endl;
-            EXIT;
+            EXIT
         }
     }
 }
@@ -1169,3 +1171,5 @@ void FCC::check()
 
     cout << "Activation: " << endl;
 }
+
+unordered_map<string, double> FCC::computeCoverages( vector<string> species){ }

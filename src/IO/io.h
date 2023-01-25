@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <sstream>
 
 
 #include "pointers.h"
@@ -69,7 +70,7 @@ class IO: public Pointers
     /// Dafault: The path of the executable
     /// Input file name: input.kmc
     /// Output file name: output.log
-    void init( int argc, char* argv[] );
+    void init(int argc, char* argv[]);
 
     /// Returns the path of the input file.
     string getInputPath() const;
@@ -139,7 +140,7 @@ class IO: public Pointers
     ///  Check of a string starts with a certain string. TODO: This should be transferred to a generic string class).
     inline bool startsWith( string str, string substr )
       {
-      if ( str.find( substr ) != string::npos )
+      if ( str.find( substr, 0 ) == 0 )
         return true;
       else
         return false;
@@ -154,7 +155,10 @@ class IO: public Pointers
     void writeLatticeInfo();
 
     /// Write the height of each site
-    void writeLatticeHeights( double time, int timeStep );
+    void writeLatticeHeights( double time );
+
+    /// Write the sepcies in each site
+    void writeLatticeSpecies( double time );
 
     /// Export the lattice in xyz format. Not implemented yet
     void exportLatticeXYZ();
@@ -167,6 +171,25 @@ class IO: public Pointers
 
     /// Open roughness file for writting the roughness
     void openRoughnessFile( string );
+
+    /// Set lattice using input info
+    void initializeLattice();
+
+    /// Given a process of the form A + * -> A(s) or A(s) -> A + * or A(s) -> A(s) or A(s) + B(s) -> AB(s) returns the reactants with the "*" included.
+    vector<string> getReactants( string process );
+
+    /// Given a process of the form A + * -> A(s) or A(s) -> A + * or A(s) -> A(s) or A(s) + B(s) -> AB(s) returns the products with the "*" included.
+    vector<string> getProducts( string process );
+
+    /// Given a reactant e.g. 2A it returns the 2 as stoichiometric coefficient and the A as the reactant
+    pair<string, double> analyzeCompound( string reactant );
+
+    // Trim from both ends (in place)
+    static inline string trim(std::string &s) {
+        rtrim(s);
+        ltrim(s);
+        return s;
+    }
 
   protected:
     /// The type of lattice
@@ -197,6 +220,9 @@ class IO: public Pointers
     /// Lattice keyword
     string m_sLattice;
 
+    /// steps keyword
+    string m_sSteps;
+
     /// Temperature keyword
     string m_sTemperature;
 
@@ -209,6 +235,37 @@ class IO: public Pointers
     /// End time keyword.
     string m_sTime;
 
-  };
+    /// Random generator initiliazer.
+    string m_sRandom;
+
+    /// Species molecular weight
+    string m_sSpecies;
+
+    /// Writer keyword
+    string m_sWrite;
+
+    /// The keyword for the species fomring the growing film
+    string m_sGrowth;
+
+    /// The keyword for the precursors forming the film
+    string m_sPrecursors;
+
+    /// The keyword for reporting additionl properties (currently only supports coverages)
+    string m_sReport;
+
+    // trim from start (in place)
+    static inline void ltrim(std::string &s) {
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+            return !std::isspace(ch);
+        }));
+    }
+
+    // trim from end (in place)
+    static inline void rtrim(std::string &s) {
+        s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+            return !std::isspace(ch);
+        }).base(), s.end());
+    }
+};
 
 #endif // IO_H

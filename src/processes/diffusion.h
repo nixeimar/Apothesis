@@ -1,5 +1,5 @@
 //============================================================================
-//    Apothesis: A kinetic Monte Calro (KMC) code for deposotion processes.
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -32,27 +32,50 @@ public:
     Diffusion();
     ~Diffusion() override;
 
-    inline void setActivationEnergy( double nrg ){ m_dActNrg = nrg; }
-    inline double getActivationEnergy(){ return m_dActNrg; }
-
     inline void setOriginSite( Site* site ){ m_originSite = site;}
     inline Site* getOriginSite(){ return m_originSite; }
 
     inline void setTargetSite( Site* site ){ m_targetSite = site;}
     inline Site* getTargetSite(){ return m_targetSite; }
 
-    inline void setSpecies( species_new* s ){ m_Species = s; }
-    inline species_new* getSpecies(){ return m_Species; }
+//    inline void setNeigh(int n ){ m_iNumNeighs = n; }
 
-    inline void setNeigh(int n ){ m_iNeigh = n; }
-
-    double getProbability() override;
+    double getRateConstant() override;
     bool rules( Site* ) override;
     void perform( Site* ) override;
 
+    void init(vector<string> params) override;
+
+    void arrhenius(double v0, double E, double Em, double T,  int n);
+
+    /// Sets the specific adsorption species label according to the input
+    void setDiffused(string diffused){ m_sDiffused = diffused;}
+
+    /// If keyrowd "all" is added then this is true
+    inline void setAllNeighs( bool all ){  m_bAllNeihs = all; }
+
 private:
-    ///The activation energy of the adsoprtion process
-    double m_dActNrg;
+
+    bool mf_isInLowerStep( Site* s );
+    bool mf_isInHigherStep( Site* s );
+
+    /// Pointers to functions in order to switch between different functions
+    bool (Diffusion::*m_fRules)(Site*);
+    void (Diffusion::*m_fPerform)(Site*);
+
+    bool isPartOfGrowth();
+
+    /// If the keyword 'all' is used then the rule is based on the neighbours
+    bool mf_allRule(Site* s);
+
+    /// Returns always true - this is actually as having uncoditional acceptance
+    bool mf_basicRule(Site* s);
+
+    /// The process is PVD
+    void mf_performPVD(Site*);
+
+    /// The process is CVD or ALD
+    void mf_performCVDALD(Site*);
 
     ///The site to for the adsorption to be removed
     Site* m_originSite;
@@ -60,14 +83,17 @@ private:
     ///The site that adsorption will be performed
     Site* m_targetSite;
 
-    ///The species that must be removed from the site
-    species_new* m_Species;
-
     /// A member function to calculate the neighbors of a given site
     int mf_calculateNeighbors(Site*);
 
     /// The number of neighbours for calculating the probability
-    int m_iNeigh;
+    int m_iNumNeighs;
+
+    /// The label of the diffused species
+    string m_sDiffused;
+
+    /// If the user has "all" keyword this is set to true
+    bool m_bAllNeihs;
 
     REGISTER_PROCESS( Diffusion )
 };
