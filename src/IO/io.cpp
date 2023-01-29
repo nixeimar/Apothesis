@@ -675,7 +675,7 @@ void IO::writeLatticeHeights( double time  )
     streamObj.precision(15);
     streamObj << time;
 
-    std::string name="Height" + streamObj.str() + ".dat";
+    std::string name="Height_" + streamObj.str() + ".dat";
     std::ofstream file(name);
 
     file << "Time (s): " << time << endl;
