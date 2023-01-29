@@ -169,7 +169,7 @@ void IO::readInputFile()
             vsTokens.erase( it, vsTokens.end() );
 
             for (string s:vsTokens )
-                m_parameters->insertInGrowthSpecies(s);
+                m_parameters->insertInGrowthSpecies(s + "*");
 
             continue;
         }
@@ -675,7 +675,7 @@ void IO::writeLatticeHeights( double time  )
     streamObj.precision(15);
     streamObj << time;
 
-    std::string name="SurfaceSpecies_" + streamObj.str() + ".dat";
+    std::string name="Height" + streamObj.str() + ".dat";
     std::ofstream file(name);
 
     file << "Time (s): " << time << endl;

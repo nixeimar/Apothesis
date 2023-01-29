@@ -51,7 +51,7 @@ void Reaction::init(vector<string> params){
     if ( gSpecies.size() <= 0 )
         m_bLeadsToGrowth = false;
     else {
-        for ( string rs:m_vReactants) {
+        for ( string rs:m_vProducts) {
             for ( string gs:gSpecies ){
                 if ( gs.compare( rs) == 0 ) {
                     m_bLeadsToGrowth = true;
@@ -66,9 +66,8 @@ void Reaction::init(vector<string> params){
         m_fPerform = &Reaction::catalysis;
     }
     else {
-
         if ( allReactCoeffOne() && m_vReactants.size() == 2 && m_vProducts.size() <= 2  ){
-            m_fRules = &Reaction::oneOneRule;
+            m_fRules = &Reaction::simpleRule;
             m_fPerform = &Reaction::oneOneReaction;
         }
     }
@@ -107,17 +106,53 @@ void Reaction::arrheniusType(double v0, double Ed, double T)
     m_dProb = v0*exp(-Ed/(k*T));
 }
 
-void Reaction::oneOneReaction( Site* s){
+bool Reaction::leadsToGrowth(Site* s){
+    vector<string> gSpecies = m_pUtilParams->getGrowthSpecies();
 
+    for ( string gs:gSpecies ){
+        if ( gs.compare( s->getLabel() ) == 0 ) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
-//Reaction A* + B* -> AB*
-bool Reaction::oneOneRule( Site* s){
-    if ( !s->isOccupied() ) return false;
-    if ( !isReactant( s ) )
-        return false;
+void Reaction::oneOneReaction( Site* s){
+    vector<Site* > potSites;
+    for ( Site* s1:s->getNeighs() ) {
+        if ( s1->getLabel().compare( s->getLabel() ) != 0 && isReactant(s1) )
+            potSites.push_back( s1 );
+    }
 
-    return true;
+    int lucky = m_pRandomGen->getIntRandom(0, potSites.size() - 1 );
+    Site* otherSite = potSites[ lucky ];
+
+    s->setOccupied(false);
+    if ( m_mTransformationMatrix[ s->getLabel() ] != "" )
+        s->setLabel( m_mTransformationMatrix[s->getLabel() ] );
+    else
+        s->setLabel( s->getBelowLabel() );
+
+    if ( leadsToGrowth(s) )
+        s->increaseHeight(1);
+
+    m_seAffectedSites.insert( s );
+    for ( Site* neigh:s->getNeighs() )
+        m_seAffectedSites.insert( neigh );
+
+    otherSite->setOccupied( false );
+    if ( m_mTransformationMatrix[ otherSite->getLabel() ] != "" )
+        otherSite->setLabel( m_mTransformationMatrix[s->getLabel() ] );
+    else
+        otherSite->setLabel( s->getBelowLabel() );
+
+    if ( leadsToGrowth(otherSite) )
+        otherSite->increaseHeight(1);
+
+    m_seAffectedSites.insert( otherSite );
+    for ( Site* neigh:otherSite->getNeighs() )
+        m_seAffectedSites.insert( neigh );
 }
 
 bool Reaction::simpleRule(Site* s){
@@ -145,13 +180,6 @@ bool Reaction::isReactant(Site* s){
     if ( it != m_mReactants.end() )
         return true;
     return false;
-
-//    for ( pair<string, double> p:m_mReactants ) {
-//        if ( p.first.compare( s->getLabel() ) == 0 )
-//            return true;
-//    }
-
- //   return false;
 }
 
 void Reaction::perform(Site *s)

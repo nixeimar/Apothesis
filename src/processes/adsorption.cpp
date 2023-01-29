@@ -124,7 +124,7 @@ bool Adsorption::multiSpeciesRule( Site* s){
 int Adsorption::countVacantSites( Site* s){
     int iCount = 0;
     for (Site* neigh:s->getNeighs() ){
-        if ( !neigh->isOccupied() && s->getHeight() >= neigh->getHeight() )
+        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() )
             iCount++;
     }
 
