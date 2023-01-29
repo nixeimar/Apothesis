@@ -67,7 +67,7 @@ void Reaction::init(vector<string> params){
     }
     else {
         if ( allReactCoeffOne() && m_vReactants.size() == 2 && m_vProducts.size() <= 2  ){
-            m_fRules = &Reaction::simpleRule;
+            m_fRules = &Reaction::oneOneRule;
             m_fPerform = &Reaction::oneOneReaction;
         }
     }
@@ -154,6 +154,21 @@ void Reaction::oneOneReaction( Site* s){
     for ( Site* neigh:otherSite->getNeighs() )
         m_seAffectedSites.insert( neigh );
 }
+
+bool Reaction::oneOneRule(Site* s){
+    if ( !s->isOccupied() ) return false;
+
+    if ( !isReactant( s ) ) return false;
+    else {
+        //Search for the other sites
+        for ( Site* s1:s->getNeighs() ) {
+            if ( s1->getLabel().compare( s->getLabel() ) != 0 && isReactant( s1 ) && s->getHeight() == s1->getHeight() )
+                return true;
+        }
+    }
+    return false;
+}
+
 
 bool Reaction::simpleRule(Site* s){
     if ( !s->isOccupied() ) return false;
