@@ -1,4 +1,5 @@
-![My Image](https://github.com/nixeimar/Apothesis/blob/master/ApothesisLogo_small2.png)
+<p align="center"> ![My Image](https://github.com/nixeimar/Apothesis/blob/master/ApothesisLogo_small2.png) </p>
+  
 
 Apothesis 
 --------------------------------------------------------------------------------------------------------------
