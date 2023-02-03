@@ -1,4 +1,4 @@
-<p align="center"> <img width="200" src="https://github.com/nixeimar/Apothesis/blob/master/ApothesisLogo_small2.png" alt="Material Bread logo" > </p>
+<p align="center"> <img width="200" src="https://github.com/nixeimar/Apothesis/blob/master/ApothesisLogo_small.png" alt="Material Bread logo" > </p>
   
 
 Apothesis 
