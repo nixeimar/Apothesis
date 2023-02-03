@@ -27,18 +27,6 @@ cmake ..
 make -j
 ```
 
-
-Test
-
---------------------------------------------------------------------------------------------------------------
-There is a test input file under `test` directory to explore the logic behind the development and the I/O operations. 
-To try it run
-```
-cd test
-../src/build/Apothesis .
-```
-This should work fine. 
-
 Contact information:
 Nikolaos (Nikos) Cheimarios: 
 nixeimar@chemeng.ntua.gr
