@@ -1,4 +1,4 @@
-![My Image](ApothesisLogo.jpg)
+![My Image](https://github.com/nixeimar/Apothesis/blob/master/ApothesisLogo.png)
 
 General
 --------------------------------------------------------------------------------------------------------------
