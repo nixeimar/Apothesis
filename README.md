@@ -1,4 +1,4 @@
-![My Image](https://github.com/nixeimar/Apothesis/blob/master/ApothesisLogo_small2.png) - Apothesis 
+![My Image](https://github.com/nixeimar/Apothesis/blob/master/ApothesisLogo_small3.png) - Apothesis 
 --------------------------------------------------------------------------------------------------------------
 Apothesis is an open source software for simulating deposition processes via the kinetic Monte Carlo method. 
 This is the first step for creating a generalized kinetic Monte Carlo code 
