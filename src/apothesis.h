@@ -25,7 +25,6 @@
 #include <functional>
 #include <set>
 #include <valarray>
-#include "species/species.h"
 
 #define EXIT { printf("Apothesis terminated. \n"); exit( EXIT_FAILURE ); }
 
@@ -80,12 +79,6 @@ public:
     /// Function to log to output file whether a parameter is properly read
     void logSuccessfulRead(bool read, string parameter);
 
-    /// Return access to list of species
-    map<string, Species*> getAllSpecies();
-
-    // Return species
-    Species* getSpecies(string species);
-
     /// Return normalized probabilities of each process
     vector<double> calculateProbabilities(vector<MicroProcesses::Process*>);
 
@@ -122,7 +115,7 @@ private:
     double m_dProcTime;
     double m_dProcRate;
     double m_dt;
-    double m_dRandom;
+    double m_iRandom;
     double m_dSum;
     int m_iSiteNum;
     bool m_bReportCoverages;

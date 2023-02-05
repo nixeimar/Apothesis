@@ -51,9 +51,6 @@ class Lattice: public Pointers
     /// Sets the type of the lattice.
     void setType( string );
 
-    /// Sets the species on lattice sites.
-    void setSpecies(Species*);
-
     /// Stores the species on lattice sites.
     inline void setLabels( string species ) { m_sLabel = species; }
 
@@ -184,8 +181,6 @@ protected:
     int m_iStepHeight;
 
     map< string, set<int > >* m_pProcMap;
-
-    Species * m_pSpecies;
 
     /// The cut of the lattice [ 100, 110, 111 ]
     string m_sOrient;
