@@ -20,7 +20,7 @@
 namespace Utils  
 {
 
-  Parameters::Parameters(Apothesis* apothesis ):Pointers(apothesis){;}
+  Parameters::Parameters(Apothesis* apothesis ):Pointers(apothesis), m_iRand(0){}
   
   void Parameters::setProcess( string processName, vector< string > processParams )
   {
@@ -35,7 +35,7 @@ namespace Utils
       cout << "Time "<< m_dTime << endl;
       cout << "Temperature "<< m_dT << endl;
       cout << "Pressure "<< m_dP << endl;
-      cout << "Random gen init " << m_dRand << endl;
+      cout << "Random gen init " << m_iRand << endl;
       cout << "Write in log every " << m_dWriteLogEvery << endl;
       cout << "Write lattice every " << m_dWriteLatticeEvery << endl;
       cout << "---------------------------------------- " << endl;

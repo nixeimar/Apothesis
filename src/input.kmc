@@ -1,5 +1,5 @@
 #Build the lattice 
-lattice: SimpleCubic 50 50 10 A 
+lattice: SimpleCubic 100 100 10 A 
 
 #The growing film
 growth: CO2
@@ -9,28 +9,28 @@ growth: CO2
 #steps: 2 1 
 
 #Total time in seconds
-time: 100
+time: 300
 
 #T in Kelvin
-temperature: 500
+temperature: 1000
 
 #P in Pascal
-pressure: 101325:
+pressure: 101325
 
 #Random number initialization
-random: 1234
+#random: 123434432
 
 #Simple s0*f*P/(2*pi*MW*Ctot*kb*T) -> Sticking coefficient [-], f [-], C_tot [sites/m2], MW [kg/mol] 
 #A + * -> A*: simple 0.1 2.0e-4 1.0e+19 0.032 
 
 #Constant is a constant value in [ML/s]
-CO + * -> CO*: constant 0.55 #0.389
+CO + * -> CO*: constant 0.4 #0.389
 
 #Constant is a constant value in [ML/s]	
-O2 + 2* -> 2O*: constant 0.1125 all #0.611
+O2 + 2* -> 2O*: constant 0.15 all #0.611
 		  		
 #A reaction 												
-CO* + O* -> CO2*: constant 1.e+5
+CO* + O* -> CO2*: constant 1.e+15
 
 #Example of growth reaction. The 1sr reactant is tranformed to the 1st product, the 2nd reactan to the 2nd product etc. 
 #If #Reactants > #Products then only the first Nth reactants are tranformed to the (N-x) reactants. 

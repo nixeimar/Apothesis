@@ -87,7 +87,10 @@ void Apothesis::init()
         pIO->openOutputFile("Output");
 
     // Initialize Random generator
-    pRandomGen->init( pParameters->getRandGenInit() );
+    if ( pParameters->getRandGenInit() != 0.0 )
+        pRandomGen->init( pParameters->getRandGenInit() );
+    else
+        pRandomGen->init( time(nullptr) );
 
     //Create the lattice
     pLattice->setLabels( pParameters->getLatticeLabels() );
@@ -478,14 +481,14 @@ void Apothesis::exec()
     while ( m_dProcTime <= m_dEndTime ){
         //1. Get a random numbers
         m_dSum = 0.0;
-        m_dRandom = pRandomGen->getDoubleRandom();
+        m_iRandom = pRandomGen->getDoubleRandom();
 
         for ( auto &p:m_processMap){
             m_dProcRate = p.first->getRateConstant()*(double)p.second.size();
             m_dSum += m_dProcRate/m_dRTot;
 
             //2. Pick a process according to the rates
-            if ( m_dRandom <= m_dSum ){
+            if ( m_iRandom <= m_dSum ){
 
                 // Calculate the average Height before
                 //                aveDH1 = pProperties->getMeanDH();

@@ -121,12 +121,34 @@ bool Reaction::leadsToGrowth(Site* s){
 void Reaction::oneOneReaction( Site* s){
     vector<Site* > potSites;
     for ( Site* s1:s->getNeighs() ) {
-        if ( s1->getLabel().compare( s->getLabel() ) != 0 && isReactant(s1) )
+        if ( s1->getLabel().compare( s->getLabel() ) != 0 && isReactant(s1) && s1->getHeight() == s->getHeight() )
             potSites.push_back( s1 );
     }
 
     int lucky = m_pRandomGen->getIntRandom(0, potSites.size() - 1 );
+
     Site* otherSite = potSites[ lucky ];
+
+    if ( !isReactant(otherSite ) || otherSite->getLabel().compare( s->getLabel() ) == 0 ||
+         otherSite->getHeight() != s->getHeight() ){
+        cout << s->getID() << " " << otherSite->getID() << endl;
+        cout << "Problem with performing reaction." << endl;
+        otherSite->setOccupied( false );
+        otherSite->setLabel( "X" );
+
+        std::string name = std::string("SurfaceSpecies") + std::string("ERROR") + std::string(".dat");
+        std::ofstream file(name);
+
+        file << "Time (s): " << time << endl;
+
+        for (int i = 0; i < m_pLattice->getY(); i++){
+            for (int j = 0; j < m_pLattice->getX(); j++)
+                file << m_pLattice->getSite( i*m_pLattice->getX() + j )->getLabel() << " " ;
+
+            file << endl;
+        }
+        EXIT;
+    }
 
     s->setOccupied(false);
     if ( m_mTransformationMatrix[ s->getLabel() ] != "" )

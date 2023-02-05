@@ -41,8 +41,6 @@ void Lattice::setY(int y) { m_iSizeY = y; }
 
 void Lattice::setInitialHeight(int height) { m_iHeight = height; }
 
-void Lattice::setSpecies(Species * s) { m_pSpecies = s; }
-
 Lattice::~Lattice()
 {
 }

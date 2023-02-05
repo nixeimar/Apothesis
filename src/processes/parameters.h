@@ -76,10 +76,10 @@ class Parameters: public Pointers
     void setProcess(string, vector< string > );
 
     /// Store the initial value for the random generator
-    inline void setRandGenInit( double val ) { m_dRand = val; }
+    inline void setRandGenInit( int val ) { m_iRand = val; }
 
     /// Store the initial value for the random generator
-    inline double getRandGenInit(){return m_dRand; }
+    inline int getRandGenInit(){return m_iRand; }
 
     /// Get the processes to be created.
     map< string,  vector< string > > getProcessesInfo() { return m_mProcs; }
@@ -128,7 +128,7 @@ class Parameters: public Pointers
     double m_dTime;
 
     /// The random generator initializer
-    double m_dRand;
+    double m_iRand;
 
     /// Stores the processes as read from the input file allong with their parameters.
     map< string,  vector< string > > m_mProcs;
