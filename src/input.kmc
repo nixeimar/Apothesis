@@ -2,7 +2,7 @@
 lattice: SimpleCubic 50 50 10 A 
 
 #The growing film
-#growth: CO2
+growth: CO2
 
 #Create steps (alaways in the x-direaction - see above 1st number), number of steps 
 #(e.g. if 10 each step will consist of two atoms), height difference (each step will increase by 20, so 1st step: 10, 2nd: 30, 3rd, 50 etc) 
@@ -30,7 +30,7 @@ CO + * -> CO*: constant 0.55 #0.389
 O2 + 2* -> 2O*: constant 0.1125 all #0.611
 		  		
 #A reaction 												
-CO* + O* -> CO2: constant 1.e+5
+CO* + O* -> CO2*: constant 1.e+5
 
 #Example of growth reaction. The 1sr reactant is tranformed to the 1st product, the 2nd reactan to the 2nd product etc. 
 #If #Reactants > #Products then only the first Nth reactants are tranformed to the (N-x) reactants. 

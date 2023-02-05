@@ -98,6 +98,8 @@ private:
 
     /// Constructs the transformation matrix.
     void buildTransformationMatrix();
+
+    bool leadsToGrowth(Site* s);
 };
 
 #endif // REACTION_NEW_H
