@@ -22,9 +22,18 @@ I will provided a cmake at first instance.
 
 Compile - cmake
 --------------------------------------------------------------------------------------------------------------
-On linux systems, navigate to build
+On linux systems, create build directory. 
+
+Inside the build directory type 
+
+
 ``` 
 cmake ..
+``` 
+
+and then 
+
+``` 
 make -j
 ```
 

@@ -38,10 +38,10 @@ HEADERS += ./src/apothesis.h \
            ./src/lattice/site.h \
            ./src/processes/abstract_process.h \
            ./src/processes/desorption.h \
-           ./src/ processes/diffusion.h \
+           ./src/processes/diffusion.h \
            ./src/processes/factory_process.h \
-           ./src/ processes/io.h \
-           ./src/ processes/parameters.h \
+           ./src/processes/io.h \
+           ./src/processes/parameters.h \
            ./src/processes/process.h
 #           ./src/ species/species.h
 

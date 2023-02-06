@@ -25,8 +25,13 @@ set(header_files
     ./src/processes/reaction.h
     ./src/error/errorhandler.h
     ./src/processes/parameters.h
-    ./src/IO/read.h
+    ./src/IO/xyz_reader.h
+    ./src/IO/cml_reader.h
+    ./src/IO/reader.h
+    ./src/IO/io.h
     ./src/properties.h
+    ./src/aux/random_generator.h
+    ./src/aux/randomc.h
 )
 set(essential_src_files
     ./src/main.cpp
@@ -34,11 +39,12 @@ set(essential_src_files
     ./src/apothesis.cpp
 )
 set(IO_files
-    ./src/IO/read.cpp
-)
+    ./src/IO/xyz_reader.cpp
+    ./src/IO/cml_reader.cpp
+    ./src/IO/reader.cpp
+    ./src/IO/io.cpp
+ )
 set(aux_files
-    ./src/aux/random_generator.h
-    ./src/aux/randomc.h
     ./src/aux/random_generator.cpp
     ./src/aux/mersenne.cpp
 )
@@ -51,6 +57,9 @@ set(process_files
     ./src/processes/process.cpp
     ./src/processes/parameters.cpp
     ./src/IO/io.cpp
+    ./src/IO/xyz_reader.cpp
+    ./src/IO/cml_reader.cpp
+    ./src/IO/reader.cpp
     ./src/processes/desorption.cpp
     ./src/processes/process.cpp
     ./src/processes/abstract_process.cpp
