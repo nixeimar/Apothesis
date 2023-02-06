@@ -25,7 +25,6 @@
 #include <valarray>
 
 #include "process.h"
-#include "species.h"
 
 using namespace std;
 using namespace MicroProcesses;
@@ -107,16 +106,6 @@ public:
 
     /// Get the neihbour position for this site.
     Site* getNeighPosition(NeighPoisition np){ return m_mapNeigh[np]; }
-
-    /// This will holds all the elements that can interact with the surfaces.
-    /// Important when we talk about surface reactions.
-    void addSpecies( Species* s);
-
-    /// Remove a species from the site
-    void removeSpecies( Species* s);
-
-    /// Get the species currently in the site
-    vector<Species*> getSpecies();
 
     vector<string> getSpeciesName();
 
@@ -207,8 +196,6 @@ protected:
 
     /// The list of processes that this site can participate in.
     list< Process* > m_lProcs;
-
-    vector<Species* > m_species;
 
     bool m_phantom;
 

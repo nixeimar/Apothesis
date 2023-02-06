@@ -15,7 +15,7 @@ INCLUDEPATH += . \
          ./src/lattice \
          ./src/processes \
          ./src/IO \
-         ./src/species \
+#         ./src/species \
          ./src/error
 
 # Input
@@ -42,8 +42,8 @@ HEADERS += ./src/apothesis.h \
            ./src/processes/factory_process.h \
            ./src/ processes/io.h \
            ./src/ processes/parameters.h \
-           ./src/processes/process.h \
-           ./src/ species/species.h
+           ./src/processes/process.h
+#           ./src/ species/species.h
 
 SOURCES += ./src/apothesis.cpp \
            ./src/IO/io.cpp \
@@ -66,5 +66,5 @@ SOURCES += ./src/apothesis.cpp \
            ./src/processes/diffusion.cpp \
            ./src/processes/factory_process.cpp \
            ./src/processes/parameters.cpp \
-           ./src/processes/process.cpp \
-           ./src/species/species.cpp
+           ./src/processes/process.cpp
+#           ./src/species/species.cpp

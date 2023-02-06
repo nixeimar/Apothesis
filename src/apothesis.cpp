@@ -24,7 +24,6 @@
 #include "parameters.h"
 #include "properties.h"
 #include "process.h"
-#include "species.h"
 #include "string.h"
 #include "reaction.h"
 #include "aux/random_generator.h"
