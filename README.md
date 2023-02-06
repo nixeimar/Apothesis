@@ -10,22 +10,24 @@ It is still under development but please feel free to contact me if you have som
 
 Compile - qmake
 --------------------------------------------------------------------------------------------------------------
-On linux systems in the Apothesis directory run 
+In the Apothesis directory run 
 ```
 qmake
+```
+
+and then 
+
+```
 make
 ```
 This should do the trick.
 Having QtCreator will make things a lot easier on (mostly) windows and linux OS. 
 Since the project is not based on Qt framework you can use any IDE of your choice. 
-I will provided a cmake at first instance. 
 
 Compile - cmake
 --------------------------------------------------------------------------------------------------------------
-On linux systems, create build directory. 
-
+In the Apothesis directory create build directory.
 Inside the build directory type 
-
 
 ``` 
 cmake ..
