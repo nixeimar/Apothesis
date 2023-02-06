@@ -10,19 +10,19 @@ It is still under development but please feel free to contact me if you have som
 
 Compile - qmake
 --------------------------------------------------------------------------------------------------------------
-On linux systems in the src directory run 
+On linux systems in the Apothesis directory run 
 ```
 qmake
 make
 ```
 This should do the trick.
 Having QtCreator will make things a lot easier on (mostly) windows and linux OS. 
-Since the project is not based on Qt framework (although it started like that - thats why the Qt deps) 
+Since the project is not based on Qt framework you can use any IDE of your choice. 
 I will provided a cmake at first instance. 
 
 Compile - cmake
 --------------------------------------------------------------------------------------------------------------
-On linux systems, navigate to src/build
+On linux systems, navigate to build
 ``` 
 cmake ..
 make -j
