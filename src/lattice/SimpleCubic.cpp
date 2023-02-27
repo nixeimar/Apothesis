@@ -335,7 +335,7 @@ int SimpleCubic::calculateNeighNum( int id )
     return neighs;
 }
 
-unordered_map<string, double> SimpleCubic::computeCoverages( vector<string> species ) {
+unordered_map<string, double> SimpleCubic::computeCoverages( vector<string> species )   {
     for ( string name:species){
         m_mCoverages[ name ] = 0.;
 

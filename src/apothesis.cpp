@@ -452,6 +452,7 @@ void Apothesis::exec()
     // The average height for the first time
     double timeGrowth = 0;
     double meanDHPrevStep = pProperties->getMeanDH();
+    double prevTimeStep = 0.0;
 
     ostringstream streamObj;
     streamObj.precision(15);
@@ -499,7 +500,6 @@ void Apothesis::exec()
                 Site* s = *next( p.second.begin(), m_iSiteNum );
 
                 //Compute the average height before performing the process to measure the growth rate
-                meanDHPrevStep = pProperties->getMeanDH();
                 timeGrowth = m_dProcTime;
 
                 p.first->perform( s );
@@ -546,12 +546,19 @@ void Apothesis::exec()
 
             ostringstream streamObj;
             streamObj.precision(15);
+//            streamObj << std::scientific;
             streamObj << m_dProcTime;
-            //            output = std::to_string( m_dProcTime ) + '\t'
+
             output = streamObj.str() + '\t'
-                    + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) / ( (pLattice->getSize()*(m_dProcTime - timeGrowth) ) ) )+ '\t'
+                    + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) / ( ((m_dProcTime - prevTimeStep) ) ) )+ '\t'
                     + std::to_string( pProperties->getRMS() )  + '\t'
                     + std::to_string( pProperties->getMicroroughness() )  + '\t';
+
+            cout << pProperties->getMeanDH()  <<  " " << meanDHPrevStep <<  " " << m_dProcTime << " " << prevTimeStep << " " <<  pProperties->getMeanDH() - meanDHPrevStep << endl;
+
+            //Store info to be used next time
+            meanDHPrevStep = pProperties->getMeanDH();
+            prevTimeStep = m_dProcTime;
 
             for ( auto &p:m_processMap)
                 output += std::to_string( p.first->getNumEventHappened() ) + '\t';
@@ -587,7 +594,7 @@ void Apothesis::exec()
     streamObjEnd << m_dProcTime;
     //            output = std::to_string( m_dProcTime ) + '\t'
     output = streamObjEnd.str() + '\t'
-            + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/ (pLattice->getSize())*(m_dProcTime - timeGrowth)  ) + '\t'
+            + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/ (m_dProcTime - timeToWriteLog)  ) + '\t'
             + std::to_string( pProperties->getRMS() )  + '\t'
             + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
