@@ -109,8 +109,11 @@ void Reaction::arrheniusType(double v0, double Ed, double T)
 bool Reaction::leadsToGrowth(Site* s){
     vector<string> gSpecies = m_pUtilParams->getGrowthSpecies();
 
+    if ( m_mTransformationMatrix[ s->getLabel() ] == "")
+        return false;
+
     for ( string gs:gSpecies ){
-        if ( gs.compare( s->getLabel() ) == 0 ) {
+        if ( gs.compare( m_mTransformationMatrix[ s->getLabel() ] ) == 0 ) {
             return true;
         }
     }
@@ -129,7 +132,7 @@ void Reaction::oneOneReaction( Site* s){
 
     Site* otherSite = potSites[ lucky ];
 
-    if ( !isReactant(otherSite ) || otherSite->getLabel().compare( s->getLabel() ) == 0 ||
+    if ( !isReactant(s ) || !isReactant(otherSite ) || otherSite->getLabel().compare( s->getLabel() ) == 0 ||
          otherSite->getHeight() != s->getHeight() ){
         cout << s->getID() << " " << otherSite->getID() << endl;
         cout << "Problem with performing reaction." << endl;
@@ -150,14 +153,18 @@ void Reaction::oneOneReaction( Site* s){
         EXIT;
     }
 
+
+    if ( leadsToGrowth(s) )
+        s->increaseHeight(1);
+
+    if ( leadsToGrowth(otherSite) )
+        otherSite->increaseHeight(1);
+
     s->setOccupied(false);
     if ( m_mTransformationMatrix[ s->getLabel() ] != "" )
         s->setLabel( m_mTransformationMatrix[s->getLabel() ] );
     else
         s->setLabel( s->getBelowLabel() );
-
-    if ( leadsToGrowth(s) )
-        s->increaseHeight(1);
 
     m_seAffectedSites.insert( s );
     for ( Site* neigh:s->getNeighs() )
@@ -165,12 +172,9 @@ void Reaction::oneOneReaction( Site* s){
 
     otherSite->setOccupied( false );
     if ( m_mTransformationMatrix[ otherSite->getLabel() ] != "" )
-        otherSite->setLabel( m_mTransformationMatrix[s->getLabel() ] );
+        otherSite->setLabel( m_mTransformationMatrix[ otherSite->getLabel() ] );
     else
-        otherSite->setLabel( s->getBelowLabel() );
-
-    if ( leadsToGrowth(otherSite) )
-        otherSite->increaseHeight(1);
+        otherSite->setLabel( otherSite->getBelowLabel() );
 
     m_seAffectedSites.insert( otherSite );
     for ( Site* neigh:otherSite->getNeighs() )
