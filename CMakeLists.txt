@@ -44,9 +44,9 @@ set(IO_files
     ./src/IO/reader.cpp
     ./src/IO/io.cpp
  )
-set(aux_files
-    ./src/aux/random_generator.cpp
-    ./src/aux/mersenne.cpp
+set(extLibs_files
+    ./src/extLibs/random_generator.cpp
+    ./src/extLibs/mersenne.cpp
 )
 set(process_files
     ./src/processes/adsorption.cpp
