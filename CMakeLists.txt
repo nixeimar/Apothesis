@@ -84,7 +84,7 @@ add_executable(${PROJECT_NAME} ./src/main.cpp
     ${IO_files}
     ${lattice_files}
     ${species_files}
-    ${aux_files}
+    ${extLibs_files}
     ${essential_src_files}
 )
 
