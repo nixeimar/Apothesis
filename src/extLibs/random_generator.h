@@ -7,7 +7,7 @@
 #include <iostream>
 #include "time.h"
 
-#include "aux/randomc.h"
+#include "extLibs/randomc.h"
 
 class CRandomMersenne;
 

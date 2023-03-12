@@ -26,7 +26,7 @@
 #include "process.h"
 #include "string.h"
 #include "reaction.h"
-#include "aux/random_generator.h"
+#include "extLibs/random_generator.h"
 #include <bits/stdc++.h>
 #include "reader.h"
 #include "reaction.h"

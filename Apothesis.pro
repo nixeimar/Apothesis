@@ -26,8 +26,8 @@ HEADERS += ./src/apothesis.h \
            ./src/IO/xyz_reader.h \
            ./src/lattice/SimpleCubic.h \
            ./src/processes/adsorption.h \
-           ./src/aux/random_generator.h \
-           ./src/aux/randomc.h \
+           ./src/extLibs/random_generator.h \
+           ./src/extLibs/randomc.h \
            ./src/pointers.h \
            ./src/processes/reaction.h \
            ./src/properties.h \
@@ -50,8 +50,8 @@ SOURCES += ./src/apothesis.cpp \
            ./src/IO/cml_reader.cpp \
            ./src/IO/reader.cpp \
            ./src/IO/xyz_reader.cpp \
-           ./src/aux/mersenne.cpp \
-           ./src/aux/random_generator.cpp \
+           ./src/extLibs/mersenne.cpp \
+           ./src/extLibs/random_generator.cpp \
            ./src/lattice/SimpleCubic.cpp \
            ./src/lattice/lattice.cpp \
            ./src/main.cpp \
