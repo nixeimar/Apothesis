@@ -30,8 +30,8 @@ set(header_files
     ./src/IO/reader.h
     ./src/IO/io.h
     ./src/properties.h
-    ./src/aux/random_generator.h
-    ./src/aux/randomc.h
+    ./src/extLibs/random_generator.h
+    ./src/extLibs/randomc.h
 )
 set(essential_src_files
     ./src/main.cpp
