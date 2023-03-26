@@ -20,8 +20,30 @@ and then
 ```
 make
 ```
+From `src/input.kmc` copy the `input.kmc` file.
+
+Paste the `input.kmc` file in the `Apothesis` folder.
+
+And then in terminal type
+```
+./apothesis
+
+```
+to run the simulation.
+
 This should do the trick.
+
 Having QtCreator will make things a lot easier on (mostly) windows and linux OS. 
+If you are more comfortable using Qt GUI then follow,
+
+Open Qt creater and go to `Open Projects` and open the `Apothesis.pro` file.
+Then hit `Configure Project`.
+
+After this move up a directory from the `Apothesis` directory and you should see the Qt build folder `build-Apothesis-Desktop-Debug`.
+Paste the `input.kmc` file there.
+
+Now you can run the application.
+
 Since the project is not based on Qt framework you can use any IDE of your choice. 
 
 Compile - cmake
@@ -37,6 +59,11 @@ and then
 
 ``` 
 make -j
+```
+From `src/input.kmc` copy the `input.kmc` file and put it inside the build folder and then in terminal type
+```
+./Apothesis
+
 ```
 
 Contact information:
