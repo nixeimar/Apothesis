@@ -191,6 +191,7 @@ void Apothesis::init()
                 coefProducts.push_back(  pIO->analyzeCompound( react ).second  );
             }
 
+
             unordered_map<string, int> reactantsmap;
             for (string react: pIO->getReactants( proc.first ) )
                 reactantsmap.insert( pIO->analyzeCompound( react ) );

@@ -1,0 +1,39 @@
+{
+  "Lattice":
+  {
+    "Type": "FCC",
+    "dims": [4, 4, 10]
+  },
+  "Iterations": 105,
+  "Temperature": 400,
+  "Pressure": 101325,
+  "Species":
+  {
+    "CuAMD":
+    {
+      "mw": 145,
+      "Interactions": []
+    }
+  },
+  "Process":
+  {
+    "Adsorption":
+    {
+      "Species": ["CuAMD"],
+      "Sticking": [0.5, 0.5],
+      "MassFraction": [1]
+    },
+    "Reaction":
+     {
+       "Species": ["CuAMD", "Cu"],
+       "Stoichiometry": [-1, 1],
+       "Energy": 66,
+       "PreExp": 1e-10,
+       "Immobilized": "true"
+     }
+  },
+  "config":
+  {
+    "debug": "Off"
+  }
+}

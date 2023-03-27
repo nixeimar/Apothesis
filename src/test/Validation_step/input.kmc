@@ -1,0 +1,43 @@
+{
+  "Lattice":
+  {
+    "Type": "BCC",
+    "dims": [20, 10, 10],
+    "Step": [20, 4, 2]
+  },
+  "Time": 0.05,
+  "Temperature": 1100,
+  "Pressure": 101325,
+  "Species":
+  {
+    "Cu":
+    {
+      "mw": 145
+    }
+  },
+  "Process":
+  {
+    "Adsorption":
+    {
+      "Species": ["Cu"],
+      "Sticking": [0.1],
+      "MassFraction": [1]
+    },
+    "Desorption":
+    {
+      "Species": ["Cu"],
+      "Energy": [1.1811e-19],
+      "Frequency": [10e13]
+    },
+    "Diffusion":
+    {
+      "Species": ["Cu"],
+      "Energy": [1.1811e-19],
+      "Frequency": [10e13]
+    }
+  },
+  "config":
+  {
+    "debug": "On"
+  }
+}
