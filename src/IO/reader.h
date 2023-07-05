@@ -9,9 +9,6 @@
 #include <map>
 #include <algorithm>
 
-#include "lattice.h"
-#include "FCC.h"
-#include "SimpleCubic.h"
 #include "pointers.h"
 #include "apothesis.h"
 #include "errorhandler.h"
@@ -56,6 +53,7 @@ public:
         m_LatticeType["NONE"] = Lattice::NONE;
         m_LatticeType["SimpleCubic"] = Lattice::SimpleCubic;
         m_LatticeType["FCC"] = Lattice::FCC;
+        m_LatticeType["HCP"] = Lattice::HCP;
     }
 
     inline void setInputPath( string inputPath ) {
