@@ -18,7 +18,6 @@
 #include "pointers.h"
 #include "apothesis.h"
 #include "lattice/lattice.h"
-#include "FCC.h"
 #include "io.h"
 #include "errorhandler.h"
 #include "parameters.h"
@@ -30,6 +29,11 @@
 #include <bits/stdc++.h>
 #include "reader.h"
 #include "reaction.h"
+
+#include "lattice.h"
+#include "FCC.h"
+#include "HCP.h"
+#include "SimpleCubic.h"
 
 #include "factory_process.h"
 
@@ -56,7 +60,7 @@ Apothesis::Apothesis(int argc, char *argv[])
     pRandomGen = new RandomGen::RandomGenerator( this );
 
     /* This must be constructed before the input */
-    pLattice = new SimpleCubic(this);
+    pLattice = new FCC(this);
 
     // Create input instance
     pIO = new IO(this);
@@ -91,7 +95,17 @@ void Apothesis::init()
     else
         pRandomGen->init( time(nullptr) );
 
-    //Create the lattice
+    //Create the lattice after reading the parameters form the file
+    if ( pParameters->getLatticeType() == "SimpleCubic" )
+        pLattice = new SimpleCubic(this);
+    else if ( pParameters->getLatticeType() == "FCC" )
+        pLattice = new FCC(this);
+    else if ( pParameters->getLatticeType() == "HCP" )
+        pLattice = new HCP(this);
+
+    pLattice->setX( pParameters->getLatticeXDim() );
+    pLattice->setY( pParameters->getLatticeYDim() );
+    pLattice->setInitialHeight( pParameters->getLatticeHeight() );
     pLattice->setLabels( pParameters->getLatticeLabels() );
     pLattice->build();
 
