@@ -73,7 +73,7 @@ void Reader::parseFile(){
 
     }
 
-    initializeLattice();
+  //  initializeLattice();
 }
 
 void Reader::openInputFile(string path){
@@ -87,7 +87,7 @@ void Reader::openInputFile(string path){
 }
 
 //Todo: Remove this from here!  It is initialization ...
-void Reader::initializeLattice(){
+/*void Reader::initializeLattice(){
 
     switch (m_LatticeType[m_sLatticeType])
     {
@@ -138,7 +138,7 @@ void Reader::initializeLattice(){
     m_lattice->setX(m_vLatticeDims[0]);
     m_lattice->setY(m_vLatticeDims[1]);
     m_lattice->setInitialHeight(m_vLatticeDims[2]);
-}
+}*/
 
 vector<string> Reader::inputFileLines()
 {
