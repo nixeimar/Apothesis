@@ -164,7 +164,7 @@ void FCC::mf_neigh_110()
             m_vSites[ iPos ]->setNeighPosition( m_vSites[ iPos + m_iSizeX ],  Site::WEST);
 
             m_vSites[ iPos ]->set1stNeibors(0, m_vSites[ iPos + 2 ]); //East
-            m_vSites[ iPos ]->setNeighPosition( m_vSites[ iPos + m_iSizeX ],  Site::WEST);
+            m_vSites[ iPos ]->setNeighPosition( m_vSites[ iPos + m_iSizeX ],  Site::EAST);
 
             //Next|Previous level
             if ( iPos%2 == 0){

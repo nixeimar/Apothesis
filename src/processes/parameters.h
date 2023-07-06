@@ -117,7 +117,29 @@ class Parameters: public Pointers
     /// Returns the species for which to compute coverage for
     inline vector<string> getCoverageSpecies(){ return m_vCovSpecies; }
 
+    /// Sets the type of the lattice
+    inline void setLatticeType( string type ){ m_sLatticeType = type; }
+
+    /// Returns the type of the lattice
+    inline string getLatticeType(){ return m_sLatticeType; }
+
+    /// Sets the dimensions of the lattice
+    inline void setLatticeXDim( int x ){ m_iX = x; }
+    inline void setLatticeYDim( int y ){ m_iY = y; }
+    inline void setLatticeHeight( int h ){ m_iH = h; }
+
+    inline int getLatticeXDim(){ return m_iX; }
+    inline int getLatticeYDim(){ return m_iY; }
+    inline int getLatticeHeight(){ return m_iH; }
+
   protected:
+
+    /// Parameters of the lattice
+    int m_iX, m_iY, m_iH;
+
+    /// The type of the lattice
+    string m_sLatticeType;
+
     /// The temperature [K].
     double m_dT;
 

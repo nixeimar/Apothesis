@@ -63,6 +63,13 @@ public:
     /// Calculate the number of neighbor based on the height
     int calculateNeighNum(int id);
 
+    void writeLatticeHeights(double, int){;}
+
+    inline int getNumFirstNeihgs() override { return 6; }
+
+    inline bool isStepped() { return m_bHasSteps; }
+
+    unordered_map<string, double> computeCoverages( vector<string> species);
     void writeLatticeHeights(double, int);
 
     inline int getNumFirstNeihgs() override { return 5; }

@@ -39,7 +39,8 @@ class Lattice: public Pointers
        enum Type{
                NONE,
                SimpleCubic,
-               FCC
+               FCC,
+               HCP
                };
 
     /// Constructor
