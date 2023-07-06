@@ -54,6 +54,9 @@ public:
     /// Build the lattice with an intitial height.
     void build() override;
 
+    /// Create stepped surface
+    void buildSteps() override;
+
     /// Sets the minimun initial height for the lattice.
     void setInitialHeight(int height);
 
@@ -67,6 +70,13 @@ public:
     inline bool isStepped() { return m_bHasSteps; }
 
     unordered_map<string, double> computeCoverages( vector<string> species);
+    void writeLatticeHeights(double, int);
+
+    inline int getNumFirstNeihgs() override { return 5; }
+
+    inline bool isStepped() { return m_bHasSteps; }
+
+    unordered_map<string, double> computeCoverages(vector<string> species) override;
 
 protected:
     /// Build the neighbours for the BCC lattice for each site.
