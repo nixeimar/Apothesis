@@ -96,6 +96,7 @@ void HCP::build()
         EXIT
     }
 
+
     if (m_iHeight < 5)
     {
         m_errorHandler->warningSimple_msg("The lattice initial height is too small.Consider revising.");
@@ -117,6 +118,10 @@ void HCP::build()
     }
 
     mf_neigh();
+
+    for (Site* s:m_vSites[ 39 ]->getNeighs() ){
+        cout << s->getID() << endl;
+    }
 
     // Here we set the label of the species
     for (int i = 0; i < m_iSizeY; i++)
@@ -432,257 +437,6 @@ void HCP::mf_neigh()
         }
     }
 
-    for (int i = 1; i < m_iSizeY - 1; i++)
-    {
-        for (int j = 1; j < m_iSizeX - 1; j++)
-        {
-            m_vSites[i * m_iSizeX + j]->setNeigh(m_vSites[(i - 1) * m_iSizeX + j]);
-            m_vSites[i * m_iSizeX + j]->setNeighPosition(m_vSites[(i - 1) * m_iSizeX + j], Site::WEST_UP);
-
-            m_vSites[i * m_iSizeX + j]->setNeigh(m_vSites[(i + 1) * m_iSizeX + j]);
-            m_vSites[i * m_iSizeX + j]->setNeighPosition(m_vSites[(i + 1) * m_iSizeX + j], Site::WEST_DOWN);
-
-            m_vSites[i * m_iSizeX + j]->setNeigh(m_vSites[i * m_iSizeX + j + 1]);
-            m_vSites[i * m_iSizeX + j]->setNeighPosition(m_vSites[i * m_iSizeX + j + 1], Site::EAST);
-
-            m_vSites[i * m_iSizeX + j]->setNeigh(m_vSites[i * m_iSizeX + j - 1]);
-            m_vSites[i * m_iSizeX + j]->setNeighPosition(m_vSites[i * m_iSizeX + j - 1], Site::WEST);
-
-            m_vSites[i * m_iSizeX + j]->setNeigh(m_vSites[(i - 1) * m_iSizeX + j + 1]);
-            m_vSites[i * m_iSizeX + j]->setNeighPosition(m_vSites[(i - 1) * m_iSizeX + j + 1], Site::EAST_UP);
-
-            m_vSites[i * m_iSizeX + j]->setNeigh(m_vSites[(i + 1) * m_iSizeX + j + 1]);
-            m_vSites[i * m_iSizeX + j]->setNeighPosition(m_vSites[(i + 1) * m_iSizeX + j + 1], Site::EAST_DOWN);
-        }
-    }
-
-    int iFirstCorner = 0;
-    int iSecondCorner = m_iSizeX - 1;
-    int iThirdCorner = m_iSizeX * m_iSizeY - m_iSizeX;
-    int iForthCorner = m_iSizeX * m_iSizeY - 1;
-
-    /*First row */
-    for (int j = iFirstCorner; j <= iSecondCorner; j++)
-    {
-        if (j != 0 && j != m_iSizeX - 1)
-        {
-            m_vSites[j]->setNeigh(m_vSites[j - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - 1], Site::WEST);
-
-            m_vSites[j]->setNeigh(m_vSites[j + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + 1], Site::EAST);
-
-            m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX], Site::EAST_DOWN);
-
-            m_vSites[j]->setNeigh(m_vSites[iThirdCorner + j]);
-            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner + j], Site::EAST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[iThirdCorner + j - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner + j - 1], Site::WEST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[m_iSizeX + j - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[m_iSizeX + j - 1], Site::WEST_DOWN);
-        }
-        else if (j == iFirstCorner)
-        {
-            m_vSites[j]->setNeigh(m_vSites[iSecondCorner]);
-            m_vSites[j]->setNeighPosition(m_vSites[iSecondCorner], Site::WEST);
-
-            m_vSites[j]->setNeigh(m_vSites[1]);
-            m_vSites[j]->setNeighPosition(m_vSites[1], Site::EAST);
-
-            m_vSites[j]->setNeigh(m_vSites[iSecondCorner + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[iSecondCorner + 1], Site::EAST_DOWN);
-
-            m_vSites[j]->setNeigh(m_vSites[iThirdCorner]);
-            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner], Site::EAST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[iForthCorner]);
-            m_vSites[j]->setNeighPosition(m_vSites[iForthCorner], Site::WEST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[2 * iSecondCorner + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[2 * iSecondCorner + 1], Site::WEST_DOWN);
-        }
-        else if (j == iSecondCorner)
-        {
-            m_vSites[j]->setNeigh(m_vSites[j - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - 1], Site::WEST);
-
-            m_vSites[j]->setNeigh(m_vSites[0]);
-            m_vSites[j]->setNeighPosition(m_vSites[0], Site::EAST);
-
-            m_vSites[j]->setNeigh(m_vSites[2 * m_iSizeX - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[2 * m_iSizeX - 1], Site::EAST_DOWN);
-
-            m_vSites[j]->setNeigh(m_vSites[iForthCorner]);
-            m_vSites[j]->setNeighPosition(m_vSites[iForthCorner], Site::EAST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[iForthCorner]);
-            m_vSites[j]->setNeighPosition(m_vSites[iForthCorner - 1], Site::WEST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[2 * iSecondCorner]);
-            m_vSites[j]->setNeighPosition(m_vSites[2 * iSecondCorner], Site::WEST_DOWN);
-        }
-    }
-
-    /*Last row */
-    int iPos = 1;
-    for (int j = iThirdCorner; j <= iForthCorner; j++)
-    {
-        if (j != iThirdCorner && j != iForthCorner)
-        {
-            m_vSites[j]->setNeigh(m_vSites[j - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - 1], Site::WEST);
-
-            m_vSites[j]->setNeigh(m_vSites[j + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + 1], Site::EAST);
-
-            m_vSites[j]->setNeigh(m_vSites[iFirstCorner + iPos]);
-            m_vSites[j]->setNeighPosition(m_vSites[iFirstCorner + iPos], Site::WEST_DOWN);
-
-            m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX], Site::WEST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX + 1], Site::EAST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[iFirstCorner + iPos + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[iFirstCorner + iPos + 1], Site::WEST_DOWN);
-
-            iPos++;
-        }
-        else if (j == iThirdCorner)
-        {
-            m_vSites[j]->setNeigh(m_vSites[iForthCorner]);
-            m_vSites[j]->setNeighPosition(m_vSites[iForthCorner], Site::WEST);
-
-            m_vSites[j]->setNeigh(m_vSites[iThirdCorner + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner + 1], Site::EAST);
-
-            m_vSites[j]->setNeigh(m_vSites[iFirstCorner]);
-            m_vSites[j]->setNeighPosition(m_vSites[iFirstCorner], Site::WEST_DOWN);
-
-            m_vSites[j]->setNeigh(m_vSites[iThirdCorner - m_iSizeX]);
-            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner - m_iSizeX], Site::WEST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[iThirdCorner - m_iSizeX + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner - m_iSizeX + 1], Site::EAST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[iFirstCorner + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[iFirstCorner + 1], Site::EAST_DOWN);
-        }
-        else if (j == iForthCorner)
-        {
-            m_vSites[j]->setNeigh(m_vSites[iForthCorner - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[iForthCorner - 1], Site::WEST);
-
-            m_vSites[j]->setNeigh(m_vSites[iThirdCorner]);
-            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner], Site::EAST);
-
-            m_vSites[j]->setNeigh(m_vSites[iSecondCorner]);
-            m_vSites[j]->setNeighPosition(m_vSites[iSecondCorner], Site::WEST_DOWN);
-
-            m_vSites[j]->setNeigh(m_vSites[iThirdCorner - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner - 1], Site::WEST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[iThirdCorner - m_iSizeX]);
-            m_vSites[j]->setNeighPosition(m_vSites[iThirdCorner - m_iSizeX], Site::EAST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[iFirstCorner]);
-            m_vSites[j]->setNeighPosition(m_vSites[iFirstCorner], Site::EAST_DOWN);
-        }
-    }
-
-    /* First column*/
-    for (int j = iFirstCorner + m_iSizeX; j < iThirdCorner; j += m_iSizeX)
-    {
-        if (j % 20 == 0)
-        {
-            m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX - 1], Site::WEST);
-
-            m_vSites[j]->setNeigh(m_vSites[j + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + 1], Site::EAST);
-
-            m_vSites[j]->setNeigh(m_vSites[j + (2 * m_iSizeX) - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + (2 * m_iSizeX) - 1], Site::WEST_DOWN);
-
-            m_vSites[j]->setNeigh(m_vSites[j - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - 1], Site::WEST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX], Site::EAST_DOWN);
-
-            m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX], Site::EAST_UP);
-        }
-        else
-        {
-            m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX - 1], Site::WEST);
-
-            m_vSites[j]->setNeigh(m_vSites[j + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + 1], Site::EAST);
-
-            m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX], Site::WEST_DOWN);
-
-            m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX], Site::WEST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX + 1], Site::EAST_DOWN);
-
-            m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX + 1], Site::EAST_UP);
-        }
-    }
-
-    /* Last column*/
-    for (int j = iSecondCorner + m_iSizeX; j < iForthCorner; j += m_iSizeX)
-    {
-        if ((j + 1) % 20 == 0)
-        {
-            m_vSites[j]->setNeigh(m_vSites[j - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - 1], Site::WEST);
-
-            m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX + 1], Site::EAST);
-
-            m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX], Site::WEST_DOWN);
-
-            m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX], Site::WEST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[j - (2 * m_iSizeX) + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - (2 * m_iSizeX) + 1], Site::EAST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[j + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + 1], Site::EAST_DOWN);
-        }
-        else
-        {
-            m_vSites[j]->setNeigh(m_vSites[j - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - 1], Site::WEST);
-
-            m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX + 1], Site::EAST);
-
-            m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX], Site::EAST_DOWN);
-
-            m_vSites[j]->setNeigh(m_vSites[j - m_iSizeX]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - m_iSizeX], Site::EAST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[j - (2 * m_iSizeX) + 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j - (2 * m_iSizeX) + 1], Site::WEST_UP);
-
-            m_vSites[j]->setNeigh(m_vSites[j + m_iSizeX - 1]);
-            m_vSites[j]->setNeighPosition(m_vSites[j + m_iSizeX - 1], Site::WEST_DOWN);
-        }
-    }
 }
 
 void HCP::check()
@@ -727,3 +481,4 @@ unordered_map<string, double> HCP::computeCoverages( vector<string> species)
 
     return m_mCoverages;
 }
+
