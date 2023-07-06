@@ -37,6 +37,7 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_mLatticeType[ "NONE" ] = Lattice::NONE;
     m_mLatticeType[ "SimpleCubic" ] = Lattice::SimpleCubic;
     m_mLatticeType[ "FCC" ] = Lattice::FCC;
+    m_mLatticeType[ "HCP" ] = Lattice::HCP;
 }
 
 IO::~IO(){}
@@ -113,10 +114,13 @@ void IO::readInputFile()
             vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
             vsTokensBasic.erase( it, vsTokens.end() );
 
-            m_lattice->setType( vsTokens[ 0 ] );
+            m_parameters->setLatticeType( vsTokens[ 0 ]  );
+
+//            m_lattice->setType( vsTokens[ 0 ] );
 
             if ( isNumber( vsTokens[ 1 ] ) ){
-                m_lattice->setX( toInt(  trim( vsTokens[ 1 ] ) ) );
+                m_parameters->setLatticeXDim( toInt(  trim( vsTokens[ 1 ] ) ) );
+//                m_lattice->setX( toInt(  trim( vsTokens[ 1 ] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The x dimension of lattice is not a number.");
@@ -124,7 +128,8 @@ void IO::readInputFile()
             }
 
             if ( isNumber( vsTokens[ 2 ] ) ){
-                m_lattice->setY( toInt( trim( vsTokens[ 2 ] ) ) );
+                m_parameters->setLatticeYDim( toInt(  trim( vsTokens[ 2 ] ) ) );
+//                m_lattice->setY( toInt( trim( vsTokens[ 2 ] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The y dimension of lattice is not a number.");
@@ -132,7 +137,8 @@ void IO::readInputFile()
             }
 
             if ( isNumber( vsTokens[ 3 ] ) ){
-                m_lattice->setInitialHeight( toInt( trim( vsTokens[ 3 ] ) ) );
+                m_parameters->setLatticeHeight( toInt(  trim( vsTokens[ 2 ] ) ) );
+//                m_lattice->setInitialHeight( toInt( trim( vsTokens[ 3 ] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The height must be a  number.");

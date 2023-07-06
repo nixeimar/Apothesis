@@ -18,7 +18,7 @@
 #ifndef PROPERTIES_H
 #define PROPERTIES_H
 
-#include "pointers.h"`
+#include "pointers.h"
 #include "apothesis.h"
 
 #include "lattice/lattice.h"

@@ -31,6 +31,8 @@ void Lattice::setType(string sType)
         m_Type = FCC;
     else if (sType == "SimpleCubic")
         m_Type = SimpleCubic;
+    else if (sType == "HCP")
+        m_Type = HCP;
     else
         m_Type = NONE;
 }
@@ -60,6 +62,8 @@ Lattice::Type Lattice::getType()
         return FCC;
     case SimpleCubic:
         return SimpleCubic;
+    case HCP:
+        return HCP;
     default:
         return NONE;
     }
