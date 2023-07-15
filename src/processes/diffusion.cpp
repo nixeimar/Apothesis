@@ -109,6 +109,74 @@ bool Diffusion::mf_basicRule(Site* s){
 void Diffusion::mf_performCVDALD( Site* s){
 }
 
+
+void Diffusion::mf_diffusionSingleAtom(Site* s){
+
+    mf_calculateNeighbors(s);
+    vector<Site*>vacantSites;
+
+    Site* neighWest=s->Site::getNeighPosition(Site::WEST);
+    if(!neighWest->isOccupied()){
+        vacantSites.push_back(neighWest);
+    }
+
+    Site* neighEast=s->Site::getNeighPosition(Site::EAST);
+     if(!neighWest->isOccupied()){
+        vacantSites.push_back(neighWest);
+    }
+
+    Site* neighNorth=s->Site::getNeighPosition(Site::NORTH);
+     if(!neighWest->isOccupied()){
+        vacantSites.push_back(neighWest);
+    }
+
+    Site* neighSouth=s->Site::getNeighPosition(Site::SOUTH);
+     if(!neighWest->isOccupied()){
+        vacantSites.push_back(neighWest);
+    }
+    
+    if(vacantSites.size()==1){
+
+     Site* newAdsorbSite=vacantSites[0];
+
+    }
+    else if(vacantSites.size()==2){
+
+    Site* newAdsorbSite;
+    if ( m_pRandomGen )
+        newAdsorbSite= vacantSites[( m_pRandomGen->getIntRandom(0,1))];
+    else{
+        cout << "The random generator has not been defined." << endl;
+        EXIT
+    }
+
+    }
+    else if(vacantSites.size()==3){
+           Site* newAdsorbSite;
+    if ( m_pRandomGen )
+        newAdsorbSite= vacantSites[( m_pRandomGen->getIntRandom(0,2))];
+    else{
+        cout << "The random generator has not been defined." << endl;
+        EXIT
+    }
+
+    }
+    else if(vacantSites.size()==4){
+           Site* newAdsorbSite;
+    if ( m_pRandomGen )
+        newAdsorbSite= vacantSites[( m_pRandomGen->getIntRandom(0,3))];
+    else{
+        cout << "The random generator has not been defined." << endl;
+        EXIT
+    }
+
+    }
+    else{
+        //doNothing
+    }
+
+}
+
 void Diffusion::mf_performPVD( Site* s){
     //----- This is desorption ------------------------------------------------------------->
     s->decreaseHeight( 1 );
