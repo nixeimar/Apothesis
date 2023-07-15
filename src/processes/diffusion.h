@@ -77,6 +77,9 @@ private:
     /// The process is CVD or ALD
     void mf_performCVDALD(Site*);
 
+    /// This process diffuses an atom if there is a vacancy
+    void mf_diffusionSingleAtom(Site *);
+
     ///The site to for the adsorption to be removed
     Site* m_originSite;
 
