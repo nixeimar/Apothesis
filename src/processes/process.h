@@ -60,7 +60,6 @@ public:
 
     /// Returns the sites that are affected by this process including the site that this process is performed.
     inline set<Site*> getAffectedSites() { return m_seAffectedSites; }
-
     inline void addAffectedSite( Site* s) { m_seAffectedSites.insert(s);}
     inline void clearAffectedSite() { m_seAffectedSites.clear(); }
 
@@ -97,6 +96,9 @@ public:
 
     /// Retrurns the random generator
     RandomGen::RandomGenerator* getRandomGen(){ return m_pRandomGen; }
+
+    /// Retrurns the parameters
+    Utils::Parameters* getParameters(){ return m_pUtilParams; }
 
 protected:
     ///Pointer to the lattice of the process
