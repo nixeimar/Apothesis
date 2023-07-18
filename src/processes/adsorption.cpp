@@ -44,7 +44,6 @@ void Adsorption::init( vector<string> params )
     }
     else if (  m_sType.compare("constant") == 0  ) {
         m_dAdsorptionRate = stod(m_vParams[ 1 ]);
-
         m_fType = &Adsorption::constantType;
     }
     else {
@@ -151,6 +150,7 @@ bool Adsorption::rules( Site* s )
 }
 
 void Adsorption::signleSpeciesAdsorption(Site *s) {
+
     //Needs check!
     s->increaseHeight( 1 );
     calculateNeighbors( s );
@@ -178,9 +178,12 @@ void Adsorption::signleSpeciesAdsorption(Site *s) {
 
         neighs.erase( find( neighs.begin(), neighs.end(), neigh ) );
     }
+
+    cout << endl;
 }
 
 void Adsorption::signleSpeciesSimpleAdsorption(Site *s) {
+
     s->increaseHeight( 1 );
     calculateNeighbors( s );
     m_seAffectedSites.insert( s ) ;
@@ -192,6 +195,7 @@ void Adsorption::signleSpeciesSimpleAdsorption(Site *s) {
 }
 
 void Adsorption::multiSpeciesSimpleAdsorption(Site *s) {
+
     //Here must hold the previous site in order to appear in case of multiple species forming the growing film
     s->setOccupied( true );
     s->setBelowLabel( s->getLabel() );
@@ -200,9 +204,12 @@ void Adsorption::multiSpeciesSimpleAdsorption(Site *s) {
     m_seAffectedSites.insert( s );
     for ( Site* neigh:s->getNeighs() )
         m_seAffectedSites.insert( neigh ) ;
+
+    cout << endl;
 }
 
 void Adsorption::multiSpeciesAdsorption(Site *s) {
+
     //Here must hold the previous site in order to appear in case of multiple species forming the growing film
     s->setOccupied( true );
     s->setBelowLabel( s->getLabel() );
@@ -237,13 +244,14 @@ void Adsorption::multiSpeciesAdsorption(Site *s) {
     }
 }
 
-void Adsorption::perform( Site* s )
-{
+void Adsorption::perform( Site* s ) {
+
+    m_seAffectedSites.clear();
     (this->*m_fPerform)(s);
 }
 
-int Adsorption::calculateNeighbors(Site* s)
-{
+int Adsorption::calculateNeighbors(Site* s){
+
     int neighs = 0;
 
     if (m_pLattice->hasSteps() ){
@@ -273,8 +281,8 @@ int Adsorption::calculateNeighbors(Site* s)
     return neighs;
 }
 
-bool Adsorption::isInLowerStep(Site* s)
-{
+bool Adsorption::isInLowerStep(Site* s) {
+
     for (int j = 0; j < m_pLattice->getY(); j++)
         if ( s->getID() == m_pLattice->getSite( j, 0 )->getID() )
             return true;
@@ -282,8 +290,8 @@ bool Adsorption::isInLowerStep(Site* s)
     return false;
 }
 
-bool Adsorption::isInHigherStep(Site* s)
-{
+bool Adsorption::isInHigherStep(Site* s){
+
     for (int j = 0; j < m_pLattice->getY(); j++)
         if ( s->getID() == m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() )
             return true;

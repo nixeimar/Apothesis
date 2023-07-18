@@ -37,33 +37,37 @@ void Diffusion::init(vector<string> params)
         m_iNumNeighs = stoi( m_vParams[3] );
         arrhenius( stod(m_vParams[ 1 ]), stod(m_vParams[ 2 ]), stod(m_vParams[ 3 ]), m_pUtilParams->getTemperature(), m_iNumNeighs+1 );
     }
+    else if ( m_sType.compare("constant") == 0 ){
+        m_dDiffusionRate = stod(m_vParams[ 1 ]);
+
+        //m_fType = &Adsorption::constantType;
+        constantType();
+    }
     else {
         m_error->error_simple_msg("Not supported type of process -> " + m_sProcName + " | " + m_sType );
         EXIT
     }
 
-    //Create the rule for the adsoprtion process.
-    if ( m_bAllNeihs )
-        m_fRules = &Diffusion::mf_allRule;
+     m_isPartOfGrowth = isPartOfGrowth( m_sDiffused );
+
+    //Select the rule for the diffusion process here
+    if ( !m_isPartOfGrowth )
+        m_fRules = &diffusionBasicRule;
     else
-        m_fRules = &Diffusion::mf_basicRule;
+        m_fRules = &diffusionAllRule;
 
     //Check what process should be performed.
     //Desorption in PVD will lead to increasing the height of the site
     //Desorption in CVD will change the label of the site
-    if ( isPartOfGrowth() )
-        m_fPerform = &Diffusion::mf_performPVD;
+    if ( !m_isPartOfGrowth )
+        m_fPerform = &simpleDiffusion;
     else
-        m_fPerform = &Diffusion::mf_performCVDALD;
-
-    cout << endl;
+        m_fPerform = &performPVD;
 }
 
-bool Diffusion::isPartOfGrowth(){
-    if (std::find(m_pUtilParams->getGrowthSpecies().begin(), m_pUtilParams->getGrowthSpecies().end(), m_sDiffused ) != m_pUtilParams->getGrowthSpecies().end())
-        return true;
 
-    return false;
+void Diffusion::constantType(){
+    m_dProb = m_dDiffusionRate*m_iNumVacant;
 }
 
 void Diffusion::arrhenius(double v0, double E, double Em, double T,  int n)
@@ -97,23 +101,10 @@ void Diffusion::arrhenius(double v0, double E, double Em, double T,  int n)
     m_dProb = v0*A*exp(-(double)n*E/(k*T));
 }
 
-bool Diffusion::mf_allRule(Site* s){
-    if ( s->getNeighsNum() == m_iNumNeighs )
-        return true;
-    return false;}
-
-bool Diffusion::mf_basicRule(Site* s){
-    return true;
-}
-
-void Diffusion::mf_performCVDALD( Site* s){
-}
-
-
-void Diffusion::mf_diffusionSingleAtom(Site* s){
+/*void Diffusion::mf_diffusionSingleAtom(Site* s){
 
     mf_calculateNeighbors(s);
-    vector<Site*>vacantSites;
+    vector<Site*> vacantSites;
 
     Site* neighWest=s->Site::getNeighPosition(Site::WEST);
     if(!neighWest->isOccupied()){
@@ -121,133 +112,112 @@ void Diffusion::mf_diffusionSingleAtom(Site* s){
     }
 
     Site* neighEast=s->Site::getNeighPosition(Site::EAST);
-     if(!neighWest->isOccupied()){
+    if(!neighWest->isOccupied()){
         vacantSites.push_back(neighWest);
     }
 
     Site* neighNorth=s->Site::getNeighPosition(Site::NORTH);
-     if(!neighWest->isOccupied()){
+    if(!neighWest->isOccupied()){
         vacantSites.push_back(neighWest);
     }
 
     Site* neighSouth=s->Site::getNeighPosition(Site::SOUTH);
-     if(!neighWest->isOccupied()){
+    if(!neighWest->isOccupied()){
         vacantSites.push_back(neighWest);
     }
     
     if(vacantSites.size()==1){
 
-     Site* newAdsorbSite=vacantSites[0];
+        Site* newAdsorbSite=vacantSites[0];
 
     }
     else if(vacantSites.size()==2){
 
-    Site* newAdsorbSite;
-    if ( m_pRandomGen )
-        newAdsorbSite= vacantSites[( m_pRandomGen->getIntRandom(0,1))];
-    else{
-        cout << "The random generator has not been defined." << endl;
-        EXIT
-    }
+        Site* newAdsorbSite;
+        if ( m_pRandomGen )
+            newAdsorbSite= vacantSites[( m_pRandomGen->getIntRandom(0,1))];
+        else{
+            cout << "The random generator has not been defined." << endl;
+            EXIT
+        }
 
     }
     else if(vacantSites.size()==3){
-           Site* newAdsorbSite;
-    if ( m_pRandomGen )
-        newAdsorbSite= vacantSites[( m_pRandomGen->getIntRandom(0,2))];
-    else{
-        cout << "The random generator has not been defined." << endl;
-        EXIT
-    }
+        Site* newAdsorbSite;
+        if ( m_pRandomGen )
+            newAdsorbSite= vacantSites[( m_pRandomGen->getIntRandom(0,2))];
+        else{
+            cout << "The random generator has not been defined." << endl;
+            EXIT
+        }
 
     }
     else if(vacantSites.size()==4){
-           Site* newAdsorbSite;
-    if ( m_pRandomGen )
-        newAdsorbSite= vacantSites[( m_pRandomGen->getIntRandom(0,3))];
-    else{
-        cout << "The random generator has not been defined." << endl;
-        EXIT
-    }
+        Site* newAdsorbSite;
+        if ( m_pRandomGen )
+            newAdsorbSite= vacantSites[( m_pRandomGen->getIntRandom(0,3))];
+        else{
+            cout << "The random generator has not been defined." << endl;
+            EXIT
+        }
 
     }
     else{
         //doNothing
     }
 
-}
-
-void Diffusion::mf_performPVD( Site* s){
-    //----- This is desorption ------------------------------------------------------------->
-    s->decreaseHeight( 1 );
-    mf_calculateNeighbors( s ) ;
-    m_seAffectedSites.insert( s );
-    for ( Site* neigh:s->getNeighs() ) {
-        mf_calculateNeighbors( neigh );
-        m_seAffectedSites.insert( neigh );
-
-        for ( Site* firstNeigh:neigh->getNeighs() ){
-            firstNeigh->setNeighsNum( mf_calculateNeighbors( firstNeigh ) );
-            m_seAffectedSites.insert( firstNeigh );
-        }
-    }
-    //--------------------------------------------------------------------------------------<
-
-    // Random pick a site to re-adsorpt
-    Site* adsorbSite;
-    if ( m_pRandomGen )
-        adsorbSite = s->getNeighs().at( m_pRandomGen->getIntRandom(0, m_iNumNeighs-2) );
-    else{
-        cout << "The random generator has not been defined." << endl;
-        EXIT
-    }
-
-    //----- This is adsoprtion ------------------------------------------------------------->
-    s->increaseHeight( 1 );
-    mf_calculateNeighbors( s );
-    m_seAffectedSites.insert( s ) ;
-
-    for ( Site* neigh:s->getNeighs() ) {
-        mf_calculateNeighbors( neigh );
-        m_seAffectedSites.insert( neigh ) ;
-    }
-    //--------------------------------------------------------------------------------------<
-}
+}*/
 
 void Diffusion::perform( Site* s)
 {
-    (this->*m_fPerform)(s);
+    m_seAffectedSites.clear();
+    (*m_fPerform)(this, s);
 }
 
-int Diffusion::mf_calculateNeighbors(Site* s)
+
+bool Diffusion::rules( Site* s)
+{
+    (*m_fRules)(this, s);
+}
+
+
+int Diffusion::calculateNeighbors(Site* s)
 {
     int neighs = 0;
 
-    if ( m_pLattice->hasSteps() ){
-        for ( Site* neigh:s->getNeighs() ) {
-            if ( s->isLowerStep() && neigh->isHigherStep() ){
-                if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
-                    neighs++;
+    if ( m_isPartOfGrowth ) {
+        //If the particle of the lattice diffuses
+        if ( m_pLattice->hasSteps() ){
+            for ( Site* neigh:s->getNeighs() ) {
+                if ( s->isLowerStep() && neigh->isHigherStep() ){
+                    if ( neigh->getHeight() >= s->getHeight() + m_pLattice->getStepDiff() + 1 )
+                        neighs++;
+                }
+                else if ( neigh->isLowerStep() && s->isHigherStep() ){
+                    if ( neigh->getHeight() >= s->getHeight() - m_pLattice->getStepDiff() + 1 )
+                        neighs++;
+                }
+                else {
+                    if ( neigh->getHeight() >= s->getHeight() )
+                        neighs++;
+                }
             }
-            else if ( neigh->isLowerStep() && s->isHigherStep() ){
-                if ( neigh->getHeight() >= s->getHeight() - m_pLattice->getStepDiff() + 1 )
-                    neighs++;
-            }
-            else {
+
+            s->setNeighsNum( neighs );
+        }
+        else {
+            for ( Site* neigh:s->getNeighs() ) {
                 if ( neigh->getHeight() >= s->getHeight() )
                     neighs++;
             }
-        }
 
-        s->setNeighsNum( neighs );
-    }
-    else {
+            s->setNeighsNum( neighs );
+        }
+    } else {
         for ( Site* neigh:s->getNeighs() ) {
-            if ( neigh->getHeight() >= s->getHeight() )
+            if ( !neigh->isOccupied() )
                 neighs++;
         }
-
-        s->setNeighsNum( neighs );
     }
 
     return neighs;
@@ -271,11 +241,6 @@ bool Diffusion::mf_isInHigherStep(Site* s)
     }
 
     return false;
-}
-
-bool Diffusion::rules( Site* s)
-{
-    (this->*m_fRules)(s);
 }
 
 double Diffusion::getRateConstant(){ m_dProb; }

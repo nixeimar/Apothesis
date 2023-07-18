@@ -61,6 +61,9 @@ public:
     /// Returns the sites that are affected by this process including the site that this process is performed.
     inline set<Site*> getAffectedSites() { return m_seAffectedSites; }
 
+    inline void addAffectedSite( Site* s) { m_seAffectedSites.insert(s);}
+    inline void clearAffectedSite() { m_seAffectedSites.clear(); }
+
     inline void setName( string procName ){ m_sProcName = procName; }
     inline string getName(){ return  m_sProcName; }
 
@@ -84,15 +87,18 @@ public:
     inline void setUncoAccepted( bool isUncoAccepted) { m_bUncoAccept = isUncoAccepted; }
     inline bool isUncoAccepted() { return m_bUncoAccept; }
 
-
+    /// The number of neighbors of this site (1st neighs) that the process will perform
     inline void setNumNeighs( int i){ m_iNumNeighs = i;}
     inline int getNumNeighs(){ return m_iNumNeighs;}
 
+    /// The number of vacant sites of this sites (1st neighs) that the process will perform
     inline void setNumVacantSites( int i){ m_iNumVacant = i;}
     inline int getNumVacantSites(){ return m_iNumVacant;}
 
-protected:
+    /// Retrurns the random generator
+    RandomGen::RandomGenerator* getRandomGen(){ return m_pRandomGen; }
 
+protected:
     ///Pointer to the lattice of the process
     Lattice* m_pLattice;
 

@@ -230,6 +230,8 @@ void Reaction::perform(Site *s)
 
 void Reaction::catalysis(Site *s){
 
+    m_seAffectedSites.clear();
+
     vector<Site* > potSites;
     for ( Site* s1:s->getNeighs() ) {
         if ( s1->getLabel().compare( s->getLabel() ) != 0 && isReactant(s1) )

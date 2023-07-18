@@ -42,7 +42,9 @@ HEADERS += ./src/apothesis.h \
            ./src/processes/factory_process.h \
            ./src/processes/io.h \
            ./src/processes/parameters.h \
-           ./src/processes/process.h
+           ./src/processes/process.h \
+           src/processes/diffusion_perform.h \
+           src/processes/diffusion_rules.h
 #           ./src/ species/species.h
 
 SOURCES += ./src/apothesis.cpp \
@@ -66,5 +68,7 @@ SOURCES += ./src/apothesis.cpp \
            ./src/processes/diffusion.cpp \
            ./src/processes/factory_process.cpp \
            ./src/processes/parameters.cpp \
-           ./src/processes/process.cpp
+           ./src/processes/process.cpp \
+           src/processes/diffusion_perform.cpp \
+           src/processes/diffusion_rules.cpp
 #           ./src/species/species.cpp
