@@ -1,13 +1,13 @@
-#include "diffusion.h"
+#include "diffusion_types.h"
 
 namespace MicroProcesses
 {
 
-void Diffusion::constantType(){
-    m_dRateConstant = m_dDiffusionRate*m_iNumVacant;
+double constantType(Diffusion* proc){
+    return  proc->getDiffusionRate()*proc->getNumVacantSites();
 }
 
-void Diffusion::arrheniusType()
+double arrheniusType(Diffusion* proc)
 {
     /*--- Taken from  Lam and Vlachos (2000)PHYSICAL REVIEW B, VOLUME 64, 035401 - DOI: 10.1103/PhysRevB.64.035401 ---*/
     /*    double Na = 6.0221417930e+23;				// Avogadro's number [1/mol]
@@ -31,17 +31,18 @@ void Diffusion::arrheniusType()
     //  return 0;// A*v0*exp( -(double)any_cast<int>(m_mParams["neighs"])*E/(k*T) );
     //----------------------------------------------------------------------------------------//
 
-    double v0 = stod(m_vParams[ 1 ]);
-    double E = stod(m_vParams[ 2 ]);
-    double Em = stod(m_vParams[ 3 ]);
-    double T = m_pUtilParams->getTemperature();
-    int n = m_iNumNeighs+1;
+    double v0 = proc->getVibrationalFrequency();
+    double E = proc->getActivationEnergy();
+    double Em = proc->getDifActivationEnergy();
+    double T = proc->getParameters()->getTemperature();
+    int n = proc->getNumNeighs()+1;
 
-    double k = m_pUtilParams->dkBoltz;
-    E = E/m_pUtilParams->dAvogadroNum;
-    Em = Em/m_pUtilParams->dAvogadroNum;
+    double k = proc->getParameters()->dkBoltz;
+    E = E/proc->getParameters()->dAvogadroNum;
+    Em = Em/proc->getParameters()->dAvogadroNum;
     double A = exp(E-Em)/(k*T);
-    m_dRateConstant = v0*A*exp(-(double)n*E/(k*T));
+
+    return v0*A*exp(-(double)n*E/(k*T));
 }
 
 }

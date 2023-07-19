@@ -19,6 +19,10 @@
 
 #include "process.h"
 
+#include "desorption_types.h"
+#include "desorption_rules.h"
+#include "desorption_perform.h"
+
 namespace MicroProcesses
 {
 
@@ -38,48 +42,33 @@ public:
     /// If keyrowd "all" is added then this is true
     inline void setAllNeighs( bool all ){  m_bAllNeihs = all; }
 
-private: //pointers to functions
+    /// A member function to calculate the neighbors of a given site
+    int calculateNeighbors(Site*);
+
+    /// The rate of desorption if contant type
+    double getDesorptionRate() { return m_dDesorptionRate;}
+
+    /// Returns the activation energy if Arrhenius type
+    double getActivationEnergy() {return m_dEd; }
+
+    /// Returns the vibrational frequency if Arrhenius type
+    double getVibrationalFrequency() {return m_dv0; }
+
+    /// The number of neighbors defined for this process
+    double getNumNeighs(){ return m_iNumNeighs; }
+
+
+protected: //pointers to functions
 
     /// Pointers to functions in order to switch between different functionalities
-    void (Desorption::*m_fType)();
-    bool (Desorption::*m_fRules)(Site*);
-    void (Desorption::*m_fPerform)(Site*);
-
-private: // The types
-
-    /// Arrhenius type rate
-    void arrheniusType();
-
-    /// Constant value for the adsorption process rate i.e.
-    /// constant 1.0 [ML/s]
-    void constantType();
-
-private: //rules
-
-    /// If the keyword 'all' is used then the rule is based on the neighbours
-    bool allRule(Site* s);
-
-    /// Returns always true - this is actually as having uncoditional acceptance
-    bool basicRule(Site* s);
-
-    /// For desorbing different species the site must be occupied
-    bool difSpeciesRule(Site* s);
-
-private: //perform
-
-    /// The process is PVD
-    void singleSpeciesSimpleDesorption(Site*);
-
-    /// The process is CVD or ALD
-    void multiSpeciesSimpleDesorption(Site*);
+    double (*m_fType)(Desorption*);
+    bool (*m_fRules)(Desorption*, Site*);
+    void (*m_fPerform)(Desorption*, Site*);
 
 private: //the data
 
     ///The site that adsorption will be performed
     Site* m_Site;
-
-    /// A member function to calculate the neighbors of a given site
-    int calculateNeighbors(Site*);
 
     /// The number of neighbours of this process
     int m_iNumNeighs;

@@ -19,6 +19,10 @@
 
 #include "process.h"
 
+#include "adsorption_types.h"
+#include "adsorption_rules.h"
+#include "adsorption_perform.h"
+
 namespace MicroProcesses
 {
 
@@ -68,56 +72,12 @@ public:
     /// Returns the label of the adsorbed species
     inline string getAdsorbedSpecies() { return m_sAdsorbed; }
 
-private: //pointers to functions
+protected: //pointers to functions
 
     /// Pointers to functions in order to switch between different functionalities
-    void (Adsorption::*m_fType)();
-    bool (Adsorption::*m_fRules)(Site*);
-    void (Adsorption::*m_fPerform)(Site*);
-
-private: //types
-
-    /// The simple type for the adsorption process rate i.e.
-    /// simple s0*f*P/(2*pi*MW*Ctot*kb*T) -> Sticking coefficient [-], f [-], C_tot [sites/m2], MW [kg/mol]
-    void simpleType();
-
-    /// The arrhenius type for the adsorption process rate i.e.
-    /// arrhenius v0 A exp(-nE/kT), A = exp((E-Em)/kT) -> frequency v0 [-],  E (Joules), Em [Joules]
-    void arrheniusType();
-
-    /// Constant value for the adsorption process rate i.e.
-    /// constant 1.0 [ML/s]
-    void constantType();
-
-private: //rules
-
-    /// The uncoditional rule. The process is accepted without checked.
-    inline bool uncoRule(Site*) { return true; }
-
-    /// The basic rule for accepting this process.
-    /// Check if the site is empty (i.e. the label is the same as the lattice species)
-    /// then returns true (the processes can be performed).
-    bool basicRule( Site*);
-
-    /// For adsorbing different species in a single site must not be occupied (and TODO: the height must be the same)
-    bool multiSpeciesSimpleRule( Site*);
-
-    /// For adsorbing different species the sites must not be occupied (and TODO: the height must be the same)
-    bool multiSpeciesRule( Site*);
-
-private: //perform
-
-    /// The process is PVD
-    void signleSpeciesSimpleAdsorption( Site* );
-
-    /// The process is PVD for multiple sites
-    void signleSpeciesAdsorption( Site*);
-
-    /// The process is CVD or ALD
-    void multiSpeciesSimpleAdsorption( Site*);
-
-    /// The process is CVD or ALD for multiple sites
-    void multiSpeciesAdsorption( Site*);
+    double (*m_fType)(Adsorption*);
+    bool (*m_fRules)(Adsorption*, Site*);
+    void (*m_fPerform)(Adsorption*, Site*);
 
 private: //data
 

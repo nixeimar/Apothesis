@@ -42,7 +42,16 @@ HEADERS += ./src/apothesis.h \
            ./src/processes/factory_process.h \
            ./src/processes/io.h \
            ./src/processes/parameters.h \
-           ./src/processes/process.h
+           ./src/processes/process.h \
+           src/processes/adsorption_perform.h \
+           src/processes/adsorption_rules.h \
+           src/processes/adsorption_types.h \
+           src/processes/desorption_perform.h \
+           src/processes/desorption_rules.h \
+           src/processes/desorption_types.h \
+           src/processes/diffusion_perform.h \
+           src/processes/diffusion_rules.h \
+           src/processes/diffusion_types.h
 #           ./src/ species/species.h
 
 SOURCES += ./src/apothesis.cpp \

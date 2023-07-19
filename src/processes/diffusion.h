@@ -21,6 +21,11 @@
 #include <process.h>
 #include <any>
 
+#include "diffusion_types.h"
+#include "diffusion_rules.h"
+#include "diffusion_perform.h"
+
+
 using namespace std;
 
 namespace MicroProcesses
@@ -45,44 +50,25 @@ public:
     /// A member function to calculate the neighbors of a given site
     int calculateNeighbors(Site*);
 
-private:
+    /// Returns the diffusion rate
+    inline double getDiffusionRate() { return m_dDiffusionRate; }
+
+    /// Returns the activation energy if Arrhenius type
+    double getActivationEnergy() {return m_dEd; }
+
+    /// Returns the activation energy if Arrhenius type
+    double getDifActivationEnergy() {return m_dEdm; }
+
+    /// Returns the vibrational frequency if Arrhenius type
+    double getVibrationalFrequency() {return m_dv0; }
+
+
+protected:
 
     /// Pointers to functions in order to switch between different functions
-    void (Diffusion::*m_fType)();
-    bool (Diffusion::*m_fRules)(Site*);
-    void (Diffusion::*m_fPerform)(Site*);
-
-private: //types
-
-    /// Constant value for the diffusion process rate i.e.
-    void constantType();
-
-    /// Arrhenius type
-    void arrheniusType();
-
-private: //rules
-
-    /**  This is the basic rule: For any atom X which does not belong to the growing film
-     *   check if there is a vacant site that can be diffused to.
-    **/
-    bool diffusionBasicRule(Site* s);
-
-    /**  This is the rule when the user has used the "all" keyword in the input file.
-     *   It is applied only to the atoms that belong to the growing film. (PVD only)
-    **/
-    bool diffusionAllRule(Site* s);
-
-private: //perform
-
-    /** This is the simplest of diffusion.
-     *  It takes particle X and moves it in a vacant site from its first neighbors
-    **/
-    void simpleDiffusion( Site*);
-
-    /// The process is PVD as in Lam and Vlachos (2000)
-    void performPVD( Site*);
-
-    /// ToDo: Add dimer diffusion
+    double (*m_fType)( Diffusion* );
+    bool (*m_fRules)(Diffusion*, Site*);
+    void (*m_fPerform)(Diffusion*, Site*);
 
 private:
 
@@ -103,6 +89,15 @@ private:
 
     /// The diffusion rate
     double m_dDiffusionRate;
+
+    /// The vibrational frequency  (if arrhenius)
+    double m_dv0;
+
+    /// The activation energy of the process (if arrhenius)
+    double m_dEd;
+
+    /// The diffuision activation energy of the process (if arrhenius)
+    double m_dEdm;
 
     REGISTER_PROCESS( Diffusion )
 };

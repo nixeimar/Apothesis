@@ -17,10 +17,6 @@
 
 #include "diffusion.h"
 
-#include "diffusion_types.cpp"
-#include "diffusion_rules.cpp"
-#include "diffusion_perform.cpp"
-
 namespace MicroProcesses
 {
 
@@ -38,15 +34,19 @@ void Diffusion::init(vector<string> params)
     //In the first must always be the type
     m_sType = any_cast<string>(m_vParams[ 0 ]);
     if ( m_sType.compare("arrhenius") == 0 ){
+
+        m_dv0 = stod(m_vParams[ 0 ]);
+        m_dEd = stod(m_vParams[ 1 ]);
+        m_dEdm = stod(m_vParams[ 2 ]);
         m_iNumNeighs = stoi( m_vParams[3] );
 
-        m_fType = &Diffusion::arrheniusType;
+        m_fType = &arrheniusType;
     }
     else if ( m_sType.compare("constant") == 0 ){
         m_dDiffusionRate = stod(m_vParams[ 1 ]);
 
         //m_fType = &Adsorption::constantType;
-        m_fType = &Diffusion::constantType;
+        m_fType = &constantType;
     }
     else {
         m_error->error_simple_msg("Not supported type of process -> " + m_sProcName + " | " + m_sType );
@@ -54,38 +54,35 @@ void Diffusion::init(vector<string> params)
     }
 
     //Assign the type
-    (this->*m_fType)();
+    m_dRateConstant = (*m_fType)(this);
 
     m_isPartOfGrowth = isPartOfGrowth( m_sDiffused );
 
     //Select the rule for the diffusion process here
     if ( !m_isPartOfGrowth )
-        m_fRules = &Diffusion::diffusionBasicRule;
+        m_fRules = &diffusionBasicRule;
     else
-        m_fRules = &Diffusion::diffusionAllRule;
+        m_fRules = &diffusionAllRule;
 
     //Check what process should be performed.
     //Desorption in PVD will lead to increasing the height of the site
     //Desorption in CVD will change the label of the site
     if ( !m_isPartOfGrowth )
-        m_fPerform = &Diffusion::simpleDiffusion;
+        m_fPerform = &simpleDiffusion;
     else
-        m_fPerform = &Diffusion::performPVD;
+        m_fPerform = &performPVD;
 }
 
+bool Diffusion::rules( Site* s)
+{
+    (*m_fRules)(this, s);
+}
 
 void Diffusion::perform( Site* s)
 {
     m_seAffectedSites.clear();
-    (this->*m_fPerform)(s);
+    (*m_fPerform)(this, s);
 }
-
-
-bool Diffusion::rules( Site* s)
-{
-    (this->*m_fRules)(s);
-}
-
 
 int Diffusion::calculateNeighbors(Site* s)
 {

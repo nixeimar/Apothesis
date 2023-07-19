@@ -3,7 +3,7 @@
 namespace MicroProcesses
 {
 
-void Diffusion::simpleDiffusion( Site* s){
+void simpleDiffusion( Diffusion* proc, Site* s){
 
     vector<Site* > toDiffuse;
     for ( Site* neigh:s->getNeighs() ) {
@@ -13,8 +13,8 @@ void Diffusion::simpleDiffusion( Site* s){
 
     // Random pick a site to re-adsorb
     Site* diffuseSite;
-    if (  this->getRandomGen() )
-        diffuseSite = s->getNeighs().at( this->getRandomGen()->getIntRandom(0, toDiffuse.size()-1 ) );
+    if (  proc->getRandomGen() )
+        diffuseSite = s->getNeighs().at( proc->getRandomGen()->getIntRandom(0, toDiffuse.size()-1 ) );
     else{
         cout << "The random generator has not been defined." << endl;
         EXIT
@@ -25,52 +25,52 @@ void Diffusion::simpleDiffusion( Site* s){
     s->setLabel( s->getBelowLabel() );
     s->setOccupied(false);
 
-    this->addAffectedSite( diffuseSite ) ;
+    proc->addAffectedSite( diffuseSite ) ;
     for ( Site* neigh:diffuseSite->getNeighs() )
-        this->addAffectedSite( neigh ) ;
+        proc->addAffectedSite( neigh ) ;
 
-    this->addAffectedSite( s ) ;
+    proc->addAffectedSite( s ) ;
     for ( Site* neigh:s->getNeighs() )
-        this->addAffectedSite( neigh );
+        proc->addAffectedSite( neigh );
 }
 
 
-//This is the case of Lam and Vlachos
-void Diffusion::performPVD( Site* s){
+//proc is the case of Lam and Vlachos
+void performPVD(Diffusion* proc, Site* s){
 
     //----- This is desorption ------------------------------------------------------------->
     s->decreaseHeight( 1 );
-    this->calculateNeighbors( s ) ;
-    this->getAffectedSites().insert( s );
+    proc->calculateNeighbors( s ) ;
+    proc->getAffectedSites().insert( s );
     for ( Site* neigh:s->getNeighs() ) {
-        this->calculateNeighbors( neigh );
-        this->getAffectedSites().insert( neigh );
+        proc->calculateNeighbors( neigh );
+        proc->getAffectedSites().insert( neigh );
 
         for ( Site* firstNeigh:neigh->getNeighs() ){
-            firstNeigh->setNeighsNum( this->calculateNeighbors( firstNeigh ) );
-            this->getAffectedSites().insert( firstNeigh );
+            firstNeigh->setNeighsNum( proc->calculateNeighbors( firstNeigh ) );
+            proc->getAffectedSites().insert( firstNeigh );
         }
     }
     //--------------------------------------------------------------------------------------<
 
     // Random pick a site to re-adsorpt
     Site* adsorbSite;
-    if (  this->getRandomGen() )
-        adsorbSite = s->getNeighs().at( this->getRandomGen()->getIntRandom(0, this->getNumNeighs()-2 ) );
+    if (  proc->getRandomGen() )
+        adsorbSite = s->getNeighs().at( proc->getRandomGen()->getIntRandom(0, proc->getNumNeighs()-2 ) );
     else{
         cout << "The random generator has not been defined." << endl;
         EXIT
     }
 
-    //----- This is adsoprtion ------------------------------------------------------------->
+    //----- proc is adsoprtion ------------------------------------------------------------->
     s->increaseHeight( 1 );
-    this->calculateNeighbors( s );
+    proc->calculateNeighbors( s );
 
-    this->getAffectedSites().insert( s ) ;
+    proc->getAffectedSites().insert( s ) ;
 
     for ( Site* neigh:s->getNeighs() ) {
-        this->calculateNeighbors( neigh );
-        this->getAffectedSites().insert( neigh ) ;
+        proc->calculateNeighbors( neigh );
+        proc->getAffectedSites().insert( neigh ) ;
     }
     //--------------------------------------------------------------------------------------<
 }

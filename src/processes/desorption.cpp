@@ -17,10 +17,6 @@
 
 #include "desorption.h"
 
-#include "desorption_types.cpp"
-#include "desorption_rules.cpp"
-#include "desorption_perform.cpp"
-
 namespace MicroProcesses
 {
 
@@ -41,12 +37,12 @@ void Desorption::init(vector<string> params)
         m_dv0 = stod(m_vParams[ 1 ]);
         m_dEd = stod(m_vParams[ 2 ]);
 
-        m_fType = &Desorption::arrheniusType;
+        m_fType = &arrheniusType;
     }
     else if (m_sType.compare("constant") == 0){
         m_dDesorptionRate = stod( m_vParams[1] );
 
-        m_fType = &Desorption::constantType;
+        m_fType = &constantType;
     }
     else {
         m_error->error_simple_msg("Not supported type of process -> " + m_sProcName + " | " + m_sType );
@@ -54,34 +50,34 @@ void Desorption::init(vector<string> params)
     }
 
     //Set the type of the process
-    (this->*m_fType)();
+    m_dRateConstant = (*m_fType)(this);
 
     //Create the rule for the adsoprtion process.
     if ( m_bAllNeihs && isPartOfGrowth( m_sDesorbed ) )
-        m_fRules = &Desorption::allRule;
+        m_fRules = &allRule;
     else if ( !m_bAllNeihs &&  isPartOfGrowth( m_sDesorbed ) )
-        m_fRules = &Desorption::basicRule;
+        m_fRules = &basicRule;
     else
-        m_fRules = &Desorption::difSpeciesRule;
+        m_fRules = &difSpeciesRule;
 
     //Check what process should be performed.
     //Desorption in PVD will lead to increasing the height of the site
     //Desorption in CVD/ALD will only change the label of the site
     if ( isPartOfGrowth( m_sDesorbed ) )
-        m_fPerform = &Desorption::singleSpeciesSimpleDesorption;
+        m_fPerform = &singleSpeciesSimpleDesorption;
     else
-        m_fPerform = &Desorption::multiSpeciesSimpleDesorption;
+        m_fPerform = &multiSpeciesSimpleDesorption;
 }
 
 bool Desorption::rules( Site* s)
 {
-    (this->*m_fRules)(s);
+    (*m_fRules)(this, s);
 }
 
 void Desorption::perform( Site* s)
 {
     m_seAffectedSites.clear();
-    (this->*m_fPerform)(s);
+    (*m_fPerform)(this, s);
 }
 
 int Desorption::calculateNeighbors(Site* s)

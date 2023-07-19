@@ -1,19 +1,19 @@
-#include "desorption.h"
+#include "desorption_types.h"
 
 namespace MicroProcesses
 {
 
-void Desorption::constantType(){
-    m_dRateConstant = m_dDesorptionRate*m_iNumVacant;
+double constantType(Desorption* proc){
+    return  proc->getDesorptionRate()*proc->getNumVacantSites();
 }
 
-void Desorption::arrheniusType()
+double arrheniusType(Desorption* proc)
 {
-    double T = m_pUtilParams->getTemperature();
-    double k = m_pUtilParams->dkBoltz;
-    double Ed = m_dEd/m_pUtilParams->dAvogadroNum;
+    double T = proc->getParameters()->getTemperature();
+    double k = proc->getParameters()->dkBoltz;
+    double Ed = proc->getActivationEnergy()/proc->getParameters()->dAvogadroNum;
 
-    m_dRateConstant = m_dv0*exp(-(double)(m_iNumNeighs + 1)*Ed/(k*T));
+    return proc->getVibrationalFrequency()*exp(-(double)(   proc->getNumNeighs() + 1)*Ed/(k*T));
 }
 
 }

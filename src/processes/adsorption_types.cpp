@@ -1,26 +1,34 @@
-#include "adsorption.h"
+#include "adsorption_types.h"
 
 namespace MicroProcesses
 {
 
-void Adsorption::simpleType()
+double simpleType(Adsorption* proc)
 {
-    double pi = m_pUtilParams->dPi;
-    double Na = m_pUtilParams->dAvogadroNum; // Avogadro's number [1/mol]
-    double mass = m_dMW/Na; //[kg/mol]
-    double T = m_pUtilParams->getTemperature(); //[K]
-    double P = m_pUtilParams->getPressure(); //[Pa]
+    double pi = proc->getParameters()->dPi;
+    double Na = proc->getParameters()->dAvogadroNum; // Avogadro's number [1/mol]
+    double mass = proc->getMolecularWeight()/Na; //[kg/mol]
+    double T = proc->getParameters()->getTemperature(); //[K]
+    double P = proc->getParameters()->getPressure(); //[Pa]
+    double f = proc->getMolarFraction();
+    double s = proc->getStickingCoef();
 
-    m_dRateConstant = m_dStick*m_dF*P/(m_dCtot*sqrt(2.0e0*pi*mass*m_pUtilParams->dkBoltz*T) );
+    double ctot = proc->getSitesConc();
+    double kb = proc->getParameters()->dkBoltz;
+
+    double numerator = s*f*P;
+    double denumerator = ctot*sqrt(2.0e0*pi*mass*kb*T);
+
+    return numerator/denumerator;
 }
 
 //ToDo: To be implemented and checked
-void Adsorption::arrheniusType() {
-    ;
+double arrheniusType(Adsorption* proc) {
+    return 0.0;
 }
 
-void Adsorption::constantType(){
-    m_dRateConstant = m_dAdsorptionRate*m_iNumVacant;
+double constantType(Adsorption* proc) {
+    return proc->getAdsorptionRate()*proc->getNumVacantSites();
 }
 
 }
