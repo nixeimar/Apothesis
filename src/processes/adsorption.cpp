@@ -16,6 +16,10 @@
 //============================================================================
 #include "adsorption.h"
 
+#include "adsorption_types.cpp"
+#include "adsorption_rules.cpp"
+#include "adsorption_perform.cpp"
+
 namespace MicroProcesses
 {
 
@@ -40,28 +44,31 @@ void Adsorption::init( vector<string> params )
         m_dCtot = stod(m_vParams[ 3 ]);
         m_dMW = stod(m_vParams[ 4 ]);
 
-        m_fType = &simpleType;
+        m_fType = &Adsorption::simpleType;
     }
     else if (  m_sType.compare("constant") == 0  ) {
         m_dAdsorptionRate = stod(m_vParams[ 1 ]);
-        m_fType = &constantType;
+        m_fType = &Adsorption::constantType;
     }
     else {
         m_error->error_simple_msg("Not supported type of process: " + m_sType );
         EXIT
     }
 
-    //Create the rule for the adsoprtion process.
+    //Assign the type
+    (this->*m_fType)();
+
+    //Create the rule for this adsoprtion process.
     if ( m_iNumSites == 1 && isPartOfGrowth( m_sAdsorbed ) ){
         setUncoAccepted( true );
-        m_fRules = &uncoRule;
+        m_fRules = &Adsorption::uncoRule;
     }
     else if ( m_iNumSites > 1 && isPartOfGrowth( m_sAdsorbed ) )
-        m_fRules = &basicRule;
+        m_fRules = &Adsorption::basicRule;
     else if ( m_iNumSites == 1 && !isPartOfGrowth( m_sAdsorbed ) )
-        m_fRules = &multiSpeciesSimpleRule;
+        m_fRules = &Adsorption::multiSpeciesSimpleRule;
     else if ( m_iNumSites > 1 && !isPartOfGrowth( m_sAdsorbed ) )
-        m_fRules = &multiSpeciesRule;
+        m_fRules = &Adsorption::multiSpeciesRule;
     else {
         m_error->error_simple_msg("The rule for this process has not been defined.");
         EXIT
@@ -69,21 +76,19 @@ void Adsorption::init( vector<string> params )
 
     //Check what process should be performed.
     //Adsorption in PVD will lead to increasing the height of the site
-    //Adsorption in CVD/ALD will only change the label of the site
+    //Adsorption in CVD/ALD will only change the label of the site. The height will change from surface reaction.
     if ( m_iNumSites == 1  && isPartOfGrowth(m_sAdsorbed) )
-        m_fPerform = &signleSpeciesSimpleAdsorption;
+        m_fPerform = &Adsorption::signleSpeciesSimpleAdsorption;
     else if ( m_iNumSites > 1  && isPartOfGrowth( m_sAdsorbed ) )
-        m_fPerform = &signleSpeciesAdsorption;
+        m_fPerform = &Adsorption::signleSpeciesAdsorption;
     else if ( m_iNumSites == 1 && !isPartOfGrowth(m_sAdsorbed) )
-        m_fPerform = &multiSpeciesSimpleAdsorption;
+        m_fPerform = &Adsorption::multiSpeciesSimpleAdsorption;
     else if ( m_iNumSites > 1 && !isPartOfGrowth(m_sAdsorbed) )
-        m_fPerform = &multiSpeciesAdsorption;
+        m_fPerform = &Adsorption::multiSpeciesAdsorption;
     else {
         m_error->error_simple_msg("The process is not defined | " + m_sProcName );
         EXIT
     }
-
-    (*m_fType)(this);
 }
 
 int Adsorption::countVacantSites( Site* s){
@@ -98,17 +103,14 @@ int Adsorption::countVacantSites( Site* s){
 
 bool Adsorption::rules( Site* s )
 {
-    (*m_fRules)(this, s);
+    (this->*m_fRules)(s);
 }
 
 void Adsorption::perform( Site* s ) {
 
     m_seAffectedSites.clear();
-    (*m_fPerform)(this, s);
+    (this->*m_fPerform)(s);
 }
-
-double Adsorption::getRateConstant(){ return m_dProb; }
-
 
 int Adsorption::calculateNeighbors(Site* s){
 

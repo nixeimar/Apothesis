@@ -20,8 +20,6 @@
 
 #include <process.h>
 #include <any>
-#include "diffusion_rules.h"
-#include "diffusion_perform.h"
 
 using namespace std;
 
@@ -34,13 +32,9 @@ public:
     Diffusion();
     ~Diffusion() override;
 
-    double getRateConstant() override;
     bool rules( Site* ) override;
     void perform( Site* ) override;
-
     void init(vector<string> params) override;
-
-    void arrhenius(double v0, double E, double Em, double T,  int n);
 
     /// Sets the specific diffusion species label according to the input
     void setDiffused(string diffused){ m_sDiffused = diffused;}
@@ -51,10 +45,44 @@ public:
     /// A member function to calculate the neighbors of a given site
     int calculateNeighbors(Site*);
 
-protected:
+private:
+
     /// Pointers to functions in order to switch between different functions
-    bool (*m_fRules)(Diffusion*, Site*);
-    void (*m_fPerform)(Diffusion*, Site*);
+    void (Diffusion::*m_fType)();
+    bool (Diffusion::*m_fRules)(Site*);
+    void (Diffusion::*m_fPerform)(Site*);
+
+private: //types
+
+    /// Constant value for the diffusion process rate i.e.
+    void constantType();
+
+    /// Arrhenius type
+    void arrheniusType();
+
+private: //rules
+
+    /**  This is the basic rule: For any atom X which does not belong to the growing film
+     *   check if there is a vacant site that can be diffused to.
+    **/
+    bool diffusionBasicRule(Site* s);
+
+    /**  This is the rule when the user has used the "all" keyword in the input file.
+     *   It is applied only to the atoms that belong to the growing film. (PVD only)
+    **/
+    bool diffusionAllRule(Site* s);
+
+private: //perform
+
+    /** This is the simplest of diffusion.
+     *  It takes particle X and moves it in a vacant site from its first neighbors
+    **/
+    void simpleDiffusion( Site*);
+
+    /// The process is PVD as in Lam and Vlachos (2000)
+    void performPVD( Site*);
+
+    /// ToDo: Add dimer diffusion
 
 private:
 
@@ -63,10 +91,6 @@ private:
 
     /// If the keyword 'all' is used then the rule is based on the neighbours
     bool mf_allRule(Site* s);
-
-    /// Constant value for the diffusion process rate i.e.
-    /// constant 1.0
-    void constantType();
 
     /// The label of the diffused species
     string m_sDiffused;

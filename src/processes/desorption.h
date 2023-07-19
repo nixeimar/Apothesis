@@ -28,10 +28,6 @@ public:
     Desorption();
     ~Desorption() override;
 
-    inline void setTargetSite( Site* site ){ m_Site = site;}
-    inline Site* getTargetSite(){ return m_Site; }
-
-    double getRateConstant() override;
     bool rules( Site* s) override;
     void perform( Site* ) override;
     void init(vector<string> params) override;
@@ -42,12 +38,14 @@ public:
     /// If keyrowd "all" is added then this is true
     inline void setAllNeighs( bool all ){  m_bAllNeihs = all; }
 
-private:
+private: //pointers to functions
 
-    /// Pointers to functions in order to switch between different functions
+    /// Pointers to functions in order to switch between different functionalities
     void (Desorption::*m_fType)();
     bool (Desorption::*m_fRules)(Site*);
     void (Desorption::*m_fPerform)(Site*);
+
+private: // The types
 
     /// Arrhenius type rate
     void arrheniusType();
@@ -56,11 +54,7 @@ private:
     /// constant 1.0 [ML/s]
     void constantType();
 
-    /// Checks if the site is in lower step (only for simple cubic lattice)
-    bool isInLowerStep( Site* s );
-
-    /// Checks if the site is in higher step (only for simple cubic lattice)
-    bool isInHigherStep( Site* s );
+private: //rules
 
     /// If the keyword 'all' is used then the rule is based on the neighbours
     bool allRule(Site* s);
@@ -71,11 +65,15 @@ private:
     /// For desorbing different species the site must be occupied
     bool difSpeciesRule(Site* s);
 
+private: //perform
+
     /// The process is PVD
     void singleSpeciesSimpleDesorption(Site*);
 
     /// The process is CVD or ALD
     void multiSpeciesSimpleDesorption(Site*);
+
+private: //the data
 
     ///The site that adsorption will be performed
     Site* m_Site;
@@ -100,6 +98,12 @@ private:
 
     /// The activation energy of the process (if arrhenius)
     double m_dEd;
+
+    /// Checks if the site is in lower step (only for simple cubic lattice)
+    bool isInLowerStep( Site* s );
+
+    /// Checks if the site is in higher step (only for simple cubic lattice)
+    bool isInHigherStep( Site* s );
 
     REGISTER_PROCESS(Desorption)
 };

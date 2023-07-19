@@ -46,7 +46,7 @@ public:
     virtual ~Process();
 
     ///Get probability
-    virtual double getRateConstant() = 0;
+    double getRateConstant(){ return m_dRateConstant; }
 
     /// Perform this process in the site and compute/store the affected sites
     virtual void perform( Site* ) = 0;
@@ -100,7 +100,10 @@ public:
     /// Retrurns the parameters
     Utils::Parameters* getParameters(){ return m_pUtilParams; }
 
+
+
 protected:
+
     ///Pointer to the lattice of the process
     Lattice* m_pLattice;
 
@@ -125,7 +128,7 @@ protected:
     string m_sType;
 
     ///The probability value
-    double m_dProb;
+    double m_dRateConstant;
 
     /// The name of this prcess
     string m_sProcName;

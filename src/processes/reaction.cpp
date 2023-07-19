@@ -95,7 +95,7 @@ bool Reaction::allReactCoeffOne(){
 }
 
 void Reaction::constantType(){
-    m_dProb = m_dReactionRate; //*m_pLattice->getSize();
+    m_dRateConstant = m_dReactionRate; //*m_pLattice->getSize();
 }
 
 void Reaction::arrheniusType(double v0, double Ed, double T)
@@ -103,7 +103,7 @@ void Reaction::arrheniusType(double v0, double Ed, double T)
     double k = m_pUtilParams->dkBoltz;
     Ed = Ed/m_pUtilParams->dAvogadroNum;
 
-    m_dProb = v0*exp(-Ed/(k*T));
+    m_dRateConstant = v0*exp(-Ed/(k*T));
 }
 
 bool Reaction::leadsToGrowth(Site* s){
@@ -277,6 +277,3 @@ void Reaction::catalysis(Site *s){
     for ( Site* neigh:otherSite->getNeighs() )
         m_seAffectedSites.insert( neigh );
 }
-
-double Reaction::getRateConstant(){ return m_dProb; }
-

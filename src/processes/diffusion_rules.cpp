@@ -1,6 +1,9 @@
-#include "diffusion_rules.h"
+#include "diffusion.h"
 
-bool diffusionBasicRule(Diffusion* proc, Site* s){
+namespace MicroProcesses
+{
+
+bool Diffusion::diffusionBasicRule( Site* s){
 
     if ( !s->isOccupied() ) return false;
 
@@ -12,10 +15,12 @@ bool diffusionBasicRule(Diffusion* proc, Site* s){
     return false;
 }
 
-bool diffusionAllRule(Diffusion* proc, Site* s){
+bool Diffusion::diffusionAllRule( Site* s){
 
-    if ( proc->calculateNeighbors(s) == proc->getNumNeighs() )
+    if ( calculateNeighbors(s) == this->getNumNeighs() )
         return true;
 
     return false;
+}
+
 }
