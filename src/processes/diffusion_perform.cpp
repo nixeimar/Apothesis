@@ -7,14 +7,14 @@ void simpleDiffusion( Diffusion* proc, Site* s){
 
     vector<Site* > toDiffuse;
     for ( Site* neigh:s->getNeighs() ) {
-        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() )
+        if ( !neigh->isOccupied() )
             toDiffuse.push_back( neigh );
     }
 
     // Random pick a site to re-adsorb
     Site* diffuseSite;
     if (  proc->getRandomGen() )
-        diffuseSite = s->getNeighs().at( proc->getRandomGen()->getIntRandom(0, toDiffuse.size()-1 ) );
+        diffuseSite = toDiffuse.at( proc->getRandomGen()->getIntRandom(0, toDiffuse.size()-1 ) );
     else{
         cout << "The random generator has not been defined." << endl;
         EXIT
@@ -56,7 +56,7 @@ void performPVD(Diffusion* proc, Site* s){
     // Random pick a site to re-adsorpt
     Site* adsorbSite;
     if (  proc->getRandomGen() )
-        adsorbSite = s->getNeighs().at( proc->getRandomGen()->getIntRandom(0, proc->getNumNeighs()-2 ) );
+        adsorbSite = s->getNeighs().at( proc->getRandomGen()->getIntRandom(0, proc->getNumNeighs()-1 ) );
     else{
         cout << "The random generator has not been defined." << endl;
         EXIT
@@ -65,7 +65,6 @@ void performPVD(Diffusion* proc, Site* s){
     //----- proc is adsoprtion ------------------------------------------------------------->
     s->increaseHeight( 1 );
     proc->calculateNeighbors( s );
-
     proc->getAffectedSites().insert( s ) ;
 
     for ( Site* neigh:s->getNeighs() ) {

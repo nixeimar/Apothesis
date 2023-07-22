@@ -44,6 +44,8 @@ public:
     /// Sets the specific diffusion species label according to the input
     void setDiffused(string diffused){ m_sDiffused = diffused;}
 
+    string getDiffused(){ return m_sDiffused;}
+
     /// If keyrowd "all" is added then this is true
     inline void setAllNeighs( bool all ){  m_bAllNeihs = all; }
 
@@ -62,6 +64,7 @@ public:
     /// Returns the vibrational frequency if Arrhenius type
     double getVibrationalFrequency() {return m_dv0; }
 
+    int calculateSameNeighbors(Site* s);
 
 protected:
 

@@ -70,6 +70,7 @@ public:
     inline int getID(){ return m_iID; }
 
     inline void setLattice( Lattice* lattice ){ m_pLattice = lattice; }
+    inline Lattice* getLattice(){ return m_pLattice; }
 
     /// Counts how many times this process happens
     inline void eventHappened(){ m_iHappened++; }
@@ -99,8 +100,6 @@ public:
 
     /// Retrurns the parameters
     Utils::Parameters* getParameters(){ return m_pUtilParams; }
-
-
 
 protected:
 

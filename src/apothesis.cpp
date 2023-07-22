@@ -315,6 +315,7 @@ void Apothesis::init()
                             dif->setDiffused( s.first );
                     }
 
+                    dif->setNumNeighs( neighs );
                     dif->setAllNeighs(true);
                     dif->setName( proc.first + "( " + to_string(neighs + 1) + " )"  );
                     dif->setLattice( pLattice );
@@ -522,7 +523,7 @@ void Apothesis::exec()
                     + std::to_string( pProperties->getRMS() )  + '\t'
                     + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
-            cout << pProperties->getMeanDH()  <<  " " << meanDHPrevStep <<  " " << m_dProcTime << " " << prevTimeStep << " " <<  pProperties->getMeanDH() - meanDHPrevStep << endl;
+//            cout << pProperties->getMeanDH()  <<  " " << meanDHPrevStep <<  " " << m_dProcTime << " " << prevTimeStep << " " <<  pProperties->getMeanDH() - meanDHPrevStep << endl;
 
             //Store info to be used next time
             meanDHPrevStep = pProperties->getMeanDH();

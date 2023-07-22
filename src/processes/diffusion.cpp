@@ -60,7 +60,10 @@ void Diffusion::init(vector<string> params)
 
     //Select the rule for the diffusion process here
     if ( !m_isPartOfGrowth )
-        m_fRules = &diffusionBasicRule;
+        if ( !m_bAllNeihs )
+            m_fRules = &diffusionBasicRule;
+        else
+            m_fRules = &diffusionBasicAllRule;
     else
         m_fRules = &diffusionAllRule;
 
@@ -82,6 +85,14 @@ void Diffusion::perform( Site* s)
 {
     m_seAffectedSites.clear();
     (*m_fPerform)(this, s);
+}
+
+int Diffusion::calculateSameNeighbors(Site* s){
+    int neighs = 0;
+    for ( Site* neigh:s->getNeighs() ) {
+        if ( neigh->getLabel().compare(s->getLabel() ) == 0)
+            neighs++;
+    }
 }
 
 int Diffusion::calculateNeighbors(Site* s)
@@ -118,7 +129,7 @@ int Diffusion::calculateNeighbors(Site* s)
         }
     } else {
         for ( Site* neigh:s->getNeighs() ) {
-            if ( !neigh->isOccupied() )
+            if ( !neigh->isOccupied()  )
                 neighs++;
         }
     }

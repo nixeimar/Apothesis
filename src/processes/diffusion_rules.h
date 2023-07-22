@@ -16,6 +16,9 @@ bool diffusionBasicRule(Diffusion*, Site* s);
 **/
 bool diffusionAllRule(Diffusion*, Site* s);
 
+
+bool diffusionBasicAllRule( Diffusion* proc, Site* s);
+
 }
 
 #endif // DIFFUSION_RULES_H

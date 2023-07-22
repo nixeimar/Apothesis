@@ -4,7 +4,7 @@ namespace MicroProcesses
 {
 
 double constantType(Diffusion* proc){
-    return  proc->getDiffusionRate()*proc->getNumVacantSites();
+    return proc->getDiffusionRate()*proc->getNumVacantSites();
 }
 
 double arrheniusType(Diffusion* proc)
