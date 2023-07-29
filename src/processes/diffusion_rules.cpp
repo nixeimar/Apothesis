@@ -21,7 +21,7 @@ bool diffusionBasicAllRule( Diffusion* proc, Site* s){
          || proc->calculateNeighbors(s) != proc->getNumNeighs() ) return false;
 
     for ( Site* neigh:s->getNeighs() ) {
-        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() )
+        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() - 1 )
             return true;
     }
 
@@ -31,8 +31,12 @@ bool diffusionBasicAllRule( Diffusion* proc, Site* s){
 
 bool diffusionAllRule( Diffusion* proc, Site* s){
 
-    if ( proc->calculateNeighbors(s) == proc->getNumNeighs() )
-        return true;
+    if ( s->isOccupied() || !proc->isPartOfGrowth( s->getLabel() ) || proc->calculateNeighbors(s) != proc->getNumNeighs() ) return false;
+
+    for ( Site* neigh:s->getNeighs() ) {
+        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() - 1 )
+            return true;
+    }
 
     return false;
 }

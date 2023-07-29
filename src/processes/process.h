@@ -101,6 +101,9 @@ public:
     /// Retrurns the parameters
     Utils::Parameters* getParameters(){ return m_pUtilParams; }
 
+    /// Checks if the specific species is part of the growing film
+    bool isPartOfGrowth( string name);
+
 protected:
 
     ///Pointer to the lattice of the process
@@ -134,9 +137,6 @@ protected:
 
     ///Set true if it is always possible
     bool m_bUncoAccept;
-
-    /// Checks if the specific species is part of the growing film
-    bool isPartOfGrowth( string name);
 
     /// The number of sites occupied by the process (default 1)
     int m_iNumSites;

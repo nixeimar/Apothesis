@@ -54,9 +54,15 @@ void performPVD(Diffusion* proc, Site* s){
     //--------------------------------------------------------------------------------------<
 
     // Random pick a site to re-adsorpt
+    vector<Site* > toReAdsorpt;
+    for ( Site* neigh:s->getNeighs() ) {
+        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() - 1  )
+            toReAdsorpt.push_back( neigh );
+    }
+
     Site* adsorbSite;
     if (  proc->getRandomGen() )
-        adsorbSite = s->getNeighs().at( proc->getRandomGen()->getIntRandom(0, proc->getNumNeighs()-1 ) );
+        adsorbSite = toReAdsorpt.at( proc->getRandomGen()->getIntRandom(0, toReAdsorpt.size() - 1 ) );
     else{
         cout << "The random generator has not been defined." << endl;
         EXIT
