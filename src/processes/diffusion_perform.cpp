@@ -56,7 +56,7 @@ void performPVD(Diffusion* proc, Site* s){
     // Random pick a site to re-adsorpt
     vector<Site* > toReAdsorpt;
     for ( Site* neigh:s->getNeighs() ) {
-        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() - 1  )
+        if ( !neigh->isOccupied() && neigh->getHeight() == s->getHeight() - 1 )
             toReAdsorpt.push_back( neigh );
     }
 

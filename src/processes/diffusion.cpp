@@ -45,7 +45,6 @@ void Diffusion::init(vector<string> params)
     else if ( m_sType.compare("constant") == 0 ){
         m_dDiffusionRate = stod(m_vParams[ 1 ]);
 
-        //m_fType = &Adsorption::constantType;
         m_fType = &constantType;
     }
     else {

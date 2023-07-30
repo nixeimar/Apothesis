@@ -471,16 +471,7 @@ void Apothesis::exec()
                 //Compute the average height before performing the process to measure the growth rate
                 timeGrowth = m_dProcTime;
 
-                cout << "*************************" << endl;
-                pLattice->print();
-
                 p.first->perform( s );
-
-                cout << s->getID() << endl;
-
-
-                cout << "*************************" << endl;
-                pLattice->print();
 
                 //Count the event for this class
                 p.first->eventHappened();
