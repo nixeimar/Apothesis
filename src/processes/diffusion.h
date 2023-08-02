@@ -66,6 +66,8 @@ public:
 
     int calculateSameNeighbors(Site* s);
 
+    int countVacantSites( Site* s);
+
 protected:
 
     /// Pointers to functions in order to switch between different functions

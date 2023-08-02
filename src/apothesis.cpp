@@ -315,7 +315,7 @@ void Apothesis::init()
                             dif->setDiffused( s.first );
                     }
 
-                    dif->setNumNeighs( neighs );
+                    dif->setNumVacantSites( neighs );
                     dif->setAllNeighs(true);
                     dif->setName( proc.first + " (" + to_string(neighs + 1) + " N)" );
                     dif->setLattice( pLattice );

@@ -94,6 +94,16 @@ int Diffusion::calculateSameNeighbors(Site* s){
     }
 }
 
+int Diffusion::countVacantSites( Site* s){
+    int iCount = 0;
+    for (Site* neigh:s->getNeighs() ){
+        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() )
+            iCount++;
+    }
+
+    return iCount;
+}
+
 int Diffusion::calculateNeighbors(Site* s)
 {
     int neighs = 0;
@@ -115,16 +125,12 @@ int Diffusion::calculateNeighbors(Site* s)
                         neighs++;
                 }
             }
-
-            s->setNeighsNum( neighs );
         }
         else {
             for ( Site* neigh:s->getNeighs() ) {
                 if ( neigh->getHeight() >= s->getHeight() )
                     neighs++;
             }
-
-            s->setNeighsNum( neighs );
         }
     } else {
         for ( Site* neigh:s->getNeighs() ) {
@@ -133,6 +139,7 @@ int Diffusion::calculateNeighbors(Site* s)
         }
     }
 
+    s->setNeighsNum( neighs );
     return neighs;
 }
 

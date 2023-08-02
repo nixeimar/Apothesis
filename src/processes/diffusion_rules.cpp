@@ -8,7 +8,7 @@ bool diffusionBasicRule( Diffusion* proc, Site* s){
     if ( !s->isOccupied() || s->getLabel().compare( proc->getDiffused() ) != 0 ) return false;
 
     for ( Site* neigh:s->getNeighs() )
-        if ( !neigh->isOccupied() &&  neigh->getHeight() == s->getHeight() )
+        if ( !neigh->isOccupied() && neigh->getHeight() == s->getHeight() )
             return true;
 
     return false;
@@ -17,7 +17,7 @@ bool diffusionBasicRule( Diffusion* proc, Site* s){
 bool diffusionBasicAllRule( Diffusion* proc, Site* s){
 
     if ( !s->isOccupied() || s->getLabel().compare( proc->getDiffused() ) != 0
-         || proc->calculateNeighbors(s) != proc->getNumNeighs() ) return false;
+         || proc->countVacantSites(s) != proc->getNumVacantSites() ) return false;
 
     for ( Site* neigh:s->getNeighs() )
         if ( !neigh->isOccupied() && neigh->getHeight() == s->getHeight() )
@@ -30,7 +30,7 @@ bool diffusionBasicAllRule( Diffusion* proc, Site* s){
 bool diffusionAllRule( Diffusion* proc, Site* s){
 
     if ( s->isOccupied() || !proc->isPartOfGrowth( s->getLabel() ) ||
-         proc->calculateNeighbors(s) != proc->getNumNeighs() ) return false;
+         proc->countVacantSites(s) != proc->getNumVacantSites() ) return false;
 
     for ( Site* neigh:s->getNeighs() )
         if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() - 1 )
