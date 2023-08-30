@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 #set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
-project(Apothesis)
+project(apothesis)
 
 set(header_files
     ./src/apothesis.h
@@ -13,6 +13,7 @@ set(header_files
     ./src/processes/process.h
     ./src/lattice/site.h
     ./src/lattice/FCC.h
+    ./src/lattice/HCP.h
     ./src/lattice/SimpleCubic.h
     ./src/processes/adsorption.h
     ./src/processes/diffusion.h
@@ -93,6 +94,7 @@ set(lattice_files
     ./src/lattice/site.cpp
     ./src/lattice/lattice.cpp
     ./src/lattice/FCC.cpp
+    ./src/lattice/HCP.cpp
     ./src/lattice/SimpleCubic.cpp
 )
 

@@ -52,6 +52,7 @@ HEADERS += ./src/apothesis.h \
            src/processes/diffusion_perform.h \
            src/processes/diffusion_rules.h \
            src/processes/diffusion_types.h
+           ./src/lattice/HCP.h
 #           ./src/ species/species.h
 
 SOURCES += ./src/apothesis.cpp \
@@ -85,4 +86,5 @@ SOURCES += ./src/apothesis.cpp \
            src/processes/diffusion_perform.cpp \
            src/processes/diffusion_rules.cpp \
            src/processes/diffusion_types.cpp
+           ./src/lattice/HCP.cpp
 #           ./src/species/species.cpp

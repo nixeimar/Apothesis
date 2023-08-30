@@ -36,18 +36,13 @@
 #include "process.h"
 #include "apothesis.h"
 
-/////////////////////////
-//#include "SurfaceReaction.h"
-/////////////////////////
-///
-///
-///
 using namespace std;
 using namespace MicroProcesses;
 
 int main( int argc, char* argv[] )
 {
 
+    //Checking commit
     Apothesis* apothesis = new Apothesis( argc, argv );
 
     cout << "Initiating Apothesis" << endl;
