@@ -14,6 +14,7 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
+
 #include "desorption.h"
 
 namespace MicroProcesses
@@ -35,11 +36,13 @@ void Desorption::init(vector<string> params)
     if ( m_sType.compare("arrhenius") == 0 ){
         m_dv0 = stod(m_vParams[ 1 ]);
         m_dEd = stod(m_vParams[ 2 ]);
-        m_fType = &Desorption::arrheniusType;
+
+        m_fType = &arrheniusType;
     }
     else if (m_sType.compare("constant") == 0){
         m_dDesorptionRate = stod( m_vParams[1] );
-        m_fType = &Desorption::constantType;
+
+        m_fType = &constantType;
     }
     else {
         m_error->error_simple_msg("Not supported type of process -> " + m_sProcName + " | " + m_sType );
@@ -47,96 +50,34 @@ void Desorption::init(vector<string> params)
     }
 
     //Set the type of the process
-    (this->*m_fType)();
+    m_dRateConstant = (*m_fType)(this);
 
     //Create the rule for the adsoprtion process.
     if ( m_bAllNeihs && isPartOfGrowth( m_sDesorbed ) )
-        m_fRules = &Desorption::allRule;
+        m_fRules = &allRule;
     else if ( !m_bAllNeihs &&  isPartOfGrowth( m_sDesorbed ) )
-        m_fRules = &Desorption::basicRule;
+        m_fRules = &basicRule;
     else
-        m_fRules = &Desorption::difSpeciesRule;
-
+        m_fRules = &difSpeciesRule;
 
     //Check what process should be performed.
     //Desorption in PVD will lead to increasing the height of the site
     //Desorption in CVD/ALD will only change the label of the site
     if ( isPartOfGrowth( m_sDesorbed ) )
-        m_fPerform = &Desorption::singleSpeciesSimpleDesorption;
+        m_fPerform = &singleSpeciesSimpleDesorption;
     else
-        m_fPerform = &Desorption::multiSpeciesSimpleDesorption;
-}
-
-bool Desorption::difSpeciesRule( Site* s){
-
-    //1. Calculate if there are sites at the same height and not oocupied - their number is defined by stoichiometry of the adsorption reaction
-    //2. If 1 holds then return true
-    //1. Return false
-
-    if ( s->isOccupied() )
-        return true;
-
-    return false;
-}
-
-void Desorption::constantType(){
-    m_dProb = m_dDesorptionRate; //*m_pLattice->getSize(); -> To be checked if needed.
-}
-
-void Desorption::arrheniusType()
-{
-    double T = m_pUtilParams->getTemperature();
-    double k = m_pUtilParams->dkBoltz;
-    double Ed = m_dEd/m_pUtilParams->dAvogadroNum;
-
-    m_dProb = m_dv0*exp(-(double)(m_iNumNeighs + 1)*Ed/(k*T));
+        m_fPerform = &multiSpeciesSimpleDesorption;
 }
 
 bool Desorption::rules( Site* s)
 {
-    (this->*m_fRules)(s);
-}
-
-bool Desorption::allRule( Site* s){
-    if ( calculateNeighbors( s ) == m_iNumNeighs )
-        return true;
-    return false;
-}
-
-// This apply for every lattice without a rule which is actually just pick a site and apply it
-bool Desorption::basicRule( Site* s){
-    return true;
+    (*m_fRules)(this, s);
 }
 
 void Desorption::perform( Site* s)
 {
-    (this->*m_fPerform)(s);
-}
-
-void Desorption::singleSpeciesSimpleDesorption(Site *s) {
-    //For PVD results
-    s->decreaseHeight( 1 );
-    calculateNeighbors( s ) ;
-    m_seAffectedSites.insert( s );
-    for ( Site* neigh:s->getNeighs() ) {
-        calculateNeighbors( neigh );
-        m_seAffectedSites.insert( neigh );
-
-        for ( Site* firstNeigh:neigh->getNeighs() ){
-            firstNeigh->setNeighsNum( calculateNeighbors( firstNeigh ) );
-            m_seAffectedSites.insert( firstNeigh );
-        }
-    }
-}
-
-void Desorption::multiSpeciesSimpleDesorption(Site *s)
-{
-    s->setOccupied( false );
-    s->setLabel( s->getBelowLabel() );
-
-    m_seAffectedSites.insert( s );
-    for ( Site* neigh:s->getNeighs() )
-        m_seAffectedSites.insert( neigh );
+    m_seAffectedSites.clear();
+    (*m_fPerform)(this, s);
 }
 
 int Desorption::calculateNeighbors(Site* s)
@@ -185,14 +126,11 @@ bool Desorption::isInLowerStep(Site* s)
 bool Desorption::isInHigherStep(Site* s)
 {
     for (int j = 0; j < m_pLattice->getY(); j++){
-        if ( s->getID() == m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() ){
+        if ( s->getID() == m_pLattice->getSite( j, m_pLattice->getX() - 1 )->getID() )
             return true;
-        }
     }
 
     return false;
 }
-
-double Desorption::getRateConstant(){ return m_dProb; }
 
 }

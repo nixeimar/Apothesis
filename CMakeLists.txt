@@ -16,11 +16,8 @@ set(header_files
     ./src/lattice/HCP.h
     ./src/lattice/SimpleCubic.h
     ./src/processes/adsorption.h
-    ./src/processes/adsorption.h
-    ./src/processes/diffusion.h
     ./src/processes/diffusion.h
     ./src/processes/factory_process.h
-    ./src/processes/desorption.h
     ./src/processes/desorption.h
     ./src/processes/abstract_process.h
     ./src/processes/reaction.h
@@ -33,6 +30,19 @@ set(header_files
     ./src/properties.h
     ./src/extLibs/random_generator.h
     ./src/extLibs/randomc.h
+    ./src/processes/adsorption_perform.h 
+    ./src/processes/adsorption_rules.h 
+    ./src/processes/adsorption_types.h
+    ./src/processes/adsorption_perform.h 
+    ./src/processes/adsorption_rules.h 
+    ./src/processes/adsorption_types.h 
+    ./src/processes/desorption_perform.h 
+    ./src/processes/desorption_rules.h 
+    ./src/processes/desorption_types.h 
+    ./src/processes/diffusion_perform.h 
+    ./src/processes/diffusion_rules.h 
+    ./src/processes/diffusion_types.h
+
 )
 set(essential_src_files
     ./src/main.cpp
@@ -66,6 +76,15 @@ set(process_files
     ./src/processes/abstract_process.cpp
     ./src/processes/reaction.h
     ./src/processes/reaction.cpp
+    ./src/processes/adsorption_perform.cpp 
+    ./src/processes/adsorption_rules.cpp 
+    ./src/processes/adsorption_types.cpp 
+    ./src/processes/desorption_perform.cpp 
+    ./src/processes/desorption_rules.cpp 
+    ./src/processes/desorption_types.cpp 
+    ./src/processes/diffusion_perform.cpp 
+    ./src/processes/diffusion_rules.cpp 
+    ./src/processes/diffusion_types.cpp
 )
 set(error_files
     ./src/error/errorhandler.cpp 

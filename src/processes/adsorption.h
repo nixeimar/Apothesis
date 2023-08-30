@@ -19,6 +19,10 @@
 
 #include "process.h"
 
+#include "adsorption_types.h"
+#include "adsorption_rules.h"
+#include "adsorption_perform.h"
+
 namespace MicroProcesses
 {
 
@@ -31,11 +35,6 @@ public:
     bool rules( Site* ) override;
     void perform( Site* ) override;
     void init( vector<string> params ) override;
-    double getRateConstant() override;
-
-    inline void setTargetSite( Site* site ){ m_Site = site;}
-    inline Site* getTargetSite(){ return m_Site; }
-
 
     /// Sets the specific adsorption species label according to the input
     void setAdrorbed(string adsorbed){ m_sAdsorbed = adsorbed;}
@@ -46,65 +45,47 @@ public:
     /// Get the number of sites that this adsorbed occupies.
     inline int getNumSites() { return m_iNumSites;}
 
-private:
+    /// Get the sticking coefficient value
+    inline double getStickingCoef() { return m_dStick; }
 
-    /// Pointers to functions in order to switch between different functions
-    void (Adsorption::*m_fType)();
-    bool (Adsorption::*m_fRules)(Site*);
-    void (Adsorption::*m_fPerform)(Site*);
+    /// Get the molar fraction [-]
+    inline double getMolarFraction() { return m_dF; }
 
-    /// The simple type for the adsorption process rate i.e.
-    /// simple s0*f*P/(2*pi*MW*Ctot*kb*T) -> Sticking coefficient [-], f [-], C_tot [sites/m2], MW [kg/mol]
-    void simpleType();
+    /// Get the concentration of sites [sites/m^2]
+    inline double getSitesConc() { return m_dCtot; }
 
-    /// The arrhenius type for the adsorption process rate i.e.
-    /// arrhenius v0 A exp(-nE/kT), A = exp((E-Em)/kT) -> frequency v0 [-],  E (Joules), Em [Joules]
-    void arrheniusType();
+    /// Get the concentration of sites [sites/m^2]
+    inline double getMolecularWeight() { return m_dMW; }
 
-    /// Constant value for the adsorption process rate i.e.
-    /// constant 1.0 [ML/s]
-    void constantType();
+    /// Get the rate coefficient of this process. It must calculated by a "Type".
+    inline void setRateCoefficient(double val ) { m_dRateConstant = val; }
 
-    /// The process is PVD
-    void signleSpeciesSimpleAdsorption(Site*);
+    /// Get the adsorption rate given as input from the user with the constant keyword
+    inline double getAdsorptionRate() { return m_dAdsorptionRate; }
 
-    /// The process is PVD for multiple sites
-    void signleSpeciesAdsorption(Site*);
+    /// Calculates the neighbors of a given site - To be transerred to process?
+    int calculateNeighbors(Site*);
 
-    /// The process is CVD or ALD
-    void multiSpeciesSimpleAdsorption(Site*);
-
-    /// The process is CVD or ALD for multiple sites
-    void multiSpeciesAdsorption(Site*);
-
-    /// The uncoditional rule. The process is accepted without checked.
-    bool uncoRule(Site* s);
-
-    /// The basic rule for accepting this process.
-    /// Check if the site is empty (i.e. the label is the same as the lattice species)
-    /// then returns true (the processes can be performed).
-    bool basicRule( Site* s);
-
-    /// For adsorbing different species the sites must not be occupied (and TODO: the height must be the same)
-    bool multiSpeciesRule(Site* s);
-
-    /// For adsorbing different species in a single site must not be occupied (and TODO: the height must be the same)
-    bool multiSpeciesSimpleRule(Site* s);
-
-    /// Counts the vacants sites
+    /// Counts the vacants sites - To be transerred to process?
     int countVacantSites( Site* s);
+
+    /// Returns the label of the adsorbed species
+    inline string getAdsorbedSpecies() { return m_sAdsorbed; }
+
+protected: //pointers to functions
+
+    /// Pointers to functions in order to switch between different functionalities
+    double (*m_fType)(Adsorption*);
+    bool (*m_fRules)(Adsorption*, Site*);
+    void (*m_fPerform)(Adsorption*, Site*);
+
+private: //data
 
     /// Checks if the site is in lower step (only for simple cubic lattice)
     bool isInLowerStep( Site* s );
 
     /// Checks if the site is in higher step (only for simple cubic lattice)
     bool isInHigherStep( Site* s );
-
-    ///The site that the process will be performed
-    Site* m_Site;
-
-    /// Calculates the neighbors of a given site
-    int calculateNeighbors(Site*);
 
     /// For simple adsorption:
     ///The sticking coefficient [-]

@@ -146,7 +146,7 @@ void Apothesis::init()
             for (string prod: pIO->getProducts( proc.first ) )
                 products.insert( pIO->analyzeCompound( prod ) );
 
-
+            // If the user does not use the keyword "all" then the process does not depend on the number of its neighs
             if (proc.second.at( proc.second.size() - 1 ).compare("all") != 0){
 
                 Adsorption* a = new Adsorption();
@@ -301,14 +301,9 @@ void Apothesis::init()
                 proc.second.push_back( to_string(1) );
 
                 Diffusion* dif = new Diffusion();
-
                 for ( pair<string, int> s: products) {
-                    if ( s.first.compare("*") != 0 ) {
-
-                        std::string::size_type i = s.first.find("*");
-                        if (i != std::string::npos)
-                            dif->setDiffused( s.first.erase(i, s.first.length() ) );
-                    }
+                    if ( s.first.compare("*") != 0 )
+                        dif->setDiffused( s.first );
                 }
 
                 dif->setName( proc.first );
@@ -330,17 +325,13 @@ void Apothesis::init()
                     Diffusion* dif = new Diffusion();
 
                     for ( pair<string, int> s: products) {
-                        if ( s.first.compare("*") != 0 ) {
-
-                            std::string::size_type i = s.first.find("*");
-                            if (i != std::string::npos)
-                                dif->setDiffused( s.first.erase(i, s.first.length() ) );
-
-                        }
+                        if ( s.first.compare("*") != 0 )
+                            dif->setDiffused( s.first );
                     }
 
+                    dif->setNumVacantSites( neighs );
                     dif->setAllNeighs(true);
-                    dif->setName( proc.first + "( " + to_string(neighs + 1) + " )"  );
+                    dif->setName( proc.first + " (" + to_string(neighs + 1) + " N)" );
                     dif->setLattice( pLattice );
                     dif->setRandomGen( pRandomGen );
                     dif->setErrorHandler( pErrorHandler );
@@ -352,28 +343,6 @@ void Apothesis::init()
             }
         }
     }
-
-
-    /*    pLattice->getSite( 1)->setOccupied(true);
-    pLattice->getSite( 1)->setLabel("CO*");
-    pLattice->getSite( 2)->setOccupied(true);
-    pLattice->getSite( 2)->setLabel("O*");
-
-    pLattice->getSite( 7)->setOccupied(true);
-    pLattice->getSite( 7)->setLabel("O*");
-    pLattice->getSite( 12)->setOccupied(true);
-    pLattice->getSite( 12)->setLabel("CO*");
-
-    pLattice->getSite( 23)->setOccupied(true);
-    pLattice->getSite( 23)->setLabel("O*");
-    pLattice->getSite( 24)->setOccupied(true);
-    pLattice->getSite( 24)->setLabel("O*");
-
-
-    pLattice->getSite( 18)->setOccupied(true);
-    pLattice->getSite( 18)->setLabel("O*");
-    pLattice->getSite( 19)->setOccupied(true);
-    pLattice->getSite( 19)->setLabel("CO*");*/
 
     //Partition the lattice sites depending on the rules of each process
     for ( auto &p:m_processMap ){
@@ -568,7 +537,7 @@ void Apothesis::exec()
                     + std::to_string( pProperties->getRMS() )  + '\t'
                     + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
-            cout << pProperties->getMeanDH()  <<  " " << meanDHPrevStep <<  " " << m_dProcTime << " " << prevTimeStep << " " <<  pProperties->getMeanDH() - meanDHPrevStep << endl;
+//            cout << pProperties->getMeanDH()  <<  " " << meanDHPrevStep <<  " " << m_dProcTime << " " << prevTimeStep << " " <<  pProperties->getMeanDH() - meanDHPrevStep << endl;
 
             //Store info to be used next time
             meanDHPrevStep = pProperties->getMeanDH();

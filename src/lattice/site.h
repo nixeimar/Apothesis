@@ -98,7 +98,7 @@ public:
     /// Set the number of the neighbours according to the height of its neighbour sites
     inline void setNeighsNum( int n ) { m_iNumNeighs = n; }
 
-    /// Returns the number of the neighbours according to the height of its neighbour sites.
+    /// Returns the number of the neighbours according to the height of its neighbour sites (for PVD)
     inline int getNeighsNum(){ return m_iNumNeighs; }
 
     /// Set the neihbour position for this site.
