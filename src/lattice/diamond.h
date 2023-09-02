@@ -30,7 +30,7 @@ using namespace std;
 using namespace SurfaceTiles;
 using namespace Utils;
 
-class FCC: public Lattice
+class diamond: public Lattice
 {
 public:
     /// The type of the lattice.
@@ -41,34 +41,17 @@ public:
     /// Distructor.
     virtual ~diamond();
 
-    /// Sets the type of the lattice.
-    void setType( string );
-
-    /// Various checks if the lattice has been constucted correctly. Partially implemented.
-    void check();
-
-    /// Init the lattice.
-    void init();
-
     /// Build the lattice with an intitial height.
     void build();
 
     /// Sets the minimun initial height for the lattice.
     void setInitialHeight( int  );
 
-    /// Count the neighbors in the different levels
-    int calculateNeighNum( int,  int);
-
-    /// Write the lattice in XYZ format in a filename
-    void writeXYZ( string );
-
-    void buildSteps(int, int);
-
     unordered_map<string, double > computeCoverages( vector<string> species ) override;
 
 protected:
     /// Build the first neighbours for the diamond lattice.
-    void mf_neighs();
+    void mf_neigh();
 };
 
 #endif // DIAMOND
