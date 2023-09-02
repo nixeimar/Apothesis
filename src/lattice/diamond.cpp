@@ -36,7 +36,7 @@ void diamond::build(){
     }
 }
 
-void diamond:mf_neighs() {
+void diamond:mf_neigh() {
 
    // The sites of the lattice.
     m_vSites.resize(getSize());
