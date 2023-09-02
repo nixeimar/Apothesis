@@ -1,14 +1,6 @@
-diamond::diamond(Apothesis* apothesis):Lattice(apothesis)
-{
-    //   m_mEventsRegistry.insert("Simple", new LatticeEvent::AdsorptionFCC110Simple() );
-}
+diamond::diamond(Apothesis* apothesis):Lattice(apothesis){}
 
 void diamond::setInitialHeight( int  height ) { m_iHeight = height; }
-
-void diamond::init(){
-
-}
-
 
 void diamond::build(){
  // The sites of the lattice.
@@ -37,25 +29,17 @@ void diamond::build(){
 }
 
 void diamond:mf_neigh() {
-
+	
    // The sites of the lattice.
     m_vSites.resize(getSize());
-	
-	
+
         for (int site = 0; site < getSize(); site++) {
-
-			int x = site / L;
+	    int x = site / L;
             int y = site % L;
-            int site1 = ((x + 1) % L) * L + y; // Right neighbor
-            int site2 = x * L + ((y + 1) % L); // Down neighbor
-            int site3 = ((x - 1 + L) % L) * L + y; // Left neighbor
-            int site4 = x * L + ((y - 1 + L) % L); // Up neighbor
-
-
-            //Same level
+         
             m_vSites[ site ]->setNeigh( m_vSites[ ((x + 1) % L) * L + y ]); //Right
             m_vSites[ site ]->setNeigh( m_vSites[ x * L + ((y + 1) % L) ]); //Down
             m_vSites[ site ]->setNeigh( m_vSites[ ((x - 1 + L) % L) * L + y ]); //Left
             m_vSites[ site ]->setNeigh( m_vSites[ x * L + ((y - 1 + L) % L) ]) //Up
-
     }
+}
