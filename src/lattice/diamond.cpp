@@ -17,8 +17,6 @@
 
 #include "diamond.h"
 
-Diamond::Diamond(Apothesis* apothesis):Lattice(apothesis){}
-
 void Diamond::setInitialHeight( int height ) { m_iHeight = height; }
 
 void Diamond::build(){
