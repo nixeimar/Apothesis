@@ -34,6 +34,7 @@
 #include "FCC.h"
 #include "HCP.h"
 #include "SimpleCubic.h"
+#include "diamond.h"
 
 #include "factory_process.h"
 
