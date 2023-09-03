@@ -30,22 +30,28 @@ using namespace std;
 using namespace SurfaceTiles;
 using namespace Utils;
 
-class diamond: public Lattice
+class Diamond:public Lattice
 {
 public:
     /// The type of the lattice.
 
     /// Constructor
-    diamond( Apothesis* apothesis );
+    Diamond( Apothesis* apothesis );
 
     /// Distructor.
-    virtual ~diamond();
+    virtual ~Diamond();
 
     /// Build the lattice with an intitial height.
     void build();
 
     /// Sets the minimun initial height for the lattice.
     void setInitialHeight( int  );
+
+    /// Builds a  stepped surface
+    virtual void buildSteps();
+
+    /// Write the lattice in XYZ format in a filename
+    void writeXYZ( string );
 
     unordered_map<string, double > computeCoverages( vector<string> species ) override;
 
