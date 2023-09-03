@@ -99,6 +99,9 @@ void Apothesis::init()
         pLattice = new FCC(this);
     else if ( pParameters->getLatticeType() == "HCP" )
         pLattice = new HCP(this);
+      else if ( pParameters->getLatticeType() == "Diamond" )
+        pLattice = new Diamond(this);
+
 
     pLattice->setX( pParameters->getLatticeXDim() );
     pLattice->setY( pParameters->getLatticeYDim() );
