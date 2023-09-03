@@ -59,9 +59,6 @@ Apothesis::Apothesis(int argc, char *argv[])
     pProperties = new Utils::Properties(this);
     pRandomGen = new RandomGen::RandomGenerator( this );
 
-    /* This must be constructed before the input */
-    pLattice = new FCC(this);
-
     // Create input instance
     pIO = new IO(this);
     pIO->init(m_iArgc, m_vcArgv);
