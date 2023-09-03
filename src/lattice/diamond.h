@@ -39,7 +39,7 @@ public:
     Diamond( Apothesis* apothesis );
 
     /// Distructor.
-    virtual ~Diamond();
+    virtual ~Diamond(){}
 
     /// Build the lattice with an intitial height.
     void build();
