@@ -1,9 +1,28 @@
-diamond::diamond(Apothesis* apothesis):Lattice(apothesis){}
+//============================================================================
+//    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
+//    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
 
-void diamond::setInitialHeight( int  height ) { m_iHeight = height; }
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
 
-void diamond::build(){
- // The sites of the lattice.
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//============================================================================
+
+#include "diamond.h"
+
+Diamond::Diamond(Apothesis* apothesis):Lattice(apothesis){}
+
+void Diamond::setInitialHeight( int height ) { m_iHeight = height; }
+
+void Diamond::build(){
+    // The sites of the lattice.
     m_vSites.resize(getSize());
     for (int i = 0; i < m_vSites.size(); i++)
         m_vSites[i] = new Site();
@@ -28,18 +47,27 @@ void diamond::build(){
     }
 }
 
-void diamond:mf_neigh() {
-	
-   // The sites of the lattice.
+/// Builds a  stepped surface
+void Diamond::buildSteps(){}
+
+void Diamond::writeXYZ(string){}
+
+void Diamond::mf_neigh() {
+
+    // The sites of the lattice.
     m_vSites.resize(getSize());
 
-        for (int site = 0; site < getSize(); site++) {
-	    int x = site / L;
-            int y = site % L;
-         
-            m_vSites[ site ]->setNeigh( m_vSites[ ((x + 1) % L) * L + y ]); //Right
-            m_vSites[ site ]->setNeigh( m_vSites[ x * L + ((y + 1) % L) ]); //Down
-            m_vSites[ site ]->setNeigh( m_vSites[ ((x - 1 + L) % L) * L + y ]); //Left
-            m_vSites[ site ]->setNeigh( m_vSites[ x * L + ((y - 1 + L) % L) ]) //Up
+    int L = getSize();
+
+    for (int site = 0; site < getSize(); site++) {
+        int x = site / L;
+        int y = site % L;
+
+        m_vSites[ site ]->setNeigh( m_vSites[ ((x + 1) % L) * L + y ]); //Right
+        m_vSites[ site ]->setNeigh( m_vSites[ x * L + ((y + 1) % L) ]); //Down
+        m_vSites[ site ]->setNeigh( m_vSites[ ((x - 1 + L) % L) * L + y ]); //Left
+        m_vSites[ site ]->setNeigh( m_vSites[ x * L + ((y - 1 + L) % L) ]); //Up
     }
 }
+
+unordered_map<string, double> Diamond::computeCoverages( vector<string> species){ }
