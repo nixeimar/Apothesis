@@ -177,7 +177,7 @@ void Apothesis::init()
                     }
 
                     a->setNumVacantSites( vacant );
-                    a->setName( proc.first + " (" + to_string(vacant) + " N)" );
+                    a->setName( proc.first + " (" + to_string(vacant) + " V)" );
                     a->setLattice( pLattice );
                     a->setRandomGen( pRandomGen );
                     a->setErrorHandler( pErrorHandler );
@@ -332,7 +332,7 @@ void Apothesis::init()
 
                     dif->setNumVacantSites( neighs );
                     dif->setAllNeighs(true);
-                    dif->setName( proc.first + " (" + to_string(neighs + 1) + " N)" );
+                    dif->setName( proc.first + " (" + to_string(neighs) + " V)" );
                     dif->setLattice( pLattice );
                     dif->setRandomGen( pRandomGen );
                     dif->setErrorHandler( pErrorHandler );
