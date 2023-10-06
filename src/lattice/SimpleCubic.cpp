@@ -21,7 +21,7 @@
 
 SimpleCubic::SimpleCubic(Apothesis *apothesis) : Lattice(apothesis), m_iMinNeigs(1)
 {
-    ;
+    m_Type = Lattice::SimpleCubic;
 }
 
 void SimpleCubic::buildSteps()

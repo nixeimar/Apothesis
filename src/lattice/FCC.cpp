@@ -19,7 +19,7 @@
 
 FCC::FCC(Apothesis* apothesis):Lattice(apothesis)
 {
-    //   m_mEventsRegistry.insert("Simple", new LatticeEvent::AdsorptionFCC110Simple() );
+    m_Type = Lattice::FCC;
 }
 
 void FCC::setInitialHeight( int  height ) { m_iHeight = height; }
