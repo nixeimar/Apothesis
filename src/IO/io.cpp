@@ -116,11 +116,8 @@ void IO::readInputFile()
 
             m_parameters->setLatticeType( vsTokens[ 0 ]  );
 
-//            m_lattice->setType( vsTokens[ 0 ] );
-
             if ( isNumber( vsTokens[ 1 ] ) ){
                 m_parameters->setLatticeXDim( toInt(  trim( vsTokens[ 1 ] ) ) );
-//                m_lattice->setX( toInt(  trim( vsTokens[ 1 ] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The x dimension of lattice is not a number.");
@@ -129,7 +126,6 @@ void IO::readInputFile()
 
             if ( isNumber( vsTokens[ 2 ] ) ){
                 m_parameters->setLatticeYDim( toInt(  trim( vsTokens[ 2 ] ) ) );
-//                m_lattice->setY( toInt( trim( vsTokens[ 2 ] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The y dimension of lattice is not a number.");
@@ -137,8 +133,7 @@ void IO::readInputFile()
             }
 
             if ( isNumber( vsTokens[ 3 ] ) ){
-                m_parameters->setLatticeHeight( toInt(  trim( vsTokens[ 2 ] ) ) );
-//                m_lattice->setInitialHeight( toInt( trim( vsTokens[ 3 ] ) ) );
+                m_parameters->setLatticeHeight( toInt(  trim( vsTokens[ 3 ] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The height must be a  number.");
