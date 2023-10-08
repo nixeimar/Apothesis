@@ -15,6 +15,7 @@ set(header_files
     ./src/lattice/FCC.h
     ./src/lattice/HCP.h
     ./src/lattice/SimpleCubic.h
+    ./src/lattice/diamond.h
     ./src/processes/adsorption.h
     ./src/processes/diffusion.h
     ./src/processes/factory_process.h
@@ -96,6 +97,7 @@ set(lattice_files
     ./src/lattice/FCC.cpp
     ./src/lattice/HCP.cpp
     ./src/lattice/SimpleCubic.cpp
+    ./src/lattice/diamond.cpp
 )
 
 add_executable(${PROJECT_NAME} ./src/main.cpp
