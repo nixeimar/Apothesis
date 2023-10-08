@@ -12,6 +12,7 @@ set(header_files
     ./src/lattice/lattice.h
     ./src/processes/process.h
     ./src/lattice/site.h
+    ./src/lattice/diamond.h
     ./src/lattice/FCC.h
     ./src/lattice/HCP.h
     ./src/lattice/SimpleCubic.h
@@ -93,6 +94,7 @@ set(error_files
 set(lattice_files
     ./src/lattice/site.cpp
     ./src/lattice/lattice.cpp
+    ./src/lattice/diamond.cpp
     ./src/lattice/FCC.cpp
     ./src/lattice/HCP.cpp
     ./src/lattice/SimpleCubic.cpp
