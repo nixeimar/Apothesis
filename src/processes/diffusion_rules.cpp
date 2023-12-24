@@ -26,6 +26,31 @@ bool diffusionBasicAllRule( Diffusion* proc, Site* s){
     return false;
 }
 
+bool diffusionMultilayerUp( Diffusion* proc, Site* s){
+
+    if ( !s->isOccupied() || s->getLabel().compare( proc->getDiffused() ) != 0
+         || proc->countVacantSites(s) != proc->getNumVacantSites() ) return false;
+
+    for ( Site* neigh:s->getNeighs() )
+        if ( !neigh->isOccupied() && neigh->getHeight() == s->getHeight() )
+            return true;
+
+    return false;
+}
+
+
+bool diffusionMultilayerDown( Diffusion* proc, Site* s){
+
+    if ( !s->isOccupied() || s->getLabel().compare( proc->getDiffused() ) != 0
+         || proc->countVacantSites(s) != proc->getNumVacantSites() ) return false;
+
+    for ( Site* neigh:s->getNeighs() )
+        if ( !neigh->isOccupied() && neigh->getHeight() == s->getHeight() )
+            return true;
+
+    return false;
+}
+
 
 bool diffusionAllRule( Diffusion* proc, Site* s){
 

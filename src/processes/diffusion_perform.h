@@ -11,6 +11,12 @@ namespace MicroProcesses
 **/
 void simpleDiffusion( Diffusion*, Site*);
 
+/// Diffuse one layer down
+void pefrormMultilayerUp( Diffusion*, Site*);
+
+/// Diffuse one layer up
+void pefrormMultilayerDown( Diffusion*, Site*);
+
 /// The process is PVD as in Lam and Vlachos (2000)
 void performPVD( Diffusion*, Site*);
 
