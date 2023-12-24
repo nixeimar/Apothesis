@@ -68,6 +68,9 @@ public:
 
     int countVacantSites( Site* s);
 
+    int countVacantSitesOneDown( Site* s);
+    int countVacantSitesOneUp( Site* s);
+
 protected:
 
     /// Pointers to functions in order to switch between different functions

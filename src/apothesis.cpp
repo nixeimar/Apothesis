@@ -342,6 +342,60 @@ void Apothesis::init()
                     m_processMap.insert( {dif, emptySet} );
                 }
             }
+
+
+            if (proc.second.at( proc.second.size() - 1 ).compare("multilayer") != 0){
+                // First create the multilayer processes going up
+
+                for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
+
+                    proc.second.pop_back();
+                    proc.second.push_back( to_string(neighs) );
+
+                    Diffusion* dif = new Diffusion();
+
+                    for ( pair<string, int> s: products) {
+                        if ( s.first.compare("*") != 0 )
+                            dif->setDiffused( s.first );
+                    }
+
+                    dif->setNumVacantSites( neighs );
+                    dif->setAllNeighs(true);
+                    dif->setName( proc.first + "up_(" + to_string(neighs) + " V)" );
+                    dif->setLattice( pLattice );
+                    dif->setRandomGen( pRandomGen );
+                    dif->setErrorHandler( pErrorHandler );
+                    dif->setSysParams( pParameters ); //These are the systems and constants parameters
+                    dif->init( proc.second ); //These are the process per se parameters
+
+                    m_processMap.insert( {dif, emptySet} );
+                }
+
+                // First create the multilayer processes going down
+                for ( int neighs = 0; neighs < pLattice->getNumFirstNeihgs(); neighs++) {
+
+                    proc.second.pop_back();
+                    proc.second.push_back( to_string(neighs) );
+
+                    Diffusion* dif = new Diffusion();
+
+                    for ( pair<string, int> s: products) {
+                        if ( s.first.compare("*") != 0 )
+                            dif->setDiffused( s.first );
+                    }
+
+                    dif->setNumVacantSites( neighs );
+                    dif->setAllNeighs(true);
+                    dif->setName( proc.first + " down_ (" + to_string(neighs) + " V)" );
+                    dif->setLattice( pLattice );
+                    dif->setRandomGen( pRandomGen );
+                    dif->setErrorHandler( pErrorHandler );
+                    dif->setSysParams( pParameters ); //These are the systems and constants parameters
+                    dif->init( proc.second ); //These are the process per se parameters
+
+                    m_processMap.insert( {dif, emptySet} );
+                }
+            }
         }
     }
 

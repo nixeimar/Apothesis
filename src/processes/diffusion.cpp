@@ -104,6 +104,27 @@ int Diffusion::countVacantSites( Site* s){
     return iCount;
 }
 
+int Diffusion::countVacantSitesOneDown( Site* s){
+     int iCount = 0;
+     for (Site* neigh:s->getNeighs() ){
+         if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() - 1 )
+             iCount++;
+     }
+
+     return iCount;
+ }
+
+
+int Diffusion::countVacantSitesOneUp( Site* s){
+     int iCount = 0;
+     for (Site* neigh:s->getNeighs() ){
+         if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() + 1 )
+             iCount++;
+     }
+
+     return iCount;
+ }
+
 int Diffusion::calculateNeighbors(Site* s)
 {
     int neighs = 0;

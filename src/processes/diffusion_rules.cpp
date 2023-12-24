@@ -29,10 +29,11 @@ bool diffusionBasicAllRule( Diffusion* proc, Site* s){
 bool diffusionMultilayerUp( Diffusion* proc, Site* s){
 
     if ( !s->isOccupied() || s->getLabel().compare( proc->getDiffused() ) != 0
-         || proc->countVacantSites(s) != proc->getNumVacantSites() ) return false;
+         || proc->countVacantSitesOneUp(s) != proc->getNumVacantSites() ) return false;
 
     for ( Site* neigh:s->getNeighs() )
-        if ( !neigh->isOccupied() && neigh->getHeight() == s->getHeight() )
+        // A layer up
+        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() + 1 )
             return true;
 
     return false;
@@ -42,10 +43,11 @@ bool diffusionMultilayerUp( Diffusion* proc, Site* s){
 bool diffusionMultilayerDown( Diffusion* proc, Site* s){
 
     if ( !s->isOccupied() || s->getLabel().compare( proc->getDiffused() ) != 0
-         || proc->countVacantSites(s) != proc->getNumVacantSites() ) return false;
+         || proc->countVacantSitesOneDown(s) != proc->getNumVacantSites() ) return false;
 
     for ( Site* neigh:s->getNeighs() )
-        if ( !neigh->isOccupied() && neigh->getHeight() == s->getHeight() )
+        // A layer down
+        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() - 1 )
             return true;
 
     return false;
