@@ -33,7 +33,7 @@ bool diffusionMultilayerUp( Diffusion* proc, Site* s){
 
     for ( Site* neigh:s->getNeighs() )
         // A layer up
-        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() + 1 )
+        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() - 1 )
             return true;
 
     return false;
@@ -47,7 +47,7 @@ bool diffusionMultilayerDown( Diffusion* proc, Site* s){
 
     for ( Site* neigh:s->getNeighs() )
         // A layer down
-        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() - 1 )
+        if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() + 1 )
             return true;
 
     return false;

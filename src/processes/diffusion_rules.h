@@ -14,10 +14,15 @@ bool diffusionBasicRule(Diffusion*, Site* s);
 /**  This is the rule when the user has used the "all" keyword in the input file.
  *   It is applied only to the atoms that belong to the growing film. (PVD only)
 **/
-bool diffusionAllRule(Diffusion*, Site* s);
-
+bool diffusionAllRule( Diffusion*, Site* s);
 
 bool diffusionBasicAllRule( Diffusion* proc, Site* s);
+
+/// If the keyword myltilayer is included in diffusion. Upper layer.
+bool diffusionMultilayerUp( Diffusion* proc, Site* s);
+
+/// If the keyword myltilayer is included in diffusion. Lower layer.
+bool diffusionMultilayerDown( Diffusion* proc, Site* s);
 
 }
 

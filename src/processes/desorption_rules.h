@@ -13,12 +13,6 @@ bool allRule(Desorption*, Site* s);
 /// Returns always true - this is actually as having uncoditional acceptance
 bool basicRule(Desorption*, Site* s);
 
-/// If the keyword myltilayer is included in diffusion
-bool diffusionMultilayerUp(Desorption*, Site* s);
-
-/// If the keyword myltilayer is included in diffusion
-bool diffusionMultilayerDown(Desorption*, Site* s);
-
 /// For desorbing different species the site must be occupied
 bool difSpeciesRule(Desorption*, Site* s);
 

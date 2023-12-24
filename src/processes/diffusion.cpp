@@ -22,7 +22,7 @@ namespace MicroProcesses
 
 REGISTER_PROCESS_IMPL(Diffusion)
 
-Diffusion::Diffusion(){}
+Diffusion::Diffusion():m_bMultilayer(false), m_bDown(false), m_bUp(false){}
 Diffusion::~Diffusion(){}
 
 
@@ -59,18 +59,23 @@ void Diffusion::init(vector<string> params)
 
     //Select the rule for the diffusion process here
     if ( !m_isPartOfGrowth )
-        if ( !m_bAllNeihs )
+        if ( !m_bAllNeihs && !m_bMultilayer && !m_bUp && !m_bDown )
             m_fRules = &diffusionBasicRule;
-        else
+        else if ( m_bAllNeihs && !m_bMultilayer && !m_bUp && !m_bDown )
             m_fRules = &diffusionBasicAllRule;
+        else if ( m_bAllNeihs && m_bMultilayer && m_bUp && !m_bDown )
+            m_fRules = &diffusionMultilayerUp;
+        else if ( m_bAllNeihs && m_bMultilayer && !m_bUp && m_bDown )
+            m_fRules = &diffusionMultilayerDown;
     else
         m_fRules = &diffusionAllRule;
 
-    //Check what process should be performed.
-    //Desorption in PVD will lead to increasing the height of the site
-    //Desorption in CVD will change the label of the site
-    if ( !m_isPartOfGrowth )
+    if ( !m_isPartOfGrowth && !m_bMultilayer )
         m_fPerform = &simpleDiffusion;
+    else if ( !m_isPartOfGrowth && m_bMultilayer && m_bDown )
+        m_fPerform = &simpleDiffusionDown;
+    else if ( !m_isPartOfGrowth && m_bMultilayer && m_bUp )
+        m_fPerform = &simpleDiffusionUp;
     else
         m_fPerform = &performPVD;
 }
@@ -107,7 +112,7 @@ int Diffusion::countVacantSites( Site* s){
 int Diffusion::countVacantSitesOneDown( Site* s){
      int iCount = 0;
      for (Site* neigh:s->getNeighs() ){
-         if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() - 1 )
+         if ( s->getHeight() == neigh->getHeight() - 1  && !neigh->isOccupied() )
              iCount++;
      }
 
@@ -118,7 +123,7 @@ int Diffusion::countVacantSitesOneDown( Site* s){
 int Diffusion::countVacantSitesOneUp( Site* s){
      int iCount = 0;
      for (Site* neigh:s->getNeighs() ){
-         if ( !neigh->isOccupied() && s->getHeight() == neigh->getHeight() + 1 )
+         if ( s->getHeight() == neigh->getHeight() + 1 && !neigh->isOccupied() )
              iCount++;
      }
 

@@ -36,7 +36,7 @@ AB* + B* -> A*: constant 1.e+5
 #CO2* -> * + CO2: constant 0.2 all
 
 #Diffusion
-B* -> B*: constant 0.02500 all
+B* -> B*: constant 0.02500 all multilayer
 AB* -> AB*: constant 0.02500 all multilayer
 #A* -> A*: constant 0.2 all
 

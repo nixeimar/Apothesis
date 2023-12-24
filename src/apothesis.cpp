@@ -343,7 +343,6 @@ void Apothesis::init()
                 }
             }
 
-
             if (proc.second.at( proc.second.size() - 1 ).compare("multilayer") != 0){
                 // First create the multilayer processes going up
 
@@ -361,7 +360,9 @@ void Apothesis::init()
 
                     dif->setNumVacantSites( neighs );
                     dif->setAllNeighs(true);
-                    dif->setName( proc.first + "up_(" + to_string(neighs) + " V)" );
+                    dif->setMultilayer(true);
+                    dif->setUpDirection(true);
+                    dif->setName( proc.first + " up_(" + to_string(neighs) + " V)" );
                     dif->setLattice( pLattice );
                     dif->setRandomGen( pRandomGen );
                     dif->setErrorHandler( pErrorHandler );
@@ -386,6 +387,8 @@ void Apothesis::init()
 
                     dif->setNumVacantSites( neighs );
                     dif->setAllNeighs(true);
+                    dif->setMultilayer(true);
+                    dif->setDownDirection(true);
                     dif->setName( proc.first + " down_ (" + to_string(neighs) + " V)" );
                     dif->setLattice( pLattice );
                     dif->setRandomGen( pRandomGen );

@@ -49,6 +49,15 @@ public:
     /// If keyrowd "all" is added then this is true
     inline void setAllNeighs( bool all ){  m_bAllNeihs = all; }
 
+    /// If keyrowd "multilayer" is added then this is true
+    inline void setMultilayer( bool multi ){  m_bMultilayer = multi; }
+
+    /// If keyrowd "multilayer" is added then this is true
+    inline void setDownDirection( bool down ){  m_bDown = down; }
+
+    /// If keyrowd "multilayer" is added then this is true
+    inline void setUpDirection( bool up ){  m_bUp = up; }
+
     /// A member function to calculate the neighbors of a given site
     int calculateNeighbors(Site*);
 
@@ -94,6 +103,15 @@ private:
 
     /// If the user has "all" keyword this is set to true
     bool m_bAllNeihs;
+
+    /// If the user has "multilayer" keyword this is set to true
+    bool m_bMultilayer;
+
+    /// For the up layer
+    bool m_bUp;
+
+    /// For the down layer
+    bool m_bDown;
 
     /// The diffusion rate
     double m_dDiffusionRate;
