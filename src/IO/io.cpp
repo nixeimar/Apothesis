@@ -83,7 +83,7 @@ void IO::readInputFile()
         }
 
         // Remove any empty parts of the vector
-        vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+        vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
         vsTokensBasic.erase( it, vsTokensBasic.end() );
 
         // Check if a token is not a keyword
@@ -111,7 +111,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokensBasic.erase( it, vsTokens.end() );
 
             m_parameters->setLatticeType( vsTokens[ 0 ]  );
@@ -171,7 +171,7 @@ void IO::readInputFile()
 
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
             for (string s:vsTokens )
@@ -197,7 +197,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
             if ( isNumber( vsTokens[ 0 ] ) ){
@@ -232,7 +232,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
             vsTokensBasic.erase( it, vsTokensBasic.end() );
 
             if ( isNumber( trim(vsTokensBasic[ 1 ] ) )){
@@ -259,7 +259,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
             vsTokensBasic.erase( it, vsTokensBasic.end() );
 
             if ( isNumber( trim(vsTokensBasic[ 1 ] ) ) ){
@@ -287,7 +287,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
             vsTokensBasic.erase( it, vsTokensBasic.end() );
 
             if ( isNumber(  trim( vsTokensBasic[ 1 ] ) ) ){
@@ -322,7 +322,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
             if ( vsTokens[ 0].compare( "log") == 0 ) {
@@ -374,7 +374,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
             for ( unsigned int i = 0; i < vsTokens.size(); i++ ){
