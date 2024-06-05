@@ -76,6 +76,14 @@ public:
     /// Perform the KMC iteratios
     void exec();
 
+    //Logging function
+    void loggingProcess(string output);
+    //Writing lattice heights
+    void writeLatticeHeightsProcess(double m_dProcTime);
+
+        //Writing lattice Species
+    void writeLatticeSpeciesProcess(double m_dProcTime);
+
     /// Function to log to output file whether a parameter is properly read
     void logSuccessfulRead(bool read, string parameter);
 

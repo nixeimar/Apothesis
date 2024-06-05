@@ -36,6 +36,8 @@
 #include "process.h"
 #include "apothesis.h"
 #include<omp.h>
+// #include "/usr/lib/x86_64-linux-gnu/openmpi/include/mpi.h"
+
 #include<time.h>
 using namespace std;
 using namespace MicroProcesses;
@@ -62,13 +64,16 @@ int main( int argc, char* argv[] )
 	  clock_gettime(CLK, &start_e2e);
 
     //Checking commit
+
     Apothesis* apothesis = new Apothesis( argc, argv );
     cout << "Initiating Apothesis" << endl;
     apothesis->init();
-
+	
     cout << "Apothesis runnning ..." << endl;
     apothesis->exec();
     cout << "Apothesis finished succesfully." << endl;
+	
+
     clock_gettime(CLK, &end_e2e);
 	e2e = diff(start_e2e, end_e2e);
 	cout << "Time taken for the simulation is : ";
