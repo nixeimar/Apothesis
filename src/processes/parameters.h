@@ -127,11 +127,16 @@ class Parameters: public Pointers
     inline void setLatticeXDim( int x ){ m_iX = x; }
     inline void setLatticeYDim( int y ){ m_iY = y; }
     inline void setLatticeHeight( int h ){ m_iH = h; }
+    inline void setHeightFileExists(bool var){m_heightFileExist = var;}
+    inline void setHeightData(vector<vector<int>> height){m_height = height;}
 
     inline int getLatticeXDim(){ return m_iX; }
     inline int getLatticeYDim(){ return m_iY; }
     inline int getLatticeHeight(){ return m_iH; }
 
+    inline bool getHeightFileExist(){ return m_heightFileExist; }
+    inline vector<vector<int>>getHeightData(){return m_height;}
+   
   protected:
 
     /// Parameters of the lattice
@@ -173,6 +178,11 @@ class Parameters: public Pointers
     /// The species to compute coverage for
     vector<string> m_vCovSpecies;
 
+    /// Height Data of all sites 
+    vector<vector<int>> m_height;
+
+    /// Bool to notify if height file exists or not
+    bool m_heightFileExist;
   };
 
 }
