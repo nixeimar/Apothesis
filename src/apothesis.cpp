@@ -106,7 +106,13 @@ void Apothesis::init()
 
     pLattice->setX( pParameters->getLatticeXDim() );
     pLattice->setY( pParameters->getLatticeYDim() );
-    pLattice->setInitialHeight( pParameters->getLatticeHeight() );
+    if (pParameters->getHeightFileExist()){
+        // cout<<"Yes"<<endl;
+        pLattice->setInitialHeightAllSites(pParameters->getHeightData());
+    }
+    else{
+        pLattice->setInitialHeight( pParameters->getLatticeHeight() );
+    }
     pLattice->setLabels( pParameters->getLatticeLabels() );
     pLattice->build();
 

@@ -96,59 +96,123 @@ void IO::readInputFile()
         }
 
         if ( vsTokensBasic[ 0].compare(  m_sLattice ) == 0 ){
+                    // Check if the input line contains a filename for height
+                    //also check for the filename later, add m_HeightFile=height
+            if (vsTokensBasic.size() > 1) {
+                    string heightFileName = vsTokensBasic[1];
+                    ifstream heightFile(heightFileName);
+    
+                    if (heightFile.good()) {
+                        // Read heights from the file
+                        string line;
+                        getline(heightFile, line);
+                        vector<string> vsTokens = split(line, " ");
+                        if (vsTokens.size() != 4 ) {
+                            m_errorHandler->error_simple_msg("Invalid heights header format ");
+                            EXIT
+                        }
+                        for (auto tok : vsTokens) {
+                            cout << tok << endl;
+                        }
+                        m_parameters->setLatticeType( vsTokens[ 1 ]);
+                        // int latticeXDim = toInt(trim(vsTokens[1]));
+                        // int latticeYDim = toInt(trim(vsTokens[2]));
+                     
+                        if ( isNumber( vsTokens[ 2 ] ) ){
+                        m_parameters->setLatticeXDim( toInt(  trim( vsTokens[ 2 ] ) ) );
+                        }
+                        else {
+                            m_errorHandler->error_simple_msg("The x dimension of lattice is not a number.");
+                            EXIT
+                        }
 
-            vector<string> vsTokens;
-            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+                        if ( isNumber( vsTokens[ 3 ] ) ){
+                            m_parameters->setLatticeYDim( toInt(  trim( vsTokens[ 3 ] ) ) );
+                        }
+                        else {
+                            m_errorHandler->error_simple_msg("The y dimension of lattice is not a number.");
+                            EXIT
+                        }
+                        int latticeXDim = m_parameters->getLatticeXDim();
+                        int latticeYDim = m_parameters->getLatticeYDim();
+                        vector<vector<int>> heights(latticeYDim, vector<int>(latticeXDim));
 
-            bool bComment = false;
-            for ( unsigned int i = 0; i< vsTokens.size(); i++){
-                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
-                    bComment = true;
+                        for (int i = 0; i < latticeYDim; ++i) {
+                            for (int j = 0; j < latticeXDim; ++j) {
+                                if (!(heightFile >> heights[i][j])) {
+                                    m_errorHandler->error_simple_msg("Error reading heights from file.");
+                                    EXIT
+                                      }
+                                    }
+                            }
+                        // for (int i = 0; i < latticeYDim; ++i) {
+                        //     for (int j = 0; j < latticeXDim; ++j) {
+                        //         cout<<heights[i][j]<<" ";
+                        //         }
+                        //         cout<<endl;
+                        //     }
+                        m_parameters->setHeightData(heights);
+                        m_parameters->setHeightFileExists(true);
+                        heightFile.close();
+                    } else {
+                        m_errorHandler->error_simple_msg("Failed to open height file: " + heightFileName);
+                        EXIT
+                    }
+                }
+             else{
+                vector<string> vsTokens;
+                    vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
 
-                // Remove the comments from the tokens so not to consider them
-                if ( bComment )
-                    vsTokens[ i ].clear();
+                    bool bComment = false;
+                    for ( unsigned int i = 0; i< vsTokens.size(); i++){
+                        if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                            bComment = true;
+
+                        // Remove the comments from the tokens so not to consider them
+                        if ( bComment )
+                            vsTokens[ i ].clear();
+                    }
+
+                    // Remove any empty parts of the vector
+                    vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+                    vsTokensBasic.erase( it, vsTokens.end() );
+
+                    m_parameters->setLatticeType( vsTokens[ 0 ]  );
+
+                    if ( isNumber( vsTokens[ 1 ] ) ){
+                        m_parameters->setLatticeXDim( toInt(  trim( vsTokens[ 1 ] ) ) );
+                    }
+                    else {
+                        m_errorHandler->error_simple_msg("The x dimension of lattice is not a number.");
+                        EXIT
+                    }
+
+                    if ( isNumber( vsTokens[ 2 ] ) ){
+                        m_parameters->setLatticeYDim( toInt(  trim( vsTokens[ 2 ] ) ) );
+                    }
+                    else {
+                        m_errorHandler->error_simple_msg("The y dimension of lattice is not a number.");
+                        EXIT
+                    }
+
+                    if ( isNumber( vsTokens[ 3 ] ) ){
+                        m_parameters->setLatticeHeight( toInt(  trim( vsTokens[ 3 ] ) ) );
+                    }
+                    else {
+                        m_errorHandler->error_simple_msg("The height must be a  number.");
+                        EXIT
+                    }
+
+                    if ( !vsTokens[ 4 ].empty() )
+                        m_parameters->setLatticeLabels( vsTokens[4] ) ;
+                    else {
+                        m_errorHandler->error_simple_msg("You must specify a species that the lattice is composed off.");
+                        EXIT
+                    }
+                     m_parameters->setHeightFileExists(false);
+                    continue;
+                }
             }
-
-            // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
-            vsTokensBasic.erase( it, vsTokens.end() );
-
-            m_parameters->setLatticeType( vsTokens[ 0 ]  );
-
-            if ( isNumber( vsTokens[ 1 ] ) ){
-                m_parameters->setLatticeXDim( toInt(  trim( vsTokens[ 1 ] ) ) );
-            }
-            else {
-                m_errorHandler->error_simple_msg("The x dimension of lattice is not a number.");
-                EXIT
-            }
-
-            if ( isNumber( vsTokens[ 2 ] ) ){
-                m_parameters->setLatticeYDim( toInt(  trim( vsTokens[ 2 ] ) ) );
-            }
-            else {
-                m_errorHandler->error_simple_msg("The y dimension of lattice is not a number.");
-                EXIT
-            }
-
-            if ( isNumber( vsTokens[ 3 ] ) ){
-                m_parameters->setLatticeHeight( toInt(  trim( vsTokens[ 3 ] ) ) );
-            }
-            else {
-                m_errorHandler->error_simple_msg("The height must be a  number.");
-                EXIT
-            }
-
-            if ( !vsTokens[ 4 ].empty() )
-                m_parameters->setLatticeLabels( vsTokens[4] ) ;
-            else {
-                m_errorHandler->error_simple_msg("You must specify a species that the lattice is composed off.");
-                EXIT
-            }
-
-            continue;
-        }
 
         if (vsTokensBasic[ 0].compare(  m_sGrowth ) == 0){
             vector<string> vsTokens;

@@ -88,16 +88,34 @@ void SimpleCubic::build()
     m_vSites.resize( getSize() );
     for (int i = 0; i < m_vSites.size(); i++)
         m_vSites[i] = new Site();
-
+    
+    
     //This is OK
-    for (int i = 0; i < m_iSizeX; i++)
-    {
-        for (int j = i * m_iSizeY; j < (m_iSizeY + i * m_iSizeY); j++)
-        {
+    // for (int i = 0; i < m_iSizeX; i++)
+    // {
+    //     for (int j = i * m_iSizeY; j < (m_iSizeY + i * m_iSizeY); j++)
+    //     {
+    //         m_vSites[j]->setID(j);
+    //         m_vSites[j]->setHeight(m_iHeight);
+    //     }
+    // }
+    
+    for (int i = 0; i < m_iSizeY; ++i) {
+        for (int j = 0; j < m_iSizeY; ++j) {
+          
             m_vSites[j]->setID(j);
-            m_vSites[j]->setHeight(m_iHeight);
-        }
+            m_vSites[j]->setHeight(m_iHeightsAll[i][j]);
+            cout<<m_iHeightsAll[i][j]<<" ";
+            }
+            cout<<endl;
+          
     }
+    //  for (int i = 0; i < m_iSizeY; ++i) {
+    //     for (int j = 0; j < m_iSizeX; ++j) {
+    //         m_vSites[j]->setID(j);
+    //         m_vSites[j]->setHeight(m_iHeight);
+    //         }
+    //     }
 
     mf_neigh();
 
