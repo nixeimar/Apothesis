@@ -15,7 +15,6 @@ INCLUDEPATH += . \
          ./src/lattice \
          ./src/processes \
          ./src/IO \
-#         ./src/species \
          ./src/error
 
 # Input
@@ -43,8 +42,17 @@ HEADERS += ./src/apothesis.h \
            ./src/processes/io.h \
            ./src/processes/parameters.h \
            ./src/processes/process.h \
-           ./src/lattice/HCP.h
-#           ./src/ species/species.h
+           ./src/processes/adsorption_perform.h \
+           ./src/processes/adsorption_rules.h \
+           ./src/processes/adsorption_types.h \
+           ./src/processes/desorption_perform.h \
+           ./src/processes/desorption_rules.h \
+           ./src/processes/desorption_types.h \
+           ./src/processes/diffusion_perform.h \
+           ./src/processes/diffusion_rules.h \
+           ./src/processes/diffusion_types.h \
+           ./src/lattice/HCP.h \
+           ./src/lattice/diamond.h
 
 SOURCES += ./src/apothesis.cpp \
            ./src/IO/io.cpp \
@@ -68,5 +76,14 @@ SOURCES += ./src/apothesis.cpp \
            ./src/processes/factory_process.cpp \
            ./src/processes/parameters.cpp \
            ./src/processes/process.cpp \
-           ./src/lattice/HCP.cpp
-#           ./src/species/species.cpp
+           ./src/processes/adsorption_perform.cpp \
+           ./src/processes/adsorption_rules.cpp \
+           ./src/processes/adsorption_types.cpp \
+           ./src/processes/desorption_perform.cpp \
+           ./src/processes/desorption_rules.cpp \
+           ./src/processes/desorption_types.cpp \
+           ./src/processes/diffusion_perform.cpp \
+           ./src/processes/diffusion_rules.cpp \
+           ./src/processes/diffusion_types.cpp \
+           ./src/lattice/HCP.cpp \
+           ./src/lattice/diamond.cpp

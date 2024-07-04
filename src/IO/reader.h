@@ -54,6 +54,7 @@ public:
         m_LatticeType["SimpleCubic"] = Lattice::SimpleCubic;
         m_LatticeType["FCC"] = Lattice::FCC;
         m_LatticeType["HCP"] = Lattice::HCP;
+        m_LatticeType["Diamond"] = Lattice::Diamond;
     }
 
     inline void setInputPath( string inputPath ) {

@@ -33,6 +33,8 @@ void Lattice::setType(string sType)
         m_Type = SimpleCubic;
     else if (sType == "HCP")
         m_Type = HCP;
+    else if (sType == "Diamond")
+        m_Type = Diamond;
     else
         m_Type = NONE;
 }
@@ -64,6 +66,8 @@ Lattice::Type Lattice::getType()
         return SimpleCubic;
     case HCP:
         return HCP;
+    case Diamond:
+        return Diamond;
     default:
         return NONE;
     }

@@ -40,7 +40,8 @@ class Lattice: public Pointers
                NONE,
                SimpleCubic,
                FCC,
-               HCP
+               HCP,
+               Diamond
                };
 
     /// Constructor

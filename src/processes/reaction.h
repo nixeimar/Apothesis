@@ -37,7 +37,6 @@ public:
 
     void perform(Site *) override;
     bool rules(Site *) override;
-    double getRateConstant() override;
     void init(vector<string> params) override;
 
     inline void setReactants( unordered_map<string, int> reactants ) {m_mReactants = reactants;}

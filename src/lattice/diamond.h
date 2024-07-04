@@ -15,16 +15,49 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#include "process.h"
+#ifndef DIAMOND_H
+#define DIAMOND_H
 
-Process::Process():m_iHappened(0),m_bUncoAccept(false), m_iNumSites(1),  m_iNumNeighs(1), m_iNumVacant(1) {}
-Process::~Process(){}
+#include <iostream>
+#include <stdlib.h>
+#include <map>
+#include <list>
+#include <fstream>
 
-bool Process::isPartOfGrowth( string name ){
-    for ( string species: m_pUtilParams->getGrowthSpecies() ){
-        if ( species.compare( name ) == 0 )
-            return true;
-    }
+#include "lattice.h"
 
-    return false;
-}
+using namespace std;
+using namespace SurfaceTiles;
+using namespace Utils;
+
+class Diamond:public Lattice
+{
+public:
+    /// The type of the lattice.
+
+    /// Constructor
+    Diamond( Apothesis* apothesis );
+
+    /// Distructor.
+    virtual ~Diamond(){}
+
+    /// Build the lattice with an intitial height.
+    void build();
+
+    /// Sets the minimun initial height for the lattice.
+    void setInitialHeight( int  );
+
+    /// Builds a  stepped surface
+    virtual void buildSteps();
+
+    /// Write the lattice in XYZ format in a filename
+    void writeXYZ( string );
+
+    unordered_map<string, double > computeCoverages( vector<string> species ) override;
+
+protected:
+    /// Build the first neighbours for the diamond lattice.
+    void mf_neigh();
+};
+
+#endif // DIAMOND

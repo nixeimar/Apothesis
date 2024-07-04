@@ -19,6 +19,10 @@
 
 #include "process.h"
 
+#include "desorption_types.h"
+#include "desorption_rules.h"
+#include "desorption_perform.h"
+
 namespace MicroProcesses
 {
 
@@ -28,10 +32,6 @@ public:
     Desorption();
     ~Desorption() override;
 
-    inline void setTargetSite( Site* site ){ m_Site = site;}
-    inline Site* getTargetSite(){ return m_Site; }
-
-    double getRateConstant() override;
     bool rules( Site* s) override;
     void perform( Site* ) override;
     void init(vector<string> params) override;
@@ -42,46 +42,33 @@ public:
     /// If keyrowd "all" is added then this is true
     inline void setAllNeighs( bool all ){  m_bAllNeihs = all; }
 
-private:
+    /// A member function to calculate the neighbors of a given site
+    int calculateNeighbors(Site*);
 
-    /// Pointers to functions in order to switch between different functions
-    void (Desorption::*m_fType)();
-    bool (Desorption::*m_fRules)(Site*);
-    void (Desorption::*m_fPerform)(Site*);
+    /// The rate of desorption if contant type
+    double getDesorptionRate() { return m_dDesorptionRate;}
 
-    /// Arrhenius type rate
-    void arrheniusType();
+    /// Returns the activation energy if Arrhenius type
+    double getActivationEnergy() {return m_dEd; }
 
-    /// Constant value for the adsorption process rate i.e.
-    /// constant 1.0 [ML/s]
-    void constantType();
+    /// Returns the vibrational frequency if Arrhenius type
+    double getVibrationalFrequency() {return m_dv0; }
 
-    /// Checks if the site is in lower step (only for simple cubic lattice)
-    bool isInLowerStep( Site* s );
+    /// The number of neighbors defined for this process
+    double getNumNeighs(){ return m_iNumNeighs; }
 
-    /// Checks if the site is in higher step (only for simple cubic lattice)
-    bool isInHigherStep( Site* s );
 
-    /// If the keyword 'all' is used then the rule is based on the neighbours
-    bool allRule(Site* s);
+protected: //pointers to functions
 
-    /// Returns always true - this is actually as having uncoditional acceptance
-    bool basicRule(Site* s);
+    /// Pointers to functions in order to switch between different functionalities
+    double (*m_fType)(Desorption*);
+    bool (*m_fRules)(Desorption*, Site*);
+    void (*m_fPerform)(Desorption*, Site*);
 
-    /// For desorbing different species the site must be occupied
-    bool difSpeciesRule(Site* s);
-
-    /// The process is PVD
-    void singleSpeciesSimpleDesorption(Site*);
-
-    /// The process is CVD or ALD
-    void multiSpeciesSimpleDesorption(Site*);
+private: //the data
 
     ///The site that adsorption will be performed
     Site* m_Site;
-
-    /// A member function to calculate the neighbors of a given site
-    int calculateNeighbors(Site*);
 
     /// The number of neighbours of this process
     int m_iNumNeighs;
@@ -100,6 +87,12 @@ private:
 
     /// The activation energy of the process (if arrhenius)
     double m_dEd;
+
+    /// Checks if the site is in lower step (only for simple cubic lattice)
+    bool isInLowerStep( Site* s );
+
+    /// Checks if the site is in higher step (only for simple cubic lattice)
+    bool isInHigherStep( Site* s );
 
     REGISTER_PROCESS(Desorption)
 };

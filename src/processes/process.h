@@ -46,7 +46,7 @@ public:
     virtual ~Process();
 
     ///Get probability
-    virtual double getRateConstant() = 0;
+    double getRateConstant(){ return m_dRateConstant; }
 
     /// Perform this process in the site and compute/store the affected sites
     virtual void perform( Site* ) = 0;
@@ -60,6 +60,8 @@ public:
 
     /// Returns the sites that are affected by this process including the site that this process is performed.
     inline set<Site*> getAffectedSites() { return m_seAffectedSites; }
+    inline void addAffectedSite( Site* s) { m_seAffectedSites.insert(s);}
+    inline void clearAffectedSite() { m_seAffectedSites.clear(); }
 
     inline void setName( string procName ){ m_sProcName = procName; }
     inline string getName(){ return  m_sProcName; }
@@ -68,6 +70,7 @@ public:
     inline int getID(){ return m_iID; }
 
     inline void setLattice( Lattice* lattice ){ m_pLattice = lattice; }
+    inline Lattice* getLattice(){ return m_pLattice; }
 
     /// Counts how many times this process happens
     inline void eventHappened(){ m_iHappened++; }
@@ -84,12 +87,22 @@ public:
     inline void setUncoAccepted( bool isUncoAccepted) { m_bUncoAccept = isUncoAccepted; }
     inline bool isUncoAccepted() { return m_bUncoAccept; }
 
-
+    /// The number of neighbors of this site (1st neighs) that the process will perform
     inline void setNumNeighs( int i){ m_iNumNeighs = i;}
     inline int getNumNeighs(){ return m_iNumNeighs;}
 
+    /// The number of vacant sites of this sites (1st neighs) that the process will perform
     inline void setNumVacantSites( int i){ m_iNumVacant = i;}
     inline int getNumVacantSites(){ return m_iNumVacant;}
+
+    /// Retrurns the random generator
+    RandomGen::RandomGenerator* getRandomGen(){ return m_pRandomGen; }
+
+    /// Retrurns the parameters
+    Utils::Parameters* getParameters(){ return m_pUtilParams; }
+
+    /// Checks if the specific species is part of the growing film
+    bool isPartOfGrowth( string name);
 
 protected:
 
@@ -117,16 +130,13 @@ protected:
     string m_sType;
 
     ///The probability value
-    double m_dProb;
+    double m_dRateConstant;
 
     /// The name of this prcess
     string m_sProcName;
 
     ///Set true if it is always possible
     bool m_bUncoAccept;
-
-    /// Checks if the specific species is part of the growing film
-    bool isPartOfGrowth( string name);
 
     /// The number of sites occupied by the process (default 1)
     int m_iNumSites;
