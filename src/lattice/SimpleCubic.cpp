@@ -19,9 +19,13 @@
 
 #include <map>
 
-SimpleCubic::SimpleCubic(Apothesis *apothesis) : Lattice(apothesis), m_iMinNeigs(1)
-{
-    ;
+REGISTER_LATTICE_IMPL(SimpleCubic)
+
+SimpleCubic::SimpleCubic() : m_iMinNeigs(1) {}
+
+SimpleCubic::~SimpleCubic() {
+    for (int i = 0; i < getSize(); i++)
+        delete m_vSites[i];
 }
 
 void SimpleCubic::buildSteps()
@@ -67,21 +71,21 @@ void SimpleCubic::setInitialHeight(int height) { m_iHeight = height; }
 
 void SimpleCubic::build()
 {
-    if (m_Type == NONE)
-    {
-        cout << "Not supported lattice type" << endl;
-        EXIT
-    }
+    // if (m_Type == NONE)
+    // {
+    //     cout << "Not supported lattice type" << endl;
+    //     EXIT
+    // }
 
     if (m_iSizeX == 0 || m_iSizeY == 0)
     {
-        m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
+        // m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
         EXIT
     }
 
     if (m_iHeight < 5)
     {
-        m_errorHandler->warningSimple_msg("The lattice initial height is too small.Consider revising.");
+        // m_errorHandler->warningSimple_msg("The lattice initial height is too small.Consider revising.");
     }
 
     // The sites of the lattice.
@@ -107,12 +111,6 @@ void SimpleCubic::build()
             m_vSites[ i*m_iSizeX + j ]->setLabel( m_sLabel );
     }
 
-}
-
-SimpleCubic::~SimpleCubic()
-{
-    for (int i = 0; i < getSize(); i++)
-        delete m_vSites[i];
 }
 
 void SimpleCubic::setSteps(bool hasSteps)
@@ -350,4 +348,9 @@ unordered_map<string, double> SimpleCubic::computeCoverages( vector<string> spec
 
     return m_mCoverages;
 }
+
+static bool SimpleCubic_registered = []() {
+    FactoryLattice::registerLattice("SimpleCubic", SimpleCubic::create);
+    return true;
+}();
 

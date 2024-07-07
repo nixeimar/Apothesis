@@ -19,9 +19,11 @@
 #include <map>
 #include <unordered_map>
 
-HCP::HCP(Apothesis *apothesis) : Lattice(apothesis), m_iMinNeigs(1)
+REGISTER_LATTICE_IMPL(HCP)
+
+HCP::HCP() : m_iMinNeigs(1)
 {
-    m_Type = Lattice::HCP;
+  ;  // m_Type = Lattice::HCP;
 }
 
 void HCP::setInitialHeight(int height) { m_iHeight = height; }
@@ -78,28 +80,28 @@ void HCP::build()
     // Example:
     // The neighbors for 14 are: 7 (West Up), 13 (West down), 9 (East up), 15 (East down), 8 (North), 20 (South)
 
-    if (m_Type == NONE)
-    {
-        cout << "Not supported lattice type" << endl;
-        EXIT
-    }
+    // if (m_Type == NONE)
+    // {
+    //     cout << "Not supported lattice type" << endl;
+    //     EXIT
+    // }
 
     if (m_iSizeX == 0 || m_iSizeY == 0)
     {
-        m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
+        // m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
         EXIT
     }
 
     if (m_iSizeX%2 != 0 )
     {
-        m_errorHandler->error_simple_msg("In HPC lattices, the x-dimension of the lattice must be an even number.");
+        // m_errorHandler->error_simple_msg("In HPC lattices, the x-dimension of the lattice must be an even number.");
         EXIT
     }
 
 
     if (m_iHeight < 5)
     {
-        m_errorHandler->warningSimple_msg("The lattice initial height is too small.Consider revising.");
+        // m_errorHandler->warningSimple_msg("The lattice initial height is too small.Consider revising.");
     }
 
     // The sites of the lattice.

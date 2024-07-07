@@ -32,10 +32,13 @@ HEADERS += ./src/apothesis.h \
            ./src/processes/reaction.h \
            ./src/properties.h \
            ./src/register.h \
+           ./src/register_lattice.h \
            ./src/error/errorhandler.h \
            ./src/lattice/FCC.h \
            ./src/lattice/lattice.h \
            ./src/lattice/site.h \
+           ./src/lattice/abstract_lattice.h \
+           ./src/lattice/factory_lattice.h \
            ./src/processes/abstract_process.h \
            ./src/processes/desorption.h \
            ./src/processes/diffusion.h \
@@ -55,6 +58,8 @@ SOURCES += ./src/apothesis.cpp \
            ./src/extLibs/random_generator.cpp \
            ./src/lattice/SimpleCubic.cpp \
            ./src/lattice/lattice.cpp \
+           ./src/lattice/abstract_lattice.cpp \
+           ./src/lattice/factory_lattice.cpp \
            ./src/main.cpp \
            ./src/processes/abstract_process.cpp \
            ./src/processes/reaction.cpp \

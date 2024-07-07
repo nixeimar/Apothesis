@@ -35,7 +35,7 @@ class HCP : public Lattice
 {
 public:
     /// Constructor
-    HCP(Apothesis *apothesis);
+    HCP();
 
     /// Destructor.
     virtual ~HCP();
@@ -83,6 +83,8 @@ private:
     int m_iMinNeigs;
 
     int m_iSiteNeighsNum;
+
+    REGISTER_LATTICE(HCP)
 };
 
 #endif // LATTICE_H

@@ -35,7 +35,7 @@ class SimpleCubic : public Lattice
 {
 public:
   /// Constructor
-  SimpleCubic(Apothesis *apothesis);
+  SimpleCubic();
 
   /// Distructor.
   virtual ~SimpleCubic();
@@ -71,6 +71,7 @@ public:
 
   unordered_map<string, double> computeCoverages( vector<string> species) override;
 
+
 protected:
   /// Build the neighbours for the BCC lattice for each site.
   void mf_neigh();
@@ -87,6 +88,8 @@ private:
   int m_iMinNeigs;
 
   int m_iSiteNeighsNum;
+
+  REGISTER_LATTICE( SimpleCubic )
 };
 
 #endif // LATTICE_H
