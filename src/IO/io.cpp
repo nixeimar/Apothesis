@@ -31,7 +31,8 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sGrowth("growth"),
     m_sCommentLine("#"),
     m_sPrecursors("precursors"),
-    m_sReport("report")
+    m_sReport("report"),
+    m_sHeights("heights.txt")
 {
     //Initialize the map for the lattice
     m_mLatticeType[ "NONE" ] = Lattice::NONE;
@@ -96,13 +97,9 @@ void IO::readInputFile()
         }
 
         if ( vsTokensBasic[ 0].compare(  m_sLattice ) == 0 ){
-                    // Check if the input line contains a filename for height
-                    //also check for the filename later, add m_HeightFile=height
-            vector<string> vsTemp;
-                vsTemp = split( vsTokensBasic[ 1 ], string( " " ) );
-
-            if ( vsTemp.size() < 4 ) {
-                    string heightFileName = vsTokensBasic[1];
+            if ( trim(vsTokensBasic[ 1]).compare(  m_sHeights ) == 0) {
+                // Check if the input line contains a filename for height with the given name of heights.txt
+                    string heightFileName = trim(vsTokensBasic[1]);
                     ifstream heightFile(heightFileName);
 
                     if (heightFile.good()) {
@@ -110,27 +107,23 @@ void IO::readInputFile()
                         string line;
                         getline(heightFile, line);
                         vector<string> vsTokens = split(line, " ");
-                        if (vsTokens.size() != 4 ) {
+
+                        if (vsTokens.size() != 5 ) {
                             m_errorHandler->error_simple_msg("Invalid heights header format ");
                             EXIT
                         }
-                        for (auto tok : vsTokens) {
-                            cout << tok << endl;
-                        }
-                        m_parameters->setLatticeType( vsTokens[ 0 ]);
-                        // int latticeXDim = toInt(trim(vsTokens[1]));
-                        // int latticeYDim = toInt(trim(vsTokens[2]));
+                        m_parameters->setLatticeType( trim( vsTokens[ 1 ] ) );
                      
-                        if ( isNumber( vsTokens[ 1 ] ) ){
-                        m_parameters->setLatticeXDim( toInt(  trim( vsTokens[ 1 ] ) ) );
+                        if ( isNumber( vsTokens[ 2 ] ) ){
+                        m_parameters->setLatticeXDim( toInt(  trim( vsTokens[ 2 ] ) ) );
                         }
                         else {
                             m_errorHandler->error_simple_msg("The x dimension of lattice is not a number.");
                             EXIT
                         }
 
-                        if ( isNumber( vsTokens[ 2 ] ) ){
-                            m_parameters->setLatticeYDim( toInt(  trim( vsTokens[ 2 ] ) ) );
+                        if ( isNumber( vsTokens[ 3 ] ) ){
+                            m_parameters->setLatticeYDim( toInt(  trim( vsTokens[ 3 ] ) ) );
                         }
                         else {
                             m_errorHandler->error_simple_msg("`The y dimension of lattice is not a number.");
@@ -148,15 +141,10 @@ void IO::readInputFile()
                                       }
                                     }
                             }
-                        // for (int i = 0; i < latticeYDim; ++i) {
-                        //     for (int j = 0; j < latticeXDim; ++j) {
-                        //         cout<<heights[i][j]<<" ";
-                        //         }
-                        //         cout<<endl;
-                        //     }
+            
                         m_parameters->setHeightData(heights);
                         m_parameters->setHeightFileExists(true);
-                        m_parameters->setLatticeLabels("CO2*");
+                        m_parameters->setLatticeLabels(vsTokens[4]);
                         heightFile.close();
                     } else {
                         m_errorHandler->error_simple_msg("Failed to open height file: " + heightFileName);

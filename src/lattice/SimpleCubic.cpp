@@ -90,22 +90,36 @@ void SimpleCubic::build()
     for (int i = 0; i < m_vSites.size(); i++)
         m_vSites[i] = new Site();
 
-    int icount = 0;
-    for (int i = 0; i < m_iSizeX; i++) {
-        for (int j = 0; j < m_iSizeY; j++) {
 
-            icount = i * m_iSizeY + j;
-            m_vSites[icount]->setID(icount);
-            m_vSites[icount]->setHeight(m_iHeightsAll[ i ][ j ]);
+    if (m_variableHeightsFromFile){
+        int icount = 0;
+        for (int i = 0; i < m_iSizeX; i++)
+        {
+            for (int j = 0; j < m_iSizeY; j++) {
+
+                icount = i * m_iSizeY + j;
+                m_vSites[icount]->setID(icount);
+                m_vSites[icount]->setHeight(m_iHeightsAll[ i ][ j ]);
+            }
+        }
+    }
+    else{
+         for (int i = 0; i < m_iSizeX; i++)
+        {
+            for (int j = i * m_iSizeY; j < (m_iSizeY + i * m_iSizeY); j++)
+            {
+                m_vSites[j]->setID(j);
+                m_vSites[j]->setHeight(m_iHeight);
+            }
         }
     }
 
+    
     mf_neigh();
-
     // Here we set the label of the species
     for (int i = 0; i < m_iSizeY; i++){
         for (int j = 0; j < m_iSizeX; j++)
-            m_vSites[ i*m_iSizeX + j ]->setLabel( "CO2*" ); //NIKOS: TO BE CHANGED
+            m_vSites[ i*m_iSizeX + j ]->setLabel( m_sLabel ); 
     }
 
 }

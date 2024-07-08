@@ -165,7 +165,9 @@ class Lattice: public Pointers
             for ( int j = 0; j < heights[i].size(); j++)
                m_iHeightsAll[ i ][ j ] = heights[ i ][ j ];
     }
-
+    
+    /// sets a flag variable to know if the height across sites is different and read from a file
+    inline void setVariableHeightsFromFile( bool var ){ m_variableHeightsFromFile = var; }
 protected:
     /// The size of the lattice in the x-dimension.
     int m_iSizeX;
@@ -210,6 +212,9 @@ protected:
 
     /// The coveraages at each time
     unordered_map<string, double> m_mCoverages;
+
+    /// Flag to know if the height is variable across sites
+    bool m_variableHeightsFromFile;
   };
 
 #endif // LATTICE_H

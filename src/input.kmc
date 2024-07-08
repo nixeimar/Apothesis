@@ -1,6 +1,6 @@
 #Build the lattice 
-lattice:heights.txt
-
+lattice: heights.txt
+#lattice: SimpleCubic 100 100 10 A 
 #The growing film
 growth: CO2
 
