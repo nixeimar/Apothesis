@@ -35,23 +35,49 @@
 #include "lattice.h"
 #include "process.h"
 #include "apothesis.h"
+#include<omp.h>
+// #include "/usr/lib/x86_64-linux-gnu/openmpi/include/mpi.h"
 
+#include<time.h>
 using namespace std;
 using namespace MicroProcesses;
+#define CLK CLOCK_MONOTONIC
+/* Function to compute the difference between two points in time */
+struct timespec diff(struct timespec start, struct timespec end){
+	struct timespec temp;
+	if((end.tv_nsec-start.tv_nsec)<0){
+		temp.tv_sec = end.tv_sec-start.tv_sec-1;
+		temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
+	}
+	else{
+		temp.tv_sec = end.tv_sec-start.tv_sec;
+		temp.tv_nsec = end.tv_nsec-start.tv_nsec;
+	}
+	return temp;
+}
 
 int main( int argc, char* argv[] )
 {
 
-    //Checking commit
-    Apothesis* apothesis = new Apothesis( argc, argv );
+    struct timespec start_e2e, end_e2e, e2e;
+	  /* Should start before anything else */
+	  clock_gettime(CLK, &start_e2e);
 
+    //Checking commit
+
+    Apothesis* apothesis = new Apothesis( argc, argv );
     cout << "Initiating Apothesis" << endl;
     apothesis->init();
-
+	
     cout << "Apothesis runnning ..." << endl;
     apothesis->exec();
     cout << "Apothesis finished succesfully." << endl;
+	
 
+    clock_gettime(CLK, &end_e2e);
+	e2e = diff(start_e2e, end_e2e);
+	cout << "Time taken for the simulation is : ";
+    cout << e2e.tv_sec<<" seconds "<< endl;
     if ( apothesis )
       delete apothesis;
 }

@@ -40,6 +40,8 @@
 
 #include <numeric>
 #include <algorithm>
+#include <omp.h>
+#include <thread>
 
 using namespace MicroProcesses;
 
@@ -461,6 +463,9 @@ void Apothesis::exec()
     }
 
     pIO->writeInOutput( output );
+    std::deque<std::thread> threads;
+    vector<thread> threadsLS;
+    vector<thread> threadsLH;
 
     while ( m_dProcTime <= m_dEndTime ){
         //1. Get a random numbers
@@ -557,21 +562,55 @@ void Apothesis::exec()
                     output += std::to_string( p.second ) + '\t';
             }
 
-            pIO->writeInOutput( output );
+            // pIO->writeInOutput( output );
+             if (threads.size() > 1) {
+                auto &thrd = threads.front();
+                if (thrd.joinable()) {
+                    thrd.join();
+                }
+
+                threads.pop_front();
+            }
+            threads.emplace_back(&Apothesis::loggingProcess, this, output);
             timeToWriteLog = 0.0;
         }
+        // thread_obj.join();
 
         if ( timeToWriteLattice >= pParameters->getWriteLatticeTimeStep() ) {
 
-            if ( m_bHasGrowth )
-                pIO->writeLatticeHeights( m_dProcTime );
+            if ( m_bHasGrowth ){
+                threadsLH.emplace_back(&Apothesis::writeLatticeHeightsProcess, this, m_dProcTime);
+            }
 
-            if ( m_bReportCoverages )
-                pIO->writeLatticeSpecies( m_dProcTime  );
+            if ( m_bReportCoverages ){
+                threadsLS.emplace_back(&Apothesis::writeLatticeSpeciesProcess, this, m_dProcTime);
+                // pIO->writeLatticeSpecies( m_dProcTime  );
+            }
 
             timeToWriteLattice = 0.0;
         }
     }
+
+    while (!threads.empty()) {
+        auto &thrd = threads.front();
+        if (thrd.joinable()) {
+            thrd.join();
+        }
+        threads.pop_front();
+    }
+
+    for(auto &thrd:threadsLH){
+        if (thrd.joinable()) {
+            thrd.join();
+        }
+    }
+    for(auto &thrd:threadsLS){
+        if (thrd.joinable()) {
+            thrd.join();
+        }
+    }
+
+    
 
     ostringstream streamObjEnd;
     streamObjEnd.precision(15);
@@ -602,6 +641,17 @@ void Apothesis::exec()
 
     if ( m_bReportCoverages )
         pIO->writeLatticeSpecies( m_dProcTime  );
+}
+
+void Apothesis::loggingProcess(string output){
+    pIO->writeInOutput(output);
+}
+
+void Apothesis::writeLatticeHeightsProcess(double procTime){
+    pIO->writeLatticeHeights( procTime );
+}
+void Apothesis::writeLatticeSpeciesProcess(double procTime){
+    pIO->writeLatticeSpecies( procTime );
 }
 
 void Apothesis::logSuccessfulRead(bool read, string parameter)

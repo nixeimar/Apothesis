@@ -9,7 +9,7 @@ growth: CO2
 #steps: 2 1 
 
 #Total time in seconds
-time: 500
+time: 3
 
 #T in Kelvin
 temperature: 1000

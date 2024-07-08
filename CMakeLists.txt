@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 #set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_COMPILER "mpic++")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-
+find_package(MPI REQUIRED)
 project(apothesis)
 
 set(header_files
@@ -112,6 +113,7 @@ add_executable(${PROJECT_NAME} ./src/main.cpp
     ${extLibs_files}
     ${essential_src_files}
 )
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     .
@@ -122,3 +124,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ./src/lattice
     ./src/species
 )
+
+# Link MPI libraries
+target_link_libraries(${PROJECT_NAME} ${MPI_CXX_LIBRARIES})
