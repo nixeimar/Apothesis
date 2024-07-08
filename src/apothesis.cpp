@@ -608,6 +608,7 @@ void Apothesis::exec()
 
     if ( m_bReportCoverages )
         pIO->writeLatticeSpecies( m_dProcTime  );
+
 }
 
 void Apothesis::logSuccessfulRead(bool read, string parameter)

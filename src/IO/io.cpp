@@ -98,10 +98,13 @@ void IO::readInputFile()
         if ( vsTokensBasic[ 0].compare(  m_sLattice ) == 0 ){
                     // Check if the input line contains a filename for height
                     //also check for the filename later, add m_HeightFile=height
-            if (vsTokensBasic.size() > 1) {
+            vector<string> vsTemp;
+                vsTemp = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            if ( vsTemp.size() < 4 ) {
                     string heightFileName = vsTokensBasic[1];
                     ifstream heightFile(heightFileName);
-    
+
                     if (heightFile.good()) {
                         // Read heights from the file
                         string line;
@@ -114,23 +117,23 @@ void IO::readInputFile()
                         for (auto tok : vsTokens) {
                             cout << tok << endl;
                         }
-                        m_parameters->setLatticeType( vsTokens[ 1 ]);
+                        m_parameters->setLatticeType( vsTokens[ 0 ]);
                         // int latticeXDim = toInt(trim(vsTokens[1]));
                         // int latticeYDim = toInt(trim(vsTokens[2]));
                      
-                        if ( isNumber( vsTokens[ 2 ] ) ){
-                        m_parameters->setLatticeXDim( toInt(  trim( vsTokens[ 2 ] ) ) );
+                        if ( isNumber( vsTokens[ 1 ] ) ){
+                        m_parameters->setLatticeXDim( toInt(  trim( vsTokens[ 1 ] ) ) );
                         }
                         else {
                             m_errorHandler->error_simple_msg("The x dimension of lattice is not a number.");
                             EXIT
                         }
 
-                        if ( isNumber( vsTokens[ 3 ] ) ){
-                            m_parameters->setLatticeYDim( toInt(  trim( vsTokens[ 3 ] ) ) );
+                        if ( isNumber( vsTokens[ 2 ] ) ){
+                            m_parameters->setLatticeYDim( toInt(  trim( vsTokens[ 2 ] ) ) );
                         }
                         else {
-                            m_errorHandler->error_simple_msg("The y dimension of lattice is not a number.");
+                            m_errorHandler->error_simple_msg("`The y dimension of lattice is not a number.");
                             EXIT
                         }
                         int latticeXDim = m_parameters->getLatticeXDim();
@@ -153,6 +156,7 @@ void IO::readInputFile()
                         //     }
                         m_parameters->setHeightData(heights);
                         m_parameters->setHeightFileExists(true);
+                        m_parameters->setLatticeLabels("CO2*");
                         heightFile.close();
                     } else {
                         m_errorHandler->error_simple_msg("Failed to open height file: " + heightFileName);

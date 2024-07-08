@@ -155,7 +155,16 @@ class Lattice: public Pointers
     virtual unordered_map<string, double > computeCoverages( vector<string> species ){}
 
     /// Sets the height across all sites 
-    inline void setInitialHeightAllSites(vector<vector<int>>heights){m_iHeightsAll = heights;}
+    inline void setInitialHeightAllSites(vector<vector<int>> heights){
+
+        m_iHeightsAll.resize( heights.size() );
+        for ( int i = 0; i < heights.size(); i++)
+            m_iHeightsAll[ i ].resize( heights[ i ].size() );
+
+        for ( int i = 0; i < heights.size(); i++)
+            for ( int j = 0; j < heights[i].size(); j++)
+               m_iHeightsAll[ i ][ j ] = heights[ i ][ j ];
+    }
 
 protected:
     /// The size of the lattice in the x-dimension.

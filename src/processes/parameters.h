@@ -128,14 +128,24 @@ class Parameters: public Pointers
     inline void setLatticeYDim( int y ){ m_iY = y; }
     inline void setLatticeHeight( int h ){ m_iH = h; }
     inline void setHeightFileExists(bool var){m_heightFileExist = var;}
-    inline void setHeightData(vector<vector<int>> height){m_height = height;}
+
+    inline void setHeightData(vector<vector<int>> height){
+
+        m_height.resize( height.size() );
+        for ( int i = 0; i < height.size(); i++)
+            m_height[ i ].resize( height[ i ].size() );
+
+        for ( int i = 0; i < height.size(); i++)
+            for ( int j = 0; j < height[ i ].size(); j++)
+                m_height[ i ][ j ] = height[ i ][ j ];
+    }
 
     inline int getLatticeXDim(){ return m_iX; }
     inline int getLatticeYDim(){ return m_iY; }
     inline int getLatticeHeight(){ return m_iH; }
 
     inline bool getHeightFileExist(){ return m_heightFileExist; }
-    inline vector<vector<int>>getHeightData(){return m_height;}
+    inline vector<vector<int>> getHeightData(){return m_height;}
    
   protected:
 

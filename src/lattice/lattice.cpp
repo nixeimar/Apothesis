@@ -19,7 +19,6 @@
 
 Lattice::Lattice(Apothesis *apothesis) : Pointers(apothesis),m_iStepDiff(0)
 {
-
 }
 
 void Lattice::setType(string sType)
