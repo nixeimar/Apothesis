@@ -32,25 +32,23 @@ using namespace std;
 using namespace Utils;
 using namespace SurfaceTiles;
 
-class Lattice: public Pointers
+class Lattice 
   {
+
   public:
     /// The type of the lattice.
-       enum Type{
-               NONE,
-               SimpleCubic,
-               FCC,
-               HCP
-               };
+      //  enum Type{
+      //          NONE,
+      //          SimpleCubic,
+      //          FCC,
+      //          HCP
+      //          };
 
     /// Constructor
-    Lattice(Apothesis* apothesis);
+    Lattice(const string& name);
 
     /// Distructor.
     virtual ~Lattice();
-
-    /// Sets the type of the lattice.
-    void setType( string );
 
     /// Stores the species on lattice sites.
     inline void setLabels( string species ) { m_sLabel = species; }
@@ -72,9 +70,6 @@ class Lattice: public Pointers
     /// Builds a  stepped surface
     virtual void buildSteps();
 
-    /// Returns the type of the lattice
-    Lattice::Type getType();
-
     ///Returns the lattice
     Lattice* getLattice();
 
@@ -90,8 +85,8 @@ class Lattice: public Pointers
     /// Init the lattice.
     void init();
 
-    /// Set the type of the lattice.
-    void setType( Type type );
+    // /// Set the type of the lattice.
+    // void setType( Type type );
 
     /// Set the X dimension of the lattice.
     void setX( int x );
@@ -163,11 +158,11 @@ protected:
     /// The minimum initialize size of the lattice.
     int m_iHeight;
 
-    /// The type of the lattice: BCC, FCC etc.
-    Type m_Type;
+    // /// The type of the lattice: BCC, FCC etc.
+    // Type m_Type;
 
-    /// The type of the lattice in string: BCC, FCC etc.
-    string m_sType;
+    // /// The type of the lattice in string: BCC, FCC etc.
+    // string m_sType;
 
     /// The sites that consist the lattice.
     vector<Site* > m_vSites;

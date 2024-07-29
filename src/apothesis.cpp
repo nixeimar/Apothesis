@@ -36,6 +36,7 @@
 #include "SimpleCubic.h"
 
 #include "factory_process.h"
+#include "factory_lattice.h"
 
 #include <numeric>
 #include <algorithm>
@@ -60,7 +61,8 @@ Apothesis::Apothesis(int argc, char *argv[])
     pRandomGen = new RandomGen::RandomGenerator( this );
 
     /* This must be constructed before the input */
-    pLattice = new FCC(this);
+    // auto tora me to factory den isxuei sosta?
+    // pLattice = new FCC(this);
 
     // Create input instance
     pIO = new IO(this);
@@ -95,19 +97,27 @@ void Apothesis::init()
     else
         pRandomGen->init( time(nullptr) );
 
-    //Create the lattice after reading the parameters form the file
-    if ( pParameters->getLatticeType() == "SimpleCubic" )
-        pLattice = new SimpleCubic(this);
-    else if ( pParameters->getLatticeType() == "FCC" )
-        pLattice = new FCC(this);
-    else if ( pParameters->getLatticeType() == "HCP" )
-        pLattice = new HCP(this);
+        
 
-    pLattice->setX( pParameters->getLatticeXDim() );
-    pLattice->setY( pParameters->getLatticeYDim() );
-    pLattice->setInitialHeight( pParameters->getLatticeHeight() );
-    pLattice->setLabels( pParameters->getLatticeLabels() );
-    pLattice->build();
+    //Create the lattice after reading the parameters form the file
+    Lattice* pLattice = 0;
+    
+    // store latticeType
+    string sLatticeName = pParameters->getLatticeType(); 
+
+    pLattice = FactoryLattice::createLattice( sLatticeName );
+
+    // check if pLattice created
+    if (pLattice != nullptr) {
+        pLattice->setX(pParameters->getLatticeXDim());
+        pLattice->setY(pParameters->getLatticeYDim());
+        pLattice->setInitialHeight(pParameters->getLatticeHeight());
+        pLattice->setLabels(pParameters->getLatticeLabels());
+        pLattice->build();
+    } else {
+        std::cerr << "Failed to create Lattice with type: " << sLatticeName << std::endl;
+    }
+    
 
     // TODO: Here we must take into account the case of two or more species participating in the film growth
     // and the user should give the per cent of each species in t=0s e.g. 0.8Ga 0.2As

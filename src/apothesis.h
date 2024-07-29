@@ -55,7 +55,7 @@ public:
     Reader* pReader;
 
     /// Pointer to the lattice class
-    Lattice* pLattice;
+    Lattice* pLattice; 
 
     /// Pointer to the error class
     Utils::ErrorHandler* pErrorHandler;
