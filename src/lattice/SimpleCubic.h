@@ -35,7 +35,7 @@ class SimpleCubic : public Lattice
 {
 public:
   /// Constructor
-  SimpleCubic(Apothesis *apothesis);
+  SimpleCubic();
 
   /// Distructor.
   virtual ~SimpleCubic();
@@ -87,6 +87,8 @@ private:
   int m_iMinNeigs;
 
   int m_iSiteNeighsNum;
+
+  REGISTER_LATTICE( SimpleCubic )
 };
 
 #endif // LATTICE_H

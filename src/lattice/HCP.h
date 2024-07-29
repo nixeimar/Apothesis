@@ -31,19 +31,19 @@ using namespace std;
 using namespace SurfaceTiles;
 using namespace Utils;
 
-class HCP : public Lattice
+class HCP 
 {
 public:
     /// Constructor
-    HCP(Apothesis *apothesis);
+    HCP();
 
     /// Destructor.
     virtual ~HCP();
 
-    void setSteps(bool hasSteps);
-
     /// Sets the type of the lattice.
-    void setType(string);
+    void setType( string );
+
+    void setSteps(bool hasSteps);
 
     /// Various checks if the lattice has been constucted correctly. Partially implemented.
     void check();
@@ -52,7 +52,7 @@ public:
     void init();
 
     /// Build the lattice with an intitial height.
-    void build() override;
+    void build() ;
 
     /// Sets the minimun initial height for the lattice.
     void setInitialHeight(int height);
@@ -62,7 +62,7 @@ public:
 
     void writeLatticeHeights(double, int){;}
 
-    inline int getNumFirstNeihgs() override { return 6; }
+    inline int getNumFirstNeihgs()  { return 6; }
 
     inline bool isStepped() { return m_bHasSteps; }
 
@@ -83,6 +83,9 @@ private:
     int m_iMinNeigs;
 
     int m_iSiteNeighsNum;
+
+    REGISTER_LATTICE(HCP)
+
 };
 
 #endif // LATTICE_H

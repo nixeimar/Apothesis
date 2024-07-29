@@ -25,6 +25,8 @@
 #include <fstream>
 
 #include "lattice.h"
+#include "register_lattice.h"
+
 
 using namespace std;
 using namespace SurfaceTiles;
@@ -36,10 +38,10 @@ public:
     /// The type of the lattice.
 
     /// Constructor
-    FCC( Apothesis* apothesis );
+    FCC();
 
     /// Distructor.
-    virtual ~FCC();
+    virtual ~FCC();     
 
     /// Sets the type of the lattice.
     void setType( string );
@@ -75,6 +77,8 @@ protected:
 
     /// Build the first neighbours for the FCC(111) lattice.
     void mf_neigh_111();
+
+    REGISTER_LATTICE(FCC)
 };
 
 #endif // LATTICE_H

@@ -17,10 +17,9 @@
 
 #include "FCC.h"
 
-FCC::FCC(Apothesis* apothesis):Lattice(apothesis)
-{
-    //   m_mEventsRegistry.insert("Simple", new LatticeEvent::AdsorptionFCC110Simple() );
-}
+REGISTER_LATTICE_IMPL(FCC)
+
+FCC::FCC() {}
 
 void FCC::setInitialHeight( int  height ) { m_iHeight = height; }
 
@@ -40,12 +39,12 @@ void FCC::build()
         }
 
         if ( m_iSizeX == 0 || m_iSizeY == 0) {
-            m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
+            // m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
             EXIT
         }
 
         if ( m_iHeight < 5) {
-            m_errorHandler->warningSimple_msg("The lattice initial height is too small.Consider revising.");
+            // m_errorHandler->warningSimple_msg("The lattice initial height is too small.Consider revising.");
         }
 
         for (int i = 0; i < m_iSizeX; i++){
