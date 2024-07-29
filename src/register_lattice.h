@@ -21,25 +21,22 @@
 #include "abstract_lattice.h"
 #include "lattice.h"
 
-/** A template class used by the factory method for creating the processes.*/
-
+/** A template class used by the factory method for creating the lattices. */
 template<class T>
-class RegisterLattice: public AbstractLattice// Pointers class contains ptrs to master copy of
-{
+class RegisterLattice: public AbstractLattice {
+public:
 public:
     /// Contructor
-//    Register<T>( const std::string& name);
-    Register<T>(const std::string& name):AbstractLattice( name ){}
+    RegisterLattice<T>(const std::string& name):AbstractLattice( name ){}
 
     /// Destructor
-    virtual ~Register<T>(){}
+    virtual ~RegisterLattice<T>(){}
 
     /// Creator of the lattice.
     virtual Lattice* create(){
         return new T;
     }
-
 };
 
-
 #endif // REGISTER_LATTICE_H
+

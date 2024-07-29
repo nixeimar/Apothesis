@@ -17,25 +17,11 @@
 
 #include "lattice.h"
 
-Lattice::Lattice(Apothesis *apothesis) : Pointers(apothesis),m_iStepDiff(0)
-{
+// Lattice::Lattice(Apothesis *apothesis) : Pointers(apothesis),m_iStepDiff(0)
+// {
 
-}
-
-void Lattice::setType(string sType)
-{
-
-    m_sType = sType;
-
-    if (sType == "FCC")
-        m_Type = FCC;
-    else if (sType == "SimpleCubic")
-        m_Type = SimpleCubic;
-    else if (sType == "HCP")
-        m_Type = HCP;
-    else
-        m_Type = NONE;
-}
+// }
+Lattice::Lattice(const string& name):m_iStepDiff(0) {}
 
 void Lattice::setX(int x) { m_iSizeX = x; }
 
@@ -43,34 +29,16 @@ void Lattice::setY(int y) { m_iSizeY = y; }
 
 void Lattice::setInitialHeight(int height) { m_iHeight = height; }
 
-Lattice::~Lattice()
-{
-}
+Lattice::~Lattice(){}
 
 vector<Site *> Lattice::getSites()
 {
     return m_vSites;
 }
 
-string Lattice::getTypeAsString(){ return  m_sType; }
-
-Lattice::Type Lattice::getType()
-{
-    switch (m_Type)
-    {
-    case FCC:
-        return FCC;
-    case SimpleCubic:
-        return SimpleCubic;
-    case HCP:
-        return HCP;
-    default:
-        return NONE;
-    }
-}
+// string Lattice::getTypeAsString(){ return  m_sType; }
 
 void Lattice::buildSteps(){;}
-
 
 Site* Lattice::getSite(int id) { return m_vSites[id]; }
 
@@ -133,7 +101,6 @@ void Lattice::printInfo() {
     cout << endl;
     cout << "--- start info lattice parameteres ----- " << endl;
     cout << "---------------------------------------- " << endl;
-    cout << "Type: "; cout << getType() << endl;
     cout << "Size X: "; cout << getX() << endl;
     cout << "Size Y: "; cout << getY() << endl;
     cout << "Lattice species: "; cout << getLabels() << endl;
