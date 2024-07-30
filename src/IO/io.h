@@ -135,7 +135,7 @@ class IO: public Pointers
     string GetCurrentWorkingDir();
 
     /// Specific input for the lattice.
-    Lattice::Type getLatticeType();
+    // Lattice::Type getLatticeType();
 
     ///  Check of a string starts with a certain string. TODO: This should be transferred to a generic string class).
     inline bool startsWith( string str, string substr )
@@ -196,7 +196,7 @@ class IO: public Pointers
     string m_sLatticeType;
 
     /// Supported lattice types
-    map< string, Lattice::Type> m_mLatticeType;
+    // map< string, Lattice::Type> m_mLatticeType;
 
     /// The processes to be constructed with their parameters (per process)
     map< string, list< string > >  m_mProc;

@@ -50,10 +50,10 @@ public:
     {
         //Initialize the map for the lattice
         m_apothesis=apothesis;
-        m_LatticeType["NONE"] = Lattice::NONE;
-        m_LatticeType["SimpleCubic"] = Lattice::SimpleCubic;
-        m_LatticeType["FCC"] = Lattice::FCC;
-        m_LatticeType["HCP"] = Lattice::HCP;
+        // m_LatticeType["NONE"] = Lattice::NONE;
+        // m_LatticeType["SimpleCubic"] = Lattice::SimpleCubic;
+        // m_LatticeType["FCC"] = Lattice::FCC;
+        // m_LatticeType["HCP"] = Lattice::HCP;
     }
 
     inline void setInputPath( string inputPath ) {
@@ -137,7 +137,7 @@ public:
 
 protected:
     /// Supported lattice types
-    map< string, Lattice::Type> m_LatticeType;
+    // map< string, Lattice::Type> m_LatticeType;
 
     /// Set lattice using input info
     void initializeLattice();

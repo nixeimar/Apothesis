@@ -34,10 +34,10 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sReport("report")
 {
     //Initialize the map for the lattice
-    m_mLatticeType[ "NONE" ] = Lattice::NONE;
-    m_mLatticeType[ "SimpleCubic" ] = Lattice::SimpleCubic;
-    m_mLatticeType[ "FCC" ] = Lattice::FCC;
-    m_mLatticeType[ "HCP" ] = Lattice::HCP;
+    // m_mLatticeType[ "NONE" ] = Lattice::NONE;
+    // m_mLatticeType[ "SimpleCubic" ] = Lattice::SimpleCubic;
+    // m_mLatticeType[ "FCC" ] = Lattice::FCC;
+    // m_mLatticeType[ "HCP" ] = Lattice::HCP;
 }
 
 IO::~IO(){}
@@ -670,8 +670,8 @@ void IO::writeLatticeInfo()
 {
     m_OutFile << "Lattice size: " << m_lattice->getX() << "x" << m_lattice->getY();
 
-    if ( m_lattice->getType() == Lattice::FCC )
-        m_OutFile << "Lattice type: " << "FCC";
+    // if ( m_lattice->getType() == Lattice::FCC )
+    //     m_OutFile << "Lattice type: " << "FCC";
 }
 
 void IO::writeLatticeHeights( double time  )
@@ -723,14 +723,14 @@ string IO::GetCurrentWorkingDir()
     return current_working_dir;
 }
 
-Lattice::Type IO::getLatticeType()
-{
-    map<string, Lattice::Type>::iterator itMap = m_mLatticeType.find( m_sLatticeType);
-    if ( itMap == m_mLatticeType.end() )
-        return m_mLatticeType[ "NONE"];
+// Lattice::Type IO::getLatticeType()
+// {
+//     map<string, Lattice::Type>::iterator itMap = m_mLatticeType.find( m_sLatticeType);
+//     if ( itMap == m_mLatticeType.end() )
+//         return m_mLatticeType[ "NONE"];
 
-    return m_mLatticeType[ m_sLatticeType ];
-}
+//     return m_mLatticeType[ m_sLatticeType ];
+// }
 
 bool IO::outputOpen()
 {
