@@ -28,6 +28,8 @@
 #include "errorhandler.h"
 #include <set>
 
+#include "factory_lattice.h"
+
 using namespace std;
 using namespace Utils;
 using namespace SurfaceTiles;
