@@ -31,7 +31,7 @@ using namespace std;
 using namespace SurfaceTiles;
 using namespace Utils;
 
-class HCP 
+class HCP : public Lattice
 {
 public:
     /// Constructor

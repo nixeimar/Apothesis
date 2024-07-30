@@ -17,9 +17,15 @@
 
 #include "FCC.h"
 
-REGISTER_LATTICE_IMPL(FCC)
+REGISTER_LATTICE_IMPL( FCC )
 
-FCC::FCC() {}
+FCC::FCC() : Lattice("FCC") {}
+
+FCC::~FCC()
+{
+    for ( int i = 0; i<getSize(); i++)
+        delete m_vSites[i];
+}
 
 void FCC::setInitialHeight( int  height ) { m_iHeight = height; }
 
@@ -102,12 +108,6 @@ void FCC::build()
     }
     else if ( m_sOrient == "100") {  }
 
-}
-
-FCC::~FCC()
-{
-    for ( int i = 0; i<getSize(); i++)
-        delete m_vSites[i];
 }
 
 void FCC::buildSteps( int iSizeX, int iSizeY ){;}

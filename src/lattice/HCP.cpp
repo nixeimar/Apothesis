@@ -24,9 +24,9 @@
 //     m_Type = Lattice::HCP;
 // }
 
-REGISTER_LATTICE_IMPL(HCP)
+REGISTER_LATTICE_IMPL( HCP )
 
-HCP::HCP() : m_iMinNeigs(1){}
+HCP::HCP() : Lattice("HCP") {}
 
 void HCP::setInitialHeight(int height) { m_iHeight = height; }
 

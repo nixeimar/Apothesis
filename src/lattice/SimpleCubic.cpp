@@ -16,13 +16,14 @@
 //============================================================================
 
 #include "SimpleCubic.h"
-#include "register_lattice.h"
+// #include "register_lattice.h"
 
 #include <map>
 
 REGISTER_LATTICE_IMPL(SimpleCubic)
 
-SimpleCubic::SimpleCubic() : m_iMinNeigs(1) {}
+SimpleCubic::SimpleCubic() : Lattice("SimpleCubic"){}
+
 
 void SimpleCubic::buildSteps()
 {    
@@ -75,13 +76,13 @@ void SimpleCubic::build()
 
     if (m_iSizeX == 0 || m_iSizeY == 0)
     {
-        m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
+        // m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
         EXIT
     }
 
     if (m_iHeight < 5)
     {
-        m_errorHandler->warningSimple_msg("The lattice initial height is too small.Consider revising.");
+        // m_errorHandler->warningSimple_msg("The lattice initial height is too small.Consider revising.");
     }
 
     // The sites of the lattice.

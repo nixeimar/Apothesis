@@ -25,7 +25,7 @@
 #include <fstream>
 
 #include "lattice.h"
-#include "register_lattice.h"
+// #include "register_lattice.h"
 
 
 using namespace std;
