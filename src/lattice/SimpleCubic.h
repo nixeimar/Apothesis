@@ -63,6 +63,8 @@ public:
   /// Calculate the number of neighbor based on the height
   int calculateNeighNum( int id );
 
+  double getMeanDH();
+
   void writeLatticeHeights( double, int );
 
   inline int getNumFirstNeihgs() override { return 5; }

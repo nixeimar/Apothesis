@@ -38,16 +38,8 @@ class Lattice
   {
 
   public:
-    /// The type of the lattice.
-      //  enum Type{
-      //          NONE,
-      //          SimpleCubic,
-      //          FCC,
-      //          HCP
-      //          };
-
     /// Constructor
-    Lattice(const string& name);
+    Lattice();
 
     /// Distructor.
     virtual ~Lattice();

@@ -323,15 +323,15 @@ void SimpleCubic::writeLatticeHeights( double time, int step )
     file.close();
 }
 
-// double getMeanDH()
-// {
-//     double mean = 0.0, sum = 0.0 ;
-//     for (unsigned int i=0; i< m_lattice ->getSize(); i++){
-//         sum += (double)m_lattice->getSite( i )->getHeight();
-//         mean = sum/(double)m_lattice->getSize();
-//     }
-//     return mean;
-// }
+double SimpleCubic::getMeanDH()
+{
+    double mean = 0.0, sum = 0.0 ;
+    for (unsigned int i=0; i< m_lattice ->getSize(); i++){
+        sum += (double)m_lattice->getSite( i )->getHeight();
+        mean = sum/(double)m_lattice->getSize();
+    }
+    return mean;
+}
 
 int SimpleCubic::calculateNeighNum( int id )
 {
