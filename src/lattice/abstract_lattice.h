@@ -5,8 +5,6 @@
 
 using namespace std;
 class Lattice;
-class Apothesis;
-
 /** The abstract class which is used for the lattice factory **/
 class AbstractLattice
   {

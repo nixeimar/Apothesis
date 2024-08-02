@@ -33,7 +33,7 @@ using namespace SurfaceTiles;
 using namespace Utils;
 
 class FCC: public Lattice
-{
+{ 
 public:
     /// The type of the lattice.
 
@@ -44,7 +44,7 @@ public:
     virtual ~FCC();     
 
     /// Sets the type of the lattice.
-    void setType( string );
+    // void setType( string );
 
     /// Various checks if the lattice has been constucted correctly. Partially implemented.
     void check();
@@ -67,6 +67,9 @@ public:
     void buildSteps(int, int);
 
     unordered_map<string, double > computeCoverages( vector<string> species ) override;
+
+private:     
+    Lattice* m_lattice;   
 
 protected:
     /// Build the first neighbours for the FCC(100) lattice.

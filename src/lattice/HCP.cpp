@@ -26,7 +26,7 @@
 
 REGISTER_LATTICE_IMPL( HCP )
 
-HCP::HCP() : Lattice("HCP") {}
+HCP::HCP() {}
 
 void HCP::setInitialHeight(int height) { m_iHeight = height; }
 
@@ -90,7 +90,7 @@ void HCP::build()
 
     if (m_iSizeX == 0 || m_iSizeY == 0)
     {
-        m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
+        // m_errorHandler->error_simple_msg("The lattice size cannot be zero in either dimension.");
         EXIT
     }
 

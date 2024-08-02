@@ -19,7 +19,7 @@
 
 REGISTER_LATTICE_IMPL( FCC )
 
-FCC::FCC() : Lattice("FCC") {}
+FCC::FCC(){}
 
 FCC::~FCC()
 {
@@ -1069,6 +1069,8 @@ void FCC::writeXYZ( string filename )
     double h = 0., h1 = a/2.;
 
     int iCountAtoms = 0;
+
+    
 
     //Get the maximum height
     int iMaxH = 0;

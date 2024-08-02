@@ -80,6 +80,8 @@ protected:
 
 private:
 
+  Lattice* m_lattice;   
+
   bool m_bHasSteps = false;
 
   vector<int> m_stepInfo;

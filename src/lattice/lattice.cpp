@@ -17,11 +17,9 @@
 
 #include "lattice.h"
 
-// Lattice::Lattice(Apothesis *apothesis) : Pointers(apothesis),m_iStepDiff(0)
-// {
+Lattice::Lattice(): m_iStepDiff(0) {}
 
-// }
-Lattice::Lattice(const string& name):m_iStepDiff(0) {}
+Lattice::~Lattice(){}
 
 void Lattice::setX(int x) { m_iSizeX = x; }
 
@@ -29,7 +27,6 @@ void Lattice::setY(int y) { m_iSizeY = y; }
 
 void Lattice::setInitialHeight(int height) { m_iHeight = height; }
 
-Lattice::~Lattice(){}
 
 vector<Site *> Lattice::getSites()
 {
