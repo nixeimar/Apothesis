@@ -47,28 +47,29 @@ double Properties::eventCountingGrowthRate( int adsorptionCounts, int desortionC
 double Properties::getMeanDH()
 {
     double mean = 0.0, sum = 0.0 ;
-    if ( m_lattice->getType() == Lattice::FCC ){
-        int iCount = 0;
-        for (unsigned int i=0; i< m_lattice->getSize(); i++){
-            //This is not correct. It should just counts the height. What it is there should be seen by the individual processes.
-            if ( m_lattice->getSite( i )->getLabel() == "Cu"){
-                if ( m_lattice->getSite(i)->getHeight() > m_lattice->getSite(i)->get1stNeihbors()[ -1 ][ 0 ]->getHeight() ){
-                    sum += m_lattice->getSite( i )->getHeight();
-                    iCount++;
-                }
-            }
-        }
+    // if ( m_lattice->getType() == Lattice::FCC ){
+    //     int iCount = 0;
+    //     for (unsigned int i=0; i< m_lattice->getSize(); i++){
+    //         //This is not correct. It should just counts the height. What it is there should be seen by the individual processes.
+    //         if ( m_lattice->getSite( i )->getLabel() == "Cu"){
+    //             if ( m_lattice->getSite(i)->getHeight() > m_lattice->getSite(i)->get1stNeihbors()[ -1 ][ 0 ]->getHeight() ){
+    //                 sum += m_lattice->getSite( i )->getHeight();
+    //                 iCount++;
+    //             }
+    //         }
+    //     }
 
-        mean = sum/iCount;
-    }
-    else if ( m_lattice->getType() == Lattice::SimpleCubic ){
-        for (unsigned int i=0; i< m_lattice->getSize(); i++)
-            sum += (double)m_lattice->getSite( i )->getHeight();
+    //     mean = sum/iCount;
+    // }
+    // else 
+    // if ( m_lattice->getType() == Lattice::SimpleCubic ){
+    //     for (unsigned int i=0; i< m_lattice->getSize(); i++)
+    //         sum += (double)m_lattice->getSite( i )->getHeight();
 
-        mean = sum/(double)m_lattice->getSize();
-    }
+    //     mean = sum/(double)m_lattice->getSize();
+    // }
 
-    return mean;
+    // return mean;
 }
 
 }
