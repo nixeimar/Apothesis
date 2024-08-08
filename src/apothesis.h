@@ -107,6 +107,9 @@ private:
     /// number of species
     int m_nSpecies;
 
+    /// type of lattice
+    string m_latticeType;
+
     /// Analyzes the process and returns its type: Adsorption, Desorption, Diffusion or Reaction
     string mf_analyzeProc(string);
 
