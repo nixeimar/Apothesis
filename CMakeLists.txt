@@ -14,6 +14,8 @@ set(header_files
     ./src/lattice/site.h
     ./src/lattice/FCC.h
     ./src/lattice/HCP.h
+    ./src/lattice/abstract_lattice.h
+    ./src/lattice/factory_lattice.h
     ./src/lattice/SimpleCubic.h
     ./src/processes/adsorption.h
     ./src/processes/adsorption.h
@@ -77,6 +79,8 @@ set(lattice_files
     ./src/lattice/FCC.cpp
     ./src/lattice/HCP.cpp
     ./src/lattice/SimpleCubic.cpp
+    ./src/lattice/factory_lattice.cpp 
+    ./src/lattice/abstract_lattice.cpp 
 )
 
 add_executable(${PROJECT_NAME} ./src/main.cpp
