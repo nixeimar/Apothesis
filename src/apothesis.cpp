@@ -103,7 +103,7 @@ void Apothesis::init()
 
     // store latticeType
     string sLatticeName = pParameters->getLatticeType(); 
-    std::cout << "sLatticeName " << sLatticeName  << std::endl;  
+    // cout << "sLatticeName " << sLatticeName  << endl;  
 
     pLattice = FactoryLattice::createLattice( sLatticeName );
 
@@ -478,8 +478,6 @@ void Apothesis::exec()
 
     string output ="";
 
-    cout << "MPIKA EXEC" << endl;
-
     //    pLattice->writeXYZ( "initial.xzy" );
 
     // The average height for the first time
@@ -556,6 +554,9 @@ void Apothesis::exec()
                     }
                 }
 
+                    cout << "1" << endl;
+
+
                 //4. Re-compute the processes rates and re-compute Rtot (see ppt)
                 m_dRTot = 0.0;
                 for (pair<Process*, set< Site* > > p3:m_processMap)
@@ -563,7 +564,6 @@ void Apothesis::exec()
 
                 //5. Compute dt = -ln(ksi)/Rtot
                 m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
-//                                cout << m_dt << endl;
                 break;
             }
         }
