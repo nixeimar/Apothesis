@@ -137,7 +137,7 @@ class Lattice
     void printInfo();
 
     /// Returns the lattice type as string
-    string getTypeAsString();
+    // string getTypeAsString();
 
     /// Returns the coverages of each species adsorbed
     virtual unordered_map<string, double > computeCoverages( vector<string> species ){}
