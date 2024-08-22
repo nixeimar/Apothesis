@@ -97,15 +97,22 @@ void Apothesis::init()
     else
         pRandomGen->init( time(nullptr) );
 
-        
-
     //Create the lattice after reading the parameters form the file
-    Lattice* pLattice = 0;
-    
+    // Lattice* pLattice = nullptr;
+    pLattice = nullptr;
+
     // store latticeType
     string sLatticeName = pParameters->getLatticeType(); 
+    std::cout << "sLatticeName " << sLatticeName  << std::endl;  
 
     pLattice = FactoryLattice::createLattice( sLatticeName );
+
+    // if (pLattice == nullptr) {
+    //     std::cerr << "Error: Failed to create lattice of type " << sLatticeName << std::endl;
+    //     return;
+    // } else {
+    //     std::cout << "Pointer address of pLattice: " << pLattice << std::endl;
+    // }
 
     // check if pLattice created
     if (pLattice != nullptr) {
@@ -412,7 +419,7 @@ void Apothesis::init()
     pIO->writeLogOutput("Random init num " + to_string( pParameters->getRandGenInit() ) );
 
     string toWrite = "\n";
-    toWrite = "Lattice " +  pLattice->getTypeAsString() + " ";
+    // toWrite = "Lattice " +  pLattice->getTypeAsString() + " ";
     toWrite += to_string( pLattice->getX() ) + " ";
     toWrite += to_string( pLattice->getY() ) + " ";
 
@@ -470,6 +477,8 @@ void Apothesis::exec()
     double timeToWriteLattice = 0;
 
     string output ="";
+
+    cout << "MPIKA EXEC" << endl;
 
     //    pLattice->writeXYZ( "initial.xzy" );
 
