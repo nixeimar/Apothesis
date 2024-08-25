@@ -29,6 +29,7 @@
 #include <bits/stdc++.h>
 #include "reader.h"
 #include "reaction.h"
+// #include "src/processes/parameters.h"
 
 #include "lattice.h"
 #include "FCC.h"
@@ -603,6 +604,30 @@ void Apothesis::exec()
     }
 
     pIO->writeInOutput( output );
+    
+    if(pParameters->getMultipleRunFlag()){
+    
+        int curr_run = pParameters->getCurrRunNum();
+        
+        // Create the folder name
+        std::string folder_name = "Run" + std::to_string(curr_run);
+        
+        // Create a path object
+        std::filesystem::path dir_path = std::filesystem::current_path() / folder_name;
+        
+        // Create the directory
+        if (!std::filesystem::exists(dir_path)) {
+            std::filesystem::create_directory(dir_path);
+            std::cout << "Created directory: " << dir_path << std::endl;
+        } else {
+            std::cout << "Directory already exists: " << dir_path << std::endl;
+        }
+
+        // Convert the path to a string and call writeLatticeHeightsInFolder
+        pIO->writeLatticeHeightsInFolder(m_dProcTime, dir_path.string());
+        pIO->writeLatticeHeightsInFolder(m_dProcTime, dir_path.string());
+     
+    }
 
     if ( m_bHasGrowth )
         pIO->writeLatticeHeights( m_dProcTime );

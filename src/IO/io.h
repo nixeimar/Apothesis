@@ -194,7 +194,16 @@ class IO: public Pointers
         ltrim(s);
         return s;   
     }
-    int runsRemaining();
+
+    // read a height file at a given location 
+    vector<vector<int>>readHeightFile(string);
+
+    // read a species file at a given location
+    vector<vector<string>>readSpeciesFile(string);
+
+    void writeLatticeHeightsInFolder(double , const std::string&);
+
+    void writeLatticeSpeciesInFolder(double , const std::string&);
 
   protected:
     /// The type of lattice

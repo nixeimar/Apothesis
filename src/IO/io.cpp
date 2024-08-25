@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "io.h"
+#include <filesystem>
 
 IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sLatticeType("NONE"),
@@ -100,6 +101,7 @@ void IO::readInputFile()
         if(vsTokensBasic[0].compare(m_sRuns)==0){
             if(isNumber(trim(vsTokensBasic[1]))){
                 m_parameters->setRuns(toInt(trim(vsTokensBasic[1])));
+                m_parameters->setMultipleRunFlag();
             }
         }
 
@@ -847,4 +849,139 @@ pair<string, double> IO::analyzeCompound( string reactant ) {
         react.second = toDouble( coefficient );
 
     return react;
+}
+
+vector<vector<int>>IO::readHeightFile(string location)
+{
+    string heightFileName = location;
+    ifstream heightFile(heightFileName);
+
+    if (heightFile.good()) {
+        // Read heights from the file
+        string line;
+        getline(heightFile, line);
+        //skip the first line
+
+        int latticeXDim = m_parameters->getLatticeXDim();
+        int latticeYDim = m_parameters->getLatticeYDim();
+        vector<vector<int>> heights(latticeYDim, vector<int>(latticeXDim));
+
+        for (int i = 0; i < latticeYDim; ++i) {
+            for (int j = 0; j < latticeXDim; ++j) {
+                if (!(heightFile >> heights[i][j])) {
+                    m_errorHandler->error_simple_msg("Error reading heights from file.");
+                    EXIT
+                        }
+                    }
+            }
+
+        m_parameters->setHeightData(heights);
+        m_parameters->setHeightFileExists(true);
+        //m_parameters->setLatticeLabels(vsTokens[4]);
+        heightFile.close();
+        return heights;
+
+    }
+}
+
+
+vector<vector<string>>IO::readSpeciesFile(string location)
+{
+    string speciesFileName = location;
+    ifstream speciesFile(speciesFileName);
+
+    if (speciesFile.good()) {
+        // Read heights from the file
+        string line;
+        getline(speciesFile, line);
+        //skip the first line
+
+        int latticeXDim = m_parameters->getLatticeXDim();
+        int latticeYDim = m_parameters->getLatticeYDim();
+        vector<vector<string>> species(latticeYDim, vector<string>(latticeXDim));
+
+        for (int i = 0; i < latticeYDim; ++i) {
+            for (int j = 0; j < latticeXDim; ++j) {
+                if (!( speciesFile>> species[i][j])) {
+                    m_errorHandler->error_simple_msg("Error reading species from file.");
+                    EXIT
+                        }
+                    }
+            }
+
+        speciesFile.close();
+        return species;
+
+    }
+}
+
+
+void IO::writeLatticeHeightsInFolder(double time, const std::string& folder_path)
+{
+    // Ensure the directory exists
+    std::filesystem::path dir_path(folder_path);
+    if (!std::filesystem::exists(dir_path)) {
+        std::filesystem::create_directories(dir_path);
+        std::cout << "Created directory: " << dir_path << std::endl;
+    }
+
+    // Create the file name
+    std::ostringstream streamObj;
+    streamObj.precision(15);
+    streamObj << time;
+    std::string file_name = "Height_" + streamObj.str() + ".dat";
+    
+    // Combine the directory path and file name
+    std::filesystem::path file_path = dir_path / file_name;
+
+    std::ofstream file(file_path);
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open file " << file_path << std::endl;
+        return;
+    }
+
+    file << "Time (s): " << time << std::endl;
+    for (int i = 0; i < m_lattice->getY(); i++) {
+        for (int j = 0; j < m_lattice->getX(); j++)
+            file << m_lattice->getSite(i*m_lattice->getX() + j)->getHeight() << " ";
+        file << std::endl;
+    }
+
+    file.close();
+}
+
+
+void IO::writeLatticeSpeciesInFolder( double time,const std::string& folder_path  )
+{
+    std::filesystem::path dir_path(folder_path);
+    if (!std::filesystem::exists(dir_path)) {
+        std::filesystem::create_directories(dir_path);
+        std::cout << "Created directory: " << dir_path << std::endl;
+    }
+    // Create an output string stream
+    ostringstream streamObj;
+    //Add double to stream
+    streamObj.precision(15);
+    streamObj << time;
+
+    std::string file_name="SurfaceSpecies_" + streamObj.str() + ".dat";
+
+     // Combine the directory path and file name
+    std::filesystem::path file_path = dir_path / file_name;
+    std::ofstream file(file_name);
+    
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open file " << file_path << std::endl;
+        return;
+    }
+    file << "Time (s): " << time << endl;
+    file.precision(10);
+
+    for (int i = 0; i < m_lattice->getY(); i++){
+        for (int j = 0; j < m_lattice->getX(); j++)
+            file << m_lattice->getSite( i*m_lattice->getX() + j )->getLabel() << " " ;
+
+        file << std::endl;
+    }
+    file.close();
 }

@@ -129,6 +129,18 @@ class Parameters: public Pointers
     /// returns the number of runs remaining
     inline int getRuns(){return m_sRuns;}
 
+    /// returns the current run number
+    inline int getCurrRunNum(){return m_sCurrRun;}
+
+     /// set the current run number
+    inline int setCurrRunNum(int run){m_sCurrRun = run;}
+
+    /// flag to check if multiple runs
+    inline void setMultipleRunFlag(){m_sMultipleRunFlag = true;}
+
+    /// get the multiple run flag
+    inline bool getMultipleRunFlag(){return m_sMultipleRunFlag;}
+
     /// Sets the dimensions of the lattice
     inline void setLatticeXDim( int x ){ m_iX = x; }
     inline void setLatticeYDim( int y ){ m_iY = y; }
@@ -202,6 +214,12 @@ class Parameters: public Pointers
 
     ///total number of runs
     int m_sRuns = 0;
+
+    ///current run number
+    int m_sCurrRun=0;
+
+    ///multiple run flag
+    bool m_sMultipleRunFlag= false;
   };
 
 }
