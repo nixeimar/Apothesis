@@ -123,6 +123,24 @@ class Parameters: public Pointers
     /// Returns the type of the lattice
     inline string getLatticeType(){ return m_sLatticeType; }
 
+    /// set the total number of runs
+    inline void setRuns(int runs){m_sRuns = runs;}
+
+    /// returns the number of runs remaining
+    inline int getRuns(){return m_sRuns;}
+
+    /// returns the current run number
+    inline int getCurrRunNum(){return m_sCurrRun;}
+
+     /// set the current run number
+    inline int setCurrRunNum(int run){m_sCurrRun = run;}
+
+    /// flag to check if multiple runs
+    inline void setMultipleRunFlag(){m_sMultipleRunFlag = true;}
+
+    /// get the multiple run flag
+    inline bool getMultipleRunFlag(){return m_sMultipleRunFlag;}
+
     /// Sets the dimensions of the lattice
     inline void setLatticeXDim( int x ){ m_iX = x; }
     inline void setLatticeYDim( int y ){ m_iY = y; }
@@ -193,6 +211,15 @@ class Parameters: public Pointers
 
     /// Bool to notify if height file exists or not
     bool m_heightFileExist;
+
+    ///total number of runs
+    int m_sRuns = 0;
+
+    ///current run number
+    int m_sCurrRun=0;
+
+    ///multiple run flag
+    bool m_sMultipleRunFlag= false;
   };
 
 }

@@ -35,6 +35,7 @@
 #include "lattice.h"
 #include "process.h"
 #include "apothesis.h"
+#include "src/IO/io.h"
 
 using namespace std;
 using namespace MicroProcesses;
@@ -51,6 +52,23 @@ int main( int argc, char* argv[] )
     cout << "Apothesis runnning ..." << endl;
     apothesis->exec();
     cout << "Apothesis finished succesfully." << endl;
+
+    int run = apothesis->pParameters->getCurrRunNum();
+    int total_runs = apothesis->pParameters->getRuns();
+    while(run!=total_runs){
+      //reinitialize heights and species
+      //current height file
+      // string latestHeightFileLocation = apothesis->pParameters->getLatestHeightFileLocation(); 
+      // vector<vector<int>>currHeights = apothesis->pIO->readHeightFile(latestHeightFileLocation);
+      // apothesis->pLattice->setInitialHeightAllSites(latestHeightFileLocation);
+
+      // string latestSpeciesFileLocation = apothesis->pParameters->getLatestSpeciesFileLocation();
+      // vector<vector<string>>
+
+      // //apothesis->init()->initnewSurface();
+      apothesis->exec();
+      apothesis->pParameters->setCurrRunNum(run++);
+    }
 
     if ( apothesis )
       delete apothesis;

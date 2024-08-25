@@ -58,6 +58,7 @@ class Pointers;
 class IO: public Pointers
   {
   public:
+
     enum CASE{ Sensitive, Insensitive };
 
     IO();
@@ -103,6 +104,9 @@ class IO: public Pointers
 
     /// Reads the input file " .kmc".
     void readInputFile();
+
+    /// not implemented yet
+    void readSurfaceSpeciesFile();
 
     /// Converts a string to double.
     double toDouble( string );
@@ -188,8 +192,18 @@ class IO: public Pointers
     static inline string trim(std::string &s) {
         rtrim(s);
         ltrim(s);
-        return s;
+        return s;   
     }
+
+    // read a height file at a given location 
+    vector<vector<int>>readHeightFile(string);
+
+    // read a species file at a given location
+    vector<vector<string>>readSpeciesFile(string);
+
+    void writeLatticeHeightsInFolder(double , const std::string&);
+
+    void writeLatticeSpeciesInFolder(double , const std::string&);
 
   protected:
     /// The type of lattice
@@ -255,6 +269,9 @@ class IO: public Pointers
     
     /// The keyword for storing the name of heights file.
     string m_sHeights;
+
+    ///The keyword for number of runs
+    string m_sRuns;
 
     // trim from start (in place)
     static inline void ltrim(std::string &s) {
