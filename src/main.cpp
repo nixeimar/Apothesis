@@ -52,6 +52,13 @@ int main( int argc, char* argv[] )
     apothesis->exec();
     cout << "Apothesis finished succesfully." << endl;
 
+    int runs = apothesis->pParameters->getRuns();
+    while(runs){
+      //apothesis->init()->initnewSurface();
+      apothesis->exec();
+      apothesis->pParameters->setRuns(runs--);
+    }
+
     if ( apothesis )
       delete apothesis;
 }

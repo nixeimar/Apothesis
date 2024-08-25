@@ -21,6 +21,7 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sLatticeType("NONE"),
     m_sProcess("process"),
     m_sLattice("lattice"),
+    m_sRuns("runs"),
     m_sTemperature("temperature"),
     m_sPressure("pressure"),
     m_sTime("time"),
@@ -54,7 +55,7 @@ string IO::getInputPath() const {;}
 
 void IO::readInputFile()
 {
-    list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport};
+    list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport,m_sRuns};
 
     string sLine;
     while ( getline( m_InputFile, sLine ) ) {
@@ -93,6 +94,12 @@ void IO::readInputFile()
                 string msg = "Unknown keyword ( " + vsTokensBasic[ 0 ] + " )";
                 m_errorHandler->error_simple_msg( msg );
                 EXIT
+            }
+        }
+
+        if(vsTokensBasic[0].compare(m_sRuns)==0){
+            if(isNumber(trim(vsTokensBasic[1]))){
+                m_parameters->setRuns(toInt(trim(vsTokensBasic[1])));
             }
         }
 
@@ -841,7 +848,3 @@ pair<string, double> IO::analyzeCompound( string reactant ) {
 
     return react;
 }
-
-
-
-
