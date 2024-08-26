@@ -154,6 +154,20 @@ class Lattice: public Pointers
     /// Returns the coverages of each species adsorbed
     virtual unordered_map<string, double > computeCoverages( vector<string> species ){}
 
+    /// Sets the height across all sites 
+    inline void setInitialHeightAllSites(vector<vector<int>> heights){
+
+        m_iHeightsAll.resize( heights.size() );
+        for ( int i = 0; i < heights.size(); i++)
+            m_iHeightsAll[ i ].resize( heights[ i ].size() );
+
+        for ( int i = 0; i < heights.size(); i++)
+            for ( int j = 0; j < heights[i].size(); j++)
+               m_iHeightsAll[ i ][ j ] = heights[ i ][ j ];
+    }
+    
+    /// sets a flag variable to know if the height across sites is different and read from a file
+    inline void setVariableHeightsFromFile( bool var ){ m_variableHeightsFromFile = var; }
 protected:
     /// The size of the lattice in the x-dimension.
     int m_iSizeX;
@@ -163,6 +177,9 @@ protected:
 
     /// The minimum initialize size of the lattice.
     int m_iHeight;
+
+    /// Initial heights across all sites
+    vector<vector<int>> m_iHeightsAll;
 
     /// The type of the lattice: BCC, FCC etc.
     Type m_Type;
@@ -195,6 +212,9 @@ protected:
 
     /// The coveraages at each time
     unordered_map<string, double> m_mCoverages;
+
+    /// Flag to know if the height is variable across sites
+    bool m_variableHeightsFromFile;
   };
 
 #endif // LATTICE_H

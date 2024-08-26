@@ -1,9 +1,9 @@
 #Build the lattice 
-lattice: SimpleCubic 100 100 10 A 
-
+lattice: heights.txt
+#lattice: SimpleCubic 100 100 10 A 
 #The growing film
 growth: CO2
-
+runs: 2
 #Create steps (alaways in the x-direaction - see above 1st number), number of steps 
 #(e.g. if 10 each step will consist of two atoms), height difference (each step will increase by 20, so 1st step: 10, 2nd: 30, 3rd, 50 etc) 
 #steps: 2 1 

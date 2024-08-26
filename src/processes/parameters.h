@@ -123,15 +123,48 @@ class Parameters: public Pointers
     /// Returns the type of the lattice
     inline string getLatticeType(){ return m_sLatticeType; }
 
+    /// set the total number of runs
+    inline void setRuns(int runs){m_sRuns = runs;}
+
+    /// returns the number of runs remaining
+    inline int getRuns(){return m_sRuns;}
+
+    /// returns the current run number
+    inline int getCurrRunNum(){return m_sCurrRun;}
+
+     /// set the current run number
+    inline int setCurrRunNum(int run){m_sCurrRun = run;}
+
+    /// flag to check if multiple runs
+    inline void setMultipleRunFlag(){m_sMultipleRunFlag = true;}
+
+    /// get the multiple run flag
+    inline bool getMultipleRunFlag(){return m_sMultipleRunFlag;}
+
     /// Sets the dimensions of the lattice
     inline void setLatticeXDim( int x ){ m_iX = x; }
     inline void setLatticeYDim( int y ){ m_iY = y; }
     inline void setLatticeHeight( int h ){ m_iH = h; }
+    inline void setHeightFileExists(bool var){m_heightFileExist = var;}
+
+    inline void setHeightData(vector<vector<int>> height){
+
+        m_height.resize( height.size() );
+        for ( int i = 0; i < height.size(); i++)
+            m_height[ i ].resize( height[ i ].size() );
+
+        for ( int i = 0; i < height.size(); i++)
+            for ( int j = 0; j < height[ i ].size(); j++)
+                m_height[ i ][ j ] = height[ i ][ j ];
+    }
 
     inline int getLatticeXDim(){ return m_iX; }
     inline int getLatticeYDim(){ return m_iY; }
     inline int getLatticeHeight(){ return m_iH; }
 
+    inline bool getHeightFileExist(){ return m_heightFileExist; }
+    inline vector<vector<int>> getHeightData(){return m_height;}
+   
   protected:
 
     /// Parameters of the lattice
@@ -173,6 +206,20 @@ class Parameters: public Pointers
     /// The species to compute coverage for
     vector<string> m_vCovSpecies;
 
+    /// Height Data of all sites 
+    vector<vector<int>> m_height;
+
+    /// Bool to notify if height file exists or not
+    bool m_heightFileExist;
+
+    ///total number of runs
+    int m_sRuns = 0;
+
+    ///current run number
+    int m_sCurrRun=0;
+
+    ///multiple run flag
+    bool m_sMultipleRunFlag= false;
   };
 
 }
