@@ -40,19 +40,10 @@
 
 #include <numeric>
 #include <algorithm>
-#include <omp.h>
-#include <thread>
-
-#include <mutex>
-#include <condition_variable>
-#include <functional>
-#include <string>
 
 using namespace MicroProcesses;
 
 //using namespace Utils;
-
-
 
 Apothesis::Apothesis(int argc, char *argv[])
     : pLattice(0),
@@ -439,15 +430,13 @@ void Apothesis::exec()
     double timeToWriteLattice = 0;
 
     string output ="";
-    // cout<<"Method3"<<endl;
+
     //    pLattice->writeXYZ( "initial.xzy" );
 
     // The average height for the first time
     double timeGrowth = 0;
     double meanDHPrevStep = pProperties->getMeanDH();
     double prevTimeStep = 0.0;
-
-
 
     ostringstream streamObj;
     streamObj.precision(15);
@@ -472,14 +461,6 @@ void Apothesis::exec()
     }
 
     pIO->writeInOutput( output );
-    ready = false;
-    done = false;
-    std::thread worker(&Apothesis::workerThread, this);
-    std::thread workerthreadLS(&Apothesis::workerLS, this);
-    std::thread workerthreadLH(&Apothesis::workerLH, this);
-    // vector<thread> threadsLS;
-    // vector<thread> threadsLH;
-
 
     while ( m_dProcTime <= m_dEndTime ){
         //1. Get a random numbers
@@ -576,43 +557,21 @@ void Apothesis::exec()
                     output += std::to_string( p.second ) + '\t';
             }
 
-            // pIO->writeInOutput( output );
-            temp_output = output;
-            ready = true;
-
-            // threads.emplace_back(&Apothesis::loggingProcess, this, output);
+            pIO->writeInOutput( output );
             timeToWriteLog = 0.0;
         }
-        // thread_obj.join();
 
         if ( timeToWriteLattice >= pParameters->getWriteLatticeTimeStep() ) {
 
-            if ( m_bHasGrowth ){
-                // 
-                temp_procTime = m_dProcTime;
-                readyLH = true;
-            }
+            if ( m_bHasGrowth )
+                pIO->writeLatticeHeights( m_dProcTime );
 
-            if ( m_bReportCoverages ){
-                // threadsLS.emplace_back(&Apothesis::writeLatticeSpeciesProcess, this, m_dProcTime);
-                // pIO->writeLatticeSpecies( m_dProcTime  );
-                temp_procTime = m_dProcTime;
-                readyLS = true;
-            }
+            if ( m_bReportCoverages )
+                pIO->writeLatticeSpecies( m_dProcTime  );
 
             timeToWriteLattice = 0.0;
         }
     }
-    
-    done = true;
-    ready = true;
-    worker.join();
-    doneLS = true;
-    readyLS = true;
-    workerthreadLS.join();
-    doneLH = true;
-    readyLH = true;
-    workerthreadLH.join();
 
     ostringstream streamObjEnd;
     streamObjEnd.precision(15);
@@ -643,44 +602,6 @@ void Apothesis::exec()
 
     if ( m_bReportCoverages )
         pIO->writeLatticeSpecies( m_dProcTime  );
-}
-
-void Apothesis::workerThread() {
-    while (!done) {
-        if (ready) {
-            pIO->writeInOutput(temp_output);
-            ready = false;
-        }
-        
-    }
-}
-void Apothesis::workerLH() {
-    while (!doneLH) {
-        if (readyLH) {
-            pIO->writeLatticeSpecies( temp_procTime );
-            readyLH = false;
-        }
-        
-    }
-}
-void Apothesis::workerLS() {
-    while (!doneLS) {
-        if (readyLS) {
-            pIO->writeLatticeHeights( temp_procTime );
-            readyLS = false;
-        }
-        
-    }
-}
-void Apothesis::loggingProcess(string output){
-    pIO->writeInOutput(output);
-}
-
-void Apothesis::writeLatticeHeightsProcess(double procTime){
-    pIO->writeLatticeHeights( procTime );
-}
-void Apothesis::writeLatticeSpeciesProcess(double procTime){
-    pIO->writeLatticeSpecies( procTime );
 }
 
 void Apothesis::logSuccessfulRead(bool read, string parameter)
@@ -722,4 +643,3 @@ string Apothesis::mf_analyzeProc(string process){
         return "Diffusion";
     }
 }
-
