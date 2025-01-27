@@ -17,7 +17,7 @@
 
 #include "lattice.h"
 
-Lattice::Lattice(Apothesis *apothesis) : Pointers(apothesis),m_iStepDiff(0)
+Lattice::Lattice(Apothesis *apothesis) : Pointers(apothesis),m_iStepDiff(0),m_bHeightsFromFile(false),m_bSpeciesFromFile(false)
 {
 }
 
@@ -38,14 +38,31 @@ void Lattice::setType(string sType)
         m_Type = NONE;
 }
 
+Lattice::~Lattice(){}
+
 void Lattice::setX(int x) { m_iSizeX = x; }
 
 void Lattice::setY(int y) { m_iSizeY = y; }
 
-void Lattice::setInitialHeight(int height) { m_iHeight = height; }
+void Lattice::buildSites() {
 
-Lattice::~Lattice()
-{
+    m_vSites.resize( getSize() );
+    for (int i = 0; i < m_vSites.size(); i++) {
+        m_vSites[i] = new Site();
+        m_vSites[i]->setID(i);
+    }
+}
+
+void Lattice::setInitialHeight(int height) {
+
+    for (int i = 0; i < m_vSites.size(); i++)
+        m_vSites[i]->setHeight( height);
+}
+
+void Lattice::setInitialSpecies(string label) {
+
+    for (int i = 0; i < m_vSites.size(); i++)
+        m_vSites[ i ]->setLabel( label );
 }
 
 vector<Site *> Lattice::getSites()
@@ -74,6 +91,9 @@ Lattice::Type Lattice::getType()
 
 void Lattice::buildSteps(){;}
 
+void Lattice::readHeightsFromFile(){;}
+
+void Lattice::readSpeciesFromFile(){;}
 
 Site* Lattice::getSite(int id) { return m_vSites[id]; }
 
@@ -148,4 +168,5 @@ void Lattice::printInfo() {
     cout << "--- end lattice parameters info -------- " << endl;
     cout << endl;
 }
+
 

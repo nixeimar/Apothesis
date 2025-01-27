@@ -37,7 +37,7 @@ class Parameters: public Pointers
   {
   public:
     /// Constructor.
-    Parameters( Apothesis* apothesis );
+      Parameters( Apothesis* apothesis );
 
     /// Destructor.
     ~Parameters(){;}
@@ -127,26 +127,19 @@ class Parameters: public Pointers
     inline void setLatticeXDim( int x ){ m_iX = x; }
     inline void setLatticeYDim( int y ){ m_iY = y; }
     inline void setLatticeHeight( int h ){ m_iH = h; }
-    inline void setHeightFileExists(bool var){m_heightFileExist = var;}
 
-    inline void setHeightData(vector<vector<int>> height){
-
-        m_height.resize( height.size() );
-        for ( int i = 0; i < height.size(); i++)
-            m_height[ i ].resize( height[ i ].size() );
-
-        for ( int i = 0; i < height.size(); i++)
-            for ( int j = 0; j < height[ i ].size(); j++)
-                m_height[ i ][ j ] = height[ i ][ j ];
-    }
 
     inline int getLatticeXDim(){ return m_iX; }
     inline int getLatticeYDim(){ return m_iY; }
     inline int getLatticeHeight(){ return m_iH; }
 
-    inline bool getHeightFileExist(){ return m_heightFileExist; }
-    inline vector<vector<int>> getHeightData(){return m_height;}
-   
+
+    inline void setReadHeightsFromFile(bool exists){ m_bReadHeightsFromFile = exists; }
+    inline bool isReadHeightsFromFile(){ return m_bReadHeightsFromFile; }
+
+    inline void setReadSpeciesFromFile(bool exists){ m_bReadSpeciesFromFile = exists; }
+    inline bool isReadSpeciesFromFile(){ return m_bReadSpeciesFromFile; }
+
   protected:
 
     /// Parameters of the lattice
@@ -188,11 +181,12 @@ class Parameters: public Pointers
     /// The species to compute coverage for
     vector<string> m_vCovSpecies;
 
-    /// Height Data of all sites 
-    vector<vector<int>> m_height;
-
     /// Bool to notify if height file exists or not
-    bool m_heightFileExist;
+    bool m_bReadHeightsFromFile;
+
+    /// Bool to notify if species file exists or not
+    bool m_bReadSpeciesFromFile;
+
   };
 
 }

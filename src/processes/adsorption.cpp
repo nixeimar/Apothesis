@@ -100,7 +100,7 @@ int Adsorption::countVacantSites( Site* s){
 
 bool Adsorption::rules( Site* s )
 {
-    (*m_fRules)(this, s);
+   return (*m_fRules)(this, s);
 }
 
 void Adsorption::perform( Site* s ) {

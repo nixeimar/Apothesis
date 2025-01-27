@@ -77,7 +77,7 @@ void Diffusion::init(vector<string> params)
 
 bool Diffusion::rules( Site* s)
 {
-    (*m_fRules)(this, s);
+    return (*m_fRules)(this, s);
 }
 
 void Diffusion::perform( Site* s)

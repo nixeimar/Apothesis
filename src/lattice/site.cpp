@@ -23,7 +23,7 @@
 namespace SurfaceTiles
 {
 
-  Site::Site():m_phantom(false),m_isLowerStep(false), m_isHigherStep(false)
+Site::Site():m_phantom(false),m_isLowerStep(false), m_isHigherStep(false), m_bIsOccupied(false)
   {
       vector<Site* > vec;
       m_m1stNeighs = { {-1, vec}, { 0, vec }, {1, vec }, };
