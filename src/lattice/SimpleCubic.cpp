@@ -69,14 +69,14 @@ void SimpleCubic::readHeightsFromFile() {
 
     if (heightFile.good()) {
 
-        int latticeXDim = m_iSizeX;
-        int latticeYDim = m_iSizeY;
-
-        vector<vector<int>> heights(latticeYDim, vector<int>(latticeXDim));
+        vector<vector<int>> heights;
         string line;
 
         // Read the file line by line
         while (std::getline(heightFile, line)) {
+
+            if (line.empty() ) continue;
+
             std::vector<int> row;
             std::istringstream iss(line);
             int num;
@@ -108,19 +108,21 @@ void SimpleCubic::readSpeciesFromFile(){
 
     if (speciesFile.good()) {
 
-        int latticeXDim = m_iSizeX;
-        int latticeYDim = m_iSizeY;
-
-        vector<vector<string>> species(latticeYDim, vector<string>(latticeXDim));
+        vector<vector<string>> species;
         string line;
 
         // Read the file line by line
         while (std::getline(speciesFile, line)) {
+
+            if (line.empty() ) continue;
+
+            line = trim(line);
+
             std::vector<string> row;
             std::istringstream iss(line);
             string s;
             // Extract strings from the line and add them to the row
-            while (iss >> s) {
+            while (iss >> s ) {
                 row.push_back(s);
             }
             // Add the row to the matrix
@@ -134,9 +136,8 @@ void SimpleCubic::readSpeciesFromFile(){
                 icount = i * m_iSizeY + j;
                 m_vSites[icount]->setLabel( species[ i ][ j ] );
 
-                if ( species[ i ][ j ].find("*") != std::string::npos) {
+                if ( species[ i ][ j ].find("*") != std::string::npos)
                     m_vSites[ icount ]->setOccupied( true);
-                }
             }
         }
     }

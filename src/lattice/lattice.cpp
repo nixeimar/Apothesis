@@ -151,6 +151,13 @@ void Lattice::printNeighs( int ID )
 void Lattice::writeXYZ( string filename ){;}
 void Lattice::writeLatticeHeights( double, int ){;}
 
+std::string Lattice::trim(const std::string& str) {
+    auto start = str.find_first_not_of(" \t");
+    auto end = str.find_last_not_of(" \t");
+    return (start == std::string::npos) ? "" : str.substr(start, end - start + 1);
+}
+
+
 void Lattice::printInfo() {
 
     cout << endl;
@@ -159,7 +166,7 @@ void Lattice::printInfo() {
     cout << "Type: "; cout << getType() << endl;
     cout << "Size X: "; cout << getX() << endl;
     cout << "Size Y: "; cout << getY() << endl;
-    cout << "Lattice species: "; cout << getLabels() << endl;
+//    cout << "Lattice species: "; cout << getLabels() << endl;
 
     if ( hasSteps() ) {
         cout << "Number of steps: "; cout << getNumSteps() << endl;

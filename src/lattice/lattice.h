@@ -54,10 +54,10 @@ class Lattice: public Pointers
     void setType( string );
 
     /// Stores the species on lattice sites.
-    inline void setLabels( string species ) { m_sLabel = species; }
+//    inline void setLabels( string species ) { m_sLabel = species; }
 
     /// Get the species of the lattice sites.
-    inline string getLabels() { return m_sLabel; }
+//    inline string getLabels() { return m_sLabel; }
 
     /// Returns the x dimension of the lattice.
     inline int getX() { return m_iSizeX;}
@@ -218,6 +218,9 @@ protected:
 
     /// Flag to know if the species is variable across sites
     bool m_bSpeciesFromFile;
+
+    /// Auxillary for reading
+    std::string trim(const std::string& str);
 
   };
 

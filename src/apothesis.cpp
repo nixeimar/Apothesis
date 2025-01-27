@@ -116,22 +116,22 @@ void Apothesis::init()
         pLattice->readHeightsFromFile();
 
     //For the species
-    if ( !pParameters->isReadSpeciesFromFile() )
-        pLattice->setLabels( pParameters->getLatticeLabels() );
+    if ( !pParameters->isReadSpeciesFromFile() ) {
+//        pLattice->setLabels( pParameters->getLatticeLabels() );
+
+        // TODO: Here we must take into account the case of two or more species participating in the film growth
+        // and the user should give the per cent of each species in t=0s e.g. 0.8Ga 0.2As
+        for ( Site* s:pLattice->getSites() ){
+            s->setLabel(  pParameters->getLatticeLabels() );
+            s->setBelowLabel( pParameters->getLatticeLabels() );
+        }
+    }
     else
         //This is supported only for SimpleCubic cases
         pLattice->readSpeciesFromFile();
 
     //Build the lattice
     pLattice->build();
-
-    // TODO: Here we must take into account the case of two or more species participating in the film growth
-    // and the user should give the per cent of each species in t=0s e.g. 0.8Ga 0.2As
-    for ( Site* s:pLattice->getSites() ){
-        s->setLabel(  pParameters->getLatticeLabels() );
-        s->setBelowLabel(  pParameters->getLatticeLabels() );
-        s->setOccupied( false ); //Start from clear surface
-    }
 
     if ( pLattice->hasSteps() )
         pLattice->buildSteps();
