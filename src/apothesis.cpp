@@ -47,7 +47,6 @@ using namespace MicroProcesses;
 Apothesis::Apothesis(int argc, char *argv[])
     : pLattice(0),
       pReader(0),
-      m_dProcTime(0.0),
       m_dRTot(0.0),
       m_dProcRate(0.0),
       m_debugMode(false)
@@ -85,6 +84,8 @@ void Apothesis::init()
     //Open the output file
     if ( !pIO->outputOpen() )
         pIO->openOutputFile("Output");
+
+    m_dProcTime = pParameters->getStartTime();
 
     // Initialize Random generator
     if ( pParameters->getRandGenInit() != 0.0 )

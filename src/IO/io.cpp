@@ -23,7 +23,7 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sLattice("lattice"),
     m_sTemperature("temperature"),
     m_sPressure("pressure"),
-    m_sTime("time"),
+    m_sTime("time_duration"),
     m_sSteps("steps"),
     m_sRandom("random"),
     m_sSpecies("species"),
@@ -32,7 +32,8 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sCommentLine("#"),
     m_sPrecursors("precursors"),
     m_sReport("report"),
-    m_sHeights("heights.txt")
+    m_sHeights("heights.txt"),
+    m_sStartTime("time_start")
 {
     //Initialize the map for the lattice
     m_mLatticeType[ "NONE" ] = Lattice::NONE;
@@ -54,7 +55,7 @@ string IO::getInputPath() const {;}
 
 void IO::readInputFile()
 {
-    list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport};
+    list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport, m_sStartTime};
 
     string sLine;
     while ( getline( m_InputFile, sLine ) ) {
@@ -296,6 +297,33 @@ void IO::readInputFile()
 
             if ( isNumber(  trim( vsTokensBasic[ 1 ] ) ) ){
                 m_parameters->setEndTime( toDouble( trim( vsTokensBasic[ 1] ) ) );
+            }
+            else {
+                m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
+                EXIT
+            }
+
+            continue;
+        }
+
+        if ( vsTokensBasic[ 0].compare( m_sStartTime ) == 0 ){
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
+                if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokensBasic[ i ].clear();
+            }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
+            vsTokensBasic.erase( it, vsTokensBasic.end() );
+
+            if ( isNumber(  trim( vsTokensBasic[ 1 ] ) ) ){
+                m_parameters->setStartTime( toDouble( trim( vsTokensBasic[ 1] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");

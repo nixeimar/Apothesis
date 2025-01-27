@@ -34,10 +34,10 @@ namespace Utils {
 
 
 class Parameters: public Pointers
-  {
-  public:
-    /// Constructor.
-      Parameters( Apothesis* apothesis );
+{
+public:
+        /// Constructor.
+    Parameters( Apothesis* apothesis );
 
     /// Destructor.
     ~Parameters(){;}
@@ -140,7 +140,10 @@ class Parameters: public Pointers
     inline void setReadSpeciesFromFile(bool exists){ m_bReadSpeciesFromFile = exists; }
     inline bool isReadSpeciesFromFile(){ return m_bReadSpeciesFromFile; }
 
-  protected:
+    inline void setStartTime(double time){ m_dStartTime = time; }
+    inline double getStartTime(){ return m_dStartTime; }
+
+protected:
 
     /// Parameters of the lattice
     int m_iX, m_iY, m_iH;
@@ -187,7 +190,10 @@ class Parameters: public Pointers
     /// Bool to notify if species file exists or not
     bool m_bReadSpeciesFromFile;
 
-  };
+    /// The time for starting the simulation - default is zero.
+    double m_dStartTime;
+
+};
 
 }
 
