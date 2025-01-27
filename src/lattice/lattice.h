@@ -54,10 +54,10 @@ class Lattice: public Pointers
     void setType( string );
 
     /// Stores the species on lattice sites.
-    inline void setLabels( string species ) { m_sLabel = species; }
+//    inline void setLabels( string species ) { m_sLabel = species; }
 
     /// Get the species of the lattice sites.
-    inline string getLabels() { return m_sLabel; }
+//    inline string getLabels() { return m_sLabel; }
 
     /// Returns the x dimension of the lattice.
     inline int getX() { return m_iSizeX;}
@@ -95,16 +95,27 @@ class Lattice: public Pointers
     void setType( Type type );
 
     /// Set the X dimension of the lattice.
-    void setX( int x );
+    virtual void setX( int x );
 
     /// Set the Y dimension of the lattice.
-    void setY( int y );
+    virtual void setY( int y );
 
     /// Build the lattice with an intitial height.
     virtual void build() = 0;
 
-    /// Sets the minimun initial height for the lattice.
-    void setInitialHeight( int  height );
+    /// Sets the initial height for the lattice.
+    virtual void setInitialHeight( int height );
+
+    /// Sets the initial label for species for the lattice.
+    virtual void setInitialSpecies( string label );
+
+    /// Read directly the initial heights from file heights.dat
+    virtual void readHeightsFromFile();
+
+    /// Read directly the initial species from file species.dat
+    virtual void readSpeciesFromFile();
+
+    virtual void buildSites();
 
     //Set true if the lattice has steps
     inline void setSteps(bool hasSteps){m_hasSteps = hasSteps; }
@@ -164,6 +175,12 @@ protected:
     /// The minimum initialize size of the lattice.
     int m_iHeight;
 
+    /// Initial heights across all sites to be field by reading the heigth.dat file
+    vector<vector<int>> m_iHeightsAll;
+
+    /// Initial species across all sites to be field by reading the species.dat file
+    vector<vector<string>> m_sLabelAll;
+
     /// The type of the lattice: BCC, FCC etc.
     Type m_Type;
 
@@ -195,6 +212,16 @@ protected:
 
     /// The coveraages at each time
     unordered_map<string, double> m_mCoverages;
+
+    /// Flag to know if the height is variable across sites
+    bool m_bHeightsFromFile;
+
+    /// Flag to know if the species is variable across sites
+    bool m_bSpeciesFromFile;
+
+    /// Auxillary for reading
+    std::string trim(const std::string& str);
+
   };
 
 #endif // LATTICE_H

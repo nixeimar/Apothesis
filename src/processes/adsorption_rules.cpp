@@ -27,7 +27,7 @@ bool multiSpeciesRule(Adsorption* proc, Site* s){
 
     //1. If the species is not occupied
     //2. and if neighbours equal to the sites needed by m_iNumSites are vacant
-    //3. and have the same height return true
+    //3. and have the same height return true (checked inside countVacantSites)
     //4. Return false
     if ( s->isOccupied() || proc->countVacantSites(s) != proc->getNumVacantSites() )
         return false;

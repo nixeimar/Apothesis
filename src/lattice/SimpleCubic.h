@@ -57,13 +57,14 @@ public:
   /// Create stepped surface
   void buildSteps() override;
 
-  /// Sets the minimun initial height for the lattice.
-  void setInitialHeight(int height);
-
   /// Calculate the number of neighbor based on the height
   int calculateNeighNum( int id );
 
   void writeLatticeHeights( double, int );
+
+  void readHeightsFromFile() override;
+
+  void readSpeciesFromFile() override;
 
   inline int getNumFirstNeihgs() override { return 5; }
 

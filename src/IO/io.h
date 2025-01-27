@@ -252,6 +252,12 @@ class IO: public Pointers
 
     /// The keyword for reporting additionl properties (currently only supports coverages)
     string m_sReport;
+    
+    /// The keyword for storing the name of heights file.
+    string m_sHeights;
+
+    /// The keyword for storing the start time.
+    string m_sStartTime ;
 
     // trim from start (in place)
     static inline void ltrim(std::string &s) {

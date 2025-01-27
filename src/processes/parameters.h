@@ -34,9 +34,9 @@ namespace Utils {
 
 
 class Parameters: public Pointers
-  {
-  public:
-    /// Constructor.
+{
+public:
+        /// Constructor.
     Parameters( Apothesis* apothesis );
 
     /// Destructor.
@@ -128,11 +128,22 @@ class Parameters: public Pointers
     inline void setLatticeYDim( int y ){ m_iY = y; }
     inline void setLatticeHeight( int h ){ m_iH = h; }
 
+
     inline int getLatticeXDim(){ return m_iX; }
     inline int getLatticeYDim(){ return m_iY; }
     inline int getLatticeHeight(){ return m_iH; }
 
-  protected:
+
+    inline void setReadHeightsFromFile(bool exists){ m_bReadHeightsFromFile = exists; }
+    inline bool isReadHeightsFromFile(){ return m_bReadHeightsFromFile; }
+
+    inline void setReadSpeciesFromFile(bool exists){ m_bReadSpeciesFromFile = exists; }
+    inline bool isReadSpeciesFromFile(){ return m_bReadSpeciesFromFile; }
+
+    inline void setStartTime(double time){ m_dStartTime = time; }
+    inline double getStartTime(){ return m_dStartTime; }
+
+protected:
 
     /// Parameters of the lattice
     int m_iX, m_iY, m_iH;
@@ -173,7 +184,16 @@ class Parameters: public Pointers
     /// The species to compute coverage for
     vector<string> m_vCovSpecies;
 
-  };
+    /// Bool to notify if height file exists or not
+    bool m_bReadHeightsFromFile;
+
+    /// Bool to notify if species file exists or not
+    bool m_bReadSpeciesFromFile;
+
+    /// The time for starting the simulation - default is zero.
+    double m_dStartTime;
+
+};
 
 }
 

@@ -24,6 +24,10 @@ FCC::FCC(Apothesis* apothesis):Lattice(apothesis)
 
 void FCC::setInitialHeight( int  height ) { m_iHeight = height; }
 
+void FCC::readHeightsFromFile() { cout << "Reading file for height is not supported yet for FCC."; EXIT;}
+
+void FCC::readSpeciesFromFile() { cout << "Reading file for species is not supported yet for FCC."; EXIT;}
+
 void FCC::build()
 {
     // The sites of the lattice.

@@ -38,7 +38,7 @@ void SimpleCubic::buildSteps()
     int iStep = 0;
     int iHeight = 0;
 
-   //Steps in x-direction
+    //Steps in x-direction
     for (int i = 0; i < m_iSizeX; i++) {
         if ( iStep == iPerStep ) {
             iStep = 0;
@@ -63,7 +63,88 @@ void SimpleCubic::buildSteps()
     }
 }
 
-void SimpleCubic::setInitialHeight(int height) { m_iHeight = height; }
+void SimpleCubic::readHeightsFromFile() {
+
+    ifstream heightFile("heights.dat");
+
+    if (heightFile.good()) {
+
+        vector<vector<int>> heights;
+        string line;
+
+        // Read the file line by line
+        while (std::getline(heightFile, line)) {
+
+            if (line.empty() ) continue;
+
+            line = trim(line);
+
+            std::vector<int> row;
+            std::istringstream iss(line);
+            int num;
+            // Extract integers from the line and add them to the row
+            while (iss >> num) {
+                row.push_back(num);
+            }
+            // Add the row to the matrix
+            heights.push_back(row);
+        }
+
+        int icount = 0;
+
+        for (int i = 0; i < m_iSizeX; ++i) {
+            for (int j = 0; j < m_iSizeY; ++j) {
+                icount = i * m_iSizeY + j;
+                m_vSites[icount]->setID(icount);
+                m_vSites[icount]->setHeight( heights[ i ][ j ] );
+            }
+        }
+
+    }
+    heightFile.close();
+}
+
+void SimpleCubic::readSpeciesFromFile(){
+
+    ifstream speciesFile("species.dat");
+
+    if (speciesFile.good()) {
+
+        vector<vector<string>> species;
+        string line;
+
+        // Read the file line by line
+        while (std::getline(speciesFile, line)) {
+
+            if (line.empty() ) continue;
+
+            line = trim(line);
+
+            std::vector<string> row;
+            std::istringstream iss(line);
+            string s;
+            // Extract strings from the line and add them to the row
+            while (iss >> s ) {
+                row.push_back(s);
+            }
+            // Add the row to the matrix
+            species.push_back(row);
+        }
+
+        int icount = 0;
+
+        for (int i = 0; i < m_iSizeX; ++i) {
+            for (int j = 0; j < m_iSizeY; ++j) {
+                icount = i * m_iSizeY + j;
+                m_vSites[icount]->setLabel( species[ i ][ j ] );
+
+                if ( species[ i ][ j ].find("*") != std::string::npos)
+                    m_vSites[ icount ]->setOccupied( true);
+            }
+        }
+    }
+    speciesFile.close();
+}
 
 void SimpleCubic::build()
 {
@@ -79,34 +160,8 @@ void SimpleCubic::build()
         EXIT
     }
 
-    if (m_iHeight < 5)
-    {
-        m_errorHandler->warningSimple_msg("The lattice initial height is too small.Consider revising.");
-    }
-
-    // The sites of the lattice.
-    m_vSites.resize( getSize() );
-    for (int i = 0; i < m_vSites.size(); i++)
-        m_vSites[i] = new Site();
-
-    //This is OK
-    for (int i = 0; i < m_iSizeX; i++)
-    {
-        for (int j = i * m_iSizeY; j < (m_iSizeY + i * m_iSizeY); j++)
-        {
-            m_vSites[j]->setID(j);
-            m_vSites[j]->setHeight(m_iHeight);
-        }
-    }
 
     mf_neigh();
-
-    // Here we set the label of the species
-    for (int i = 0; i < m_iSizeY; i++){
-        for (int j = 0; j < m_iSizeX; j++)
-            m_vSites[ i*m_iSizeX + j ]->setLabel( m_sLabel );
-    }
-
 }
 
 SimpleCubic::~SimpleCubic()
@@ -296,7 +351,7 @@ void SimpleCubic::check()
     int test = 2;
     cout << test << ": ";
     cout << "W:" << getSite(test)->getNeighPosition(Site::WEST)->getID() << " ";\
-    cout << "E:" << getSite(test)->getNeighPosition(Site::EAST)->getID() << " ";
+        cout << "E:" << getSite(test)->getNeighPosition(Site::EAST)->getID() << " ";
     cout << "N:" << getSite(test)->getNeighPosition(Site::NORTH)->getID() << " ";
     cout << "S:" << getSite(test)->getNeighPosition(Site::SOUTH)->getID() << endl;
 }

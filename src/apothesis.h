@@ -93,7 +93,7 @@ public:
 
 private:
     /// The process map which holds all the processes and the sites that each can be performed.
-    unordered_map< MicroProcesses::Process*, set< SurfaceTiles::Site* > > m_processMap;
+    map< MicroProcesses::Process*, set< SurfaceTiles::Site* > > m_processMap;
 
     /// The number of flags given by the user
     int m_iArgc;

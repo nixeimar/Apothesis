@@ -23,7 +23,7 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sLattice("lattice"),
     m_sTemperature("temperature"),
     m_sPressure("pressure"),
-    m_sTime("time"),
+    m_sTime("time_duration"),
     m_sSteps("steps"),
     m_sRandom("random"),
     m_sSpecies("species"),
@@ -31,7 +31,9 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sGrowth("growth"),
     m_sCommentLine("#"),
     m_sPrecursors("precursors"),
-    m_sReport("report")
+    m_sReport("report"),
+    m_sHeights("heights.txt"),
+    m_sStartTime("time_start")
 {
     //Initialize the map for the lattice
     m_mLatticeType[ "NONE" ] = Lattice::NONE;
@@ -53,7 +55,7 @@ string IO::getInputPath() const {;}
 
 void IO::readInputFile()
 {
-    list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport};
+    list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport, m_sStartTime};
 
     string sLine;
     while ( getline( m_InputFile, sLine ) ) {
@@ -83,7 +85,7 @@ void IO::readInputFile()
         }
 
         // Remove any empty parts of the vector
-        vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+        vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
         vsTokensBasic.erase( it, vsTokensBasic.end() );
 
         // Check if a token is not a keyword
@@ -96,7 +98,6 @@ void IO::readInputFile()
         }
 
         if ( vsTokensBasic[ 0].compare(  m_sLattice ) == 0 ){
-
             vector<string> vsTokens;
             vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
 
@@ -111,7 +112,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokensBasic.erase( it, vsTokens.end() );
 
             m_parameters->setLatticeType( vsTokens[ 0 ]  );
@@ -136,19 +137,28 @@ void IO::readInputFile()
                 m_parameters->setLatticeHeight( toInt(  trim( vsTokens[ 3 ] ) ) );
             }
             else {
-                m_errorHandler->error_simple_msg("The height must be a  number.");
-                EXIT
+
+                if ( vsTokens[ 3 ].compare("heigths.dat") != 0 ){
+                    m_errorHandler->error_simple_msg("The height must be a number or the file \"heights.dat\" "
+                                                     "which contains the height of lattice at time step t.");
+                    EXIT
+                }
+                else {
+                    //                    m_parameters->setHeightData( heights );
+                    m_parameters->setReadHeightsFromFile( true );
+                }
             }
 
-            if ( !vsTokens[ 4 ].empty() )
-                m_parameters->setLatticeLabels( vsTokens[4] ) ;
-            else {
-                m_errorHandler->error_simple_msg("You must specify a species that the lattice is composed off.");
-                EXIT
+            if ( !vsTokens[ 4 ].empty() ){
+                if ( vsTokens[ 4 ].compare("species.dat") == 0 )
+                    m_parameters->setReadSpeciesFromFile( true );
+                else
+                    m_parameters->setLatticeLabels( vsTokens[4] ) ;
             }
-
             continue;
+            //                }
         }
+
 
         if (vsTokensBasic[ 0].compare(  m_sGrowth ) == 0){
             vector<string> vsTokens;
@@ -166,7 +176,7 @@ void IO::readInputFile()
 
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
             for (string s:vsTokens )
@@ -192,7 +202,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
             if ( isNumber( vsTokens[ 0 ] ) ){
@@ -227,7 +237,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
             vsTokensBasic.erase( it, vsTokensBasic.end() );
 
             if ( isNumber( trim(vsTokensBasic[ 1 ] ) )){
@@ -254,7 +264,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
             vsTokensBasic.erase( it, vsTokensBasic.end() );
 
             if ( isNumber( trim(vsTokensBasic[ 1 ] ) ) ){
@@ -282,11 +292,38 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
             vsTokensBasic.erase( it, vsTokensBasic.end() );
 
             if ( isNumber(  trim( vsTokensBasic[ 1 ] ) ) ){
                 m_parameters->setEndTime( toDouble( trim( vsTokensBasic[ 1] ) ) );
+            }
+            else {
+                m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
+                EXIT
+            }
+
+            continue;
+        }
+
+        if ( vsTokensBasic[ 0].compare( m_sStartTime ) == 0 ){
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
+                if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokensBasic[ i ].clear();
+            }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
+            vsTokensBasic.erase( it, vsTokensBasic.end() );
+
+            if ( isNumber(  trim( vsTokensBasic[ 1 ] ) ) ){
+                m_parameters->setStartTime( toDouble( trim( vsTokensBasic[ 1] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
@@ -317,7 +354,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
             if ( vsTokens[ 0].compare( "log") == 0 ) {
@@ -369,7 +406,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
             for ( unsigned int i = 0; i < vsTokens.size(); i++ ){

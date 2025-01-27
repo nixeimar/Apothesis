@@ -26,6 +26,10 @@ HCP::HCP(Apothesis *apothesis) : Lattice(apothesis), m_iMinNeigs(1)
 
 void HCP::setInitialHeight(int height) { m_iHeight = height; }
 
+void HCP::readHeightsFromFile() { cout << "Reading file for height is not supported yet for HCP."; EXIT;}
+
+void HCP::readSpeciesFromFile() { cout << "Reading file for species is not supported yet for HCP."; EXIT;}
+
 void HCP::build()
 {
 
