@@ -77,6 +77,8 @@ void SimpleCubic::readHeightsFromFile() {
 
             if (line.empty() ) continue;
 
+            line = trim(line);
+
             std::vector<int> row;
             std::istringstream iss(line);
             int num;
