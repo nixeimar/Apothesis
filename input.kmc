@@ -1,10 +1,8 @@
 #Build the lattice 
 
 #The initial species for covering the lattice must NOT contain '*', otherwise apothesis will take the sites as occupied
-lattice: SimpleCubic 10 10 10 X 
-
-#This is for reading from files heights or specties. The user can define either to be read by file
-#lattice: SimpleCubic 10 10 heigths.dat species.dat 
+#lattice: SimpleCubic 50 50 10 X 
+lattice: SimpleCubic 10 10 heigths.dat species.dat 
 
 #The growing film
 growth: CO2

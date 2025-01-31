@@ -86,60 +86,6 @@ void Reader::openInputFile(string path){
     }
 }
 
-//Todo: Remove this from here!  It is initialization ...
-/*void Reader::initializeLattice(){
-
-    switch (m_LatticeType[m_sLatticeType])
-    {
-    case Lattice::FCC:
-    {
-      if (m_bSteps)
-      {
-          ;
-        //FCC *lattice = new FCC(m_apothesis, true, m_vSteps);
-        //m_apothesis->pLattice = lattice;
-      }
-      else
-      {
-        FCC *lattice = new FCC(m_apothesis);
-        m_apothesis->pLattice = lattice;
-        m_lattice->setType("FCC");
-        break;
-      }
-
-    }
-    case Lattice::SimpleCubic:
-    {
-      if (m_bSteps)
-      {
-          ;
-//        SimpleCubic *lattice = new SimpleCubic(m_apothesis, true, m_vSteps);
- //       m_apothesis->pLattice = lattice;
-
-      }
-      else
-      {
-        SimpleCubic *lattice = new SimpleCubic(m_apothesis);
-        m_apothesis->pLattice = lattice;
-      }
-      m_lattice->setType("SimpleCubic");
-
-      break;
-    }
-    default:
-    {
-      cout<<"Unresolvable lattice type found. Exiting..."<<endl;
-      EXIT
-    }
-    }
-
-    m_lattice = m_apothesis->pLattice;
-    m_lattice->setType(m_sLatticeType);
-    m_lattice->setX(m_vLatticeDims[0]);
-    m_lattice->setY(m_vLatticeDims[1]);
-    m_lattice->setInitialHeight(m_vLatticeDims[2]);
-}*/
-
 vector<string> Reader::inputFileLines()
 {
 
@@ -270,22 +216,6 @@ void Reader::m_fidentifyProcess(string processKey, int id){
 
     string procName;
     if(m_bisAdsorption(reactants)){
-
-        //To Christianna: Check this
-
-        //What are the parameters for adsorption:
-        //Type: default simple (other should be e.g. Arrhenius type)
-        //Mole fraction (if simple):  default = 1.0
-        //Sticking (if simple): default = 1.0
-        //Number of sites to occupy: default = 1 (taken from the stoichiometry)
-
-        //m_processes.push_front( FactoryProcess::createProcess("Adsorption") );
-        //m_processes.front()->setParameter("f", 0.1);
-        //m_processes.front()->setParameter("simple", true);
-        //m_processes.front()->setParameter("site", "A");
-        //m_processes.front()->setParameter("sticking", "A");
-        //m_processes.front()->setParameter("ctot", 1e-13);
-
         procName="Adsorption"+to_string(id);
     }else if(m_bisDesorption(products)){
         procName="Desorption"+to_string(id);
