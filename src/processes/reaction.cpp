@@ -17,7 +17,7 @@
 
 #include "reaction.h"
 
-Reaction::Reaction(): m_bLeadsToGrowth(false){}
+Reaction::Reaction(): m_bLeadsToGrowth(false),m_bLeadsToEtching(false){}
 Reaction::~Reaction(){}
 
 void Reaction::init(vector<string> params){
@@ -45,6 +45,7 @@ void Reaction::init(vector<string> params){
     }
 
     vector<string> gSpecies = m_pUtilParams->getGrowthSpecies();
+    vector<string> eSpecies = m_pUtilParams->getEtchedSpecies();
 
     buildTransformationMatrix();
 
@@ -61,7 +62,20 @@ void Reaction::init(vector<string> params){
         }
     }
 
-    if ( !m_bLeadsToGrowth ) {
+    if ( eSpecies.size() <= 0 )
+        m_bLeadsToEtching = false;
+    else {
+        for ( string rs:m_vProducts) {
+            for ( string es:eSpecies ){
+                if ( es.compare( rs) == 0 ) {
+                    m_bLeadsToEtching = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    if ( !m_bLeadsToGrowth && !m_bLeadsToEtching ) {
         m_fRules = &Reaction::simpleRule;
         m_fPerform = &Reaction::catalysis;
     }
@@ -121,6 +135,21 @@ bool Reaction::leadsToGrowth(Site* s){
     return false;
 }
 
+bool Reaction::leadsToEtch(Site* s){
+    vector<string> gSpecies = m_pUtilParams->getEtchedSpecies();
+
+    if ( m_mTransformationMatrix[ s->getLabel() ] == "")
+        return false;
+
+    for ( string gs:gSpecies ){
+        if ( gs.compare( m_mTransformationMatrix[ s->getLabel() ] ) == 0 ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void Reaction::oneOneReaction( Site* s){
     vector<Site* > potSites;
     for ( Site* s1:s->getNeighs() ) {
@@ -153,12 +182,17 @@ void Reaction::oneOneReaction( Site* s){
         EXIT;
     }
 
-
     if ( leadsToGrowth(s) )
         s->increaseHeight(1);
 
+    if ( leadsToEtch(s) )
+        s->decreaseHeight(1);
+
     if ( leadsToGrowth(otherSite) )
         otherSite->increaseHeight(1);
+
+    if ( leadsToEtch(otherSite) )
+        otherSite->decreaseHeight(1);
 
     s->setOccupied(false);
     if ( m_mTransformationMatrix[ s->getLabel() ] != "" )

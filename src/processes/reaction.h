@@ -86,8 +86,9 @@ private:
 
     double m_dReactionRate;
 
-    /// If true it leads to growth.
+    /// If true it leads to growth/etching.
     bool m_bLeadsToGrowth;
+    bool m_bLeadsToEtching;
 
     /// Checks if all reactants stoichiometric coefficients are one.
     bool allReactCoeffOne();
@@ -99,6 +100,7 @@ private:
     void buildTransformationMatrix();
 
     bool leadsToGrowth(Site* s);
+    bool leadsToEtch(Site* s);
 };
 
 #endif // REACTION_NEW_H

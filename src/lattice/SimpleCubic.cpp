@@ -137,6 +137,7 @@ void SimpleCubic::readSpeciesFromFile(){
             for (int j = 0; j < m_iSizeY; ++j) {
                 icount = i * m_iSizeY + j;
                 m_vSites[icount]->setLabel( species[ i ][ j ] );
+                m_vSites[icount]->setBelowLabel("X");
 
                 if ( species[ i ][ j ].find("*") != std::string::npos)
                     m_vSites[ icount ]->setOccupied( true);

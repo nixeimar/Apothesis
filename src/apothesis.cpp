@@ -422,6 +422,7 @@ void Apothesis::init()
         output +=  p.first->getName() + " (class size)" + '\t';
 
     m_bHasGrowth = pParameters->getGrowthSpecies().size() > 0 ? true : false;
+    m_bHasEtching = pParameters->getEtchedSpecies().size() > 0 ? true : false;
     m_bReportCoverages = pParameters->getCoverageSpecies().size() > 0 ? true : false;
 
     // If the user wants the coverages to be reported
@@ -433,7 +434,7 @@ void Apothesis::init()
 
     pIO->writeInOutput( output );
 
-    if ( m_bHasGrowth )
+    if ( m_bHasGrowth || m_bHasEtching )
         pIO->writeLatticeHeights( m_dProcTime );
 
     if ( m_bReportCoverages )
@@ -477,8 +478,9 @@ void Apothesis::exec()
     }
 
     pIO->writeInOutput( output );
+    bool bStop = false;
 
-    while ( m_dProcTime <= m_dEndTime ){
+    while ( m_dProcTime <= m_dEndTime || !bStop){
         //1. Get a random numbers
         m_dSum = 0.0;
         m_iRandom = pRandomGen->getDoubleRandom();
@@ -579,7 +581,7 @@ void Apothesis::exec()
 
         if ( timeToWriteLattice >= pParameters->getWriteLatticeTimeStep() ) {
 
-            if ( m_bHasGrowth )
+            if ( m_bHasGrowth || m_bHasEtching )
                 pIO->writeLatticeHeights( m_dProcTime );
 
             if ( m_bReportCoverages )
@@ -587,6 +589,20 @@ void Apothesis::exec()
 
             timeToWriteLattice = 0.0;
         }
+
+
+        unordered_map<string, double> covs = pLattice->computeCoverages( pParameters->getCoverageSpecies() );
+        for ( auto &p:covs) {
+            if ( pParameters->getStopCov().first.compare( p.first ) == 0 ) {
+                if ( p.second > std::stod(pParameters->getStopCov().second)  ){
+                    cout << pParameters->getStopCov().first << " " << pParameters->getStopCov().second << endl;
+                    bStop = true;
+                    pIO->writeLatticeSpecies( m_dProcTime  );
+                    return;
+                }
+            }
+        }
+
     }
 
     ostringstream streamObjEnd;
@@ -613,7 +629,7 @@ void Apothesis::exec()
 
     pIO->writeInOutput( output );
 
-    if ( m_bHasGrowth )
+    if ( m_bHasGrowth || m_bHasEtching )
         pIO->writeLatticeHeights( m_dProcTime );
 
     if ( m_bReportCoverages )

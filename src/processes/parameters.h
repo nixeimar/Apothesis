@@ -111,6 +111,12 @@ public:
     /// Returns the species that participates in the growth of the film
     inline vector<string> getGrowthSpecies(){ return m_vsGrowthSpecies; }
 
+    /// Instert a species that participates in the growth of the film
+    inline void insertInEtchedSpecies( string s ){ m_vsEtchedSpecies.push_back( s ); }
+
+    /// Returns the species that participates in the growth of the film
+    inline vector<string> getEtchedSpecies(){ return m_vsEtchedSpecies; }
+
     /// The species to compute coverage for
     inline void setCoverageSpecies( vector<string> species ){ m_vCovSpecies = species; }
 
@@ -142,6 +148,9 @@ public:
 
     inline void setStartTime(double time){ m_dStartTime = time; }
     inline double getStartTime(){ return m_dStartTime; }
+
+    inline void setStopCov(pair<string, string> cov){ m_pStopCov = cov; }
+    inline pair<string, string> getStopCov(){ return m_pStopCov; }
 
 protected:
 
@@ -178,6 +187,9 @@ protected:
     /// The species participating in the growth of the surface
     vector<string> m_vsGrowthSpecies;
 
+    /// The species participating in the etching of the surface
+    vector<string> m_vsEtchedSpecies;
+
     /// Map of the reactions which holds the reactants enumerated
     map<string, int> m_mReactants;
 
@@ -192,6 +204,8 @@ protected:
 
     /// The time for starting the simulation - default is zero.
     double m_dStartTime;
+
+    pair<string, string> m_pStopCov;
 
 };
 

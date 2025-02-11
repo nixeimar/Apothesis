@@ -31,8 +31,10 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sGrowth("growth"),
     m_sCommentLine("#"),
     m_sPrecursors("precursors"),
+    m_sStopCov("stop_coverage"),
     m_sReport("report"),
     m_sHeights("heights.txt"),
+    m_sEtch("etching"),
     m_sStartTime("time_start")
 {
     //Initialize the map for the lattice
@@ -55,7 +57,7 @@ string IO::getInputPath() const {;}
 
 void IO::readInputFile()
 {
-    list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport, m_sStartTime};
+    list< string > lKeywords{ m_sEtch, m_sStopCov, m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport, m_sStartTime};
 
     string sLine;
     while ( getline( m_InputFile, sLine ) ) {
@@ -185,6 +187,31 @@ void IO::readInputFile()
             continue;
         }
 
+        if (vsTokensBasic[ 0].compare(  m_sEtch ) == 0){
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
+
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
+            vsTokens.erase( it, vsTokens.end() );
+
+            for (string s:vsTokens )
+                m_parameters->insertInEtchedSpecies(s + "*");
+
+            continue;
+        }
+
         if ( vsTokensBasic[ 0].compare(  m_sSteps ) == 0 ){
             m_lattice->setSteps( true );
 
@@ -306,6 +333,7 @@ void IO::readInputFile()
             continue;
         }
 
+
         if ( vsTokensBasic[ 0].compare( m_sStartTime ) == 0 ){
 
             bool bComment = false;
@@ -413,6 +441,28 @@ void IO::readInputFile()
                 tempVec.push_back(  vsTokens[ i ] );
             }
             m_parameters->setProcess( vsTokensBasic[ 0 ], tempVec );
+
+            continue;
+        }
+
+
+        if ( vsTokensBasic[ 0].compare( m_sStopCov ) == 0 ){
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
+                if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokensBasic[ i ].clear();
+            }
+
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            pair<string, string> p( vsTokens[0], vsTokens[1]);
+            m_parameters->setStopCov( p );
 
             continue;
         }

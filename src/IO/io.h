@@ -247,6 +247,9 @@ class IO: public Pointers
     /// The keyword for the species fomring the growing film
     string m_sGrowth;
 
+    /// The keyword for the species fomring the growing film
+    string  m_sEtch;
+
     /// The keyword for the precursors forming the film
     string m_sPrecursors;
 
@@ -258,6 +261,9 @@ class IO: public Pointers
 
     /// The keyword for storing the start time.
     string m_sStartTime ;
+
+    /// The keyword for storing the start time.
+    string m_sStopCov ;
 
     // trim from start (in place)
     static inline void ltrim(std::string &s) {

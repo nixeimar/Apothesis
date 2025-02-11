@@ -120,6 +120,7 @@ private:
     int m_iSiteNum;
     bool m_bReportCoverages;
     bool m_bHasGrowth;
+    bool m_bHasEtching;
 };
 
 #endif // KMC_H
