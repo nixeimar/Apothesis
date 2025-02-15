@@ -48,9 +48,9 @@ IO::~IO(){}
 
 void IO::init(int argc, char* argv[])
 {
+
     openInputFile("input.kmc");
 }
-
 
 string IO::getInputPath() const {;}
 
@@ -58,6 +58,7 @@ string IO::getInputPath() const {;}
 void IO::readInputFile()
 {
     list< string > lKeywords{ m_sEtch, m_sStopCov, m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport, m_sStartTime};
+
 
     string sLine;
     while ( getline( m_InputFile, sLine ) ) {
@@ -362,7 +363,8 @@ void IO::readInputFile()
         }
 
         if ( vsTokensBasic[ 0].compare( m_sRandom ) == 0){
-            m_parameters->setRandGenInit( toDouble( trim(vsTokensBasic[ 1] ) ) );
+            m_parameters->setRandGenInit( toInt( trim(vsTokensBasic[ 1] ) ) );
+       //     cout << m_parameters->getRandGenInit() << end;
             continue;
         }
 

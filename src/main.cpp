@@ -35,13 +35,13 @@
 #include "lattice.h"
 #include "process.h"
 #include "apothesis.h"
+#include "io.h"
 
 using namespace std;
 using namespace MicroProcesses;
 
 int main( int argc, char* argv[] )
 {
-
     //Checking commit
     Apothesis* apothesis = new Apothesis( argc, argv );
 

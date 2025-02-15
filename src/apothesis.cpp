@@ -41,6 +41,7 @@
 #include <algorithm>
 
 using namespace MicroProcesses;
+namespace fs = std::filesystem;
 
 //using namespace Utils;
 
@@ -76,6 +77,24 @@ Apothesis::~Apothesis()
     delete pRandomGen;
 }
 
+void Apothesis::mf_createWorkingDir(const string& dirName ){
+    try {
+        // Check if the directory already exists
+        if (fs::exists(dirName)) {
+            std::cout << "Directory already exists: " << dirName << std::endl;
+        } else {
+            // Create the directory
+            if (fs::create_directory(dirName)) {
+                std::cout << "Directory created successfully: " << dirName << std::endl;
+            } else {
+                std::cerr << "Failed to create directory: " << dirName << std::endl;
+            }
+        }
+    } catch (const fs::filesystem_error& e) {
+        std::cerr << "Filesystem error: " << e.what() << std::endl;
+    }
+}
+
 void Apothesis::init()
 {
     //Read the input file
@@ -87,11 +106,14 @@ void Apothesis::init()
 
     m_dProcTime = pParameters->getStartTime();
 
+    cout << pParameters->getRandGenInit() << endl;
+
     // Initialize Random generator
     if ( pParameters->getRandGenInit() != 0.0 )
         pRandomGen->init( pParameters->getRandGenInit() );
     else
         pRandomGen->init( time(nullptr) );
+
 
     //Create the lattice after reading the parameters form the file
     if ( pParameters->getLatticeType() == "SimpleCubic" )
@@ -480,7 +502,7 @@ void Apothesis::exec()
     pIO->writeInOutput( output );
     bool bStop = false;
 
-    while ( m_dProcTime <= m_dEndTime || !bStop){
+    while ( m_dProcTime <= m_dEndTime ){
         //1. Get a random numbers
         m_dSum = 0.0;
         m_iRandom = pRandomGen->getDoubleRandom();
@@ -597,11 +619,13 @@ void Apothesis::exec()
                 if ( p.second > std::stod(pParameters->getStopCov().second)  ){
                     cout << pParameters->getStopCov().first << " " << pParameters->getStopCov().second << endl;
                     bStop = true;
-                    pIO->writeLatticeSpecies( m_dProcTime  );
-                    return;
+                    break;
                 }
             }
         }
+
+        if ( bStop )
+            break;
 
     }
 

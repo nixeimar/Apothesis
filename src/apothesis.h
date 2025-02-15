@@ -121,6 +121,8 @@ private:
     bool m_bReportCoverages;
     bool m_bHasGrowth;
     bool m_bHasEtching;
+
+    void mf_createWorkingDir( const string &name );
 };
 
 #endif // KMC_H

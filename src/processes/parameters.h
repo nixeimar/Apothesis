@@ -79,7 +79,7 @@ public:
     inline void setRandGenInit( int val ) { m_iRand = val; }
 
     /// Store the initial value for the random generator
-    inline int getRandGenInit(){return m_iRand; }
+    inline int getRandGenInit(){ return m_iRand; }
 
     /// Get the processes to be created.
     map< string,  vector< string > > getProcessesInfo() { return m_mProcs; }
@@ -170,7 +170,7 @@ protected:
     double m_dTime;
 
     /// The random generator initializer
-    double m_iRand;
+    int m_iRand;
 
     /// Stores the processes as read from the input file allong with their parameters.
     map< string,  vector< string > > m_mProcs;
