@@ -152,6 +152,16 @@ public:
     inline void setStopCov(pair<string, string> cov){ m_pStopCov = cov; }
     inline pair<string, string> getStopCov(){ return m_pStopCov; }
 
+    inline void setSteps(bool steps) { m_bHasSteps = steps;}
+    inline bool hasSteps() { return m_bHasSteps;}
+
+    inline void setNumSteps(int num) { m_iSteps = num;}
+    inline bool getNumSteps() { return m_iSteps;}
+
+    inline void setStepHeight(int height) { m_iHeightStep = height;}
+    inline bool getHeightStep() { return m_iHeightStep;}
+
+
 protected:
 
     /// Parameters of the lattice
@@ -206,6 +216,11 @@ protected:
     double m_dStartTime;
 
     pair<string, string> m_pStopCov;
+
+    /// Steps related info
+    bool m_bHasSteps;
+    int m_iSteps;
+    int m_iHeightStep;
 
 };
 

@@ -60,7 +60,8 @@ public:
   /// Calculate the number of neighbor based on the height
   int calculateNeighNum( int id );
 
-  void writeLatticeHeights( double, int );
+  void writeLatticeHeights( double );
+  void writeLatticeSpecies( double );
 
   void readHeightsFromFile() override;
 

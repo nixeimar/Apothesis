@@ -357,26 +357,47 @@ void SimpleCubic::check()
     cout << "S:" << getSite(test)->getNeighPosition(Site::SOUTH)->getID() << endl;
 }
 
-
-void SimpleCubic::writeLatticeHeights( double time, int step )
+void SimpleCubic::writeLatticeHeights( double time )
 {
-    std::ofstream file("Lattice_" + to_string(step) );
+    ostringstream streamObj;
+    //Add double to stream
+    streamObj.precision(15);
+    streamObj << time;
 
-    for (int i = 0; i < m_iSizeY; i++){
-        for (int j = 0; j < m_iSizeX; j++)
-            file << m_vSites[ i*m_iSizeX + j ]->getHeight() << " ";
-        file  << endl;
+    std::string name="Height_" + streamObj.str() + ".dat";
+    std::ofstream file(name);
+
+    file << "Time (s): " << time << endl;
+
+    for (int i = 0; i < m_lattice->getY(); i++){
+        for (int j = 0; j < m_lattice->getX(); j++)
+            file << m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() << " " ;
+
+        file << endl;
     }
-
-
-    for (int i = 0; i < m_iSizeY; i++){
-        for (int j = 0; j < m_iSizeX; j++)
-            file << m_vSites[ i*m_iSizeX + j ]->getLabel() + to_string( m_vSites[ i*m_iSizeX + j ]->getID() )  << "\t" << "( " << m_vSites[ i*m_iSizeX + j ]->getHeight() << " ) " ;
-        file  << endl;
-    }
-
-    file.close();
 }
+
+void SimpleCubic::writeLatticeSpecies( double time )
+{
+    // Create an output string stream
+    ostringstream streamObj;
+    //Add double to stream
+    streamObj.precision(15);
+    streamObj << time;
+
+    std::string name="SurfaceSpecies_" + streamObj.str() + ".dat";
+    std::ofstream file(name);
+    file << "Time (s): " << time << endl;
+    file.precision(10);
+
+    for (int i = 0; i < m_lattice->getY(); i++){
+        for (int j = 0; j < m_lattice->getX(); j++)
+            file << m_lattice->getSite( i*m_lattice->getX() + j )->getLabel() << " " ;
+
+        file << endl;
+    }
+}
+
 
 int SimpleCubic::calculateNeighNum( int id )
 {

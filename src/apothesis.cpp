@@ -24,9 +24,11 @@
 #include "properties.h"
 #include "process.h"
 #include "string.h"
+#include "adsorption.h"
+#include "desorption.h"
+#include "diffusion.h"
 #include "reaction.h"
 #include "extLibs/random_generator.h"
-#include "reader.h"
 #include "reaction.h"
 
 #include "lattice.h"
@@ -47,7 +49,6 @@ namespace fs = std::filesystem;
 
 Apothesis::Apothesis(int argc, char *argv[])
     : pLattice(0),
-      pReader(0),
       m_dRTot(0.0),
       m_dProcRate(0.0),
       m_debugMode(false)
@@ -55,13 +56,14 @@ Apothesis::Apothesis(int argc, char *argv[])
     m_iArgc = argc;
     m_vcArgv = argv;
 
+    pIO = new IO();
     pParameters = new Utils::Parameters(this);
     pProperties = new Utils::Properties(this);
     pRandomGen = new RandomGen::RandomGenerator( this );
 
     // Create input instance
-    pIO = new IO(this);
-    pIO->init(m_iArgc, m_vcArgv);
+   // pIO = new IO(this);
+   // pIO->init(m_iArgc, m_vcArgv);
 
     // initialize number of species
     m_nSpecies = 0;
@@ -69,8 +71,6 @@ Apothesis::Apothesis(int argc, char *argv[])
 
 Apothesis::~Apothesis()
 {
-    delete pIO;
-    delete pReader;
     delete pLattice;
     delete pParameters;
     delete pErrorHandler;
@@ -95,14 +95,15 @@ void Apothesis::mf_createWorkingDir(const string& dirName ){
     }
 }
 
-void Apothesis::init()
+void Apothesis::init( Parameters* p )
 {
     //Read the input file
-    pIO->readInputFile();
+    //pIO->readInputFile();
 
     //Open the output file
     if ( !pIO->outputOpen() )
         pIO->openOutputFile("Output");
+    pParameters  = p;
 
     m_dProcTime = pParameters->getStartTime();
 
@@ -178,12 +179,12 @@ void Apothesis::init()
         if ( process.compare("Adsorption") == 0 ){
 
             unordered_map<string, int> reactants;
-            for (string react: pIO->getReactants( proc.first ) )
-                reactants.insert( pIO->analyzeCompound( react ) );
+            for (string react: getReactants( proc.first ) )
+                reactants.insert( analyzeCompound( react ) );
 
             unordered_map<string, int> products;
-            for (string prod: pIO->getProducts( proc.first ) )
-                products.insert( pIO->analyzeCompound( prod ) );
+            for (string prod: getProducts( proc.first ) )
+                products.insert( analyzeCompound( prod ) );
 
             // If the user does not use the keyword "all" then the process does not depend on the number of its neighs
             if (proc.second.at( proc.second.size() - 1 ).compare("all") != 0){
@@ -231,26 +232,26 @@ void Apothesis::init()
             vector<string> reactants;
             vector<int> coefReactants;
 
-            for (string react: pIO->getReactants( proc.first ) ){
-                reactants.push_back(  pIO->analyzeCompound( react ).first  );
-                coefReactants.push_back(  pIO->analyzeCompound( react ).second  );
+            for (string react: getReactants( proc.first ) ){
+                reactants.push_back(  analyzeCompound( react ).first  );
+                coefReactants.push_back(  analyzeCompound( react ).second  );
             }
 
             vector<string> products;
             vector<int> coefProducts;
 
-            for (string react: pIO->getProducts( proc.first ) ){
-                products.push_back(  pIO->analyzeCompound( react ).first  );
-                coefProducts.push_back(  pIO->analyzeCompound( react ).second  );
+            for (string react: getProducts( proc.first ) ){
+                products.push_back( analyzeCompound( react ).first  );
+                coefProducts.push_back( analyzeCompound( react ).second  );
             }
 
             unordered_map<string, int> reactantsmap;
-            for (string react: pIO->getReactants( proc.first ) )
-                reactantsmap.insert( pIO->analyzeCompound( react ) );
+            for (string react: getReactants( proc.first ) )
+                reactantsmap.insert( analyzeCompound( react ) );
 
             unordered_map<string, int> productsmap;
-            for (string prod: pIO->getProducts( proc.first ) )
-                productsmap.insert( pIO->analyzeCompound( prod ) );
+            for (string prod: getProducts( proc.first ) )
+                productsmap.insert( analyzeCompound( prod ) );
 
             Reaction* r = new Reaction();
             //The name of the actual class used
@@ -273,12 +274,12 @@ void Apothesis::init()
         else if ( process.compare("Desorption") == 0 ){
 
             unordered_map<string, int> reactants;
-            for (string react: pIO->getReactants( proc.first ) )
-                reactants.insert( pIO->analyzeCompound( react ) );
+            for (string react: getReactants( proc.first ) )
+                reactants.insert( analyzeCompound( react ) );
 
             unordered_map<string, int> products;
-            for (string prod: pIO->getProducts( proc.first ) )
-                products.insert( pIO->analyzeCompound( prod ) );
+            for (string prod:getProducts( proc.first ) )
+                products.insert( analyzeCompound( prod ) );
 
 
             if (proc.second.at( proc.second.size() - 1 ).compare("all") != 0){
@@ -327,12 +328,12 @@ void Apothesis::init()
         else if ( process.compare("Diffusion") == 0 ){
 
             unordered_map<string, int> reactants;
-            for (string react: pIO->getReactants( proc.first ) )
-                reactants.insert( pIO->analyzeCompound( react ) );
+            for (string react: getReactants( proc.first ) )
+                reactants.insert( analyzeCompound( react ) );
 
             unordered_map<string, int> products;
-            for (string prod: pIO->getProducts( proc.first ) )
-                products.insert( pIO->analyzeCompound( prod ) );
+            for (string prod:getProducts( proc.first ) )
+                products.insert( analyzeCompound( prod ) );
 
 
             if (proc.second.at( proc.second.size() - 1 ).compare("all") != 0){
@@ -457,10 +458,10 @@ void Apothesis::init()
     pIO->writeInOutput( output );
 
     if ( m_bHasGrowth || m_bHasEtching )
-        pIO->writeLatticeHeights( m_dProcTime );
+        pLattice->writeLatticeHeights( m_dProcTime );
 
     if ( m_bReportCoverages )
-        pIO->writeLatticeSpecies( m_dProcTime  );
+        pLattice->writeLatticeSpecies( m_dProcTime  );
 }
 
 void Apothesis::exec()
@@ -604,10 +605,10 @@ void Apothesis::exec()
         if ( timeToWriteLattice >= pParameters->getWriteLatticeTimeStep() ) {
 
             if ( m_bHasGrowth || m_bHasEtching )
-                pIO->writeLatticeHeights( m_dProcTime );
+                pLattice->writeLatticeHeights( m_dProcTime );
 
             if ( m_bReportCoverages )
-                pIO->writeLatticeSpecies( m_dProcTime  );
+                pLattice->writeLatticeSpecies( m_dProcTime  );
 
             timeToWriteLattice = 0.0;
         }
@@ -654,22 +655,11 @@ void Apothesis::exec()
     pIO->writeInOutput( output );
 
     if ( m_bHasGrowth || m_bHasEtching )
-        pIO->writeLatticeHeights( m_dProcTime );
+        pLattice->writeLatticeHeights( m_dProcTime );
 
     if ( m_bReportCoverages )
-        pIO->writeLatticeSpecies( m_dProcTime  );
+        pLattice->writeLatticeSpecies( m_dProcTime  );
 
-}
-
-void Apothesis::logSuccessfulRead(bool read, string parameter)
-{
-    if (!pIO->outputOpen())
-    {
-        pIO->openOutputFile("Output");
-    }
-
-    read ? pIO->writeLogOutput("Reading " + parameter)
-         : pErrorHandler->error_simple_msg("No " + parameter + " found in input file");
 }
 
 string Apothesis::mf_analyzeProc(string process){
@@ -682,7 +672,7 @@ string Apothesis::mf_analyzeProc(string process){
         vector<string> reactants = pIO->split( parts[ 0 ], "+" );
         for (string s:reactants){
             pIO->trim(s);
-            if (  pIO->analyzeCompound( s ).first.compare("*") == 0 )
+            if (  analyzeCompound( s ).first.compare("*") == 0 )
                 return "Adsorption";
         }
 
@@ -700,3 +690,54 @@ string Apothesis::mf_analyzeProc(string process){
         return "Diffusion";
     }
 }
+
+vector<string> Apothesis::getReactants( string process ) {
+    vector<string> parts = pIO->split(process, "->");
+    vector<string> temp = pIO->split(parts[ 0 ], "+");
+    vector<string> reactants;
+
+    for ( string str:temp)
+        reactants.push_back( pIO->simplified( str ) );
+
+    return reactants;
+}
+
+vector<string> Apothesis::getProducts( string process ) {
+    vector<string> parts = pIO->split(process, "->");
+    vector<string> temp = pIO->split(parts[ 1 ], "+");
+    vector<string> products;
+
+    for ( string str:temp)
+        products.push_back( pIO->simplified( str ) );
+
+    return products;
+}
+
+pair<string, double> Apothesis::analyzeCompound( string reactant ) {
+
+    string coefficient;
+    string symbol;
+    bool firstFound = false;
+
+    for (char ch:reactant){
+        if ( !firstFound && ( isdigit(ch) || ch == '.' ) )
+            coefficient.push_back( ch );
+        else {
+            firstFound = true;
+            symbol.push_back( ch );
+        }
+    }
+
+    pair<string, double> react;
+    react.first = pIO->trim(symbol);
+
+    if ( coefficient.empty() )
+        react.second = 1.0;
+    else
+        react.second = pIO->toDouble( coefficient );
+
+    return react;
+}
+
+
+

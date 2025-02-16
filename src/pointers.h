@@ -37,8 +37,6 @@ public:
     /// Contructor
     Pointers( Apothesis* apothesis):m_apothesis(apothesis),
                         m_lattice( apothesis->pLattice),
-                        m_io(apothesis->pIO),
-                        m_reader(apothesis->pReader),
                         m_errorHandler(apothesis->pErrorHandler),
                         m_parameters(apothesis->pParameters),
                         m_randomGen( apothesis->pRandomGen ),
@@ -51,12 +49,6 @@ protected:
 
     /// Pointers to the classes of apothesis.cpp
     Lattice*& m_lattice;
-
-    /// Pointers to the classes of apothesis.cpp
-    IO*& m_io;
-
-    /// Pointers to the classes of apothesis.cpp
-    Reader*& m_reader;
 
     /// Pointers to the classes of apothesis.cpp
     Utils::ErrorHandler*& m_errorHandler;

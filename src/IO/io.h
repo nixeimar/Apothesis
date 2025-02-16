@@ -28,7 +28,6 @@
 #include <sstream>
 
 
-#include "pointers.h"
 #include "apothesis.h"
 #include "lattice.h"
 
@@ -52,16 +51,13 @@ using namespace Utils;
 
 /** Tha class for handling input/output operations */
 
-class Pointers;
-//class Parameters;
 
-class IO: public Pointers
-  {
-  public:
+class IO  {
+
+public:
     enum CASE{ Sensitive, Insensitive };
 
     IO();
-    IO( Apothesis *apothesis);
 
     virtual ~IO();
 
@@ -151,8 +147,8 @@ class IO: public Pointers
     /// Now it is only writes a simple string.
     void writeLogOutput( string );
 
-    /// Write lattice info.
-    void writeLatticeInfo();
+//  /// Write lattice info.
+//    void writeLatticeInfo();
 
     /// Write the height of each site
     void writeLatticeHeights( double time );
@@ -175,15 +171,6 @@ class IO: public Pointers
     /// Set lattice using input info
     void initializeLattice();
 
-    /// Given a process of the form A + * -> A(s) or A(s) -> A + * or A(s) -> A(s) or A(s) + B(s) -> AB(s) returns the reactants with the "*" included.
-    vector<string> getReactants( string process );
-
-    /// Given a process of the form A + * -> A(s) or A(s) -> A + * or A(s) -> A(s) or A(s) + B(s) -> AB(s) returns the products with the "*" included.
-    vector<string> getProducts( string process );
-
-    /// Given a reactant e.g. 2A it returns the 2 as stoichiometric coefficient and the A as the reactant
-    pair<string, double> analyzeCompound( string reactant );
-
     // Trim from both ends (in place)
     static inline string trim(std::string &s) {
         rtrim(s);
@@ -191,7 +178,14 @@ class IO: public Pointers
         return s;
     }
 
+    inline Parameters* getParameters(){ return m_parameters;}
+
   protected:
+
+    ErrorHandler* m_errorHandler;
+
+    Parameters* m_parameters;
+
     /// The type of lattice
     string m_sLatticeType;
 

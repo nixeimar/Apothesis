@@ -142,7 +142,8 @@ class Lattice: public Pointers
     /// Write the lattice in XYZ format in a filename
     virtual void writeXYZ( string filename );
 
-    virtual void writeLatticeHeights( double, int );
+    virtual void writeLatticeHeights( double );
+    virtual void writeLatticeSpecies( double );
 
     /// Sets the steps of the surface in X
     inline void setNumSteps( int num ){ m_iNumSteps = num; }

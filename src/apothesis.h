@@ -39,20 +39,12 @@ namespace RandomGen { class RandomGenerator; }
 
 class Lattice;
 class IO;
-class Reader;
 
 class Apothesis
 {
 public:
     Apothesis( int argc, char* argv[] );
     virtual ~Apothesis();
-
-    /// Pointers to the classes that will share the common space i.e. the "pointer"
-    /// Pointer to the input/output class
-    IO* pIO;
-
-    /// Ponter to the read class
-    Reader* pReader;
 
     /// Pointer to the lattice class
     Lattice* pLattice;
@@ -71,19 +63,13 @@ public:
 
     /// Intialization of the KMC method. For example here the processes to be performed
     /// as these are written in the input file are constcucted through the factory method
-    void init();
+    void init( Utils::Parameters* p);
 
     /// Perform the KMC iteratios
     void exec();
 
-    /// Function to log to output file whether a parameter is properly read
-    void logSuccessfulRead(bool read, string parameter);
-
     /// Return normalized probabilities of each process
     vector<double> calculateProbabilities(vector<MicroProcesses::Process*>);
-
-    /// Return access to IO pointer
-    inline IO* getIOPointer() { return pIO; }
 
     inline void setDebugMode(bool ifDebug) { m_debugMode = ifDebug;}
     bool getDebugMode() { return m_debugMode; }
@@ -91,7 +77,18 @@ public:
     /// Return number of species
     int getNumSpecies();
 
+    /// Given a process of the form A + * -> A(s) or A(s) -> A + * or A(s) -> A(s) or A(s) + B(s) -> AB(s) returns the reactants with the "*" included.
+    vector<string> getReactants( string process );
+
+    /// Given a process of the form A + * -> A(s) or A(s) -> A + * or A(s) -> A(s) or A(s) + B(s) -> AB(s) returns the products with the "*" included.
+    vector<string> getProducts( string process );
+
+    /// Given a reactant e.g. 2A it returns the 2 as stoichiometric coefficient and the A as the reactant
+    pair<string, double> analyzeCompound( string reactant );
+
 private:
+    IO* pIO;
+
     /// The process map which holds all the processes and the sites that each can be performed.
     map< MicroProcesses::Process*, set< SurfaceTiles::Site* > > m_processMap;
 

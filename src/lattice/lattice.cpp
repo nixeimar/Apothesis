@@ -149,7 +149,8 @@ void Lattice::printNeighs( int ID )
 }
 
 void Lattice::writeXYZ( string filename ){;}
-void Lattice::writeLatticeHeights( double, int ){;}
+void Lattice::writeLatticeHeights( double ){;}
+void Lattice::writeLatticeSpecies( double ){;}
 
 std::string Lattice::trim(const std::string& str) {
     auto start = str.find_first_not_of(" \t");

@@ -17,7 +17,7 @@
 
 #include "io.h"
 
-IO::IO(Apothesis* apothesis):Pointers(apothesis),
+IO::IO():
     m_sLatticeType("NONE"),
     m_sProcess("process"),
     m_sLattice("lattice"),
@@ -37,6 +37,10 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sEtch("etching"),
     m_sStartTime("time_start")
 {
+
+    m_errorHandler = new ErrorHandler(0);
+    m_parameters = new Parameters(0);
+
     //Initialize the map for the lattice
     m_mLatticeType[ "NONE" ] = Lattice::NONE;
     m_mLatticeType[ "SimpleCubic" ] = Lattice::SimpleCubic;
@@ -58,7 +62,6 @@ string IO::getInputPath() const {;}
 void IO::readInputFile()
 {
     list< string > lKeywords{ m_sEtch, m_sStopCov, m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport, m_sStartTime};
-
 
     string sLine;
     while ( getline( m_InputFile, sLine ) ) {
@@ -214,7 +217,7 @@ void IO::readInputFile()
         }
 
         if ( vsTokensBasic[ 0].compare(  m_sSteps ) == 0 ){
-            m_lattice->setSteps( true );
+            m_parameters->setSteps( true );
 
             vector<string> vsTokens;
             vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
@@ -234,7 +237,7 @@ void IO::readInputFile()
             vsTokens.erase( it, vsTokens.end() );
 
             if ( isNumber( vsTokens[ 0 ] ) ){
-                m_lattice->setNumSteps( toInt( vsTokens[ 0 ] ) );
+                m_parameters->setNumSteps( toInt( vsTokens[ 0 ] ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The x dimension of step is not a number.");
@@ -242,7 +245,7 @@ void IO::readInputFile()
             }
 
             if ( isNumber( vsTokens[ 1 ] ) ){
-                m_lattice->setStepHeight( toInt( vsTokens[ 1 ] ) );
+                m_parameters->setStepHeight( toInt( vsTokens[ 1 ] ) );
             }
             else {
                 m_errorHandler->error_simple_msg("The y dimension of step is not a number.");
@@ -750,55 +753,14 @@ void IO::writeRoughness( double t, double r)
     m_RoughnessFile <<  t  << "\t" << r << endl;
 }
 
-void IO::writeLatticeInfo()
+/*void IO::ƒ()
 {
     m_OutFile << "Lattice size: " << m_lattice->getX() << "x" << m_lattice->getY();
 
     if ( m_lattice->getType() == Lattice::FCC )
         m_OutFile << "Lattice type: " << "FCC";
-}
+}*/
 
-void IO::writeLatticeHeights( double time  )
-{
-    ostringstream streamObj;
-    //Add double to stream
-    streamObj.precision(15);
-    streamObj << time;
-
-    std::string name="Height_" + streamObj.str() + ".dat";
-    std::ofstream file(name);
-
-    file << "Time (s): " << time << endl;
-
-    for (int i = 0; i < m_lattice->getY(); i++){
-        for (int j = 0; j < m_lattice->getX(); j++)
-            file << m_lattice->getSite( i*m_lattice->getX() + j )->getHeight() << " " ;
-
-        file << endl;
-    }
-}
-
-
-void IO::writeLatticeSpecies( double time  )
-{
-    // Create an output string stream
-    ostringstream streamObj;
-    //Add double to stream
-    streamObj.precision(15);
-    streamObj << time;
-
-    std::string name="SurfaceSpecies_" + streamObj.str() + ".dat";
-    std::ofstream file(name);
-    file << "Time (s): " << time << endl;
-    file.precision(10);
-
-    for (int i = 0; i < m_lattice->getY(); i++){
-        for (int j = 0; j < m_lattice->getX(); j++)
-            file << m_lattice->getSite( i*m_lattice->getX() + j )->getLabel() << " " ;
-
-        file << endl;
-    }
-}
 
 string IO::GetCurrentWorkingDir()
 {
@@ -825,54 +787,6 @@ void IO::closeRoughnessFile()
 {
     if ( m_RoughnessFile.is_open( ) )
         m_RoughnessFile.close();
-}
-
-vector<string> IO::getReactants( string process ) {
-    vector<string> parts = split(process, "->");
-    vector<string> temp = split(parts[ 0 ], "+");
-    vector<string> reactants;
-
-    for ( string str:temp)
-        reactants.push_back( simplified( str ) );
-
-    return reactants;
-}
-
-vector<string> IO::getProducts( string process ) {
-    vector<string> parts = split(process, "->");
-    vector<string> temp = split(parts[ 1 ], "+");
-    vector<string> products;
-
-    for ( string str:temp)
-        products.push_back( simplified( str ) );
-
-    return products;
-}
-
-pair<string, double> IO::analyzeCompound( string reactant ) {
-
-    string coefficient;
-    string symbol;
-    bool firstFound = false;
-
-    for (char ch:reactant){
-        if ( !firstFound && (isdigit(ch) || ch == '.' ) )
-            coefficient.push_back( ch );
-        else {
-            firstFound = true;
-            symbol.push_back( ch );
-        }
-    }
-
-    pair<string, double> react;
-    react.first = trim(symbol);
-
-    if ( coefficient.empty() )
-        react.second = 1.0;
-    else
-        react.second = toDouble( coefficient );
-
-    return react;
 }
 
 

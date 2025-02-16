@@ -21,7 +21,6 @@ INCLUDEPATH += . \
 HEADERS += ./src/apothesis.h \
            ./src/IO/io.h \
            ./src/IO/cml_reader.h \
-           ./src/IO/reader.h \
            ./src/IO/xyz_reader.h \
            ./src/lattice/SimpleCubic.h \
            ./src/processes/adsorption.h \
@@ -57,7 +56,6 @@ HEADERS += ./src/apothesis.h \
 SOURCES += ./src/apothesis.cpp \
            ./src/IO/io.cpp \
            ./src/IO/cml_reader.cpp \
-           ./src/IO/reader.cpp \
            ./src/IO/xyz_reader.cpp \
            ./src/extLibs/mersenne.cpp \
            ./src/extLibs/random_generator.cpp \

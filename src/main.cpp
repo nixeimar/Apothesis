@@ -42,11 +42,15 @@ using namespace MicroProcesses;
 
 int main( int argc, char* argv[] )
 {
+    IO* io =  new IO();
+    io->init(argc, argv);
+    io->readInputFile();
+
     //Checking commit
     Apothesis* apothesis = new Apothesis( argc, argv );
 
     cout << "Initiating Apothesis" << endl;
-    apothesis->init();
+    apothesis->init( io->getParameters() );
 
     cout << "Apothesis runnning ..." << endl;
     apothesis->exec();
