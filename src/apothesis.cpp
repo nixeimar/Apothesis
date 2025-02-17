@@ -97,14 +97,11 @@ void Apothesis::mf_createWorkingDir(const string& dirName ){
 
 void Apothesis::init( Parameters* p )
 {
-    //Read the input file
-    //pIO->readInputFile();
-
     //Open the output file
     if ( !pIO->outputOpen() )
         pIO->openOutputFile("Output");
-    pParameters  = p;
 
+    pParameters  = p;
     m_dProcTime = pParameters->getStartTime();
 
     cout << pParameters->getRandGenInit() << endl;
@@ -578,8 +575,6 @@ void Apothesis::exec()
                     + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) / ( ((m_dProcTime - prevTimeStep) ) ) )+ '\t'
                     + std::to_string( pProperties->getRMS() )  + '\t'
                     + std::to_string( pProperties->getMicroroughness() )  + '\t';
-
-//            cout << pProperties->getMeanDH()  <<  " " << meanDHPrevStep <<  " " << m_dProcTime << " " << prevTimeStep << " " <<  pProperties->getMeanDH() - meanDHPrevStep << endl;
 
             //Store info to be used next time
             meanDHPrevStep = pProperties->getMeanDH();
