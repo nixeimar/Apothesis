@@ -15,32 +15,26 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#include "errorhandler.h"
+#ifndef ABSTRACT_PROCESS_H
+#define ABSTRACT_PROCESS_H
 
-namespace Utils
-{
+#include <string>
 
-ErrorHandler::ErrorHandler( Apothesis* apothesis ) : Pointers( apothesis )
+using namespace std;
+namespace MicroProcesses { class Process; }
+
+/** The abstract class which is used for the process factory **/
+class AbstractProcess
   {
-  ;
-  }
+  public:
+    /// Constructor
+    AbstractProcess( const string& );
 
-ErrorHandler::~ErrorHandler()
-  {
-  ;
-  }
+    /// Destructor
+    virtual ~AbstractProcess(){}
 
-void ErrorHandler::error_simple_msg( string msg )
-{
-  cout << "Error: " + msg << endl;
-}
+    /// Pure virtual method for creating a process.
+    virtual MicroProcesses::Process* create()= 0;
+  };
 
-
-void ErrorHandler::warningSimple_msg( const string &msg )
-  {
-  cout << "Warning: " + msg << endl;
-  }
-
-}
-
-
+#endif // ABSTRACT_PROCESS_H

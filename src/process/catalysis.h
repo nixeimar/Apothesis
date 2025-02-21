@@ -1,4 +1,4 @@
-//============================================================================
+    //============================================================================
 //    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
@@ -15,32 +15,21 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#include "errorhandler.h"
+#ifndef CATALSYIS_H
+#define CATALSYIS_H
 
-namespace Utils
+#include <iostream>
+#include "macroprocess.h"
+
+using namespace std;
+
+class Catalysis: public Macroprocess
 {
+public:
+    Catalysis();
+    virtual ~Catalysis();
 
-ErrorHandler::ErrorHandler( Apothesis* apothesis ) : Pointers( apothesis )
-  {
-  ;
-  }
+    void init();
+};
 
-ErrorHandler::~ErrorHandler()
-  {
-  ;
-  }
-
-void ErrorHandler::error_simple_msg( string msg )
-{
-  cout << "Error: " + msg << endl;
-}
-
-
-void ErrorHandler::warningSimple_msg( const string &msg )
-  {
-  cout << "Warning: " + msg << endl;
-  }
-
-}
-
-
+#endif // KMC_H

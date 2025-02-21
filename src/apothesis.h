@@ -43,7 +43,7 @@ class IO;
 class Apothesis
 {
 public:
-    Apothesis( int argc, char* argv[] );
+    Apothesis();
     virtual ~Apothesis();
 
     /// Pointer to the lattice class
@@ -63,10 +63,13 @@ public:
 
     /// Intialization of the KMC method. For example here the processes to be performed
     /// as these are written in the input file are constcucted through the factory method
-    void init( Utils::Parameters* p);
+    void init();
 
     /// Perform the KMC iteratios
     void exec();
+
+    /// Update apothesis from a previous run (used in ALD and ALE)
+    void update( Utils::Parameters* parameters, Lattice* lattice );
 
     /// Return normalized probabilities of each process
     vector<double> calculateProbabilities(vector<MicroProcesses::Process*>);
@@ -86,17 +89,27 @@ public:
     /// Given a reactant e.g. 2A it returns the 2 as stoichiometric coefficient and the A as the reactant
     pair<string, double> analyzeCompound( string reactant );
 
+    IO *getIO() const;
+    void setIO(IO *newPIO);
+
+    void setLattice(Lattice* lattice);
+    inline Lattice* getLattice() { return pLattice; } const;
+
+    void buildLattice();
+
+    void buildMicroProcesses();
+
+    double getStartTime() const;
+    void setStartTime(double newDStartTime);
+
+    double getEndTime() const;
+    void setEndTime(double newDEndTime);
+
 private:
     IO* pIO;
 
     /// The process map which holds all the processes and the sites that each can be performed.
     map< MicroProcesses::Process*, set< SurfaceTiles::Site* > > m_processMap;
-
-    /// The number of flags given by the user
-    int m_iArgc;
-
-    /// The flags given by the user
-    char** m_vcArgv;
 
     // Set debug mode
     bool m_debugMode;
@@ -108,6 +121,7 @@ private:
     string mf_analyzeProc(string);
 
     double m_dRTot;
+    double m_dStartTime;
     double m_dEndTime;
     double m_dProcTime;
     double m_dProcRate;

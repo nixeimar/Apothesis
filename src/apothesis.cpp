@@ -47,23 +47,15 @@ namespace fs = std::filesystem;
 
 //using namespace Utils;
 
-Apothesis::Apothesis(int argc, char *argv[])
+Apothesis::Apothesis()
     : pLattice(0),
       m_dRTot(0.0),
       m_dProcRate(0.0),
       m_debugMode(false)
 {
-    m_iArgc = argc;
-    m_vcArgv = argv;
-
     pIO = new IO();
-    pParameters = new Utils::Parameters(this);
     pProperties = new Utils::Properties(this);
     pRandomGen = new RandomGen::RandomGenerator( this );
-
-    // Create input instance
-   // pIO = new IO(this);
-   // pIO->init(m_iArgc, m_vcArgv);
 
     // initialize number of species
     m_nSpecies = 0;
@@ -72,7 +64,6 @@ Apothesis::Apothesis(int argc, char *argv[])
 Apothesis::~Apothesis()
 {
     delete pLattice;
-    delete pParameters;
     delete pErrorHandler;
     delete pRandomGen;
 }
@@ -95,16 +86,18 @@ void Apothesis::mf_createWorkingDir(const string& dirName ){
     }
 }
 
-void Apothesis::init( Parameters* p )
+void Apothesis::init()
 {
     //Open the output file
     if ( !pIO->outputOpen() )
         pIO->openOutputFile("Output");
 
-    pParameters  = p;
-    m_dProcTime = pParameters->getStartTime();
+    if ( !pIO || !pIO->getParameters() )
+        pErrorHandler->error_simple_msg("The IO or the parameters for this process have not be defined.");
+    else
+        pParameters = pIO->getParameters();
 
-    cout << pParameters->getRandGenInit() << endl;
+    m_dProcTime = pParameters->getStartTime();
 
     // Initialize Random generator
     if ( pParameters->getRandGenInit() != 0.0 )
@@ -112,58 +105,97 @@ void Apothesis::init( Parameters* p )
     else
         pRandomGen->init( time(nullptr) );
 
-
-    //Create the lattice after reading the parameters form the file
-    if ( pParameters->getLatticeType() == "SimpleCubic" )
-        pLattice = new SimpleCubic(this);
-    else if ( pParameters->getLatticeType() == "FCC" )
-        pLattice = new FCC(this);
-    else if ( pParameters->getLatticeType() == "HCP" )
-        pLattice = new HCP(this);
-    else if ( pParameters->getLatticeType() == "Diamond" )
-        pLattice = new Diamond(this);
-
-    pLattice->setX( pParameters->getLatticeXDim() );
-    pLattice->setY( pParameters->getLatticeYDim() );
-
-    // Build the sites of the lattice
-    pLattice->buildSites();
-
-    //For the heights
-    if ( !pParameters->isReadHeightsFromFile() )
-        pLattice->setInitialHeight( pParameters->getLatticeHeight() );
-    else
-        //This is supported only for SimpleCubic cases
-        pLattice->readHeightsFromFile();
-
-    //For the species
-    if ( !pParameters->isReadSpeciesFromFile() ) {
-//        pLattice->setLabels( pParameters->getLatticeLabels() );
-
-        // TODO: Here we must take into account the case of two or more species participating in the film growth
-        // and the user should give the per cent of each species in t=0s e.g. 0.8Ga 0.2As
-        for ( Site* s:pLattice->getSites() ){
-            s->setLabel(  pParameters->getLatticeLabels() );
-            s->setBelowLabel( pParameters->getLatticeLabels() );
-        }
-    }
-    else
-        //This is supported only for SimpleCubic cases
-        pLattice->readSpeciesFromFile();
-
-    //Build the lattice
-    pLattice->build();
-
-    if ( pLattice->hasSteps() )
-        pLattice->buildSteps();
-
-    //Print lattice info: To be move in debug version
-    pLattice->printInfo();
-
-    //pLattice->print();
+    //build the lattice
+    buildLattice();
 
     //Print parameters to check: To be move in debug version
     pParameters->printInfo();
+
+
+    //Build the microprocesses
+    buildMicroProcesses();
+
+    //Partition the lattice sites depending on the rules of each process
+    for ( auto &p:m_processMap ){
+        for ( Site* s:pLattice->getSites() ){
+            if ( p.first->rules( s ) )
+                p.second.insert( s );
+        }
+    }
+
+    //The end time of the simulation
+    m_dEndTime = pParameters->getEndTime();
+
+    //Calculate first time the total probability (R) for apothesis to start --------------------------//
+    m_dRTot = 0.0;
+    for (pair<Process*, set< Site* > > p:m_processMap)
+        m_dRTot += p.first->getRateConstant()*(double)p.second.size();
+
+    //Start writing in the output log
+    //Write initialization info to log
+    pIO->writeLogOutput("Apothesis build on " __TIMESTAMP__);
+    pIO->writeLogOutput("-------------------------------------------------");
+    pIO->writeLogOutput("");
+    pIO->writeLogOutput("End time " + to_string( m_dEndTime ) + " sec");
+    pIO->writeLogOutput("Temperature " + to_string( pParameters->getTemperature() ) + " K");
+    pIO->writeLogOutput("Pressure " + to_string( pParameters->getPressure() ) + " P");
+    pIO->writeLogOutput("Random init num " + to_string( pParameters->getRandGenInit() ) );
+
+    string toWrite = "\n";
+    toWrite = "Lattice " +  pLattice->getTypeAsString() + " ";
+    toWrite += to_string( pLattice->getX() ) + " ";
+    toWrite += to_string( pLattice->getY() ) + " ";
+
+    if ( pLattice->hasSteps() ) {
+        toWrite += "stepped  ";
+        toWrite += to_string( pLattice->getNumSteps() ) + " ";
+        toWrite += to_string( pLattice->getStepHeight() ) + " ";
+    }
+    pIO->writeInOutput( toWrite );
+
+    pIO->writeInOutput(" ");
+    pIO->writeLogOutput("Processes");
+    for (auto proc:pParameters->getProcessesInfo() ) {
+        toWrite = "";
+        toWrite = proc.first + " ";
+        for ( string str:proc.second ) {
+            toWrite += str + " ";
+        }
+        pIO->writeLogOutput( toWrite );
+    }
+
+    pIO->writeInOutput( "\n" );
+    pIO->writeInOutput( "********************************************************************" );
+
+    string output = "Time (s)"s + '\t' + "Growth rate (ML/s)" + '\t' + "RMS (-)" + '\t' + "Micro-roughness (-)" + '\t';
+
+    for ( auto &p:m_processMap)
+        output += p.first->getName() + '\t';
+
+    for ( auto &p:m_processMap)
+        output +=  p.first->getName() + " (class size)" + '\t';
+
+    m_bHasGrowth = pParameters->getGrowthSpecies().size() > 0 ? true : false;
+    m_bHasEtching = pParameters->getEtchedSpecies().size() > 0 ? true : false;
+    m_bReportCoverages = pParameters->getCoverageSpecies().size() > 0 ? true : false;
+
+    // If the user wants the coverages to be reported
+    if ( m_bReportCoverages ){
+        unordered_map<string, double> covs = pLattice->computeCoverages( pParameters->getCoverageSpecies() );
+        for ( auto &p:covs)
+            output +=  p.first + " (coverage)" + '\t';
+    }
+
+    pIO->writeInOutput( output );
+
+    if ( m_bHasGrowth || m_bHasEtching )
+        pLattice->writeLatticeHeights( m_dProcTime );
+
+    if ( m_bReportCoverages )
+        pLattice->writeLatticeSpecies( m_dProcTime  );
+}
+
+void Apothesis::buildMicroProcesses(){
 
     //An empty set is used for the initialization of the processMap
     set< Site* > emptySet;
@@ -196,7 +228,7 @@ void Apothesis::init( Parameters* p )
                 a->setLattice( pLattice );
                 a->setRandomGen( pRandomGen );
                 a->setErrorHandler( pErrorHandler );
-                a->setSysParams( pParameters ); //These are the systems and constants parameters
+                a->setSysParams( pParameters ); //These are the systems and const   ants parameters
                 a->init( proc.second ); //These are the process per se parameters
 
                 m_processMap.insert( {a, emptySet} );
@@ -380,6 +412,81 @@ void Apothesis::init( Parameters* p )
             }
         }
     }
+}
+
+void Apothesis::buildLattice(){
+
+    //Create the lattice after reading the parameters form the file
+    if ( pParameters->getLatticeType() == "SimpleCubic" )
+        pLattice = new SimpleCubic(this);
+    else if ( pParameters->getLatticeType() == "FCC" )
+        pLattice = new FCC(this);
+    else if ( pParameters->getLatticeType() == "HCP" )
+        pLattice = new HCP(this);
+    else if ( pParameters->getLatticeType() == "Diamond" )
+        pLattice = new Diamond(this);
+
+    pLattice->setX( pParameters->getLatticeXDim() );
+    pLattice->setY( pParameters->getLatticeYDim() );
+
+    // Build the sites of the lattice
+    pLattice->buildSites();
+
+    //For the heights
+    if ( !pParameters->isReadHeightsFromFile() )
+        pLattice->setInitialHeight( pParameters->getLatticeHeight() );
+    else
+        //This is supported only for SimpleCubic cases
+        pLattice->readHeightsFromFile();
+
+    //For the species
+    if ( !pParameters->isReadSpeciesFromFile() ) {
+        //        pLattice->setLabels( pParameters->getLatticeLabels() );
+
+        // TODO: Here we must take into account the case of two or more species participating in the film growth
+        // and the user should give the per cent of each species in t=0s e.g. 0.8Ga 0.2As
+        for ( Site* s:pLattice->getSites() ){
+            s->setLabel(  pParameters->getLatticeLabels() );
+            s->setBelowLabel( pParameters->getLatticeLabels() );
+        }
+    }
+    else
+        //This is supported only for SimpleCubic cases
+        pLattice->readSpeciesFromFile();
+
+    //Build the lattice
+    pLattice->build();
+
+    if ( pLattice->hasSteps() )
+        pLattice->buildSteps();
+
+    //Print lattice info: To be move in debug version
+    pLattice->printInfo();
+
+    //pLattice->print();
+}
+
+void Apothesis::update( Utils::Parameters* parameters, Lattice* lattice  )
+{
+    pParameters = parameters;
+
+    if ( lattice )
+        pLattice = lattice;
+    else
+        buildLattice();
+
+    //Open the output file
+    pIO->openOutputFile("Output.cycle");
+
+    m_dProcTime = pParameters->getStartTime();
+
+    //Print lattice info: To be move in debug version
+    pLattice->printInfo();
+
+    //Print parameters to check: To be move in debug version
+    pParameters->printInfo();
+
+    buildMicroProcesses();
 
     //Partition the lattice sites depending on the rules of each process
     for ( auto &p:m_processMap ){
@@ -388,6 +495,9 @@ void Apothesis::init( Parameters* p )
                 p.second.insert( s );
         }
     }
+
+    //The start time
+    m_dStartTime = pParameters->getStartTime();
 
     //The end time of the simulation
     m_dEndTime = pParameters->getEndTime();
@@ -402,6 +512,7 @@ void Apothesis::init( Parameters* p )
     pIO->writeLogOutput("Apothesis build on " __TIMESTAMP__);
     pIO->writeLogOutput("-------------------------------------------------");
     pIO->writeLogOutput("");
+    pIO->writeLogOutput("Start time " + to_string( m_dStartTime ) + " sec");
     pIO->writeLogOutput("End time " + to_string( m_dEndTime ) + " sec");
     pIO->writeLogOutput("Temperature " + to_string( pParameters->getTemperature() ) + " K");
     pIO->writeLogOutput("Pressure " + to_string( pParameters->getPressure() ) + " P");
@@ -552,7 +663,6 @@ void Apothesis::exec()
 
                 //5. Compute dt = -ln(ksi)/Rtot
                 m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
-//                                cout << m_dt << endl;
                 break;
             }
         }
@@ -568,7 +678,6 @@ void Apothesis::exec()
 
             ostringstream streamObj;
             streamObj.precision(15);
-//            streamObj << std::scientific;
             streamObj << m_dProcTime;
 
             output = streamObj.str() + '\t'
@@ -655,6 +764,8 @@ void Apothesis::exec()
     if ( m_bReportCoverages )
         pLattice->writeLatticeSpecies( m_dProcTime  );
 
+    // The end time of the process is stored in order to be used in ALD or ALE processes.
+    m_dEndTime = m_dProcTime;
 }
 
 string Apothesis::mf_analyzeProc(string process){
@@ -684,6 +795,26 @@ string Apothesis::mf_analyzeProc(string process){
 
         return "Diffusion";
     }
+}
+
+double Apothesis::getEndTime() const
+{
+    return m_dEndTime;
+}
+
+void Apothesis::setEndTime(double newDEndTime)
+{
+    m_dEndTime = newDEndTime;
+}
+
+double Apothesis::getStartTime() const
+{
+    return m_dStartTime;
+}
+
+void Apothesis::setStartTime(double newDStartTime)
+{
+    m_dStartTime = newDStartTime;
 }
 
 vector<string> Apothesis::getReactants( string process ) {
@@ -734,5 +865,14 @@ pair<string, double> Apothesis::analyzeCompound( string reactant ) {
     return react;
 }
 
+IO *Apothesis::getIO() const
+{
+    return pIO;
+}
+
+void Apothesis::setIO(IO *newPIO)
+{
+    pIO = newPIO;
+}
 
 

@@ -128,7 +128,7 @@ public:
     std::string convertToString( int x);
 
     /// Return the working directory
-    string GetCurrentWorkingDir();
+    string getCurrentWorkingDir();
 
     /// Specific input for the lattice.
     Lattice::Type getLatticeType();
@@ -147,29 +147,8 @@ public:
     /// Now it is only writes a simple string.
     void writeLogOutput( string );
 
-//  /// Write lattice info.
-//    void writeLatticeInfo();
-
-    /// Write the height of each site
-    void writeLatticeHeights( double time );
-
-    /// Write the sepcies in each site
-    void writeLatticeSpecies( double time );
-
-    /// Export the lattice in xyz format. Not implemented yet
-    void exportLatticeXYZ();
-
-    /// Export the lattice in cml format. Not implemented yet.
-    void exportLatticeCML();
-
     /// Check if Output file is open
     bool outputOpen();
-
-    /// Open roughness file for writting the roughness
-    void openRoughnessFile( string );
-
-    /// Set lattice using input info
-    void initializeLattice();
 
     // Trim from both ends (in place)
     static inline string trim(std::string &s) {
@@ -180,7 +159,13 @@ public:
 
     inline Parameters* getParameters(){ return m_parameters;}
 
-  protected:
+    Parameters* readCycle();
+
+    map<string, Parameters *> getCycles() const;
+
+    void mergeParameters(Parameters* dest, Parameters* src);
+
+protected:
 
     ErrorHandler* m_errorHandler;
 
@@ -195,6 +180,9 @@ public:
     /// The processes to be constructed with their parameters (per process)
     map< string, list< string > >  m_mProc;
 
+    /// The parameters per cycle (for ALD/ALE)
+    map< string, Parameters* >  m_mCycles;
+
     /// The input file
     ifstream m_InputFile;
 
@@ -208,7 +196,8 @@ public:
     ofstream m_RoughnessFile;
 
     /// Keywords:
-    /// Process keyword
+
+    /// The type of process: catalysis, pvd, cvd, etching, ald, ale
     string m_sProcess;
 
     /// Lattice keyword
@@ -254,10 +243,16 @@ public:
     string m_sHeights;
 
     /// The keyword for storing the start time.
-    string m_sStartTime ;
+    string m_sStartTime;
 
     /// The keyword for storing the start time.
-    string m_sStopCov ;
+    string m_sStopCov;
+
+    /// The keyword for declaring a cycle (for ALD/ALE).
+    string m_sCycle;
+
+    /// The keyword for defining the number of cycles to be performed.
+    string m_sNumCycles;
 
     // trim from start (in place)
     static inline void ltrim(std::string &s) {

@@ -73,7 +73,7 @@ public:
     const double dUniversalGasConst = 8.3145;
 
     /// Store the processes to be created by the factory method.
-    void setProcess(string, vector< string > );
+    void setMircoProcess(string, vector< string > );
 
     /// Store the initial value for the random generator
     inline void setRandGenInit( int val ) { m_iRand = val; }
@@ -161,8 +161,16 @@ public:
     inline void setStepHeight(int height) { m_iHeightStep = height;}
     inline bool getHeightStep() { return m_iHeightStep;}
 
+    inline void setNumCycles(int cycles) { m_iNumCycles = cycles;}
+    inline int getNumCycles() { return m_iNumCycles;}
+
+    string sProcess() const;
+    void setSProcess(const string &newSProcess);
 
 protected:
+
+    /// The process to perform
+    string m_sProcess;
 
     /// Parameters of the lattice
     int m_iX, m_iY, m_iH;
@@ -216,6 +224,8 @@ protected:
     double m_dStartTime;
 
     pair<string, string> m_pStopCov;
+
+    int m_iNumCycles;
 
     /// Steps related info
     bool m_bHasSteps;

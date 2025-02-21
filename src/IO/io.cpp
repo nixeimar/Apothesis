@@ -18,8 +18,8 @@
 #include "io.h"
 
 IO::IO():
-    m_sLatticeType("NONE"),
     m_sProcess("process"),
+    m_sLatticeType("NONE"),
     m_sLattice("lattice"),
     m_sTemperature("temperature"),
     m_sPressure("pressure"),
@@ -35,7 +35,9 @@ IO::IO():
     m_sReport("report"),
     m_sHeights("heights.txt"),
     m_sEtch("etching"),
-    m_sStartTime("time_start")
+    m_sStartTime("time_start"),
+    m_sCycle("cycle"),
+    m_sNumCycles("cycles")
 {
 
     m_errorHandler = new ErrorHandler(0);
@@ -52,17 +54,351 @@ IO::~IO(){}
 
 void IO::init(int argc, char* argv[])
 {
-
     openInputFile("input.kmc");
 }
 
 string IO::getInputPath() const {;}
 
+Parameters* IO::readCycle()
+{
+    Parameters* cycle = new Parameters(0);
+
+    string sLine;
+    bool bEnd = false;
+
+    while ( getline( m_InputFile, sLine ) && !bEnd ) {
+
+        // Remove any tabs, weird spaces etc.
+        sLine = simplified( sLine );
+        //cout << sLine << endl;
+
+        //We do not care about comments.
+        if ( startsWith( sLine, m_sCommentLine ) ) continue;
+
+        // split the line using : separator and store them to a vector of tokens
+        vector<string> vsTokensBasic;
+        vsTokensBasic = split( sLine, string( ":" ) );
+
+        //We do not care about empty lines
+        if ( vsTokensBasic.size() == 0 ) continue;
+
+        bool bComment = false;
+        for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
+            if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                bComment = true;
+
+            // Remove the comments from the tokens so not to consider them
+            if ( bComment )
+                vsTokensBasic[ i ].clear();
+        }
+
+        // Remove any empty parts of the vector
+        vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
+        vsTokensBasic.erase( it, vsTokensBasic.end() );
+
+        if ( vsTokensBasic[ 0].compare(  m_sCycle ) == 0 ){
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokensBasic.size(); i++) {
+                if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokensBasic[ i ].clear();
+            }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
+            vsTokensBasic.erase( it, vsTokensBasic.end() );
+
+            if (  trim(vsTokensBasic[ 1 ] ).compare("end") == 0 )
+                bEnd = true;
+        }
+
+        if (vsTokensBasic[ 0].compare(  m_sGrowth ) == 0){
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
+
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
+            vsTokens.erase( it, vsTokens.end() );
+
+            for (string s:vsTokens )
+                cycle->insertInGrowthSpecies(s + "*");
+
+            continue;
+        }
+
+        if (vsTokensBasic[ 0].compare(  m_sEtch ) == 0){
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
+
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
+            vsTokens.erase( it, vsTokens.end() );
+
+            for (string s:vsTokens )
+                cycle->insertInEtchedSpecies(s + "*");
+
+            continue;
+        }
+
+        if ( vsTokensBasic[ 0].compare(  m_sTemperature ) == 0 ){
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
+                if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokensBasic[ i ].clear();
+            }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
+            vsTokensBasic.erase( it, vsTokensBasic.end() );
+
+            if ( isNumber( trim(vsTokensBasic[ 1 ] ) )){
+                cycle->setTemperature( toDouble( trim(vsTokensBasic[ 1] ) ) );
+            }
+            else {
+                m_errorHandler->error_simple_msg("Could not read temperature from input file. Is it a number?");
+                EXIT
+            }
+
+            continue;
+        }
+
+        if ( vsTokensBasic[ 0].compare(  m_sPressure ) == 0 ){
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
+                if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokensBasic[ i ].clear();
+            }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
+            vsTokensBasic.erase( it, vsTokensBasic.end() );
+
+            if ( isNumber( trim(vsTokensBasic[ 1 ] ) ) ){
+                // Is this an error?
+                cycle->setPressure( toDouble( trim(vsTokensBasic[ 1] ) ));
+            }
+            else {
+                m_errorHandler->error_simple_msg("Could not read pressure from input file. Is it a number?");
+                EXIT
+            }
+
+            continue;
+        }
+
+        if ( vsTokensBasic[ 0].compare( m_sTime ) == 0 ){
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
+                if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokensBasic[ i ].clear();
+            }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
+            vsTokensBasic.erase( it, vsTokensBasic.end() );
+
+            if ( isNumber(  trim( vsTokensBasic[ 1 ] ) ) ){
+                cycle->setEndTime( toDouble( trim( vsTokensBasic[ 1] ) ) );
+            }
+            else {
+                m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
+                EXIT
+            }
+
+            continue;
+        }
+
+        if ( vsTokensBasic[ 0].compare( m_sStartTime ) == 0 ){
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
+                if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokensBasic[ i ].clear();
+            }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
+            vsTokensBasic.erase( it, vsTokensBasic.end() );
+
+            if ( isNumber(  trim( vsTokensBasic[ 1 ] ) ) ){
+                cycle->setStartTime( toDouble( trim( vsTokensBasic[ 1] ) ) );
+            }
+            else {
+                m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
+                EXIT
+            }
+
+            continue;
+        }
+
+        if ( vsTokensBasic[ 0].compare( m_sWrite ) == 0){
+
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
+            vsTokens.erase( it, vsTokens.end() );
+
+            if ( vsTokens[ 0].compare( "log") == 0 ) {
+                if ( isNumber( trim(vsTokens[ 1 ] ) ) ){
+                    cycle->setWriteLogTimeStep( toDouble( trim(vsTokens[ 1 ] )) );
+                }
+                else {
+                    m_errorHandler->error_simple_msg("Could not read number for writing to log. Is it a number?");
+                    EXIT
+                }
+            }
+            else if ( vsTokens[ 0 ].compare( "lattice") == 0 ) {
+                if ( isNumber( trim(vsTokens[ 1 ] ) ) ){
+                    m_parameters->setWriteLatticeTimeStep( toDouble( trim(vsTokens[ 1 ] ) ) );
+                }
+                else {
+                    m_errorHandler->error_simple_msg("Could not read number for writing the lattice. Is it a number?");
+                    EXIT
+                }
+            }
+            else {
+                m_errorHandler->error_simple_msg("Not correct keyword for writer. Available selections are: \"log\" and \"lattice\"");
+                EXIT
+            }
+
+            continue;
+        }
+
+        // For the reactions
+        if (  contains(vsTokensBasic[ 0], "->" ) ){
+
+            //Set the processes to be created along with their parameters
+            vector< string > tempVec;
+            // We want the parameters
+            // First is the keyword process, then the name of the process as this is defined in the REGISTER_PROCESS( e.g. Adsorption)
+            // and then after 2 the parameters follow
+
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i < vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
+            vsTokens.erase( it, vsTokens.end() );
+
+            for ( unsigned int i = 0; i < vsTokens.size(); i++ ){
+                tempVec.push_back(  vsTokens[ i ] );
+            }
+            cycle->setMircoProcess( vsTokensBasic[ 0 ], tempVec );
+
+            continue;
+        }
+
+        if ( vsTokensBasic[ 0].compare( m_sStopCov ) == 0 ){
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
+                if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokensBasic[ i ].clear();
+            }
+
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            pair<string, string> p( vsTokens[0], vsTokens[1]);
+            cycle->setStopCov( p );
+
+            continue;
+        }
+
+
+        if ( vsTokensBasic[ 0].compare( m_sReport ) == 0){
+
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            vector<string> species;
+            if ( vsTokens[0].compare("coverage") == 0){
+                for ( int i = 1; i< vsTokens.size(); i++)
+                    species.push_back( vsTokens[i] );
+            }
+
+            cycle->setCoverageSpecies( species);
+        }
+    }
+
+    return cycle;
+}
 
 void IO::readInputFile()
 {
-    list< string > lKeywords{ m_sEtch, m_sStopCov, m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport, m_sStartTime};
+    list< string > lKeywords{ m_sNumCycles, m_sCycle, m_sProcess, m_sEtch, m_sStopCov, m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport, m_sStartTime};
 
+    int iCycle = 0;
     string sLine;
     while ( getline( m_InputFile, sLine ) ) {
 
@@ -101,6 +437,18 @@ void IO::readInputFile()
                 m_errorHandler->error_simple_msg( msg );
                 EXIT
             }
+        }
+
+        if ( vsTokensBasic[ 0].compare(  m_sCycle ) ==0 ) {
+
+            Parameters* cycle = readCycle();
+            pair< string, Parameters* > infoCycle;
+            infoCycle.first = "cycle_" + to_string(iCycle);
+            infoCycle.second = cycle;
+
+            m_mCycles.insert( infoCycle );
+            iCycle++;
+            continue;
         }
 
         if ( vsTokensBasic[ 0].compare(  m_sLattice ) == 0 ){
@@ -165,57 +513,6 @@ void IO::readInputFile()
             //                }
         }
 
-
-        if (vsTokensBasic[ 0].compare(  m_sGrowth ) == 0){
-            vector<string> vsTokens;
-            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
-
-            bool bComment = false;
-            for ( unsigned int i = 0; i< vsTokens.size(); i++){
-                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
-                    bComment = true;
-
-                // Remove the comments from the tokens so not to consider them
-                if ( bComment )
-                    vsTokens[ i ].clear();
-            }
-
-
-            // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
-            vsTokens.erase( it, vsTokens.end() );
-
-            for (string s:vsTokens )
-                m_parameters->insertInGrowthSpecies(s + "*");
-
-            continue;
-        }
-
-        if (vsTokensBasic[ 0].compare(  m_sEtch ) == 0){
-            vector<string> vsTokens;
-            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
-
-            bool bComment = false;
-            for ( unsigned int i = 0; i< vsTokens.size(); i++){
-                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
-                    bComment = true;
-
-                // Remove the comments from the tokens so not to consider them
-                if ( bComment )
-                    vsTokens[ i ].clear();
-            }
-
-
-            // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
-            vsTokens.erase( it, vsTokens.end() );
-
-            for (string s:vsTokens )
-                m_parameters->insertInEtchedSpecies(s + "*");
-
-            continue;
-        }
-
         if ( vsTokensBasic[ 0].compare(  m_sSteps ) == 0 ){
             m_parameters->setSteps( true );
 
@@ -251,6 +548,116 @@ void IO::readInputFile()
                 m_errorHandler->error_simple_msg("The y dimension of step is not a number.");
                 EXIT
             }
+
+            continue;
+        }
+
+        if (vsTokensBasic[ 0].compare(  m_sProcess ) == 0){
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
+
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
+            vsTokensBasic.erase( it, vsTokensBasic.end() );
+
+            if (  !vsTokensBasic[ 1 ].empty() && trim(vsTokensBasic[ 1 ]) != "" ){
+                m_parameters->setSProcess( trim(vsTokensBasic[ 1] ) );
+            }
+            else {
+                m_errorHandler->error_simple_msg("Could not read process from input file. The available processes are: catalysis, PVD, CVD, etching, ALD and ALE.");
+                EXIT
+            }
+
+            continue;
+        }
+
+        if ( vsTokensBasic[ 0].compare( m_sRandom ) == 0){
+            m_parameters->setRandGenInit( toInt( trim(vsTokensBasic[ 1] ) ) );
+            //     cout << m_parameters->getRandGenInit() << end;
+            continue;
+        }
+
+        if (vsTokensBasic[ 0].compare(  m_sGrowth ) == 0){
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
+
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
+            vsTokens.erase( it, vsTokens.end() );
+
+            for (string s:vsTokens )
+                m_parameters->insertInGrowthSpecies(s + "*");
+
+            continue;
+        }
+
+        if (vsTokensBasic[ 0].compare( m_sNumCycles ) == 0){
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
+
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
+            vsTokens.erase( it, vsTokens.end() );
+
+
+
+            continue;
+        }
+
+        if (vsTokensBasic[ 0].compare(  m_sEtch ) == 0){
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
+
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
+            vsTokens.erase( it, vsTokens.end() );
+
+            for (string s:vsTokens )
+                m_parameters->insertInEtchedSpecies(s + "*");
 
             continue;
         }
@@ -310,6 +717,33 @@ void IO::readInputFile()
             continue;
         }
 
+        if ( vsTokensBasic[ 0].compare( m_sNumCycles ) == 0 ){
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
+                if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokensBasic[ i ].clear();
+            }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
+            vsTokensBasic.erase( it, vsTokensBasic.end() );
+
+            if ( isNumber(  trim( vsTokensBasic[ 1 ] ) ) ){
+                m_parameters->setNumCycles( ( toDouble( trim( vsTokensBasic[ 1] ) ) ) );
+            }
+            else {
+                m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
+                EXIT
+            }
+
+            continue;
+        }
+
         if ( vsTokensBasic[ 0].compare( m_sTime ) == 0 ){
 
             bool bComment = false;
@@ -362,12 +796,6 @@ void IO::readInputFile()
                 EXIT
             }
 
-            continue;
-        }
-
-        if ( vsTokensBasic[ 0].compare( m_sRandom ) == 0){
-            m_parameters->setRandGenInit( toInt( trim(vsTokensBasic[ 1] ) ) );
-       //     cout << m_parameters->getRandGenInit() << end;
             continue;
         }
 
@@ -445,11 +873,10 @@ void IO::readInputFile()
             for ( unsigned int i = 0; i < vsTokens.size(); i++ ){
                 tempVec.push_back(  vsTokens[ i ] );
             }
-            m_parameters->setProcess( vsTokensBasic[ 0 ], tempVec );
+            m_parameters->setMircoProcess( vsTokensBasic[ 0 ], tempVec );
 
             continue;
         }
-
 
         if ( vsTokensBasic[ 0].compare( m_sStopCov ) == 0 ){
 
@@ -490,22 +917,13 @@ void IO::readInputFile()
     }//Reading the lines
 }
 
+
 void IO::openInputFile( string file )
 {
     m_InputFile.open(file, ios::in );
 
     if ( !m_InputFile.is_open() ) {
         m_errorHandler->error_simple_msg( "Cannot open file input.kmc" ) ;
-        EXIT
-    }
-}
-
-void IO::openRoughnessFile( string file )
-{
-    m_RoughnessFile.open(file, ios::out );
-
-    if ( !m_RoughnessFile.is_open() ) {
-        m_errorHandler->error_simple_msg( "Cannot open file " + file ) ;
         EXIT
     }
 }
@@ -762,7 +1180,7 @@ void IO::writeRoughness( double t, double r)
 }*/
 
 
-string IO::GetCurrentWorkingDir()
+string IO::getCurrentWorkingDir()
 {
     char buff[FILENAME_MAX];
     string current_working_dir( buff );
@@ -787,6 +1205,42 @@ void IO::closeRoughnessFile()
 {
     if ( m_RoughnessFile.is_open( ) )
         m_RoughnessFile.close();
+}
+
+map<string, Parameters *> IO::getCycles() const
+{
+    return m_mCycles;
+}
+
+void IO::mergeParameters(Parameters* dest, Parameters* src) {
+    if (!dest || !src) return;
+
+    if (src->getTemperature() != 0.0) dest->setTemperature(src->getTemperature());
+    if (src->getPressure() != 0.0) dest->setPressure(src->getPressure());
+    if (src->getEndTime() != 0.0) dest->setEndTime(src->getEndTime());
+    if (src->getWriteLogTimeStep() != 0.0) dest->setWriteLogTimeStep(src->getWriteLogTimeStep());
+    if (src->getWriteLatticeTimeStep() != 0.0) dest->setWriteLatticeTimeStep(src->getWriteLatticeTimeStep());
+    if (src->getStartTime() != 0.0) dest->setStartTime(src->getStartTime());
+
+    if (!src->getLatticeLabels().empty()) dest->setLatticeLabels(src->getLatticeLabels());
+    if (!src->getLatticeType().empty()) dest->setLatticeType(src->getLatticeType());
+    if (!src->getStopCov().first.empty() || !src->getStopCov().second.empty()) dest->setStopCov(src->getStopCov());
+    if (!src->sProcess().empty()) dest->setSProcess(src->sProcess());
+
+    if (src->getLatticeXDim() != 0) dest->setLatticeXDim(src->getLatticeXDim());
+    if (src->getLatticeYDim() != 0) dest->setLatticeYDim(src->getLatticeYDim());
+    if (src->getLatticeHeight() != 0) dest->setLatticeHeight(src->getLatticeHeight());
+    if (src->getNumCycles() != 0) dest->setNumCycles(src->getNumCycles());
+    if (src->getNumSteps() != 0) dest->setNumSteps(src->getNumSteps());
+    if (src->getHeightStep() != 0) dest->setStepHeight(src->getHeightStep());
+
+    if (!src->getGrowthSpecies().empty()) dest->setCoverageSpecies(src->getGrowthSpecies());
+    if (!src->getEtchedSpecies().empty()) dest->setCoverageSpecies(src->getEtchedSpecies());
+    if (!src->getCoverageSpecies().empty()) dest->setCoverageSpecies(src->getCoverageSpecies());
+
+    if (src->hasSteps()) dest->setSteps(true);
+    if (src->isReadHeightsFromFile()) dest->setReadHeightsFromFile(true);
+    if (src->isReadSpeciesFromFile()) dest->setReadSpeciesFromFile(true);
 }
 
 

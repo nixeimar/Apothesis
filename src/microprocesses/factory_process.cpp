@@ -15,32 +15,31 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#include "errorhandler.h"
+#include "factory_process.h"
+#include "process.h"
 
-namespace Utils
-{
+using namespace MicroProcesses;
 
-ErrorHandler::ErrorHandler( Apothesis* apothesis ) : Pointers( apothesis )
-  {
-  ;
-  }
+FactoryProcess::FactoryProcess(){ }
+FactoryProcess::~FactoryProcess(){ }
 
-ErrorHandler::~ErrorHandler()
-  {
-  ;
-  }
-
-void ErrorHandler::error_simple_msg( string msg )
-{
-  cout << "Error: " + msg << endl;
+void FactoryProcess::registerThis( const string& s, AbstractProcess* proc ){
+    getTable()[ s] = proc;
 }
 
+MicroProcesses::Process* FactoryProcess::createProcess( const string& s){
 
-void ErrorHandler::warningSimple_msg( const string &msg )
-  {
-  cout << "Warning: " + msg << endl;
-  }
+    map< string, AbstractProcess* >::iterator it = getTable().find( s);
 
+    if  ( it != getTable().end() )
+        return it->second->create();
+    else
+        return (MicroProcesses::Process*)( 0 );
+}
+
+std::map< string, AbstractProcess* >& FactoryProcess::getTable(){
+    static std::map<std::string, AbstractProcess*> table;
+    return table;
 }
 
 

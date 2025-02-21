@@ -1,4 +1,4 @@
-//============================================================================
+    //============================================================================
 //    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
@@ -15,32 +15,25 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#include "errorhandler.h"
 
-namespace Utils
+#include "catalysis.h"
+
+Catalysis::Catalysis() { ; }
+Catalysis::~Catalysis() { ; }
+
+void Catalysis::init()
 {
+        if ( !io->getParameters()->getGrowthSpecies().empty() ) {
+        apothesis->pErrorHandler->error_simple_msg("No growth species must be defined in a catalytic process");
+        EXIT
+    }
 
-ErrorHandler::ErrorHandler( Apothesis* apothesis ) : Pointers( apothesis )
-  {
-  ;
-  }
+    if ( !io->getParameters()->getEtchedSpecies().empty() ) {
+        apothesis->pErrorHandler->error_simple_msg("No etched species must be defined in a catalytic process");
+        EXIT
+    }
 
-ErrorHandler::~ErrorHandler()
-  {
-  ;
-  }
-
-void ErrorHandler::error_simple_msg( string msg )
-{
-  cout << "Error: " + msg << endl;
+    //Pass the io to apothesis which contains the parameters that needs to run.
+    apothesis->setIO( io );
+    apothesis->init();
 }
-
-
-void ErrorHandler::warningSimple_msg( const string &msg )
-  {
-  cout << "Warning: " + msg << endl;
-  }
-
-}
-
-

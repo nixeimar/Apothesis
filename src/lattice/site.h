@@ -45,13 +45,6 @@ public:
     /// Destructor.
     virtual ~Site();
 
-    //This should be on the Lattice
-    //and every lattice build their own Neghbours
-    /*    enum LatticeType {
-                        BCC,
-                        FCC
-                     };*/
-
     /// The position of the neighbour.
     // This should be SOUTH_EAST, SOUTH_WEST etc ..
     enum NeighPoisition{

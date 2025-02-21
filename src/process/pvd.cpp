@@ -1,4 +1,4 @@
-//============================================================================
+    //============================================================================
 //    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
@@ -15,32 +15,10 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#include "errorhandler.h"
 
-namespace Utils
-{
+#include "pvd.h"
 
-ErrorHandler::ErrorHandler( Apothesis* apothesis ) : Pointers( apothesis )
-  {
-  ;
-  }
+PVD::PVD() { ; }
+PVD::~PVD() { ; }
 
-ErrorHandler::~ErrorHandler()
-  {
-  ;
-  }
-
-void ErrorHandler::error_simple_msg( string msg )
-{
-  cout << "Error: " + msg << endl;
-}
-
-
-void ErrorHandler::warningSimple_msg( const string &msg )
-  {
-  cout << "Warning: " + msg << endl;
-  }
-
-}
-
-
+void PVD::init() { cout << "Init PVD process ...";}

@@ -13,7 +13,7 @@ CONFING -= qt
 INCLUDEPATH += . \
 	 ./src \
          ./src/lattice \
-         ./src/processes \
+         ./src/microprocesses \
          ./src/IO \
          ./src/error
 
@@ -23,35 +23,42 @@ HEADERS += ./src/apothesis.h \
            ./src/IO/cml_reader.h \
            ./src/IO/xyz_reader.h \
            ./src/lattice/SimpleCubic.h \
-           ./src/processes/adsorption.h \
+           ./src/microprocesses/adsorption.h \
            ./src/extLibs/random_generator.h \
            ./src/extLibs/randomc.h \
            ./src/pointers.h \
-           ./src/processes/reaction.h \
+           ./src/microprocesses/reaction.h \
            ./src/properties.h \
            ./src/register.h \
            ./src/error/errorhandler.h \
            ./src/lattice/FCC.h \
            ./src/lattice/lattice.h \
            ./src/lattice/site.h \
-           ./src/processes/abstract_process.h \
-           ./src/processes/desorption.h \
-           ./src/processes/diffusion.h \
-           ./src/processes/factory_process.h \
-           ./src/processes/io.h \
-           ./src/processes/parameters.h \
-           ./src/processes/process.h \
-           ./src/processes/adsorption_perform.h \
-           ./src/processes/adsorption_rules.h \
-           ./src/processes/adsorption_types.h \
-           ./src/processes/desorption_perform.h \
-           ./src/processes/desorption_rules.h \
-           ./src/processes/desorption_types.h \
-           ./src/processes/diffusion_perform.h \
-           ./src/processes/diffusion_rules.h \
-           ./src/processes/diffusion_types.h \
+           ./src/microprocesses/abstract_process.h \
+           ./src/microprocesses/desorption.h \
+           ./src/microprocesses/diffusion.h \
+           ./src/microprocesses/factory_process.h \
+           ./src/microprocesses/io.h \
+           ./src/microprocesses/parameters.h \
+           ./src/microprocesses/process.h \
+           ./src/microprocesses/adsorption_perform.h \
+           ./src/microprocesses/adsorption_rules.h \
+           ./src/microprocesses/adsorption_types.h \
+           ./src/microprocesses/desorption_perform.h \
+           ./src/microprocesses/desorption_rules.h \
+           ./src/microprocesses/desorption_types.h \
+           ./src/microprocesses/diffusion_perform.h \
+           ./src/microprocesses/diffusion_rules.h \
+           ./src/microprocesses/diffusion_types.h \
            ./src/lattice/HCP.h \
-           ./src/lattice/diamond.h
+           ./src/lattice/diamond.h \
+           src/process/ald.h \
+           src/process/ale.h \
+           src/process/catalysis.h \
+           src/process/cvd.h \
+           src/process/etching.h \
+           src/process/macroprocess.h \
+           src/process/pvd.h
 
 SOURCES += ./src/apothesis.cpp \
            ./src/IO/io.cpp \
@@ -62,26 +69,33 @@ SOURCES += ./src/apothesis.cpp \
            ./src/lattice/SimpleCubic.cpp \
            ./src/lattice/lattice.cpp \
            ./src/main.cpp \
-           ./src/processes/abstract_process.cpp \
-           ./src/processes/reaction.cpp \
+           ./src/microprocesses/abstract_process.cpp \
+           ./src/microprocesses/reaction.cpp \
            ./src/properties.cpp \
            ./src/error/errorhandler.cpp \
            ./src/lattice/FCC.cpp \
            ./src/lattice/site.cpp \
-           ./src/processes/adsorption.cpp \
-           ./src/processes/desorption.cpp \
-           ./src/processes/diffusion.cpp \
-           ./src/processes/factory_process.cpp \
-           ./src/processes/parameters.cpp \
-           ./src/processes/process.cpp \
-           ./src/processes/adsorption_perform.cpp \
-           ./src/processes/adsorption_rules.cpp \
-           ./src/processes/adsorption_types.cpp \
-           ./src/processes/desorption_perform.cpp \
-           ./src/processes/desorption_rules.cpp \
-           ./src/processes/desorption_types.cpp \
-           ./src/processes/diffusion_perform.cpp \
-           ./src/processes/diffusion_rules.cpp \
-           ./src/processes/diffusion_types.cpp \
+           ./src/microprocesses/adsorption.cpp \
+           ./src/microprocesses/desorption.cpp \
+           ./src/microprocesses/diffusion.cpp \
+           ./src/microprocesses/factory_process.cpp \
+           ./src/microprocesses/parameters.cpp \
+           ./src/microprocesses/process.cpp \
+           ./src/microprocesses/adsorption_perform.cpp \
+           ./src/microprocesses/adsorption_rules.cpp \
+           ./src/microprocesses/adsorption_types.cpp \
+           ./src/microprocesses/desorption_perform.cpp \
+           ./src/microprocesses/desorption_rules.cpp \
+           ./src/microprocesses/desorption_types.cpp \
+           ./src/microprocesses/diffusion_perform.cpp \
+           ./src/microprocesses/diffusion_rules.cpp \
+           ./src/microprocesses/diffusion_types.cpp \
            ./src/lattice/HCP.cpp \
-           ./src/lattice/diamond.cpp
+           ./src/lattice/diamond.cpp \
+           src/process/ald.cpp \
+           src/process/ale.cpp \
+           src/process/catalysis.cpp \
+           src/process/cvd.cpp \
+           src/process/etching.cpp \
+           src/process/macroprocess.cpp \
+           src/process/pvd.cpp

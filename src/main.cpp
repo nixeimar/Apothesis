@@ -15,20 +15,6 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-/*! \mainpage My Personal Index Page
- *
- * \section intro_sec Introduction
- * Apothesis is a generalized kinteic Monte Carlo Code for tackling realistic deposition porcesses
- * and more specificaly Chemical Vapor Deposition (CVD) and Atomic Layer Deposition (ALD) processes.
- * It is developed in C++ and it is disrtibuted under GNU license.
- *
- *
- * \section install_sec Installation
- * Currently no special installations instructions are required.
- * A simple "make" should create the executable "Apothesis".
- * The Makefile was generated with qmake but the qt libradies are excluded.
- *
- */
 #include <iostream>
 #include <list>
 #include "site.h"
@@ -37,27 +23,78 @@
 #include "apothesis.h"
 #include "io.h"
 
+#include "process/catalysis.h"
+#include "process/pvd.h"
+#include "process/cvd.h"
+#include "process/etching.h"
+#include "process/ald.h"
+#include "process/ale.h"
+
+
 using namespace std;
 using namespace MicroProcesses;
 
 int main( int argc, char* argv[] )
 {
+    //The primary communication channel is reading from a file
     IO* io =  new IO();
+
+    //Pass any arguments given by the user
     io->init(argc, argv);
+
+    //Read the input file and proceed accordingly based on the process read
     io->readInputFile();
 
-    //Checking commit
-    Apothesis* apothesis = new Apothesis( argc, argv );
+    if ( io->getParameters()->sProcess().compare("catalysis") == 0 ) {
+        Catalysis* catalysis = new Catalysis();
+        catalysis->setIO( io );
+        catalysis->init();
+        catalysis->perform();
+    }
+    else if (io->getParameters()->sProcess().compare("PVD") == 0 || io->getParameters()->sProcess().compare("pvd") == 0)
+    {
+        PVD* pvd = new PVD();
+        pvd->setIO( io );
+        pvd->init();
+        pvd->perform();
 
-    cout << "Initiating Apothesis" << endl;
-    apothesis->init( io->getParameters() );
+    }
+    else if (io->getParameters()->sProcess().compare("CVD") == 0 || io->getParameters()->sProcess().compare("cvd") == 0)
+    {
+        CVD* cvd = new CVD();
+        cvd->setIO( io );
+        cvd ->init();
+        cvd ->perform();
 
-    cout << "Apothesis runnning ..." << endl;
-    apothesis->exec();
-    cout << "Apothesis finished succesfully." << endl;
+    }
+    else if (io->getParameters()->sProcess().compare("etching") == 0)
+    {
+        Etching* etching = new Etching();
+        etching->setIO( io );
+        etching->init();
+        etching->perform();
 
-    if ( apothesis )
-      delete apothesis;
+    }
+    else if (io->getParameters()->sProcess().compare("ALD") == 0 || io->getParameters()->sProcess().compare("ald") == 0)
+    {
+        ALD* ald = new ALD();
+        ald->setIO( io );
+        ald->init();
+        ald->perform();
+
+    }
+    else if (io->getParameters()->sProcess().compare("ALE") == 0 || io->getParameters()->sProcess().compare("ale") == 0)
+    {
+        ALE* ale = new ALE();
+        ale->setIO( io );
+        ale->init();
+        ale->perform();
+    }
+    else {
+        cout << "Error: Unknown or nor defined process. Please make sure that the input file contains the \"process\" keyword. "
+                "Available processes are: catalysis, PVD, CVD, etching, ALD and ALE" << endl;
+    }
+
 }
 
 

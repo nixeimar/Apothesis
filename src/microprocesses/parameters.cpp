@@ -22,26 +22,36 @@ namespace Utils
 
 Parameters::Parameters(Apothesis* apothesis ):Pointers(apothesis), m_iRand(0), m_bReadHeightsFromFile(false),
     m_bReadSpeciesFromFile(false), m_dStartTime(0.0){}
-  
-  void Parameters::setProcess( string processName, vector< string > processParams )
-  {
-    m_mProcs[ processName ] = processParams;
-  }
 
-  void Parameters::printInfo()
-  {
-      cout << endl;
-      cout << "--- start info simulation parameters -- " << endl;
-      cout << "---------------------------------------- " << endl;
-      cout << "Time "<< m_dTime << endl;
-      cout << "Temperature "<< m_dT << endl;
-      cout << "Pressure "<< m_dP << endl;
-      cout << "Random gen init " << m_iRand << endl;
-      cout << "Write in log every " << m_dWriteLogEvery << endl;
-      cout << "Write lattice every " << m_dWriteLatticeEvery << endl;
-      cout << "---------------------------------------- " << endl;
-      cout << "--- end simulation parameters info ----- " << endl;
-      cout << endl;
-  }
+void Parameters::setMircoProcess( string processName, vector< string > processParams )
+{
+    m_mProcs[ processName ] = processParams;
+}
+
+void Parameters::printInfo()
+{
+    cout << endl;
+    cout << "--- start info simulation parameters -- " << endl;
+    cout << "---------------------------------------- " << endl;
+    cout << "Time "<< m_dTime << endl;
+    cout << "Temperature "<< m_dT << endl;
+    cout << "Pressure "<< m_dP << endl;
+    cout << "Random gen init " << m_iRand << endl;
+    cout << "Write in log every " << m_dWriteLogEvery << endl;
+    cout << "Write lattice every " << m_dWriteLatticeEvery << endl;
+    cout << "---------------------------------------- " << endl;
+    cout << "--- end simulation parameters info ----- " << endl;
+    cout << endl;
+}
+
+string Parameters::sProcess() const
+{
+    return m_sProcess;
+}
+
+void Parameters::setSProcess(const string &newSProcess)
+{
+    m_sProcess = newSProcess;
+}
 
 }

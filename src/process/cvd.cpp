@@ -1,4 +1,4 @@
-//============================================================================
+    //============================================================================
 //    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
@@ -15,32 +15,26 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#include "errorhandler.h"
 
-namespace Utils
+#include "cvd.h"
+
+CVD::CVD() { ; }
+CVD::~CVD()
 {
-
-ErrorHandler::ErrorHandler( Apothesis* apothesis ) : Pointers( apothesis )
-  {
-  ;
-  }
-
-ErrorHandler::~ErrorHandler()
-  {
-  ;
-  }
-
-void ErrorHandler::error_simple_msg( string msg )
-{
-  cout << "Error: " + msg << endl;
-}
-
-
-void ErrorHandler::warningSimple_msg( const string &msg )
-  {
-  cout << "Warning: " + msg << endl;
-  }
 
 }
 
+void CVD::init()
+{
+    if ( io->getParameters()->getGrowthSpecies().empty()  ) {
+        apothesis->pErrorHandler->error_simple_msg("At least one growing species must be defined for a CVD process."
+                                                   "To define a growth species insert \"growth: X\" in the input file"
+                                                   " where X is the species of the growing surface.");
+        EXIT
+    }
 
+    if ( !io->getParameters()->getEtchedSpecies().size()  ) {
+        apothesis->pErrorHandler->error_simple_msg("No etching species must be defined in a CVD process");
+        EXIT
+    }
+}

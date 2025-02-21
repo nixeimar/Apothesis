@@ -15,32 +15,16 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#include "errorhandler.h"
+#include "process.h"
 
-namespace Utils
-{
+Process::Process():m_iHappened(0),m_bUncoAccept(false), m_iNumSites(1),  m_iNumNeighs(1), m_iNumVacant(1) {}
+Process::~Process(){}
 
-ErrorHandler::ErrorHandler( Apothesis* apothesis ) : Pointers( apothesis )
-  {
-  ;
-  }
+bool Process::isPartOfGrowth( string name ){
+    for ( string species: m_pUtilParams->getGrowthSpecies() ){
+        if ( species.compare( name ) == 0 )
+            return true;
+    }
 
-ErrorHandler::~ErrorHandler()
-  {
-  ;
-  }
-
-void ErrorHandler::error_simple_msg( string msg )
-{
-  cout << "Error: " + msg << endl;
+    return false;
 }
-
-
-void ErrorHandler::warningSimple_msg( const string &msg )
-  {
-  cout << "Warning: " + msg << endl;
-  }
-
-}
-
-
