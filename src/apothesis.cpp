@@ -68,24 +68,6 @@ Apothesis::~Apothesis()
     delete pRandomGen;
 }
 
-void Apothesis::mf_createWorkingDir(const string& dirName ){
-    try {
-        // Check if the directory already exists
-        if (fs::exists(dirName)) {
-            std::cout << "Directory already exists: " << dirName << std::endl;
-        } else {
-            // Create the directory
-            if (fs::create_directory(dirName)) {
-                std::cout << "Directory created successfully: " << dirName << std::endl;
-            } else {
-                std::cerr << "Failed to create directory: " << dirName << std::endl;
-            }
-        }
-    } catch (const fs::filesystem_error& e) {
-        std::cerr << "Filesystem error: " << e.what() << std::endl;
-    }
-}
-
 void Apothesis::init()
 {
     //Open the output file
