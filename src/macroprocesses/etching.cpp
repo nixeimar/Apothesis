@@ -15,16 +15,24 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#include "process.h"
 
-Process::Process():m_iHappened(0),m_bUncoAccept(false), m_iNumSites(1),  m_iNumNeighs(1), m_iNumVacant(1) {}
-Process::~Process(){}
+#include "etching.h"
 
-bool Process::isPartOfGrowth( string name ){
-    for ( string species: m_pUtilParams->getGrowthSpecies() ){
-        if ( species.compare( name ) == 0 )
-            return true;
+Etching::Etching() {}
+Etching::~Etching() {}
+
+
+void Etching::init()
+{
+    if ( !io->getParameters()->getGrowthSpecies().empty()  ) {
+        apothesis->pErrorHandler->error_simple_msg("No CVD species must be defined in an etching process");
+        EXIT
     }
 
-    return false;
+    if ( !io->getParameters()->getEtchedSpecies().size()  ) {
+        apothesis->pErrorHandler->error_simple_msg("At least one etching species must be defined in an etching process."
+                                                   "To define an etching species insert \"ething: X\" in the input file"
+                                                   " where X is the species of the etched surface.");
+        EXIT
+    }
 }

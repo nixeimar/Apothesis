@@ -23,12 +23,12 @@
 #include "apothesis.h"
 #include "io.h"
 
-#include "process/catalysis.h"
-#include "process/pvd.h"
-#include "process/cvd.h"
-#include "process/etching.h"
-#include "process/ald.h"
-#include "process/ale.h"
+#include "catalysis.h"
+#include "pvd.h"
+#include "cvd.h"
+#include "etching.h"
+#include "ald.h"
+#include "ale.h"
 
 
 using namespace std;

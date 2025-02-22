@@ -1,4 +1,4 @@
-//============================================================================
+    //============================================================================
 //    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
@@ -15,26 +15,10 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#ifndef ABSTRACT_PROCESS_H
-#define ABSTRACT_PROCESS_H
 
-#include <string>
+#include "ale.h"
 
-using namespace std;
-namespace MicroProcesses { class Process; }
+ALE::ALE() { ; }
+ALE::~ALE() { ; }
 
-/** The abstract class which is used for the process factory **/
-class AbstractProcess
-  {
-  public:
-    /// Constructor
-    AbstractProcess( const string& );
-
-    /// Destructor
-    virtual ~AbstractProcess(){}
-
-    /// Pure virtual method for creating a process.
-    virtual MicroProcesses::Process* create()= 0;
-  };
-
-#endif // ABSTRACT_PROCESS_H
+void ALE::init() { cout << "Init CVD process ...";}

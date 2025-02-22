@@ -1,4 +1,4 @@
-//============================================================================
+    //============================================================================
 //    Apothesis: A kinetic Monte Calro (KMC) code for deposition processes.
 //    Copyright (C) 2019  Nikolaos (Nikos) Cheimarios
 //    This program is free software: you can redistribute it and/or modify
@@ -15,31 +15,31 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //============================================================================
 
-#include "factory_process.h"
-#include "process.h"
+#ifndef ALD_H
+#define ALD_H
 
-using namespace MicroProcesses;
+#include <iostream>
+#include "macroprocess.h"
 
-FactoryProcess::FactoryProcess(){ }
-FactoryProcess::~FactoryProcess(){ }
+#include <iostream>
+#include <filesystem>
 
-void FactoryProcess::registerThis( const string& s, AbstractProcess* proc ){
-    getTable()[ s] = proc;
-}
+using namespace std;
+namespace fs = std::filesystem;
 
-MicroProcesses::Process* FactoryProcess::createProcess( const string& s){
+class ALD: public Macroprocess
+{
+public:
+    ALD();
+    virtual ~ALD();
 
-    map< string, AbstractProcess* >::iterator it = getTable().find( s);
+    void init() override;
+    void perform() override;
 
-    if  ( it != getTable().end() )
-        return it->second->create();
-    else
-        return (MicroProcesses::Process*)( 0 );
-}
+    bool createWorkingDir(const string&);
 
-std::map< string, AbstractProcess* >& FactoryProcess::getTable(){
-    static std::map<std::string, AbstractProcess*> table;
-    return table;
-}
+private:
+    map<string, Parameters*> m_mCycles;
+};
 
-
+#endif // KMC_H

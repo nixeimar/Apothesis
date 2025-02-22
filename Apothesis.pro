@@ -14,7 +14,7 @@ INCLUDEPATH += . \
 	 ./src \
          ./src/lattice \
          ./src/microprocesses \
-         ./src/process \
+         ./src/macroprocesses \
          ./src/IO \
          ./src/error
 
@@ -53,13 +53,13 @@ HEADERS += ./src/apothesis.h \
            ./src/microprocesses/diffusion_types.h \
            ./src/lattice/HCP.h \
            ./src/lattice/diamond.h \
-           src/process/ald.h \
-           src/process/ale.h \
-           src/process/catalysis.h \
-           src/process/cvd.h \
-           src/process/etching.h \
-           src/process/macroprocess.h \
-           src/process/pvd.h
+           ./src/macroprocesses/ald.h \
+           ./src/macroprocesses/ale.h \
+           ./src/macroprocesses/catalysis.h \
+           ./src/macroprocesses/cvd.h \
+           ./src/macroprocesses/etching.h \
+           ./src/macroprocesses/macroprocess.h \
+           ./src/macroprocesses/pvd.h
 
 SOURCES += ./src/apothesis.cpp \
            ./src/IO/io.cpp \
@@ -93,10 +93,10 @@ SOURCES += ./src/apothesis.cpp \
            ./src/microprocesses/diffusion_types.cpp \
            ./src/lattice/HCP.cpp \
            ./src/lattice/diamond.cpp \
-           src/process/ald.cpp \
-           src/process/ale.cpp \
-           src/process/catalysis.cpp \
-           src/process/cvd.cpp \
-           src/process/etching.cpp \
-           src/process/macroprocess.cpp \
-           src/process/pvd.cpp
+           ./src/macroprocesses/ald.cpp \
+           ./src/macroprocesses/ale.cpp \
+           ./src/macroprocesses/catalysis.cpp \
+           ./src/macroprocesses/cvd.cpp \
+           ./src/macroprocesses/etching.cpp \
+           ./src/macroprocesses/macroprocess.cpp \
+           ./src/macroprocesses/pvd.cpp
