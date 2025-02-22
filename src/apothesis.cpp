@@ -43,7 +43,7 @@
 #include <algorithm>
 
 using namespace MicroProcesses;
-using namespace std;
+namespace fs = std::filesystem;
 
 //using namespace Utils;
 
@@ -71,17 +71,17 @@ Apothesis::~Apothesis()
 void Apothesis::mf_createWorkingDir(const string& dirName ){
     try {
         // Check if the directory already exists
-        if (filesystem::exists(dirName)) {
+        if (fs::exists(dirName)) {
             std::cout << "Directory already exists: " << dirName << std::endl;
         } else {
             // Create the directory
-            if (filesystem::create_directory(dirName)) {
+            if (fs::create_directory(dirName)) {
                 std::cout << "Directory created successfully: " << dirName << std::endl;
             } else {
                 std::cerr << "Failed to create directory: " << dirName << std::endl;
             }
         }
-    } catch (const filesystem::filesystem_error& e) {
+    } catch (const fs::filesystem_error& e) {
         std::cerr << "Filesystem error: " << e.what() << std::endl;
     }
 }
