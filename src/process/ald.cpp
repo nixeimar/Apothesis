@@ -61,13 +61,12 @@ bool ALD::createWorkingDir(const std::string& dirName) {
 void ALD::perform()
 {
     int iCycle = 0;
+    int iNumCycles = io->getParameters()->getNumCycles();
     double startTime = 0.0;
-    double duration = 0.0;
 
     std::string originalDir = fs::current_path().string();
 
-    for (int i = 0; i < 2050; i++ ) {
-
+    for (int i = 0; i < iNumCycles; i++ ) {
         for (auto const& [key, p ] : m_mCycles ) {
 
             createWorkingDir(  "Cycle_" + std::to_string( startTime ) );

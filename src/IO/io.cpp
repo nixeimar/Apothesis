@@ -632,7 +632,13 @@ void IO::readInputFile()
             vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
-
+            if ( isNumber( trim(vsTokensBasic[ 1 ] ) )){
+                m_parameters->setNumCycles( toInt( trim(vsTokensBasic[ 1] ) ) );
+            }
+            else {
+                m_errorHandler->error_simple_msg("Could not read number of cycles for ALD/ALE from input file. Is it a number?");
+                EXIT
+            }
 
             continue;
         }
