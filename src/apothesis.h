@@ -69,7 +69,7 @@ public:
     void exec();
 
     /// Update apothesis from a previous run (used in ALD and ALE)
-    void update( Utils::Parameters* parameters, Lattice* lattice );
+    void update( Utils::Parameters* parameters, Lattice* lattice, double start );
 
     /// Return normalized probabilities of each process
     vector<double> calculateProbabilities(vector<MicroProcesses::Process*>);

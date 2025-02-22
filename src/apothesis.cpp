@@ -124,7 +124,10 @@ void Apothesis::init()
     }
 
     //The end time of the simulation
-    m_dEndTime = pParameters->getEndTime();
+    m_dEndTime = pParameters->getDurationTime() + pParameters->getStartTime();
+
+    //Store it for further use
+    pParameters->setEndTime( m_dEndTime);
 
     //Calculate first time the total probability (R) for apothesis to start --------------------------//
     m_dRTot = 0.0;
@@ -466,9 +469,14 @@ void Apothesis::buildLattice(){
     //pLattice->print();
 }
 
-void Apothesis::update( Utils::Parameters* parameters, Lattice* lattice  )
+void Apothesis::update( Utils::Parameters* parameters, Lattice* lattice, double start )
 {
+    //First clear all processes
+    m_processMap.clear();
+
+    // This is needed for not meshing up the rest of the code
     pParameters = parameters;
+    pParameters->setStartTime( start );
 
     if ( lattice )
         pLattice = lattice;
@@ -496,11 +504,15 @@ void Apothesis::update( Utils::Parameters* parameters, Lattice* lattice  )
         }
     }
 
+    // The start and time must be explicitly declared here
     //The start time
     m_dStartTime = pParameters->getStartTime();
 
     //The end time of the simulation
-    m_dEndTime = pParameters->getEndTime();
+    m_dEndTime = pParameters->getStartTime() + pParameters->getDurationTime();
+
+    //Store it for furtger use
+    pParameters->setEndTime( m_dEndTime );
 
     //Calculate first time the total probability (R) for apothesis to start --------------------------//
     m_dRTot = 0.0;
@@ -766,6 +778,9 @@ void Apothesis::exec()
 
     // The end time of the process is stored in order to be used in ALD or ALE processes.
     m_dEndTime = m_dProcTime;
+
+    //Close the file to open another one (for ALD/ALE)ls
+    pIO->closeOutputFile();
 }
 
 string Apothesis::mf_analyzeProc(string process){

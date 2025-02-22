@@ -23,6 +23,47 @@ namespace Utils
 Parameters::Parameters(Apothesis* apothesis ):Pointers(apothesis), m_iRand(0), m_bReadHeightsFromFile(false),
     m_bReadSpeciesFromFile(false), m_dStartTime(0.0){}
 
+
+Parameters& Parameters::operator=(const Parameters& other) {
+
+    // Copy primitive data members
+    m_dT = other.m_dT;
+    m_dP = other.m_dP;
+    m_dTime = other.m_dTime;
+    m_iRand = other.m_iRand;
+    m_dWriteLogEvery = other.m_dWriteLogEvery;
+    m_dWriteLatticeEvery = other.m_dWriteLatticeEvery;
+    m_iX = other.m_iX;
+    m_iY = other.m_iY;
+    m_iH = other.m_iH;
+    m_dStartTime = other.m_dStartTime;
+    m_bReadHeightsFromFile = other.m_bReadHeightsFromFile;
+    m_bReadSpeciesFromFile = other.m_bReadSpeciesFromFile;
+    m_bHasSteps = other.m_bHasSteps;
+    m_iSteps = other.m_iSteps;
+    m_iHeightStep = other.m_iHeightStep;
+    m_iNumCycles = other.m_iNumCycles;
+
+    // Copy string members
+    m_sProcess = other.m_sProcess;
+    m_sLatticeType = other.m_sLatticeType;
+    m_sLatticeLabel = other.m_sLatticeLabel;
+
+    // Copy pair
+    m_pStopCov = other.m_pStopCov;
+
+    // Deep copy vectors
+    m_vsGrowthSpecies = other.m_vsGrowthSpecies;
+    m_vsEtchedSpecies = other.m_vsEtchedSpecies;
+    m_vCovSpecies = other.m_vCovSpecies;
+
+    // Deep copy maps
+    m_mProcs = other.m_mProcs;
+    m_mReactants = other.m_mReactants;
+
+    return *this;
+}
+
 void Parameters::setMircoProcess( string processName, vector< string > processParams )
 {
     m_mProcs[ processName ] = processParams;
@@ -52,6 +93,16 @@ string Parameters::sProcess() const
 void Parameters::setSProcess(const string &newSProcess)
 {
     m_sProcess = newSProcess;
+}
+
+double Parameters::getDurationTime() const
+{
+    return m_dDurationTime;
+}
+
+void Parameters::setDurationTime(double newDDurationTime)
+{
+    m_dDurationTime = newDDurationTime;
 }
 
 }

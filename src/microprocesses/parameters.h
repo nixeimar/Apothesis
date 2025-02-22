@@ -42,6 +42,8 @@ public:
     /// Destructor.
     ~Parameters(){;}
 
+    Parameters& operator=(const Parameters& other);
+
     /// Set the temperature value.
     inline void setTemperature( double T) { m_dT = T; }
 
@@ -61,16 +63,16 @@ public:
     inline double getEndTime() { return m_dTime; }
 
     /// The Avogadro number [1/mol]
-    const double dAvogadroNum = 6.022141793e+23;
+    static constexpr double dAvogadroNum = 6.022141793e+23;
 
     /// The boltzmann constant in [J/K]
-    const double dkBoltz = 1.3806503e-23;
+    static constexpr double dkBoltz = 1.3806503e-23;
 
     /// Pi
-    const double dPi = 3.14159265;
+    static constexpr double dPi = 3.14159265;
 
     /// R value (J/mol K)
-    const double dUniversalGasConst = 8.3145;
+    static constexpr double dUniversalGasConst = 8.3145;
 
     /// Store the processes to be created by the factory method.
     void setMircoProcess(string, vector< string > );
@@ -167,6 +169,9 @@ public:
     string sProcess() const;
     void setSProcess(const string &newSProcess);
 
+    double getDurationTime() const;
+    void setDurationTime(double newDDurationTime);
+
 protected:
 
     /// The process to perform
@@ -222,6 +227,9 @@ protected:
 
     /// The time for starting the simulation - default is zero.
     double m_dStartTime;
+
+    /// The duration of the simulation.
+    double m_dDurationTime;
 
     pair<string, string> m_pStopCov;
 

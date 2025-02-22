@@ -238,7 +238,7 @@ Parameters* IO::readCycle()
             vsTokensBasic.erase( it, vsTokensBasic.end() );
 
             if ( isNumber(  trim( vsTokensBasic[ 1 ] ) ) ){
-                cycle->setEndTime( toDouble( trim( vsTokensBasic[ 1] ) ) );
+                cycle->setDurationTime( toDouble( trim( vsTokensBasic[ 1] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
@@ -761,7 +761,7 @@ void IO::readInputFile()
             vsTokensBasic.erase( it, vsTokensBasic.end() );
 
             if ( isNumber(  trim( vsTokensBasic[ 1 ] ) ) ){
-                m_parameters->setEndTime( toDouble( trim( vsTokensBasic[ 1] ) ) );
+                m_parameters->setDurationTime( toDouble( trim( vsTokensBasic[ 1] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
@@ -1224,23 +1224,12 @@ void IO::mergeParameters(Parameters* dest, Parameters* src) {
 
     if (!src->getLatticeLabels().empty()) dest->setLatticeLabels(src->getLatticeLabels());
     if (!src->getLatticeType().empty()) dest->setLatticeType(src->getLatticeType());
-    if (!src->getStopCov().first.empty() || !src->getStopCov().second.empty()) dest->setStopCov(src->getStopCov());
-    if (!src->sProcess().empty()) dest->setSProcess(src->sProcess());
 
     if (src->getLatticeXDim() != 0) dest->setLatticeXDim(src->getLatticeXDim());
     if (src->getLatticeYDim() != 0) dest->setLatticeYDim(src->getLatticeYDim());
-    if (src->getLatticeHeight() != 0) dest->setLatticeHeight(src->getLatticeHeight());
-    if (src->getNumCycles() != 0) dest->setNumCycles(src->getNumCycles());
     if (src->getNumSteps() != 0) dest->setNumSteps(src->getNumSteps());
     if (src->getHeightStep() != 0) dest->setStepHeight(src->getHeightStep());
-
-    if (!src->getGrowthSpecies().empty()) dest->setCoverageSpecies(src->getGrowthSpecies());
-    if (!src->getEtchedSpecies().empty()) dest->setCoverageSpecies(src->getEtchedSpecies());
-    if (!src->getCoverageSpecies().empty()) dest->setCoverageSpecies(src->getCoverageSpecies());
-
-    if (src->hasSteps()) dest->setSteps(true);
-    if (src->isReadHeightsFromFile()) dest->setReadHeightsFromFile(true);
-    if (src->isReadSpeciesFromFile()) dest->setReadSpeciesFromFile(true);
+    if (src->getRandGenInit() != 0) dest->setRandGenInit( src->getRandGenInit() );
 }
 
 

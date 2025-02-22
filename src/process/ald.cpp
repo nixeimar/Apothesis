@@ -24,7 +24,7 @@ ALD::~ALD() { ; }
 void ALD::init()
 {
 
-    cout << "Init CVD process ...";
+    cout << "Init ALD process ...";
 
     Utils::Parameters* basic = io->getParameters();
 
@@ -54,29 +54,40 @@ bool ALD::createWorkingDir(const std::string& dirName) {
     } catch (const fs::filesystem_error& e) {
         std::cerr << "Filesystem error: " << e.what() << std::endl;
         return false;
+
     }
 }
 
 void ALD::perform()
 {
     int iCycle = 0;
-    for (auto const& [key, p ] : m_mCycles ) {
+    double startTime = 0.0;
+    double duration = 0.0;
 
-        std::string originalDir = fs::current_path().string();
-        createWorkingDir(  "Test_" + std::to_string(iCycle) );
+    std::string originalDir = fs::current_path().string();
 
-        Lattice* l = apothesis->getLattice();
-        apothesis->update( p, l );
-        apothesis->exec();
+    for (int i = 0; i < 2050; i++ ) {
 
-        //Update the parameters
-        p->setStartTime( apothesis->getEndTime() );
-        p->setEndTime( apothesis->getStartTime() + p->getEndTime() );
+        for (auto const& [key, p ] : m_mCycles ) {
 
-        // Restore the original working directory
-        fs::current_path(originalDir);
+            createWorkingDir(  "Cycle_" + std::to_string( startTime ) );
 
-        iCycle++;
+            Lattice* l = apothesis->getLattice();
+
+            apothesis->update( p, l,  startTime );
+            apothesis->exec();
+
+            startTime = 0.0;
+            startTime = apothesis->getEndTime();
+
+            iCycle++;
+
+            // Restore the original working directory
+            fs::current_path(originalDir);
+        }
     }
+
+
+    std::cout << "Apothesis finished succesfully ..." << std::endl;
 
 }
