@@ -14,6 +14,7 @@ INCLUDEPATH += . \
 	 ./src \
          ./src/lattice \
          ./src/microprocesses \
+         ./src/process \
          ./src/IO \
          ./src/error
 
