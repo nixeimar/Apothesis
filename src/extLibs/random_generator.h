@@ -9,7 +9,7 @@
 
 #include "extLibs/randomc.h"
 
-class CRandomMersenne;
+ class CRandomMersenne;
 
 namespace RandomGen {
 

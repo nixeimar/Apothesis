@@ -8,6 +8,8 @@ TARGET = apothesis
 QT-=gui core
 QMAKE_CXXFLAGS += -std=c++17
 CONFIG += debug_and_release
+QMAKE_CXXFLAGS_RELEASE = -O0 -g -ffloat-store
+QMAKE_CXXFLAGS_DEBUG = -O0 -g -ffloat-store
 CONFING -= qt
 
 INCLUDEPATH += . \
