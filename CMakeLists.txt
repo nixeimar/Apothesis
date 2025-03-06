@@ -1,124 +1,85 @@
-cmake_minimum_required(VERSION 3.0)
-#set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+cmake_minimum_required(VERSION 3.16)
+project(apothesis VERSION 1.0 LANGUAGES C CXX)
 
-project(apothesis)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(header_files
-    ./src/apothesis.h
-    ./src/pointers.h
-    ./src/IO/io.h
-    ./src/processes/abstract_process.h
-    ./src/lattice/lattice.h
-    ./src/processes/process.h
-    ./src/lattice/site.h
-    ./src/lattice/diamond.h
-    ./src/lattice/FCC.h
-    ./src/lattice/HCP.h
-    ./src/lattice/SimpleCubic.h
-    ./src/lattice/diamond.h
-    ./src/processes/adsorption.h
-    ./src/processes/diffusion.h
-    ./src/processes/factory_process.h
-    ./src/processes/desorption.h
-    ./src/processes/abstract_process.h
-    ./src/processes/reaction.h
-    ./src/error/errorhandler.h
-    ./src/processes/parameters.h
-    ./src/IO/xyz_reader.h
-    ./src/IO/cml_reader.h
-    ./src/IO/reader.h
-    ./src/IO/io.h
-    ./src/properties.h
-    ./src/extLibs/random_generator.h
-    ./src/extLibs/randomc.h
-    ./src/processes/adsorption_perform.h 
-    ./src/processes/adsorption_rules.h 
-    ./src/processes/adsorption_types.h
-    ./src/processes/adsorption_perform.h 
-    ./src/processes/adsorption_rules.h 
-    ./src/processes/adsorption_types.h 
-    ./src/processes/desorption_perform.h 
-    ./src/processes/desorption_rules.h 
-    ./src/processes/desorption_types.h 
-    ./src/processes/diffusion_perform.h 
-    ./src/processes/diffusion_rules.h 
-    ./src/processes/diffusion_types.h
+find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui)
 
-)
-set(essential_src_files
-    ./src/main.cpp
-    ./src/properties.cpp
-    ./src/apothesis.cpp
-)
-set(IO_files
-    ./src/IO/xyz_reader.cpp
-    ./src/IO/cml_reader.cpp
-    ./src/IO/reader.cpp
-    ./src/IO/io.cpp
- )
-set(extLibs_files
-    ./src/extLibs/random_generator.cpp
-    ./src/extLibs/mersenne.cpp
-)
-set(process_files
-    ./src/processes/adsorption.cpp
-    ./src/processes/diffusion.cpp
-    ./src/processes/adsorption.cpp
-    ./src/processes/diffusion.cpp
-    ./src/processes/factory_process.cpp
-    ./src/processes/process.cpp
-    ./src/processes/parameters.cpp
-    ./src/IO/io.cpp
-    ./src/IO/xyz_reader.cpp
-    ./src/IO/cml_reader.cpp
-    ./src/IO/reader.cpp
-    ./src/processes/desorption.cpp
-    ./src/processes/process.cpp
-    ./src/processes/abstract_process.cpp
-    ./src/processes/reaction.h
-    ./src/processes/reaction.cpp
-    ./src/processes/adsorption_perform.cpp 
-    ./src/processes/adsorption_rules.cpp 
-    ./src/processes/adsorption_types.cpp 
-    ./src/processes/desorption_perform.cpp 
-    ./src/processes/desorption_rules.cpp 
-    ./src/processes/desorption_types.cpp 
-    ./src/processes/diffusion_perform.cpp 
-    ./src/processes/diffusion_rules.cpp 
-    ./src/processes/diffusion_types.cpp
-)
-set(error_files
-    ./src/error/errorhandler.cpp 
-)
+qt_standard_project_setup()
 
-set(lattice_files
-    ./src/lattice/site.cpp
-    ./src/lattice/lattice.cpp
-    ./src/lattice/diamond.cpp
-    ./src/lattice/FCC.cpp
-    ./src/lattice/HCP.cpp
-    ./src/lattice/SimpleCubic.cpp
-    ./src/lattice/diamond.cpp
+qt_add_executable(apothesis WIN32 MACOSX_BUNDLE
+    src/IO/cml_reader.cpp src/IO/cml_reader.h
+    src/IO/io.cpp src/IO/io.h
+    src/IO/xyz_reader.cpp src/IO/xyz_reader.h
+    src/apothesis.cpp src/apothesis.h
+    src/error/errorhandler.cpp src/error/errorhandler.h
+    src/extLibs/mersenne.cpp
+    src/extLibs/random_generator.cpp src/extLibs/random_generator.h
+    src/extLibs/randomc.h
+    src/lattice/FCC.cpp src/lattice/FCC.h
+    src/lattice/HCP.cpp src/lattice/HCP.h
+    src/lattice/SimpleCubic.cpp src/lattice/SimpleCubic.h
+    src/lattice/diamond.cpp src/lattice/diamond.h
+    src/lattice/lattice.cpp src/lattice/lattice.h
+    src/lattice/site.cpp src/lattice/site.h
+    src/macroprocesses/ald.cpp src/macroprocesses/ald.h
+    src/macroprocesses/ale.cpp src/macroprocesses/ale.h
+    src/macroprocesses/catalysis.cpp src/macroprocesses/catalysis.h
+    src/macroprocesses/cvd.cpp src/macroprocesses/cvd.h
+    src/macroprocesses/etching.cpp src/macroprocesses/etching.h
+    src/macroprocesses/macroprocess.cpp src/macroprocesses/macroprocess.h
+    src/macroprocesses/pvd.cpp src/macroprocesses/pvd.h
+    src/main.cpp
+    src/microprocesses/abstract_process.cpp src/microprocesses/abstract_process.h
+    src/microprocesses/adsorption.cpp src/microprocesses/adsorption.h
+    src/microprocesses/adsorption_perform.cpp src/microprocesses/adsorption_perform.h
+    src/microprocesses/adsorption_rules.cpp src/microprocesses/adsorption_rules.h
+    src/microprocesses/adsorption_types.cpp src/microprocesses/adsorption_types.h
+    src/microprocesses/desorption.cpp src/microprocesses/desorption.h
+    src/microprocesses/desorption_perform.cpp src/microprocesses/desorption_perform.h
+    src/microprocesses/desorption_rules.cpp src/microprocesses/desorption_rules.h
+    src/microprocesses/desorption_types.cpp src/microprocesses/desorption_types.h
+    src/microprocesses/diffusion.cpp src/microprocesses/diffusion.h
+    src/microprocesses/diffusion_perform.cpp src/microprocesses/diffusion_perform.h
+    src/microprocesses/diffusion_rules.cpp src/microprocesses/diffusion_rules.h
+    src/microprocesses/diffusion_types.cpp src/microprocesses/diffusion_types.h
+    src/microprocesses/factory_process.cpp src/microprocesses/factory_process.h
+    src/microprocesses/io.h
+    src/microprocesses/parameters.cpp src/microprocesses/parameters.h
+    src/microprocesses/process.cpp src/microprocesses/process.h
+    src/microprocesses/reaction.cpp src/microprocesses/reaction.h
+    src/pointers.h
+    src/properties.cpp src/properties.h
+    src/register.h
 )
-
-add_executable(${PROJECT_NAME} ./src/main.cpp
-    ${header_files}
-    ${process_files}
-    ${error_files}
-    ${IO_files}
-    ${lattice_files}
-    ${species_files}
-    ${extLibs_files}
-    ${essential_src_files}
-)
-
-target_include_directories(${PROJECT_NAME} PUBLIC
+target_include_directories(apothesis PRIVATE
     .
-    ./src/
-    ./src/error
-    ./src/processes
-    ./src/IO
-    ./src/lattice
-    ./src/species
+    src
+    src/IO
+    src/error
+    src/lattice
+    src/macroprocesses
+    src/microprocesses
 )
+
+target_link_libraries(apothesis PRIVATE
+    Qt::Core
+    Qt::Gui
+)
+
+target_compile_options(apothesis
+    -std=c++17
+)
+
+install(TARGETS apothesis
+    BUNDLE DESTINATION .
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+qt_generate_deploy_app_script(
+    TARGET apothesis
+    FILENAME_VARIABLE deploy_script
+    NO_UNSUPPORTED_PLATFORM_ERROR
+)
+install(SCRIPT ${deploy_script})
