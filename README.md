@@ -10,6 +10,9 @@ It is still under development but please feel free to contact me if you have som
 
 Compile - qmake
 --------------------------------------------------------------------------------------------------------------
+To compile Apothesis using qmake, follow these steps:
+
+Step 1: Compile the Code:
 In the Apothesis directory run 
 ```
 qmake
@@ -20,9 +23,13 @@ and then
 ```
 make
 ```
+Step 2: Copy the Input File
+Copy the input.kmc file from the src/ directory:
+
 From `src/input.kmc` copy the `input.kmc` file.
 
 Paste the `input.kmc` file in the `Apothesis` folder.
+
 
 And then in terminal type
 ```
