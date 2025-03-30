@@ -48,9 +48,9 @@ using namespace MicroProcesses;
 
 Apothesis::Apothesis()
     : pLattice(0),
-      m_dRTot(0.0),
-      m_dProcRate(0.0),
-      m_debugMode(false)
+    m_dRTot(0.0),
+    m_dProcRate(0.0),
+    m_debugMode(false)
 {
     pIO = new IO();
     pProperties = new Utils::Properties(this);
@@ -576,7 +576,6 @@ void Apothesis::exec()
     //    pLattice->writeXYZ( "initial.xzy" );
 
     // The average height for the first time
-    double timeGrowth = 0;
     double meanDHPrevStep = pProperties->getMeanDH();
     double prevTimeStep = 0.0;
 
@@ -585,9 +584,9 @@ void Apothesis::exec()
     streamObj << m_dProcTime;
     //output = std::to_string( m_dProcTime ) + '\t'
     output = streamObj.str() + '\t'
-            + std::to_string( 0.0  ) + '\t'
-            + std::to_string( pProperties->getRMS() )  + '\t'
-            + std::to_string( pProperties->getMicroroughness() )  + '\t';
+             + std::to_string( 0.0  ) + '\t'
+             + std::to_string( pProperties->getRMS() )  + '\t'
+             + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
     for ( auto &p:m_processMap)
         output += std::to_string( p.first->getNumEventHappened() ) + '\t';
@@ -603,7 +602,7 @@ void Apothesis::exec()
     }
 
     pIO->writeInOutput( output );
-    bool bStop = false;
+    bool bStopCoverage = false;
     bool bStopTime = false;
     bool dRTot = 0.0;
 
@@ -621,17 +620,11 @@ void Apothesis::exec()
             //2. Pick a process according to the rates
             if ( m_iRandom <= m_dSum ){
 
-                // Calculate the average Height before
-                //                aveDH1 = pProperties->getMeanDH();
-
                 //Get a random number which is the ID of the site where this process can performed
                 m_iSiteNum = pRandomGen->getIntRandom(0, p.second.size() - 1 );
 
                 //3. From this process pick the random site with id and perform it:
                 Site* s = *next( p.second.begin(), m_iSiteNum );
-
-                //Compute the average height before performing the process to measure the growth rate
-                timeGrowth = m_dProcTime;
 
                 p.first->perform( s );
 
@@ -693,9 +686,9 @@ void Apothesis::exec()
             streamObj << m_dProcTime;
 
             output = streamObj.str() + '\t'
-                    + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) / ( ((m_dProcTime - prevTimeStep) ) ) )+ '\t'
-                    + std::to_string( pProperties->getRMS() )  + '\t'
-                    + std::to_string( pProperties->getMicroroughness() )  + '\t';
+                     + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep) / ( ((m_dProcTime - prevTimeStep) ) ) )+ '\t'
+                     + std::to_string( pProperties->getRMS() )  + '\t'
+                     + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
             //Store info to be used next time
             meanDHPrevStep = pProperties->getMeanDH();
@@ -729,31 +722,36 @@ void Apothesis::exec()
             timeToWriteLattice = 0.0;
         }
 
-
         unordered_map<string, double> covs = pLattice->computeCoverages( pParameters->getCoverageSpecies() );
         for ( auto &p:covs) {
             if ( pParameters->getStopCov().first.compare( p.first ) == 0 ) {
                 if ( p.second > std::stod(pParameters->getStopCov().second)  ){
                     cout << pParameters->getStopCov().first << " " << pParameters->getStopCov().second << endl;
-                    bStop = true;
+                    bStopCoverage = true;
                     break;
                 }
             }
         }
 
-        if ( bStop )
+        if ( bStopCoverage || bStopTime )
             break;
 
     }
+
+    if ( !bStopTime )
+        // The end time of the process is stored in order to be used in ALD or ALE processes.
+        m_dEndTime = m_dProcTime;
+    else
+        m_dProcTime = m_dEndTime;
 
     ostringstream streamObjEnd;
     streamObjEnd.precision(15);
     streamObjEnd << m_dProcTime;
     //            output = std::to_string( m_dProcTime ) + '\t'
     output = streamObjEnd.str() + '\t'
-            + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/ (m_dProcTime - timeToWriteLog)  ) + '\t'
-            + std::to_string( pProperties->getRMS() )  + '\t'
-            + std::to_string( pProperties->getMicroroughness() )  + '\t';
+             + std::to_string( (pProperties->getMeanDH() - meanDHPrevStep)/ (m_dProcTime - timeToWriteLog)  ) + '\t'
+             + std::to_string( pProperties->getRMS() )  + '\t'
+             + std::to_string( pProperties->getMicroroughness() )  + '\t';
 
     for ( auto &p:m_processMap)
         output += std::to_string( p.first->getNumEventHappened() ) + '\t';
@@ -775,9 +773,6 @@ void Apothesis::exec()
 
     if ( m_bReportCoverages )
         pLattice->writeLatticeSpecies( m_dProcTime  );
-
-    // The end time of the process is stored in order to be used in ALD or ALE processes.
-    m_dEndTime = m_dProcTime;
 
     //Close the file to open another one (for ALD/ALE)ls
     pIO->closeOutputFile();
