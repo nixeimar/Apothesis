@@ -74,8 +74,6 @@ public:
     /// Return normalized probabilities of each process
     vector<double> calculateProbabilities(vector<MicroProcesses::Process*>);
 
-    inline void setDebugMode(bool ifDebug) { m_debugMode = ifDebug;}
-    bool getDebugMode() { return m_debugMode; }
 
     /// Return number of species
     int getNumSpecies();

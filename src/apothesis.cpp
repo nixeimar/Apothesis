@@ -569,6 +569,7 @@ void Apothesis::exec()
 {
     double timeToWriteLog = 0;
     double timeToWriteLattice = 0;
+    double lastTimeStep = 0.0;
 
     string output ="";
 
@@ -603,8 +604,10 @@ void Apothesis::exec()
 
     pIO->writeInOutput( output );
     bool bStop = false;
+    bool bStopTime = false;
+    bool dRTot = 0.0;
 
-    while ( m_dProcTime <= m_dEndTime ){
+    while ( m_dProcTime <= m_dEndTime && !bStopTime ){
         //1. Get a random numbers
         m_dSum = 0.0;
         m_iRandom = pRandomGen->getDoubleRandom();
@@ -612,6 +615,8 @@ void Apothesis::exec()
         for ( auto &p:m_processMap){
             m_dProcRate = p.first->getRateConstant()*(double)p.second.size();
             m_dSum += m_dProcRate/m_dRTot;
+            dRTot = m_dRTot;
+
 
             //2. Pick a process according to the rates
             if ( m_iRandom <= m_dSum ){
@@ -635,9 +640,12 @@ void Apothesis::exec()
 
                 // Check if an affected site must enter tob a class or not
                 for (Site* affectedSite:p.first->getAffectedSites() ){
+
                     //Erase the affected site from the processes
                     for (auto &p2:m_processMap){
+
                         if ( !p2.first->isUncoAccepted() ) {
+
                             //Added if it obeys the rules of this process
                             if ( p2.first->rules( affectedSite ) ) {
                                 if (p2.second.find( affectedSite ) == p2.second.end() )
@@ -649,13 +657,24 @@ void Apothesis::exec()
                     }
                 }
 
-                //4. Re-compute the processes rates and re-compute Rtot (see ppt)
+                //4. Re-compute the processes rates and re-compute Rtot
                 m_dRTot = 0.0;
                 for (pair<Process*, set< Site* > > p3:m_processMap)
                     m_dRTot += p3.first->getRateConstant()*(double)p3.second.size();
 
-                //5. Compute dt = -ln(ksi)/Rtot
-                m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
+
+                //We need this because in the case where there are no other processes the time will be inf - so we need the rate of the last
+                //process that was performed (dRTot) before no other processes are available.
+                if ( m_dRTot > 0.0) {
+
+                    //5. Compute dt = -ln(ksi)/Rtot
+                    m_dt = -log( pRandomGen->getDoubleRandom()  )/m_dRTot;
+                }
+                else {
+                    m_dt = -log( pRandomGen->getDoubleRandom()  )/dRTot;
+                    bStopTime = true;
+                }
+
                 break;
             }
         }
