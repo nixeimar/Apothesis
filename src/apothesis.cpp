@@ -569,11 +569,8 @@ void Apothesis::exec()
 {
     double timeToWriteLog = 0;
     double timeToWriteLattice = 0;
-    double lastTimeStep = 0.0;
 
     string output ="";
-
-    //    pLattice->writeXYZ( "initial.xzy" );
 
     // The average height for the first time
     double meanDHPrevStep = pProperties->getMeanDH();
@@ -738,10 +735,7 @@ void Apothesis::exec()
 
     }
 
-    if ( !bStopTime )
-        // The end time of the process is stored in order to be used in ALD or ALE processes.
-        m_dEndTime = m_dProcTime;
-    else
+    if ( bStopTime )
         m_dProcTime = m_dEndTime;
 
     ostringstream streamObjEnd;
@@ -773,6 +767,9 @@ void Apothesis::exec()
 
     if ( m_bReportCoverages )
         pLattice->writeLatticeSpecies( m_dProcTime  );
+
+    // The end time of the process is stored in order to be used in ALD or ALE processes.
+    m_dEndTime = m_dProcTime;
 
     //Close the file to open another one (for ALD/ALE)ls
     pIO->closeOutputFile();
