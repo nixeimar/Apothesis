@@ -11,7 +11,7 @@ public:
     Macroprocess();
     virtual ~Macroprocess();
 
-    virtual void init();
+    virtual void init() = 0;
     virtual void perform();
 
     void setIO( IO* io);

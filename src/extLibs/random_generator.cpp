@@ -4,7 +4,7 @@ namespace RandomGen {
 
 RandomGenerator::RandomGenerator( Apothesis *apothesis ):Pointers( apothesis )
 {
-    m_mersenne = new CRandomMersenne( 0 ); // time( 0 ) );
+    m_mersenne = new CRandomMersenne( 0 );
 }
 
 RandomGenerator::~RandomGenerator() { delete m_mersenne; }

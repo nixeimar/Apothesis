@@ -37,4 +37,7 @@ void CVD::init()
         apothesis->pErrorHandler->error_simple_msg("No etching species must be defined in a CVD process");
         EXIT
     }
+
+    apothesis->setIO( io );
+    apothesis->init();
 }

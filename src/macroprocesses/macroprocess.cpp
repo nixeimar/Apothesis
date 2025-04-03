@@ -18,12 +18,6 @@ void Macroprocess::setIO(IO *newIO)
     io = newIO;
 }
 
-void Macroprocess::init(){
-
-    apothesis->setIO( io );
-    apothesis->init();
-}
-
 void Macroprocess::perform(){
 
     cout << "Apothesis runnning ..." << endl;

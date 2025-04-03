@@ -604,7 +604,7 @@ void Apothesis::exec()
     bool dRTot = 0.0;
 
     while ( m_dProcTime <= m_dEndTime && !bStopTime ){
-        //1. Get a random numbers
+        //1. Get a  numbers
         m_dSum = 0.0;
         m_iRandom = pRandomGen->getDoubleRandom();
 

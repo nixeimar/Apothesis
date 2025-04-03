@@ -35,4 +35,8 @@ void Etching::init()
                                                    " where X is the species of the etched surface.");
         EXIT
     }
+
+    //Pass the io to apothesis which contains the parameters that needs to run.
+    apothesis->setIO( io );
+    apothesis->init();
 }

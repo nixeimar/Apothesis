@@ -21,4 +21,11 @@
 PVD::PVD() { ; }
 PVD::~PVD() { ; }
 
-void PVD::init() { cout << "Init PVD process ...";}
+void PVD::init() {
+
+    //Pass the io to apothesis which contains the parameters that needs to run.
+    apothesis->setIO( io );
+    apothesis->init();
+
+    cout << "Init PVD process ...";
+}

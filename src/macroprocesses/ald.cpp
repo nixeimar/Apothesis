@@ -34,6 +34,7 @@ void ALD::init()
     m_mCycles = io->getCycles();
 
     apothesis->setIO( io );
+    apothesis->init();
 }
 
 bool ALD::createWorkingDir(const std::string& dirName) {
