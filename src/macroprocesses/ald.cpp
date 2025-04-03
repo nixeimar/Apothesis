@@ -66,7 +66,7 @@ void ALD::perform()
 
     std::string originalDir = fs::current_path().string();
 
-    apothesis->initRandom();
+    apothesis->initRandom( io->getParameters() );
 
     for (int i = 0; i < iNumCycles; i++ ) {
         for (auto const& [key, p ] : m_mCycles ) {

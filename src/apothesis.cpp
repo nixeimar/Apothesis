@@ -81,7 +81,7 @@ void Apothesis::init()
     m_dProcTime = pParameters->getStartTime();
 
     // Initialize Random generator
-    initRandom();
+    initRandom( pParameters );
 
     //build the lattice
     buildLattice();
@@ -447,18 +447,16 @@ void Apothesis::buildLattice(){
     //pLattice->print();
 }
 
-void Apothesis::initRandom(){
+void Apothesis::initRandom( Utils::Parameters* parameters ){
 
-    if (pParameters) {
+    if (parameters) {
 
         // Initialize Random generator
-        if ( pParameters->getRandGenInit() != 0.0 )
-            pRandomGen->init( pParameters->getRandGenInit() );
+        if ( parameters->getRandGenInit() != 0.0 )
+            pRandomGen->init( parameters->getRandGenInit() );
         else
             pRandomGen->init( time(nullptr) );
     }
-    else
-        pErrorHandler->error_simple_msg("The parameters have not be defined.");
 }
 
 void Apothesis::update( Utils::Parameters* parameters, Lattice* lattice, double start )
@@ -892,5 +890,4 @@ void Apothesis::setIO(IO *newPIO)
 {
     pIO = newPIO;
 }
-
 

@@ -103,7 +103,7 @@ public:
     double getEndTime() const;
     void setEndTime(double newDEndTime);
 
-    void initRandom();
+    void initRandom(Utils::Parameters* );
 
 private:
     IO* pIO;
