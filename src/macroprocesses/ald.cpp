@@ -34,7 +34,6 @@ void ALD::init()
     m_mCycles = io->getCycles();
 
     apothesis->setIO( io );
-    apothesis->init();
 }
 
 bool ALD::createWorkingDir(const std::string& dirName) {
@@ -67,11 +66,14 @@ void ALD::perform()
 
     std::string originalDir = fs::current_path().string();
 
+    apothesis->initRandom();
+
     for (int i = 0; i < iNumCycles; i++ ) {
         for (auto const& [key, p ] : m_mCycles ) {
 
             createWorkingDir(  "Cycle_" + std::to_string( startTime ) );
 
+            //Open the output file
             Lattice* l = apothesis->getLattice();
 
             apothesis->update( p, l,  startTime );

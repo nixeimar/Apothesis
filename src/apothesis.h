@@ -103,6 +103,8 @@ public:
     double getEndTime() const;
     void setEndTime(double newDEndTime);
 
+    void initRandom();
+
 private:
     IO* pIO;
 

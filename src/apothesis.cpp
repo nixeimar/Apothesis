@@ -81,10 +81,7 @@ void Apothesis::init()
     m_dProcTime = pParameters->getStartTime();
 
     // Initialize Random generator
-    if ( pParameters->getRandGenInit() != 0.0 )
-        pRandomGen->init( pParameters->getRandGenInit() );
-    else
-        pRandomGen->init( time(nullptr) );
+    initRandom();
 
     //build the lattice
     buildLattice();
@@ -450,6 +447,20 @@ void Apothesis::buildLattice(){
     //pLattice->print();
 }
 
+void Apothesis::initRandom(){
+
+    if (pParameters) {
+
+        // Initialize Random generator
+        if ( pParameters->getRandGenInit() != 0.0 )
+            pRandomGen->init( pParameters->getRandGenInit() );
+        else
+            pRandomGen->init( time(nullptr) );
+    }
+    else
+        pErrorHandler->error_simple_msg("The parameters have not be defined.");
+}
+
 void Apothesis::update( Utils::Parameters* parameters, Lattice* lattice, double start )
 {
     //First clear all processes
@@ -500,7 +511,7 @@ void Apothesis::update( Utils::Parameters* parameters, Lattice* lattice, double 
     for (pair<Process*, set< Site* > > p:m_processMap)
         m_dRTot += p.first->getRateConstant()*(double)p.second.size();
 
-    //Start writing in the output log
+    //Start writing in the  log
     //Write initialization info to log
     pIO->writeLogOutput("Apothesis build on " __TIMESTAMP__);
     pIO->writeLogOutput("-------------------------------------------------");
