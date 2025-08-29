@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyapothesis"
+version = "0.1.0"
+description = "Python interface for Apothesis: real-time simulation & ML predictions"
+authors = [{ name = "Om Swastik Panda", email = "omswastikpanda11@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = ["numpy", "matplotlib", "pygame"]
