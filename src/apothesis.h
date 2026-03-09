@@ -25,7 +25,12 @@
 #include <functional>
 #include <set>
 #include <valarray>
-
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <functional>
+#include <string>
+#include<atomic>
 #define EXIT { printf("Apothesis terminated. \n"); exit( EXIT_FAILURE ); }
 
 using namespace std;
@@ -75,6 +80,31 @@ public:
 
     /// Perform the KMC iteratios
     void exec();
+
+    //worker thread initialization
+    void workerThread() ;
+    void workerLS() ;
+    void workerLH() ;
+
+
+    std::atomic<bool> ready{false};
+    std::atomic<bool> done{false};
+    std::atomic<bool> readyLS{false};
+    std::atomic<bool> doneLS{false};
+    std::atomic<bool> readyLH{false};
+    std::atomic<bool> doneLH{false};
+    string temp_output;
+    double temp_procTime;
+
+
+    //Logging function
+    void loggingProcess(string output);
+    
+    //Writing lattice heights
+    void writeLatticeHeightsProcess(double m_dProcTime);
+
+    //Writing lattice Species
+    void writeLatticeSpeciesProcess(double m_dProcTime);
 
     /// Function to log to output file whether a parameter is properly read
     void logSuccessfulRead(bool read, string parameter);
