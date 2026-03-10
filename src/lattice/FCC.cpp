@@ -30,13 +30,17 @@ void FCC::readSpeciesFromFile() { cout << "Reading file for species is not suppo
 
 void FCC::build()
 {
+    // Free sites previously allocated by buildSites()
+    for (int i = 0; i < m_vSites.size(); i++)
+        delete m_vSites[i];
+
     // The sites of the lattice.
     m_vSites.resize( getSize() );
     for ( int i = 0; i < m_vSites.size(); i++)
         m_vSites[ i ] = new Site();
 
     if ( m_sOrient == "111"){
-        if ( m_iSizeX%2 != 0 || m_iSizeX%2 != 0){
+        if ( m_iSizeX%2 != 0 || m_iSizeY%2 != 0){
             cout << "Error:The size of the lattice must be an even number in each direction." << endl;
             for ( int i = 0; i < m_vSites.size(); i++)
                 delete m_vSites[ i ];
