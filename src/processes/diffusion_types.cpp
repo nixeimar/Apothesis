@@ -40,7 +40,7 @@ double arrheniusType(Diffusion* proc)
     double k = proc->getParameters()->dkBoltz;
     E = E/proc->getParameters()->dAvogadroNum;
     Em = Em/proc->getParameters()->dAvogadroNum;
-    double A = exp(E-Em)/(k*T);
+    double A = exp((E-Em)/(k*T));
 
     return v0*A*exp(-(double)n*E/(k*T));
 }
