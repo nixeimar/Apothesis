@@ -106,6 +106,10 @@ void HCP::build()
         m_errorHandler->warningSimple_msg("The lattice initial height is too small.Consider revising.");
     }
 
+    // Free sites previously allocated by buildSites()
+    for (int i = 0; i < m_vSites.size(); i++)
+        delete m_vSites[i];
+
     // The sites of the lattice.
     m_vSites.resize(getSize());
     for (int i = 0; i < m_vSites.size(); i++)
