@@ -21,7 +21,11 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include <any>
+#if __cplusplus >= 201703L
+    #include <any>
+#else
+    #error "C++17 or higher is required (std::any not supported)"
+#endif
 #include "lattice.h"
 #include "site.h"
 #include "extLibs/random_generator.h"
