@@ -48,8 +48,8 @@ Since the project is not based on Qt framework you can use any IDE of your choic
 
 Compile - cmake
 --------------------------------------------------------------------------------------------------------------
-In the Apothesis directory create build directory.
-Inside the build directory type 
+In the Apothesis directory create a "build" directory.
+Inside the "build" directory type 
 
 ``` 
 cmake ..
@@ -62,7 +62,7 @@ make -j
 ```
 From `src/input.kmc` copy the `input.kmc` file and put it inside the build folder and then in terminal type
 ```
-./Apothesis
+./apothesis
 
 ```
 
