@@ -45,12 +45,12 @@ using namespace MicroProcesses;
 //using namespace Utils;
 
 Apothesis::Apothesis(int argc, char *argv[])
-    : pLattice(0),
+    : pReader(0),
+      pLattice(0),
       pErrorHandler(0),
-      pReader(0),
+      m_debugMode(false),
       m_dRTot(0.0),
-      m_dProcRate(0.0),
-      m_debugMode(false)
+      m_dProcRate(0.0)
 {
     m_iArgc = argc;
     m_vcArgv = argv;
@@ -455,7 +455,6 @@ void Apothesis::exec()
     //    pLattice->writeXYZ( "initial.xzy" );
 
     // The average height for the first time
-    double timeGrowth = 0;
     double meanDHPrevStep = pProperties->getMeanDH();
     double prevTimeStep = 0.0;
 
@@ -505,8 +504,6 @@ void Apothesis::exec()
                 Site* s = *next( p.second.begin(), m_iSiteNum );
 
                 //Compute the average height before performing the process to measure the growth rate
-                timeGrowth = m_dProcTime;
-
                 p.first->perform( s );
 
                 //Count the event for this class

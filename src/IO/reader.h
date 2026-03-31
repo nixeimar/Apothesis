@@ -36,16 +36,16 @@ public:
     Reader();
     explicit Reader(Apothesis *apothesis): Pointers(apothesis),
         m_sBuildKey("build_lattice"),
-        m_sReadKey("read_lattice"),
-        m_sLatticeKey("lattice_species"),
         m_sStepKey("steps"),
+        m_sLatticeKey("lattice_species"),
+        m_sReadKey("read_lattice"),
         m_sNSpeciesKey("nspecies"),
         m_sNProcKey("nprocesses"),
-        m_sPressureKey("pressure"),
         m_sTemperatureKey("temperature"),
+        m_sPressureKey("pressure"),
         m_sTimeKey("time"),
-        m_sReactionKey("reaction"),
         m_sSiteKey("*"),
+        m_sReactionKey("reaction"),
         m_sCommentLine("#")
     {
         //Initialize the map for the lattice
