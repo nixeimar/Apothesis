@@ -1158,7 +1158,6 @@ void FCC::writeXYZ( string filename )
 
 void FCC::check()
 {
-    int k = 0;
 
     cout << "Checking lattice..." << endl;
 

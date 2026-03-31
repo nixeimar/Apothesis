@@ -21,15 +21,15 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sLatticeType("NONE"),
     m_sProcess("process"),
     m_sLattice("lattice"),
+    m_sSteps("steps"),
     m_sTemperature("temperature"),
     m_sPressure("pressure"),
+    m_sCommentLine("#"),
     m_sTime("time_duration"),
-    m_sSteps("steps"),
     m_sRandom("random"),
     m_sSpecies("species"),
     m_sWrite("write"),
     m_sGrowth("growth"),
-    m_sCommentLine("#"),
     m_sPrecursors("precursors"),
     m_sReport("report"),
     m_sHeights("heights.txt"),
@@ -467,10 +467,8 @@ string IO::simplified( string str )
     bool is_white = false;
     bool was_white = false;
     bool append = false;
-    size_t i = 0;
     size_t n = str.size();
     size_t nm = n - 1;
-    string::iterator it = str.begin();
 
     for (size_t i = 0; i < n; i++) {
         c = str[i];
@@ -497,9 +495,7 @@ string IO::simplified( string str )
 
 bool IO::isNumber( string str){
     char c;
-    size_t i = 0;
     size_t n = str.size();
-    string::iterator it = str.begin();
 
     bool bPlusFound = false;
     bool bPlusFound2 = false;
