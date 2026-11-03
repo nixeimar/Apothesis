@@ -66,6 +66,22 @@ From `src/input.kmc` copy the `input.kmc` file and put it inside the build folde
 
 ```
 
+## Build on Windows (MSYS2 + MinGW)
+
+1. Install MSYS2
+2. Install dependencies:
+   ```pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake```
+
+3. Open "MSYS2 MinGW64" terminal
+
+4. Build:
+   ```
+   mkdir build
+   cd build
+   cmake -G "MinGW Makefiles" -DCMAKE_CXX_STANDARD=17 ..
+   mingw32-make
+   ```
+
 Contact information:
 Nikolaos (Nikos) Cheimarios: 
 nixeimar@chemeng.ntua.gr
