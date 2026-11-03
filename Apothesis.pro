@@ -87,3 +87,8 @@ SOURCES += ./src/apothesis.cpp \
            ./src/processes/diffusion_types.cpp \
            ./src/lattice/HCP.cpp \
            ./src/lattice/diamond.cpp
+
+# Fixed-slab crystallographic site representation.
+HEADERS += src/crystal/crystal_surface.h
+SOURCES += src/crystal/crystal_surface.cpp
+INCLUDEPATH += src/crystal

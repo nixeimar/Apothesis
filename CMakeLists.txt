@@ -132,3 +132,17 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ./src/lattice
     ./src/species
 )
+
+# Crystallographic adsorption-site module (fixed ideal slabs).
+add_library(apothesis_crystal src/crystal/crystal_surface.cpp)
+target_include_directories(apothesis_crystal PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/crystal)
+target_compile_features(apothesis_crystal PUBLIC cxx_std_17)
+target_link_libraries(apothesis PRIVATE apothesis_crystal)
+add_executable(crystal_surface_demo examples/crystal_surface_demo.cpp)
+target_link_libraries(crystal_surface_demo PRIVATE apothesis_crystal)
+include(CTest)
+if(BUILD_TESTING)
+    add_executable(crystal_surface_tests tests/crystal_surface_tests.cpp)
+    target_link_libraries(crystal_surface_tests PRIVATE apothesis_crystal)
+    add_test(NAME crystal_surface_tests COMMAND crystal_surface_tests)
+endif()
