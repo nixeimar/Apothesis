@@ -55,6 +55,7 @@ HEADERS += ./src/apothesis.h \
            ./src/lattice/diamond.h
 
 SOURCES += ./src/apothesis.cpp \
+           ./src/config/configuration.cpp \
            ./src/IO/io.cpp \
            ./src/IO/cml_reader.cpp \
            ./src/IO/reader.cpp \

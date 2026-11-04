@@ -65,7 +65,7 @@ void SimpleCubic::buildSteps()
 
 void SimpleCubic::readHeightsFromFile() {
 
-    ifstream heightFile("heights.dat");
+    ifstream heightFile(m_parameters->heightsFile());
 
     if (heightFile.good()) {
 
@@ -92,9 +92,9 @@ void SimpleCubic::readHeightsFromFile() {
 
         int icount = 0;
 
-        for (int i = 0; i < m_iSizeX; ++i) {
-            for (int j = 0; j < m_iSizeY; ++j) {
-                icount = i * m_iSizeY + j;
+        for (int i = 0; i < m_iSizeY; ++i) {
+            for (int j = 0; j < m_iSizeX; ++j) {
+                icount = i * m_iSizeX + j;
                 m_vSites[icount]->setID(icount);
                 m_vSites[icount]->setHeight( heights[ i ][ j ] );
             }
@@ -106,7 +106,7 @@ void SimpleCubic::readHeightsFromFile() {
 
 void SimpleCubic::readSpeciesFromFile(){
 
-    ifstream speciesFile("species.dat");
+    ifstream speciesFile(m_parameters->speciesFile());
 
     if (speciesFile.good()) {
 
@@ -133,9 +133,9 @@ void SimpleCubic::readSpeciesFromFile(){
 
         int icount = 0;
 
-        for (int i = 0; i < m_iSizeX; ++i) {
-            for (int j = 0; j < m_iSizeY; ++j) {
-                icount = i * m_iSizeY + j;
+        for (int i = 0; i < m_iSizeY; ++i) {
+            for (int j = 0; j < m_iSizeX; ++j) {
+                icount = i * m_iSizeX + j;
                 m_vSites[icount]->setLabel( species[ i ][ j ] );
 
                 if ( species[ i ][ j ].find("*") != std::string::npos)

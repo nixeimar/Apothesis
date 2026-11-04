@@ -16,6 +16,8 @@
 //============================================================================
 
 #include "io.h"
+#include <filesystem>
+#include <stdexcept>
 
 IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sLatticeType("NONE"),
@@ -46,15 +48,25 @@ IO::~IO(){}
 
 void IO::init(int argc, char* argv[])
 {
-    openInputFile("input.kmc");
+    if (argc == 2 && argv[1][0] != '-') m_inputFilename = argv[1];
+    else if (argc == 3 && (string(argv[1]) == "--input" || string(argv[1]) == "-i"))
+        m_inputFilename = argv[2];
+    else if (argc != 1)
+        throw std::runtime_error("Usage: apothesis [--input|-i] <input.json|input.kmc>");
+    if (std::filesystem::path(m_inputFilename).extension() != ".json")
+        openInputFile(m_inputFilename);
 }
 
 
-string IO::getInputPath() const {return "";}
+string IO::getInputPath() const {return m_inputFilename;}
 
 
 void IO::readInputFile()
 {
+    if (std::filesystem::path(m_inputFilename).extension() == ".json") {
+        m_parameters->setConfiguration(Config::readJson(m_inputFilename));
+        return;
+    }
     list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport, m_sStartTime};
 
     string sLine;
@@ -445,7 +457,7 @@ void IO::openInputFile( string file )
     m_InputFile.open(file, ios::in );
 
     if ( !m_InputFile.is_open() ) {
-        m_errorHandler->error_simple_msg( "Cannot open file input.kmc" ) ;
+        m_errorHandler->error_simple_msg( "Cannot open file " + file ) ;
         EXIT
     }
 }
@@ -777,6 +789,7 @@ void IO::closeRoughnessFile()
 }
 
 vector<string> IO::getReactants( string process ) {
+    process = m_parameters->processEquation(process);
     vector<string> parts = split(process, "->");
     vector<string> temp = split(parts[ 0 ], "+");
     vector<string> reactants;
@@ -788,6 +801,7 @@ vector<string> IO::getReactants( string process ) {
 }
 
 vector<string> IO::getProducts( string process ) {
+    process = m_parameters->processEquation(process);
     vector<string> parts = split(process, "->");
     vector<string> temp = split(parts[ 1 ], "+");
     vector<string> products;

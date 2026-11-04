@@ -8,6 +8,21 @@ This is the first step for creating a generalized kinetic Monte Carlo code
 for surface growth phenomena targeting chemical vapor and atomic layer deposition processes.  
 It is still under development but please feel free to contact me if you have something in mind! 
 
+## Simulation input
+
+Use the versioned JSON format for new simulations. It supports named parameters
+on the system, lattice, species, processes and kinetic models, including custom
+nested values. Start with [`input.json`](input.json) and the
+[input format guide](doc/input-format.md).
+
+```sh
+./apothesis --validate-input input.json
+./apothesis --input input.json
+```
+
+Legacy `input.kmc` files remain supported; running `./apothesis` without arguments
+still selects `input.kmc` in the working directory.
+
 Compile - qmake
 --------------------------------------------------------------------------------------------------------------
 To compile Apothesis using qmake, follow these steps:
@@ -23,20 +38,11 @@ and then
 ```
 make
 ```
-Step 2: Copy the Input File
-Copy the input.kmc file from the src/ directory:
+Step 2: Run with the JSON input supplied in the project root:
 
-From `src/input.kmc` copy the `input.kmc` file.
-
-Paste the `input.kmc` file in the `Apothesis` folder.
-
-
-And then in terminal type
+```sh
+./apothesis --input input.json
 ```
-./apothesis
-
-```
-to run the simulation.
 
 This should do the trick.
 
@@ -47,7 +53,8 @@ Open Qt creater and go to `Open Projects` and open the `Apothesis.pro` file.
 Then hit `Configure Project`.
 
 After this move up a directory from the `Apothesis` directory and you should see the Qt build folder `build-Apothesis-Desktop-Debug`.
-Paste the `input.kmc` file there.
+Copy `input.json` from the project root into that build folder and set the
+application arguments to `--input input.json`.
 
 Now you can run the application.
 
@@ -67,9 +74,9 @@ and then
 ``` 
 make -j
 ```
-From `src/input.kmc` copy the `input.kmc` file and put it inside the build folder and then in terminal type
+Copy `input.json` from the project root into the build folder, then run:
 ```
-./apothesis
+./apothesis --input input.json
 
 ```
 

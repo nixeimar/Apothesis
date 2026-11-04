@@ -39,6 +39,8 @@ using namespace SurfaceTiles;
 using namespace Utils;
 
 /** The pure virtual class from which every other process is generated.*/
+namespace Config { class Value; }
+
 namespace MicroProcesses
 {
 
@@ -69,6 +71,11 @@ public:
 
     inline void setName( string procName ){ m_sProcName = procName; }
     inline string getName(){ return  m_sProcName; }
+
+    // Stable input identity, shared by neighbor-expanded instances of a process.
+    void setConfigurationId(const string& id) { m_configurationId = id; }
+    const string& configurationId() const { return m_configurationId; }
+    const Config::Value& inputParameters() const;
 
     inline void setID( int id ){ m_iID = id; }
     inline int getID(){ return m_iID; }
@@ -138,6 +145,7 @@ protected:
 
     /// The name of this prcess
     string m_sProcName;
+    string m_configurationId;
 
     ///Set true if it is always possible
     bool m_bUncoAccept;

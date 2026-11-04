@@ -184,6 +184,7 @@ void Apothesis::init()
                 a->setRandomGen( pRandomGen );
                 a->setErrorHandler( pErrorHandler );
                 a->setSysParams( pParameters ); //These are the systems and constants parameters
+                a->setConfigurationId(proc.first);
                 a->init( proc.second ); //These are the process per se parameters
 
                 m_processMap.insert( {a, emptySet} );
@@ -205,6 +206,7 @@ void Apothesis::init()
                     a->setRandomGen( pRandomGen );
                     a->setErrorHandler( pErrorHandler );
                     a->setSysParams( pParameters ); //These are the systems and constants parameters
+                    a->setConfigurationId(proc.first);
                     a->init( proc.second ); //These are the process per se parameters
 
                     m_processMap.insert( {a, emptySet} );
@@ -251,6 +253,7 @@ void Apothesis::init()
             r->setCoefReactants( coefReactants );
             r->setCoefProducts( coefProducts );
 
+            r->setConfigurationId(proc.first);
             r->init( proc.second ); //These are the process per se parameters
 
             m_processMap.insert( {r, emptySet} );
@@ -282,6 +285,7 @@ void Apothesis::init()
                 des->setRandomGen( pRandomGen );
                 des->setErrorHandler( pErrorHandler );
                 des->setSysParams( pParameters ); //These are the systems and constants parameters
+                des->setConfigurationId(proc.first);
                 des->init( proc.second ); //These are the process per se parameters
 
                 m_processMap.insert( {des, emptySet} );
@@ -303,6 +307,7 @@ void Apothesis::init()
                     des->setRandomGen( pRandomGen );
                     des->setErrorHandler( pErrorHandler );
                     des->setSysParams( pParameters ); //These are the systems and constants parameters
+                    des->setConfigurationId(proc.first);
                     des->init( proc.second ); //These are the process per se parameters
 
                     m_processMap.insert( {des, emptySet} );
@@ -335,6 +340,7 @@ void Apothesis::init()
                 dif->setRandomGen( pRandomGen );
                 dif->setErrorHandler( pErrorHandler );
                 dif->setSysParams( pParameters ); //These are the systems and constants parameters
+                dif->setConfigurationId(proc.first);
                 dif->init( proc.second ); //These are the process per se parameters
 
                 m_processMap.insert( {dif, emptySet} );
@@ -360,6 +366,7 @@ void Apothesis::init()
                     dif->setRandomGen( pRandomGen );
                     dif->setErrorHandler( pErrorHandler );
                     dif->setSysParams( pParameters ); //These are the systems and constants parameters
+                    dif->setConfigurationId(proc.first);
                     dif->init( proc.second ); //These are the process per se parameters
 
                     m_processMap.insert( {dif, emptySet} );
@@ -637,6 +644,14 @@ void Apothesis::logSuccessfulRead(bool read, string parameter)
 }
 
 string Apothesis::mf_analyzeProc(string process){
+
+    const string configuredType = pParameters->processType(process);
+    if (!configuredType.empty()) {
+        if (configuredType == "adsorption") return "Adsorption";
+        if (configuredType == "desorption") return "Desorption";
+        if (configuredType == "diffusion") return "Diffusion";
+        return "Reaction";
+    }
 
     vector<string> parts = pIO->split( process, "->");
 

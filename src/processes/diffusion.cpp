@@ -22,7 +22,7 @@ namespace MicroProcesses
 
 REGISTER_PROCESS_IMPL(Diffusion)
 
-Diffusion::Diffusion(){}
+Diffusion::Diffusion():m_bAllNeihs(false){}
 Diffusion::~Diffusion(){}
 
 
@@ -35,10 +35,10 @@ void Diffusion::init(vector<string> params)
     m_sType = any_cast<string>(m_vParams[ 0 ]);
     if ( m_sType.compare("arrhenius") == 0 ){
 
-        m_dv0 = stod(m_vParams[ 0 ]);
-        m_dEd = stod(m_vParams[ 1 ]);
-        m_dEdm = stod(m_vParams[ 2 ]);
-        m_iNumNeighs = stoi( m_vParams[3] );
+        m_dv0 = stod(m_vParams[ 1 ]);
+        m_dEd = stod(m_vParams[ 2 ]);
+        m_dEdm = stod(m_vParams[ 3 ]);
+        m_iNumNeighs = stoi( m_vParams[4] );
 
         m_fType = &arrheniusType;
     }

@@ -67,8 +67,8 @@ class IO: public Pointers
 
     /// Initialization of the files: Assigns paths and file names
     /// If they are not given by the user, the default values are used
-    /// Dafault: The path of the executable
-    /// Input file name: input.kmc
+    /// Default: input.kmc in the current working directory.
+    /// An explicit path can select legacy or JSON input.
     /// Output file name: output.log
     void init(int argc, char* argv[]);
 
@@ -203,6 +203,7 @@ class IO: public Pointers
 
     /// The input file
     ifstream m_InputFile;
+    string m_inputFilename = "input.kmc";
 
     /// The output file
     ofstream m_OutFile;

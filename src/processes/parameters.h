@@ -23,6 +23,7 @@
 #include "site.h"
 #include <iostream>
 #include <any>
+#include "../config/configuration.h"
 
 using namespace std;
 using namespace SurfaceTiles;
@@ -41,6 +42,15 @@ public:
 
     /// Destructor.
     ~Parameters(){;}
+
+    void setConfiguration(Config::Configuration configuration);
+    const Config::Configuration& configuration() const { return m_configuration; }
+    const Config::Value& document() const { return m_configuration.document; }
+    const Config::Value& processParameters(const string& id) const;
+    string processEquation(const string& id) const;
+    string processType(const string& id) const;
+    string heightsFile() const { return m_configuration.heightsFile.empty() ? "heights.dat" : m_configuration.heightsFile; }
+    string speciesFile() const { return m_configuration.speciesFile.empty() ? "species.dat" : m_configuration.speciesFile; }
 
     /// Set the temperature value.
     inline void setTemperature( double T) { m_dT = T; }
@@ -144,6 +154,8 @@ public:
     inline double getStartTime(){ return m_dStartTime; }
 
 protected:
+
+    Config::Configuration m_configuration;
 
     /// Parameters of the lattice
     int m_iX, m_iY, m_iH;

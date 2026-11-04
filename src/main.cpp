@@ -31,6 +31,8 @@
  */
 #include <iostream>
 #include <list>
+#include <memory>
+#include "config/configuration.h"
 #include "site.h"
 #include "lattice.h"
 #include "process.h"
@@ -39,21 +41,29 @@
 using namespace std;
 using namespace MicroProcesses;
 
-int main( int argc, char* argv[] )
+int main(int argc, char* argv[])
 {
-
-    //Checking commit
-    Apothesis* apothesis = new Apothesis( argc, argv );
-
-    cout << "Initiating Apothesis" << endl;
-    apothesis->init();
-
-    cout << "Apothesis runnning ..." << endl;
-    apothesis->exec();
-    cout << "Apothesis finished succesfully." << endl;
-
-    if ( apothesis )
-      delete apothesis;
+    try {
+        if (argc == 2 && string(argv[1]) == "--help") {
+            cout << "Usage: apothesis [--input|-i] <input.json|input.kmc>\n"
+                 << "       apothesis --validate-input <input.json>\n"
+                 << "With no arguments, reads input.kmc in the working directory.\n";
+            return 0;
+        }
+        if (argc == 3 && string(argv[1]) == "--validate-input") {
+            Config::readJson(argv[2]);
+            cout << "Input is valid.\n";
+            return 0;
+        }
+        unique_ptr<Apothesis> apothesis(new Apothesis(argc, argv));
+        cout << "Initiating Apothesis" << endl;
+        apothesis->init();
+        cout << "Apothesis running ..." << endl;
+        apothesis->exec();
+        cout << "Apothesis finished successfully." << endl;
+        return 0;
+    } catch (const std::exception& error) {
+        cerr << "Input/simulation error: " << error.what() << endl;
+        return 1;
+    }
 }
-
-

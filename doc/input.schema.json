@@ -1,0 +1,435 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/nixeimar/Apothesis/blob/master/doc/input.schema.json",
+  "title": "Apothesis input, version 1",
+  "description": "Structural validation. The runtime additionally checks species references, model compatibility, dimensions, matrix files and supported process topologies.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "description": {
+      "type": "string"
+    },
+    "parameters": {
+      "$ref": "#/$defs/parameters"
+    },
+    "system": {
+      "type": "object",
+      "properties": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "temperature": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "pressure": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "temperature",
+            "pressure"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "parameters"
+      ],
+      "additionalProperties": false
+    },
+    "simulation": {
+      "type": "object",
+      "properties": {
+        "start_time": {
+          "type": "number",
+          "minimum": 0
+        },
+        "duration": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "random_seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "parameters": {
+          "$ref": "#/$defs/parameters"
+        }
+      },
+      "required": [
+        "duration"
+      ],
+      "additionalProperties": false
+    },
+    "lattice": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "SimpleCubic",
+            "FCC",
+            "HCP",
+            "Diamond"
+          ]
+        },
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "dimensions": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "integer",
+                "minimum": 3,
+                "maximum": 2147483647
+              }
+            },
+            "initial_height": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "initial_height_file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "initial_species_file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "initial_species": {
+              "type": "string",
+              "minLength": 1
+            },
+            "growth_species": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "dimensions",
+            "initial_species"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "initial_height"
+              ],
+              "not": {
+                "required": [
+                  "initial_height_file"
+                ]
+              }
+            },
+            {
+              "required": [
+                "initial_height_file"
+              ],
+              "not": {
+                "required": [
+                  "initial_height"
+                ]
+              }
+            }
+          ],
+          "not": {
+            "required": [
+              "steps"
+            ]
+          },
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "type",
+        "parameters"
+      ],
+      "additionalProperties": false
+    },
+    "species": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/species"
+      }
+    },
+    "processes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/process"
+      }
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "log_interval": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "lattice_interval": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "coverage": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "parameters": {
+          "$ref": "#/$defs/parameters"
+        }
+      },
+      "required": [
+        "log_interval",
+        "lattice_interval"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "system",
+    "simulation",
+    "lattice",
+    "species",
+    "processes",
+    "output"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "parameters": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "species": {
+      "type": "object",
+      "properties": {
+        "parameters": {
+          "$ref": "#/$defs/parameters"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "term": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "vacancy": {
+              "const": true
+            },
+            "coefficient": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "vacancy"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "species": {
+              "type": "string",
+              "minLength": 1
+            },
+            "phase": {
+              "enum": [
+                "gas",
+                "surface"
+              ]
+            },
+            "coefficient": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "species",
+            "phase"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "rate": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "enum": [
+            "constant",
+            "simple",
+            "arrhenius"
+          ]
+        },
+        "parameters": {
+          "$ref": "#/$defs/parameters"
+        }
+      },
+      "required": [
+        "model",
+        "parameters"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "model": {
+                "const": "constant"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "required": [
+                  "value"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "model": {
+                "const": "simple"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "required": [
+                  "sticking_coefficient",
+                  "molar_fraction",
+                  "site_density"
+                ],
+                "properties": {
+                  "sticking_coefficient": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "molar_fraction": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "site_density": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "model": {
+                "const": "arrhenius"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "required": [
+                  "prefactor",
+                  "activation_energy"
+                ],
+                "properties": {
+                  "prefactor": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "activation_energy": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "process": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "adsorption",
+            "desorption",
+            "diffusion",
+            "reaction"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/parameters"
+        },
+        "all_neighbors": {
+          "type": "boolean"
+        },
+        "reactants": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/term"
+          }
+        },
+        "products": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/term"
+          }
+        },
+        "rate": {
+          "$ref": "#/$defs/rate"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "reactants",
+        "products",
+        "rate"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

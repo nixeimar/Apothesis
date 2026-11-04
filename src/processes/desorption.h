@@ -70,9 +70,6 @@ private: //the data
     ///The site that adsorption will be performed
     Site* m_Site;
 
-    /// The number of neighbours of this process
-    int m_iNumNeighs;
-
     /// The species to be asdorbed
     string m_sDesorbed;
 

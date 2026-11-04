@@ -28,3 +28,10 @@ bool Process::isPartOfGrowth( string name ){
 
     return false;
 }
+
+const Config::Value& Process::inputParameters() const {
+    if (!m_pUtilParams->configuration().processes.empty())
+        return m_pUtilParams->processParameters(m_configurationId);
+    static const Config::Value empty(Config::Value::Object{});
+    return empty;
+}

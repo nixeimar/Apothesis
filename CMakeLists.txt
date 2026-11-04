@@ -62,6 +62,7 @@ set(essential_src_files
     ./src/apothesis.cpp
 )
 set(IO_files
+    ./src/config/configuration.cpp
     ./src/IO/xyz_reader.cpp
     ./src/IO/cml_reader.cpp
     ./src/IO/reader.cpp
@@ -132,3 +133,15 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ./src/lattice
     ./src/species
 )
+
+include(CTest)
+if(BUILD_TESTING)
+    add_executable(input_tests tests/input_tests.cpp src/config/configuration.cpp)
+    add_test(NAME json_input COMMAND input_tests ${CMAKE_CURRENT_SOURCE_DIR}/input.json)
+    find_package(PythonInterp 3 QUIET)
+    if(PYTHONINTERP_FOUND)
+        add_test(NAME input_integration
+            COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/input_integration.py
+                    $<TARGET_FILE:apothesis> ${CMAKE_CURRENT_SOURCE_DIR})
+    endif()
+endif()
