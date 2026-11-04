@@ -1,8 +1,18 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 #set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if (WIN32 AND NOT CMAKE_GENERATOR MATCHES "MinGW")
+    message(WARNING "On Windows, consider using MinGW or MSYS2 for building.")
+endif()
 
 project(apothesis)
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
 
 set(header_files
     ./src/apothesis.h

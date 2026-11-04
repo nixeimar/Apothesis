@@ -46,6 +46,7 @@ using namespace MicroProcesses;
 
 Apothesis::Apothesis(int argc, char *argv[])
     : pLattice(0),
+      pErrorHandler(0),
       pReader(0),
       m_dRTot(0.0),
       m_dProcRate(0.0),
@@ -74,6 +75,10 @@ Apothesis::~Apothesis()
     delete pParameters;
     delete pErrorHandler;
     delete pRandomGen;
+
+    for ( auto& proc: m_processMap )
+        delete proc.first;
+    m_processMap.clear();
 }
 
 void Apothesis::init()

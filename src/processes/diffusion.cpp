@@ -92,6 +92,7 @@ int Diffusion::calculateSameNeighbors(Site* s){
         if ( neigh->getLabel().compare(s->getLabel() ) == 0)
             neighs++;
     }
+    return 0;
 }
 
 int Diffusion::countVacantSites( Site* s){

@@ -77,4 +77,4 @@ void Diamond::mf_neigh() {
     }
 }
 
-unordered_map<string, double> Diamond::computeCoverages( vector<string> species){ }
+unordered_map<string, double> Diamond::computeCoverages( vector<string> species){ return unordered_map<string, double>();}

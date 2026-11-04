@@ -68,7 +68,7 @@ class Lattice: public Pointers
     /// Returns the size of the lattice.
     inline int getSize(){ return m_iSizeX*m_iSizeY; }
 
-    virtual int getNumFirstNeihgs(){;}
+    virtual int getNumFirstNeihgs(){return 0;}
 
     /// Builds a  stepped surface
     virtual void buildSteps();
@@ -163,7 +163,9 @@ class Lattice: public Pointers
     string getTypeAsString();
 
     /// Returns the coverages of each species adsorbed
-    virtual unordered_map<string, double > computeCoverages( vector<string> species ){}
+    virtual unordered_map<string, double > computeCoverages( vector<string> species ){
+      return unordered_map<string, double >();
+    }
 
 protected:
     /// The size of the lattice in the x-dimension.

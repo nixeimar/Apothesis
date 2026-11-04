@@ -1176,4 +1176,5 @@ void FCC::check()
     cout << "Activation: " << endl;
 }
 
-unordered_map<string, double> FCC::computeCoverages( vector<string> species){ }
+unordered_map<string, double> FCC::computeCoverages( vector<string> species){return 
+unordered_map<string, double>();}

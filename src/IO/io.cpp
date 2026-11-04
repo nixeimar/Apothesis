@@ -50,7 +50,7 @@ void IO::init(int argc, char* argv[])
 }
 
 
-string IO::getInputPath() const {;}
+string IO::getInputPath() const {return "";}
 
 
 void IO::readInputFile()
@@ -113,7 +113,12 @@ void IO::readInputFile()
 
             // Remove any empty parts of the vector
             vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
-            vsTokensBasic.erase( it, vsTokens.end() );
+            vsTokens.erase( it, vsTokens.end() );
+
+            if ( vsTokens.size() < 4 ) {
+                m_errorHandler->error_simple_msg("The lattice keyword requires: lattice: <Type> <X> <Y> <Height|heights.dat> [species.dat|label].");
+                EXIT
+            }
 
             m_parameters->setLatticeType( vsTokens[ 0 ]  );
 
@@ -149,7 +154,7 @@ void IO::readInputFile()
                 }
             }
 
-            if ( !vsTokens[ 4 ].empty() ){
+            if ( vsTokens.size() > 4 && !vsTokens[ 4 ].empty() ){
                 if ( vsTokens[ 4 ].compare("species.dat") == 0 )
                     m_parameters->setReadSpeciesFromFile( true );
                 else
