@@ -20,8 +20,8 @@ nested values. Start with [`input.json`](input.json) and the
 ./apothesis --input input.json
 ```
 
-Legacy `input.kmc` files remain supported; running `./apothesis` without arguments
-still selects `input.kmc` in the working directory.
+Running `./apothesis` without arguments selects `input.json` in the working
+directory. Input files must use the versioned JSON format.
 
 Compile - qmake
 --------------------------------------------------------------------------------------------------------------

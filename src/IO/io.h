@@ -67,8 +67,8 @@ class IO: public Pointers
 
     /// Initialization of the files: Assigns paths and file names
     /// If they are not given by the user, the default values are used
-    /// Default: input.kmc in the current working directory.
-    /// An explicit path can select legacy or JSON input.
+    /// Default: input.json in the current working directory.
+    /// An explicit path can select another JSON input file.
     /// Output file name: output.log
     void init(int argc, char* argv[]);
 
@@ -86,9 +86,6 @@ class IO: public Pointers
 
     void writeRoughness( double t, double r);
 
-    /// Opens the input file.
-    void openInputFile(string file);
-
     /// Opens the output file with the name name.
     bool openOutputFile( string name );
 
@@ -101,7 +98,7 @@ class IO: public Pointers
     /// Closes the roughness file.
     void closeRoughnessFile();
 
-    /// Reads the input file " .kmc".
+    /// Reads and validates the JSON configuration.
     void readInputFile();
 
     /// Converts a string to double.
@@ -201,9 +198,8 @@ class IO: public Pointers
     /// The processes to be constructed with their parameters (per process)
     map< string, list< string > >  m_mProc;
 
-    /// The input file
-    ifstream m_InputFile;
-    string m_inputFilename = "input.kmc";
+    /// The JSON input filename.
+    string m_inputFilename = "input.json";
 
     /// The output file
     ofstream m_OutFile;

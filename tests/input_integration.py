@@ -30,11 +30,11 @@ with tempfile.TemporaryDirectory(prefix='apothesis-integration-') as temp:
     run(['-i', str(path)])
     run([str(path)])
 
-    # Legacy default and explicitly selected files still work.
-    legacy = (root / 'input.kmc').read_text().replace('time_start: 5', 'time_start: 0').replace('time_duration: 500', 'time_duration: 0.05')
-    (work / 'input.kmc').write_text(legacy)
+    # No arguments select input.json; legacy text is rejected.
     run([])
-    run(['--input', 'input.kmc'])
+    legacy_path = work / 'old.kmc'
+    legacy_path.write_text('lattice: SimpleCubic 10 10 10 X\n')
+    run(['--input', str(legacy_path)], success=False)
 
     # Two independently configured channels with the same equation remain distinct.
     channel = json.loads(json.dumps(config['processes'][0]))

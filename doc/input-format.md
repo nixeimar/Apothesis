@@ -1,7 +1,7 @@
 # Apothesis input format
 
-New simulations can use JSON version 1. Existing `.kmc` inputs continue to use the
-legacy reader. JSON parsing is isolated in `src/config/configuration.cpp`; the
+Simulations use JSON version 1. JSON parsing is isolated in
+`src/config/configuration.cpp`; the
 simulation sees format-independent `Config::Value` and `Config::Configuration`
 objects, not JSON library types.
 
@@ -14,8 +14,8 @@ objects, not JSON library types.
 ./apothesis --validate-input input.json
 ```
 
-With no arguments, Apothesis still opens `input.kmc` in the working directory.
-JSON is selected by the `.json` extension. Validation checks the entire JSON input
+With no arguments, Apothesis opens `input.json` in the working directory.
+Every selected input is parsed as JSON. Validation checks the entire JSON input
 and referenced matrix files without running the simulation or writing output.
 Errors identify the offending field and return a nonzero exit status.
 Output files are written in the working directory. Paths to lattice matrix files
@@ -62,7 +62,6 @@ document so model code can access them consistently.
 
 `simulation.duration` is required, positive and measured in seconds.
 `simulation.start_time` defaults to zero. End time is **start_time + duration**.
-This differs from legacy `time_duration`, which the old engine treats as end time.
 `simulation.random_seed` is an integer from 0 to 2147483647; absent or zero means
 initialize from the current time, preserving existing behavior.
 
@@ -189,6 +188,6 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-Integration tests cover validation without output, both formats, explicit process
+Integration tests cover validation without output, default and explicit JSON selection, explicit process
 identity, Arrhenius initialization, and rectangular matrix imports. They run in
 temporary directories so simulation outputs do not modify the checkout.

@@ -45,9 +45,9 @@ int main(int argc, char* argv[])
 {
     try {
         if (argc == 2 && string(argv[1]) == "--help") {
-            cout << "Usage: apothesis [--input|-i] <input.json|input.kmc>\n"
+            cout << "Usage: apothesis [--input|-i] <input.json>\n"
                  << "       apothesis --validate-input <input.json>\n"
-                 << "With no arguments, reads input.kmc in the working directory.\n";
+                 << "With no arguments, reads input.json in the working directory.\n";
             return 0;
         }
         if (argc == 3 && string(argv[1]) == "--validate-input") {
