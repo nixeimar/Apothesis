@@ -31,8 +31,7 @@
             }
           },
           "required": [
-            "temperature",
-            "pressure"
+            "temperature"
           ],
           "additionalProperties": true
         }
@@ -60,6 +59,11 @@
         },
         "parameters": {
           "$ref": "#/$defs/parameters"
+        },
+        "max_events": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
         }
       },
       "required": [
@@ -68,93 +72,14 @@
       "additionalProperties": false
     },
     "lattice": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "enum": [
-            "SimpleCubic",
-            "FCC",
-            "HCP",
-            "Diamond"
-          ]
+      "oneOf": [
+        {
+          "$ref": "#/$defs/heightFieldLattice"
         },
-        "parameters": {
-          "type": "object",
-          "properties": {
-            "dimensions": {
-              "type": "array",
-              "minItems": 2,
-              "maxItems": 2,
-              "items": {
-                "type": "integer",
-                "minimum": 3,
-                "maximum": 2147483647
-              }
-            },
-            "initial_height": {
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 2147483647
-            },
-            "initial_height_file": {
-              "type": "string",
-              "minLength": 1
-            },
-            "initial_species_file": {
-              "type": "string",
-              "minLength": 1
-            },
-            "initial_species": {
-              "type": "string",
-              "minLength": 1
-            },
-            "growth_species": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "minLength": 1
-              }
-            }
-          },
-          "required": [
-            "dimensions",
-            "initial_species"
-          ],
-          "oneOf": [
-            {
-              "required": [
-                "initial_height"
-              ],
-              "not": {
-                "required": [
-                  "initial_height_file"
-                ]
-              }
-            },
-            {
-              "required": [
-                "initial_height_file"
-              ],
-              "not": {
-                "required": [
-                  "initial_height"
-                ]
-              }
-            }
-          ],
-          "not": {
-            "required": [
-              "steps"
-            ]
-          },
-          "additionalProperties": true
+        {
+          "$ref": "#/$defs/atomisticLattice"
         }
-      },
-      "required": [
-        "type",
-        "parameters"
-      ],
-      "additionalProperties": false
+      ]
     },
     "species": {
       "type": "object",
@@ -201,12 +126,8 @@
   },
   "required": [
     "schema_version",
-    "system",
-    "simulation",
     "lattice",
-    "species",
-    "processes",
-    "output"
+    "species"
   ],
   "additionalProperties": false,
   "$defs": {
@@ -430,6 +351,349 @@
         "rate"
       ],
       "additionalProperties": false
+    },
+    "heightFieldLattice": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "SimpleCubic",
+            "FCC",
+            "HCP",
+            "Diamond"
+          ]
+        },
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "dimensions": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "integer",
+                "minimum": 3,
+                "maximum": 2147483647
+              }
+            },
+            "initial_height": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "initial_height_file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "initial_species_file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "initial_species": {
+              "type": "string",
+              "minLength": 1
+            },
+            "growth_species": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "dimensions",
+            "initial_species"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "initial_height"
+              ],
+              "not": {
+                "required": [
+                  "initial_height_file"
+                ]
+              }
+            },
+            {
+              "required": [
+                "initial_height_file"
+              ],
+              "not": {
+                "required": [
+                  "initial_height"
+                ]
+              }
+            }
+          ],
+          "not": {
+            "required": [
+              "steps"
+            ]
+          },
+          "additionalProperties": true
+        },
+        "representation": {
+          "enum": [
+            "height_field"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "parameters"
+      ],
+      "additionalProperties": false
+    },
+    "atomisticLattice": {
+      "type": "object",
+      "required": [
+        "representation",
+        "type",
+        "parameters"
+      ],
+      "properties": {
+        "representation": {
+          "const": "atomistic"
+        },
+        "type": {
+          "enum": [
+            "SimpleCubic",
+            "BCC",
+            "FCC",
+            "Diamond",
+            "HCP"
+          ]
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "lattice_constant",
+            "repetitions",
+            "initial_species"
+          ],
+          "properties": {
+            "lattice_constant": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "repetitions": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1000000
+              }
+            },
+            "initial_species": {
+              "type": "string",
+              "minLength": 1
+            },
+            "length_unit": {
+              "const": "angstrom"
+            },
+            "orientation": {
+              "enum": [
+                "100",
+                "0001"
+              ]
+            },
+            "c_over_a": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "neighbor_cutoff": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "vacuum": {
+              "type": "number",
+              "minimum": 0
+            },
+            "fixed_unit_cells": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "periodic": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "boolean"
+              }
+            },
+            "origin": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "number"
+              }
+            },
+            "vacancies": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "occupied_unit_cells": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "lattice": {
+            "properties": {
+              "representation": {
+                "const": "atomistic"
+              }
+            },
+            "required": [
+              "representation"
+            ]
+          }
+        }
+      },
+      "then": {
+        "allOf": [
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "system"
+                  ]
+                },
+                {
+                  "required": [
+                    "simulation"
+                  ]
+                },
+                {
+                  "required": [
+                    "processes"
+                  ]
+                },
+                {
+                  "required": [
+                    "output"
+                  ]
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "system",
+                "simulation",
+                "processes",
+                "output"
+              ]
+            }
+          }
+        ],
+        "properties": {
+          "processes": {
+            "items": {
+              "properties": {
+                "type": {
+                  "enum": [
+                    "adsorption",
+                    "diffusion",
+                    "desorption"
+                  ]
+                },
+                "all_neighbors": {
+                  "const": false
+                },
+                "rate": {
+                  "properties": {
+                    "model": {
+                      "enum": [
+                        "constant",
+                        "arrhenius"
+                      ]
+                    }
+                  }
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "enum": [
+                          "adsorption",
+                          "diffusion"
+                        ]
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "parameters": {
+                        "properties": {
+                          "min_coordination": {
+                            "type": "integer",
+                            "minimum": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "output": {
+            "not": {
+              "required": [
+                "coverage"
+              ]
+            }
+          }
+        }
+      },
+      "else": {
+        "required": [
+          "system",
+          "simulation",
+          "processes",
+          "output"
+        ],
+        "properties": {
+          "system": {
+            "properties": {
+              "parameters": {
+                "required": [
+                  "pressure"
+                ]
+              }
+            }
+          },
+          "simulation": {
+            "not": {
+              "required": [
+                "max_events"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
 }

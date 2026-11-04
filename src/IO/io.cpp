@@ -60,7 +60,10 @@ string IO::getInputPath() const {return m_inputFilename;}
 
 void IO::readInputFile()
 {
-    m_parameters->setConfiguration(Config::readJson(m_inputFilename));
+    auto configuration = Config::readJson(m_inputFilename);
+    if (configuration.atomisticSurface)
+        throw std::runtime_error("Use the executable atomistic KMC backend or --build-surface for atomistic input.");
+    m_parameters->setConfiguration(std::move(configuration));
 }
 
 void IO::openRoughnessFile( string file )

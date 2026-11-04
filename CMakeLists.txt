@@ -73,6 +73,7 @@ set(extLibs_files
     ./src/extLibs/mersenne.cpp
 )
 set(process_files
+    ./src/processes/atomistic_kmc.cpp
     ./src/processes/adsorption.cpp
     ./src/processes/diffusion.cpp
     ./src/processes/adsorption.cpp
@@ -104,6 +105,7 @@ set(error_files
 )
 
 set(lattice_files
+    ./src/lattice/atomistic_surface.cpp
     ./src/lattice/site.cpp
     ./src/lattice/lattice.cpp
     ./src/lattice/diamond.cpp
@@ -136,8 +138,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 include(CTest)
 if(BUILD_TESTING)
-    add_executable(input_tests tests/input_tests.cpp src/config/configuration.cpp)
-    add_test(NAME json_input COMMAND input_tests ${CMAKE_CURRENT_SOURCE_DIR}/input.json)
+    add_executable(input_tests tests/input_tests.cpp src/config/configuration.cpp src/lattice/atomistic_surface.cpp src/processes/atomistic_kmc.cpp)
+    add_executable(atomistic_tests tests/atomistic_tests.cpp src/config/configuration.cpp src/lattice/atomistic_surface.cpp src/processes/atomistic_kmc.cpp)
+    add_executable(atomistic_kmc_tests tests/atomistic_kmc_tests.cpp src/config/configuration.cpp src/lattice/atomistic_surface.cpp src/processes/atomistic_kmc.cpp)
+    add_test(NAME atomistic_kmc COMMAND atomistic_kmc_tests ${CMAKE_CURRENT_SOURCE_DIR}/examples/atomistic-kmc.json)
+    add_test(NAME atomistic_surfaces COMMAND atomistic_tests ${CMAKE_CURRENT_SOURCE_DIR}/examples/atomistic-cu.json)
+    add_test(NAME json_input COMMAND input_tests ${CMAKE_CURRENT_SOURCE_DIR}/examples/height-field.json)
     find_package(PythonInterp 3 QUIET)
     if(PYTHONINTERP_FOUND)
         add_test(NAME input_integration

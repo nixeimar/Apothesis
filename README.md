@@ -23,6 +23,22 @@ nested values. Start with [`input.json`](input.json) and the
 Running `./apothesis` without arguments selects `input.json` in the working
 directory. Input files must use the versioned JSON format.
 
+## Atomistic surface construction
+
+Create explicit fixed-site crystal slabs and export them as extended XYZ:
+
+```sh
+./apothesis --build-surface examples/atomistic-cu.json --output copper.xyz
+```
+
+Run fixed-site atomistic adsorption, diffusion and desorption:
+
+```sh
+./apothesis --input examples/atomistic-kmc.json
+```
+
+See the [atomistic surface and process guide](doc/atomistic-surfaces.md).
+
 Compile - qmake
 --------------------------------------------------------------------------------------------------------------
 To compile Apothesis using qmake, follow these steps:

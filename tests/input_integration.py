@@ -7,7 +7,7 @@ import tempfile
 
 binary = str(Path(sys.argv[1]).resolve())
 root = Path(sys.argv[2]).resolve()
-original = json.loads((root / 'input.json').read_text())
+original = json.loads((root / 'examples' / 'height-field.json').read_text())
 
 with tempfile.TemporaryDirectory(prefix='apothesis-integration-') as temp:
     work = Path(temp)
@@ -72,6 +72,55 @@ with tempfile.TemporaryDirectory(prefix='apothesis-integration-') as temp:
     run([str(path)])
     heights = (work / 'Height_0.dat').read_text().splitlines()[1:]
     assert [[int(x) for x in row.split()] for row in heights] == [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+
+    # Atomistic geometry builds without invoking the height-field KMC engine.
+    atomic = json.loads((root / 'examples' / 'atomistic-cu.json').read_text())
+    atomic['lattice']['parameters']['vacancies'] = [0, 10]
+    atomic_path = work / 'atomic.json'
+    atomic_path.write_text(json.dumps(atomic))
+    run(['--validate-input', str(atomic_path)])
+    result = run(['--build-surface', str(atomic_path), '--output', 'copper.xyz'])
+    assert '574 atoms on 576 crystal sites' in result.stdout
+    xyz = (work / 'copper.xyz').read_text().splitlines()
+    assert xyz[0] == '574' and len(xyz) == 576
+    assert all(int(row.split()[4]) not in [0, 10] for row in xyz[2:])
+    result = run(['--input', str(atomic_path)], success=False)
+    assert 'geometry-only input' in result.stderr
+    atomic['lattice']['parameters']['orientation'] = '111'
+    atomic_path.write_text(json.dumps(atomic))
+    result = run(['--validate-input', str(atomic_path)], success=False)
+    assert 'orientation' in result.stderr
+
+    # Full atomistic KMC: rate validation, reproducible output and atom balance.
+    kinetic = json.loads((root / 'examples' / 'atomistic-kmc.json').read_text())
+    kinetic_path = work / 'kinetic.json'
+    kinetic_path.write_text(json.dumps(kinetic))
+    run(['--validate-input', str(kinetic_path)])
+    run(['--input', str(kinetic_path)])
+    log = (work / 'atomistic.log').read_text()
+    rows = [line.split() for line in log.splitlines() if line and not line.startswith('#')]
+    last = rows[-1]
+    counts = [int(n) for n in last[3:]]
+    assert sum(counts) == int(last[2]) and int(last[1]) == 128 + counts[0] - counts[2]
+    assert float(last[0]) <= kinetic['simulation']['duration']
+    final = (work / 'atomistic_final.xyz').read_text()
+    assert int(final.splitlines()[0]) == int(last[1])
+    run([str(kinetic_path)])
+    assert final == (work / 'atomistic_final.xyz').read_text()
+    assert log == (work / 'atomistic.log').read_text()
+    for mutate, field in [
+        (lambda c: c['processes'][0].setdefault('parameters', {}).update(min_coordination=0), 'min_coordination'),
+        (lambda c: c['processes'][0]['rate']['parameters'].update(value=-1), 'value'),
+        (lambda c: c['processes'][0].update(type='reaction'), 'type'),
+        (lambda c: c['lattice']['parameters'].update(periodic=[True,True,True],vacuum=0), 'periodic'),
+        (lambda c: c['processes'][0]['rate'].update(model='simple'), 'rate.model'),
+        (lambda c: c['processes'][0].update(all_neighbors=True), 'all_neighbors')
+    ]:
+        candidate = json.loads(json.dumps(kinetic))
+        mutate(candidate)
+        kinetic_path.write_text(json.dumps(candidate))
+        result = run(['--validate-input', str(kinetic_path)], success=False)
+        assert field in result.stderr, result.stderr
 
     # Invalid input produces an actionable diagnostic and a nonzero exit.
     config['system']['parameters']['temperature'] = -1

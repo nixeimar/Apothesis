@@ -3,6 +3,9 @@
 
 #include <cstdint>
 #include <map>
+#include <optional>
+#include "../lattice/atomistic_surface.h"
+#include "../processes/atomistic_kmc.h"
 #include <string>
 #include <variant>
 #include <utility>
@@ -35,6 +38,8 @@ struct Process {
 
 struct Configuration {
     Value document;
+    std::optional<Atomistic::Options> atomisticSurface;
+    std::optional<Atomistic::RunOptions> atomisticSimulation;
     double temperature = 0, pressure = 0, startTime = 0, endTime = 0;
     double logInterval = 0, latticeInterval = 0;
     int seed = 0, x = 0, y = 0, height = 0;

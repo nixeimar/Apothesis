@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "description": "FCC copper slab with explicit fixed crystal sites; lengths in angstrom",
+  "lattice": {
+    "representation": "atomistic",
+    "type": "FCC",
+    "parameters": {
+      "length_unit": "angstrom",
+      "orientation": "100",
+      "lattice_constant": 3.615,
+      "repetitions": [6, 6, 4],
+      "initial_species": "Cu",
+      "periodic": [true, true, false],
+      "vacuum": 15,
+      "fixed_unit_cells": 1,
+      "vacancies": []
+    }
+  },
+  "species": {"Cu": {"parameters": {"element": "Cu"}}}
+}

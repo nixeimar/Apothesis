@@ -136,6 +136,134 @@ void validateTopology(const std::string& type, const std::vector<Term>& r,
         for (const auto& t : p) if (t.vacancy || t.coefficient != 1) fail(path, "reaction products must be species with coefficient one");
     } else fail(path + ".type", "unsupported process type '" + type + "'");
 }
+std::string elementFor(const Json& species,const std::string& name) {
+    const std::string path="species."+name;
+    if (!species.contains(name)) fail(path,"undefined species");
+    const auto& parameters=required(species.at(name),"parameters",path);
+    const auto element=text(required(parameters,"element",path+".parameters"),path+".parameters.element");
+    const std::string elements=" H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og ";
+    if (elements.find(" "+element+" ")==std::string::npos) fail(path+".parameters.element","expected a chemical element symbol");
+    return element;
+}
+Atomistic::RunOptions atomisticRun(const Json& root) {
+    Atomistic::RunOptions o;
+    const auto& system=required(root,"system","input");
+    keys(system,"system",{"parameters"});
+    const auto& sp=required(system,"parameters","system");
+    o.temperature=number(required(sp,"temperature","system.parameters"),"system.parameters.temperature",true);
+    if (sp.contains("pressure")) number(sp.at("pressure"),"system.parameters.pressure");
+    const auto& sim=required(root,"simulation","input");
+    keys(sim,"simulation",{"start_time","duration","random_seed","max_events","parameters"});
+    if (sim.contains("start_time")) o.start=number(sim.at("start_time"),"simulation.start_time");
+    o.end=o.start+number(required(sim,"duration","simulation"),"simulation.duration",true);
+    if (sim.contains("random_seed")) o.seed=integer(sim.at("random_seed"),"simulation.random_seed");
+    if (sim.contains("max_events")) o.maxEvents=integer(sim.at("max_events"),"simulation.max_events");
+    const auto& output=required(root,"output","input");
+    keys(output,"output",{"log_interval","lattice_interval","parameters"});
+    o.logInterval=number(required(output,"log_interval","output"),"output.log_interval",true);
+    o.snapshotInterval=number(required(output,"lattice_interval","output"),"output.lattice_interval",true);
+    const auto& species=required(root,"species","input");
+    const auto& processes=required(root,"processes","input");
+    if (!processes.is_array() || processes.empty()) fail("processes","expected a nonempty array");
+    for (std::size_t i=0;i<processes.size();++i) {
+        const auto path="processes["+std::to_string(i)+"]";
+        const auto& j=processes[i];
+        keys(j,path,{"id","type","description","reactants","products","rate","parameters","all_neighbors"});
+        Atomistic::Process p;
+        p.id=text(required(j,"id",path),path+".id");
+        auto type=text(required(j,"type",path),path+".type");
+        if (type!="adsorption" && type!="diffusion" && type!="desorption") fail(path+".type","atomistic backend supports adsorption, diffusion and desorption only");
+        auto r=terms(required(j,"reactants",path),species,path+".reactants");
+        auto products=terms(required(j,"products",path),species,path+".products");
+        validateTopology(type,r,products,path);
+        for (const auto& t : r) if (t.coefficient!=1) fail(path,"atomistic processes require coefficient one");
+        for (const auto& t : products) if (t.coefficient!=1) fail(path,"atomistic processes require coefficient one");
+        const auto label=type=="adsorption" ? products[0].label : r[0].label;
+        p.species=label.substr(0,label.size()-1);
+        p.element=elementFor(species,p.species);
+        p.kind=type=="adsorption" ? Atomistic::Kind::Adsorption : (type=="diffusion" ? Atomistic::Kind::Diffusion : Atomistic::Kind::Desorption);
+        p.minCoordination=type=="desorption" ? 0 : 1;
+        for (const auto& t : r) if (!t.vacancy && t.phase=="gas" && elementFor(species,t.label)!=p.element) fail(path,"adsorption must conserve the chemical element");
+        for (const auto& t : products) if (!t.vacancy && t.phase=="gas" && elementFor(species,t.label)!=p.element) fail(path,"desorption must conserve the chemical element");
+        if (j.contains("all_neighbors") && (!j.at("all_neighbors").is_boolean() || j.at("all_neighbors").get<bool>()))
+            fail(path+".all_neighbors","atomistic events enumerate individual sites/pairs; all_neighbors must be false or omitted");
+        if (j.contains("parameters")) {
+            const auto& cp=j.at("parameters");
+            if (cp.contains("min_coordination")) p.minCoordination=integer(cp.at("min_coordination"),path+".parameters.min_coordination");
+            if (cp.contains("max_coordination")) p.maxCoordination=integer(cp.at("max_coordination"),path+".parameters.max_coordination");
+        }
+        const auto& rate=required(j,"rate",path);
+        keys(rate,path+".rate",{"model","parameters"});
+        p.model=text(required(rate,"model",path+".rate"),path+".rate.model");
+        const auto& rp=required(rate,"parameters",path+".rate");
+        object(rp,path+".rate.parameters");
+        auto get=[&](const std::string& key){return number(required(rp,key,path+".rate.parameters"),path+".rate.parameters."+key);};
+        if (p.model=="constant") p.value=get("value");
+        else if (p.model=="arrhenius") {
+            p.prefactor=get("prefactor");p.activationEnergy=get("activation_energy");
+            if (rp.contains("bond_energy")) p.bondEnergy=get("bond_energy");
+            if (rp.contains("migration_energy")) fail(path+".rate.parameters.migration_energy","use activation_energy for the atomistic hop barrier");
+        } else fail(path+".rate.model","atomistic rates support constant or arrhenius");
+        o.processes.push_back(std::move(p));
+    }
+    Atomistic::validate(o);
+    return o;
+}
+Atomistic::Options surfaceOptions(const Json& root) {
+    const auto& lattice = required(root, "lattice", "input");
+    keys(lattice, "lattice", {"representation", "type", "parameters"});
+    const auto& p = required(lattice, "parameters", "lattice");
+    object(p, "lattice.parameters");
+    const std::string path = "lattice.parameters";
+    Atomistic::Options o;
+    o.crystal = text(required(lattice, "type", "lattice"), "lattice.type");
+    o.latticeConstant = number(required(p, "lattice_constant", path), path + ".lattice_constant", true);
+    if (p.contains("length_unit") && text(p.at("length_unit"), path + ".length_unit") != "angstrom")
+        fail(path + ".length_unit", "only angstrom is supported");
+    if (p.contains("orientation")) {
+        auto orientation = text(p.at("orientation"), path + ".orientation");
+        if (orientation != (o.crystal == "HCP" ? "0001" : "100"))
+            fail(path + ".orientation", "supported orientations are cubic 100 and HCP 0001");
+    }
+    const auto& repeats = required(p, "repetitions", path);
+    if (!repeats.is_array() || repeats.size() != 3) fail(path + ".repetitions", "expected [nx, ny, nz] unit cells");
+    for (int axis=0;axis<3;++axis) o.repetitions[axis] = integer(repeats[axis], path + ".repetitions", true);
+    if (p.contains("periodic")) {
+        const auto& periodic = p.at("periodic");
+        if (!periodic.is_array() || periodic.size() != 3) fail(path + ".periodic", "expected three booleans");
+        for (int axis=0;axis<3;++axis) {
+            if (!periodic[axis].is_boolean()) fail(path + ".periodic", "expected three booleans");
+            o.periodic[axis] = periodic[axis].get<bool>();
+        }
+    }
+    if (p.contains("origin")) {
+        const auto& origin = p.at("origin");
+        if (!origin.is_array() || origin.size() != 3) fail(path + ".origin", "expected [x, y, z]");
+        for (int axis=0;axis<3;++axis) {
+            if (!origin[axis].is_number() || !std::isfinite(origin[axis].get<double>())) fail(path + ".origin", "coordinates must be finite numbers");
+            o.origin[axis] = origin[axis].get<double>();
+        }
+    }
+    if (p.contains("vacuum")) o.vacuum = number(p.at("vacuum"), path + ".vacuum");
+    if (p.contains("c_over_a")) o.cOverA = number(p.at("c_over_a"), path + ".c_over_a", true);
+    if (p.contains("neighbor_cutoff")) o.neighborCutoff = number(p.at("neighbor_cutoff"), path + ".neighbor_cutoff", true);
+    if (p.contains("occupied_unit_cells")) o.occupiedUnitCells = integer(p.at("occupied_unit_cells"), path + ".occupied_unit_cells");
+    if (p.contains("fixed_unit_cells")) o.fixedUnitCells = integer(p.at("fixed_unit_cells"), path + ".fixed_unit_cells");
+    if (p.contains("vacancies")) {
+        if (!p.at("vacancies").is_array()) fail(path + ".vacancies", "expected an array of site IDs");
+        for (const auto& id : p.at("vacancies")) o.vacancies.push_back(static_cast<std::size_t>(integer(id, path + ".vacancies")));
+    }
+    for (const auto& field : {"dimensions", "initial_height", "initial_height_file", "initial_species_file", "growth_species", "steps"})
+        if (p.contains(field)) fail(path + "." + field, "height-field settings do not apply to atomistic surfaces");
+    o.species = text(required(p, "initial_species", path), path + ".initial_species");
+    const auto& species = required(root, "species", "input");
+    object(species, "species");
+    for (auto it=species.begin();it!=species.end();++it) keys(it.value(), "species." + it.key(), {"description", "parameters"});
+    if (!species.contains(o.species)) fail(path + ".initial_species", "undefined species");
+    o.element = elementFor(species,o.species);
+    Atomistic::validate(o);
+    return o;
+}
 } // namespace
 
 double Value::number() const {
@@ -164,6 +292,21 @@ Configuration readJson(const std::string& filename) {
     keys(root, "input", {"schema_version", "description", "parameters", "system", "simulation", "lattice", "species", "processes", "output"});
     if (integer(required(root, "schema_version", "input"), "schema_version") != 1) fail("schema_version", "only version 1 is supported");
     Configuration c;
+    const auto& latticeDefinition = required(root, "lattice", "input");
+    object(latticeDefinition, "lattice");
+    if (latticeDefinition.contains("representation")) {
+        const auto representation = text(latticeDefinition.at("representation"), "lattice.representation");
+        if (representation == "atomistic") {
+            c.atomisticSurface = surfaceOptions(root);
+            if (root.contains("system") || root.contains("simulation") || root.contains("processes") || root.contains("output")) {
+                if (c.atomisticSurface->periodic[2]) fail("lattice.parameters.periodic","atomistic gas access requires nonperiodic z");
+                c.atomisticSimulation = atomisticRun(root);
+            }
+            c.document = convert(root);
+            return c;
+        }
+        if (representation != "height_field") fail("lattice.representation", "expected height_field or atomistic");
+    }
     const auto& system = required(root, "system", "input");
     keys(system, "system", {"parameters"});
     const auto& sys = required(system, "parameters", "system");
@@ -185,7 +328,7 @@ Configuration readJson(const std::string& filename) {
         keys(it.value(), "species." + name, {"description", "parameters"});
     }
     const auto& lattice = required(root, "lattice", "input");
-    keys(lattice, "lattice", {"type", "parameters"});
+    keys(lattice, "lattice", {"representation", "type", "parameters"});
     c.latticeType = text(required(lattice, "type", "lattice"), "lattice.type");
     if (c.latticeType != "SimpleCubic" && c.latticeType != "FCC" && c.latticeType != "HCP" && c.latticeType != "Diamond") fail("lattice.type", "unsupported lattice type");
     const auto& lp = required(lattice, "parameters", "lattice");

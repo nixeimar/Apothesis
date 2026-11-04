@@ -1,54 +1,129 @@
 {
   "schema_version": 1,
-  "description": "CO oxidation on a SimpleCubic surface",
-  "system": {
-    "parameters": {
-      "temperature": 1000,
-      "pressure": 101325,
-      "custom_field": {"enabled": true, "values": [1, 2.5, "example"]}
-    }
-  },
-  "simulation": {"start_time": 5, "duration": 500, "random_seed": 1234},
+  "description": "Fixed-site atomistic Cu adsorption, nearest-neighbor diffusion and desorption; illustrative rates, not calibrated Cu kinetics",
   "lattice": {
-    "type": "SimpleCubic",
+    "representation": "atomistic",
+    "type": "FCC",
     "parameters": {
-      "dimensions": [10, 10],
-      "initial_height": 10,
-      "initial_species": "X",
-      "growth_species": ["CO2"]
+      "length_unit": "angstrom",
+      "orientation": "100",
+      "lattice_constant": 3.615,
+      "repetitions": [
+        4,
+        4,
+        4
+      ],
+      "initial_species": "Cu",
+      "periodic": [
+        true,
+        true,
+        false
+      ],
+      "vacuum": 15,
+      "fixed_unit_cells": 1,
+      "vacancies": [],
+      "occupied_unit_cells": 2
     }
   },
   "species": {
-    "X": {"parameters": {}},
-    "CO": {"parameters": {"molecular_weight": 0.028}},
-    "O2": {"parameters": {"molecular_weight": 0.032}},
-    "O": {"parameters": {}},
-    "CO2": {"parameters": {"molecular_weight": 0.044}}
+    "Cu": {
+      "parameters": {
+        "element": "Cu"
+      }
+    }
+  },
+  "system": {
+    "parameters": {
+      "temperature": 600
+    }
+  },
+  "simulation": {
+    "duration": 1,
+    "random_seed": 1234,
+    "max_events": 200
   },
   "processes": [
     {
-      "id": "co_adsorption",
+      "id": "cu_adsorption",
       "type": "adsorption",
-      "reactants": [{"species": "CO", "phase": "gas"}, {"vacancy": true}],
-      "products": [{"species": "CO", "phase": "surface"}],
-      "rate": {"model": "constant", "parameters": {"value": 0.4}},
-      "parameters": {"description": "Additional model-specific data goes here"}
+      "reactants": [
+        {
+          "species": "Cu",
+          "phase": "gas"
+        },
+        {
+          "vacancy": true
+        }
+      ],
+      "products": [
+        {
+          "species": "Cu",
+          "phase": "surface"
+        }
+      ],
+      "rate": {
+        "model": "constant",
+        "parameters": {
+          "value": 5
+        }
+      },
+      "parameters": {
+        "min_coordination": 1
+      }
     },
     {
-      "id": "oxygen_adsorption",
-      "type": "adsorption",
-      "reactants": [{"species": "O2", "phase": "gas"}, {"vacancy": true, "coefficient": 2}],
-      "products": [{"species": "O", "phase": "surface", "coefficient": 2}],
-      "rate": {"model": "constant", "parameters": {"value": 0.15}},
-      "all_neighbors": true
+      "id": "cu_diffusion",
+      "type": "diffusion",
+      "reactants": [
+        {
+          "species": "Cu",
+          "phase": "surface"
+        }
+      ],
+      "products": [
+        {
+          "species": "Cu",
+          "phase": "surface"
+        }
+      ],
+      "rate": {
+        "model": "constant",
+        "parameters": {
+          "value": 10
+        }
+      },
+      "parameters": {
+        "min_coordination": 1
+      }
     },
     {
-      "id": "co_oxidation",
-      "type": "reaction",
-      "reactants": [{"species": "CO", "phase": "surface"}, {"species": "O", "phase": "surface"}],
-      "products": [{"species": "CO2", "phase": "surface"}],
-      "rate": {"model": "constant", "parameters": {"value": 1e15}}
+      "id": "cu_desorption",
+      "type": "desorption",
+      "reactants": [
+        {
+          "species": "Cu",
+          "phase": "surface"
+        }
+      ],
+      "products": [
+        {
+          "vacancy": true
+        },
+        {
+          "species": "Cu",
+          "phase": "gas"
+        }
+      ],
+      "rate": {
+        "model": "constant",
+        "parameters": {
+          "value": 1
+        }
+      }
     }
   ],
-  "output": {"log_interval": 0.1, "lattice_interval": 10, "coverage": ["CO*", "O*", "X"]}
+  "output": {
+    "log_interval": 0.01,
+    "lattice_interval": 0.02
+  }
 }

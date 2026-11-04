@@ -47,12 +47,39 @@ int main(int argc, char* argv[])
         if (argc == 2 && string(argv[1]) == "--help") {
             cout << "Usage: apothesis [--input|-i] <input.json>\n"
                  << "       apothesis --validate-input <input.json>\n"
+                 << "       apothesis --build-surface <input.json> [--output <surface.xyz>]\n"
                  << "With no arguments, reads input.json in the working directory.\n";
+            return 0;
+        }
+        if ((argc == 3 || argc == 5) && string(argv[1]) == "--build-surface") {
+            if (argc == 5 && string(argv[3]) != "--output")
+                throw std::runtime_error("Usage: apothesis --build-surface <input.json> [--output <surface.xyz>]");
+            const auto config = Config::readJson(argv[2]);
+            if (!config.atomisticSurface)
+                throw std::runtime_error("--build-surface requires lattice.representation: atomistic");
+            const auto surface = Atomistic::build(*config.atomisticSurface);
+            const string output = argc == 5 ? argv[4] : "surface.xyz";
+            surface.writeXYZ(output);
+            cout << "Created " << surface.atomCount() << " atoms on " << surface.sites.size()
+                 << " crystal sites in " << output << " (angstrom).\n";
             return 0;
         }
         if (argc == 3 && string(argv[1]) == "--validate-input") {
             Config::readJson(argv[2]);
             cout << "Input is valid.\n";
+            return 0;
+        }
+        string input="input.json";
+        if (argc==2 && argv[1][0]!='-') input=argv[1];
+        else if (argc==3 && (string(argv[1])=="--input" || string(argv[1])=="-i")) input=argv[2];
+        else if (argc!=1) throw std::runtime_error("Usage: apothesis [--input|-i] <input.json>");
+        const auto configuration=Config::readJson(input);
+        if (configuration.atomisticSurface) {
+            if (!configuration.atomisticSimulation)
+                throw std::runtime_error("Atomistic geometry-only input: add system, simulation, processes and output to run KMC, or use --build-surface.");
+            cout<<"Running atomistic KMC ..."<<endl;
+            Atomistic::runToFiles(Atomistic::build(*configuration.atomisticSurface),*configuration.atomisticSimulation);
+            cout<<"Atomistic KMC finished. See atomistic.log and atomistic_trajectory.xyz."<<endl;
             return 0;
         }
         unique_ptr<Apothesis> apothesis(new Apothesis(argc, argv));

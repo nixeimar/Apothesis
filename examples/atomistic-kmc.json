@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "description": "Fixed-site atomistic Cu adsorption, nearest-neighbor diffusion and desorption; illustrative rates, not calibrated Cu kinetics",
+  "lattice": {
+    "representation": "atomistic",
+    "type": "FCC",
+    "parameters": {
+      "length_unit": "angstrom",
+      "orientation": "100",
+      "lattice_constant": 3.615,
+      "repetitions": [
+        4,
+        4,
+        4
+      ],
+      "initial_species": "Cu",
+      "periodic": [
+        true,
+        true,
+        false
+      ],
+      "vacuum": 15,
+      "fixed_unit_cells": 1,
+      "vacancies": [],
+      "occupied_unit_cells": 2
+    }
+  },
+  "species": {
+    "Cu": {
+      "parameters": {
+        "element": "Cu"
+      }
+    }
+  },
+  "system": {
+    "parameters": {
+      "temperature": 600
+    }
+  },
+  "simulation": {
+    "duration": 1,
+    "random_seed": 1234,
+    "max_events": 200
+  },
+  "processes": [
+    {
+      "id": "cu_adsorption",
+      "type": "adsorption",
+      "reactants": [
+        {
+          "species": "Cu",
+          "phase": "gas"
+        },
+        {
+          "vacancy": true
+        }
+      ],
+      "products": [
+        {
+          "species": "Cu",
+          "phase": "surface"
+        }
+      ],
+      "rate": {
+        "model": "constant",
+        "parameters": {
+          "value": 5
+        }
+      },
+      "parameters": {
+        "min_coordination": 1
+      }
+    },
+    {
+      "id": "cu_diffusion",
+      "type": "diffusion",
+      "reactants": [
+        {
+          "species": "Cu",
+          "phase": "surface"
+        }
+      ],
+      "products": [
+        {
+          "species": "Cu",
+          "phase": "surface"
+        }
+      ],
+      "rate": {
+        "model": "constant",
+        "parameters": {
+          "value": 10
+        }
+      },
+      "parameters": {
+        "min_coordination": 1
+      }
+    },
+    {
+      "id": "cu_desorption",
+      "type": "desorption",
+      "reactants": [
+        {
+          "species": "Cu",
+          "phase": "surface"
+        }
+      ],
+      "products": [
+        {
+          "vacancy": true
+        },
+        {
+          "species": "Cu",
+          "phase": "gas"
+        }
+      ],
+      "rate": {
+        "model": "constant",
+        "parameters": {
+          "value": 1
+        }
+      }
+    }
+  ],
+  "output": {
+    "log_interval": 0.1,
+    "lattice_interval": 0.2
+  }
+}

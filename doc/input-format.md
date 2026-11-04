@@ -5,13 +5,17 @@ Simulations use JSON version 1. JSON parsing is isolated in
 simulation sees format-independent `Config::Value` and `Config::Configuration`
 objects, not JSON library types.
 
+For fixed-site 3D crystal geometry, use `lattice.representation: "atomistic"`
+and the [atomistic surface guide](atomistic-surfaces.md). The sections below
+describe the existing height-field simulation input.
+
 ## Select and validate an input
 
 ```sh
-./apothesis --input input.json
-./apothesis -i input.json
-./apothesis input.json
-./apothesis --validate-input input.json
+./apothesis --input examples/height-field.json
+./apothesis -i examples/height-field.json
+./apothesis examples/height-field.json
+./apothesis --validate-input examples/height-field.json
 ```
 
 With no arguments, Apothesis opens `input.json` in the working directory.
@@ -21,7 +25,7 @@ Errors identify the offending field and return a nonzero exit status.
 Output files are written in the working directory. Paths to lattice matrix files
 are resolved relative to the JSON input file.
 
-Start with the complete [`input.json`](../input.json) example. The structural
+Start with the complete [height-field example](../examples/height-field.json). The structural
 [JSON Schema](input.schema.json) can be used with an editor or schema validator.
 The runtime additionally validates cross references and model restrictions.
 Standard JSON does not support comments; use `description` fields for notes.
