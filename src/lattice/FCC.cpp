@@ -24,6 +24,10 @@ FCC::FCC(Apothesis* apothesis):Lattice(apothesis)
 
 void FCC::setInitialHeight( int  height ) { m_iHeight = height; }
 
+void FCC::readHeightsFromFile() { cout << "Reading file for height is not supported yet for FCC."; EXIT;}
+
+void FCC::readSpeciesFromFile() { cout << "Reading file for species is not supported yet for FCC."; EXIT;}
+
 void FCC::build()
 {
     // The sites of the lattice.
@@ -1154,7 +1158,6 @@ void FCC::writeXYZ( string filename )
 
 void FCC::check()
 {
-    int k = 0;
 
     cout << "Checking lattice..." << endl;
 
@@ -1172,4 +1175,5 @@ void FCC::check()
     cout << "Activation: " << endl;
 }
 
-unordered_map<string, double> FCC::computeCoverages( vector<string> species){ }
+unordered_map<string, double> FCC::computeCoverages( vector<string> species){return 
+unordered_map<string, double>();}

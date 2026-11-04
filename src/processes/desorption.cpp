@@ -71,7 +71,7 @@ void Desorption::init(vector<string> params)
 
 bool Desorption::rules( Site* s)
 {
-    (*m_fRules)(this, s);
+    return (*m_fRules)(this, s);
 }
 
 void Desorption::perform( Site* s)

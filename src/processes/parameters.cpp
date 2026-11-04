@@ -20,7 +20,8 @@
 namespace Utils  
 {
 
-  Parameters::Parameters(Apothesis* apothesis ):Pointers(apothesis), m_iRand(0){}
+Parameters::Parameters(Apothesis* apothesis ):Pointers(apothesis), m_iRand(0), m_bReadHeightsFromFile(false),
+    m_bReadSpeciesFromFile(false), m_dStartTime(0.0){}
   
   void Parameters::setProcess( string processName, vector< string > processParams )
   {

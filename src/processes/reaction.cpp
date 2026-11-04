@@ -201,7 +201,7 @@ bool Reaction::simpleRule(Site* s){
 
     if ( !isReactant( s ) ) return false;
     else {
-        //Search for the other sites
+        //Search for the other sitesb
         for ( Site* s1:s->getNeighs() ) {
             if ( s1->getLabel().compare( s->getLabel() ) != 0 && isReactant( s1 ) )
                 return true;
@@ -212,7 +212,7 @@ bool Reaction::simpleRule(Site* s){
 
 bool Reaction::rules(Site *s)
 {
-    (this->*m_fRules)(s);
+    return (this->*m_fRules)(s);
 }
 
 bool Reaction::isReactant(Site* s){

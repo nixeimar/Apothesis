@@ -22,19 +22,19 @@ IO::IO(Apothesis* apothesis):Pointers(apothesis),
     m_sLatticeType("NONE"),
     m_sProcess("process"),
     m_sLattice("lattice"),
-    m_sRuns("runs"),
+    m_sSteps("steps"),
     m_sTemperature("temperature"),
     m_sPressure("pressure"),
-    m_sTime("time"),
-    m_sSteps("steps"),
+    m_sCommentLine("#"),
+    m_sTime("time_duration"),
     m_sRandom("random"),
     m_sSpecies("species"),
     m_sWrite("write"),
     m_sGrowth("growth"),
-    m_sCommentLine("#"),
     m_sPrecursors("precursors"),
     m_sReport("report"),
-    m_sHeights("heights.txt")
+    m_sHeights("heights.txt"),
+    m_sStartTime("time_start")
 {
     //Initialize the map for the lattice
     m_mLatticeType[ "NONE" ] = Lattice::NONE;
@@ -51,12 +51,12 @@ void IO::init(int argc, char* argv[])
 }
 
 
-string IO::getInputPath() const {;}
+string IO::getInputPath() const {return "";}
 
 
 void IO::readInputFile()
 {
-    list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport,m_sRuns};
+    list< string > lKeywords{ m_sLattice, m_sPressure, m_sTemperature, m_sTime, m_sSteps, m_sRandom, m_sSpecies, m_sWrite, m_sGrowth, m_sReport, m_sStartTime};
 
     string sLine;
     while ( getline( m_InputFile, sLine ) ) {
@@ -86,7 +86,7 @@ void IO::readInputFile()
         }
 
         // Remove any empty parts of the vector
-        vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+        vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
         vsTokensBasic.erase( it, vsTokensBasic.end() );
 
         // Check if a token is not a keyword
@@ -106,114 +106,72 @@ void IO::readInputFile()
         }
 
         if ( vsTokensBasic[ 0].compare(  m_sLattice ) == 0 ){
-            if ( trim(vsTokensBasic[ 1]).compare(  m_sHeights ) == 0) {
-                // Check if the input line contains a filename for height with the given name of heights.txt
-                    string heightFileName = trim(vsTokensBasic[1]);
-                    ifstream heightFile(heightFileName);
+            vector<string> vsTokens;
+            vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
 
-                    if (heightFile.good()) {
-                        // Read heights from the file
-                        string line;
-                        getline(heightFile, line);
-                        vector<string> vsTokens = split(line, " ");
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokens.size(); i++){
+                if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
+                    bComment = true;
 
-                        if (vsTokens.size() != 5 ) {
-                            m_errorHandler->error_simple_msg("Invalid heights header format ");
-                            EXIT
-                        }
-                        m_parameters->setLatticeType( trim( vsTokens[ 1 ] ) );
-                     
-                        if ( isNumber( vsTokens[ 2 ] ) ){
-                        m_parameters->setLatticeXDim( toInt(  trim( vsTokens[ 2 ] ) ) );
-                        }
-                        else {
-                            m_errorHandler->error_simple_msg("The x dimension of lattice is not a number.");
-                            EXIT
-                        }
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokens[ i ].clear();
+            }
 
-                        if ( isNumber( vsTokens[ 3 ] ) ){
-                            m_parameters->setLatticeYDim( toInt(  trim( vsTokens[ 3 ] ) ) );
-                        }
-                        else {
-                            m_errorHandler->error_simple_msg("`The y dimension of lattice is not a number.");
-                            EXIT
-                        }
-                        int latticeXDim = m_parameters->getLatticeXDim();
-                        int latticeYDim = m_parameters->getLatticeYDim();
-                        vector<vector<int>> heights(latticeYDim, vector<int>(latticeXDim));
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
+            vsTokens.erase( it, vsTokens.end() );
 
-                        for (int i = 0; i < latticeYDim; ++i) {
-                            for (int j = 0; j < latticeXDim; ++j) {
-                                if (!(heightFile >> heights[i][j])) {
-                                    m_errorHandler->error_simple_msg("Error reading heights from file.");
-                                    EXIT
-                                      }
-                                    }
-                            }
-            
-                        m_parameters->setHeightData(heights);
-                        m_parameters->setHeightFileExists(true);
-                        m_parameters->setLatticeLabels(vsTokens[4]);
-                        heightFile.close();
-                    } else {
-                        m_errorHandler->error_simple_msg("Failed to open height file: " + heightFileName);
-                        EXIT
-                    }
+            if ( vsTokens.size() < 4 ) {
+                m_errorHandler->error_simple_msg("The lattice keyword requires: lattice: <Type> <X> <Y> <Height|heights.dat> [species.dat|label].");
+                EXIT
+            }
+
+            m_parameters->setLatticeType( vsTokens[ 0 ]  );
+
+            if ( isNumber( vsTokens[ 1 ] ) ){
+                m_parameters->setLatticeXDim( toInt(  trim( vsTokens[ 1 ] ) ) );
+            }
+            else {
+                m_errorHandler->error_simple_msg("The x dimension of lattice is not a number.");
+                EXIT
+            }
+
+            if ( isNumber( vsTokens[ 2 ] ) ){
+                m_parameters->setLatticeYDim( toInt(  trim( vsTokens[ 2 ] ) ) );
+            }
+            else {
+                m_errorHandler->error_simple_msg("The y dimension of lattice is not a number.");
+                EXIT
+            }
+
+            if ( isNumber( vsTokens[ 3 ] ) ){
+                m_parameters->setLatticeHeight( toInt(  trim( vsTokens[ 3 ] ) ) );
+            }
+            else {
+
+                if ( vsTokens[ 3 ].compare("heigths.dat") != 0 ){
+                    m_errorHandler->error_simple_msg("The height must be a number or the file \"heights.dat\" "
+                                                     "which contains the height of lattice at time step t.");
+                    EXIT
                 }
-             else{
-                vector<string> vsTokens;
-                    vsTokens = split( vsTokensBasic[ 1 ], string( " " ) );
-
-                    bool bComment = false;
-                    for ( unsigned int i = 0; i< vsTokens.size(); i++){
-                        if ( !bComment && startsWith( vsTokens[ i ], m_sCommentLine ) )
-                            bComment = true;
-
-                        // Remove the comments from the tokens so not to consider them
-                        if ( bComment )
-                            vsTokens[ i ].clear();
-                    }
-
-                    // Remove any empty parts of the vector
-                    vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
-                    vsTokensBasic.erase( it, vsTokens.end() );
-
-                    m_parameters->setLatticeType( vsTokens[ 0 ]  );
-
-                    if ( isNumber( vsTokens[ 1 ] ) ){
-                        m_parameters->setLatticeXDim( toInt(  trim( vsTokens[ 1 ] ) ) );
-                    }
-                    else {
-                        m_errorHandler->error_simple_msg("The x dimension of lattice is not a number.");
-                        EXIT
-                    }
-
-                    if ( isNumber( vsTokens[ 2 ] ) ){
-                        m_parameters->setLatticeYDim( toInt(  trim( vsTokens[ 2 ] ) ) );
-                    }
-                    else {
-                        m_errorHandler->error_simple_msg("The y dimension of lattice is not a number.");
-                        EXIT
-                    }
-
-                    if ( isNumber( vsTokens[ 3 ] ) ){
-                        m_parameters->setLatticeHeight( toInt(  trim( vsTokens[ 3 ] ) ) );
-                    }
-                    else {
-                        m_errorHandler->error_simple_msg("The height must be a  number.");
-                        EXIT
-                    }
-
-                    if ( !vsTokens[ 4 ].empty() )
-                        m_parameters->setLatticeLabels( vsTokens[4] ) ;
-                    else {
-                        m_errorHandler->error_simple_msg("You must specify a species that the lattice is composed off.");
-                        EXIT
-                    }
-                     m_parameters->setHeightFileExists(false);
-                    continue;
+                else {
+                    //                    m_parameters->setHeightData( heights );
+                    m_parameters->setReadHeightsFromFile( true );
                 }
             }
+
+            if ( vsTokens.size() > 4 && !vsTokens[ 4 ].empty() ){
+                if ( vsTokens[ 4 ].compare("species.dat") == 0 )
+                    m_parameters->setReadSpeciesFromFile( true );
+                else
+                    m_parameters->setLatticeLabels( vsTokens[4] ) ;
+            }
+            continue;
+            //                }
+        }
+
 
         if (vsTokensBasic[ 0].compare(  m_sGrowth ) == 0){
             vector<string> vsTokens;
@@ -231,7 +189,7 @@ void IO::readInputFile()
 
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
             for (string s:vsTokens )
@@ -257,7 +215,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
             if ( isNumber( vsTokens[ 0 ] ) ){
@@ -292,7 +250,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
             vsTokensBasic.erase( it, vsTokensBasic.end() );
 
             if ( isNumber( trim(vsTokensBasic[ 1 ] ) )){
@@ -319,7 +277,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
             vsTokensBasic.erase( it, vsTokensBasic.end() );
 
             if ( isNumber( trim(vsTokensBasic[ 1 ] ) ) ){
@@ -347,11 +305,38 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
             vsTokensBasic.erase( it, vsTokensBasic.end() );
 
             if ( isNumber(  trim( vsTokensBasic[ 1 ] ) ) ){
                 m_parameters->setEndTime( toDouble( trim( vsTokensBasic[ 1] ) ) );
+            }
+            else {
+                m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
+                EXIT
+            }
+
+            continue;
+        }
+
+        if ( vsTokensBasic[ 0].compare( m_sStartTime ) == 0 ){
+
+            bool bComment = false;
+            for ( unsigned int i = 0; i< vsTokensBasic.size(); i++){
+                if ( !bComment && startsWith( vsTokensBasic[ i ], m_sCommentLine ) )
+                    bComment = true;
+
+                // Remove the comments from the tokens so not to consider them
+                if ( bComment )
+                    vsTokensBasic[ i ].clear();
+            }
+
+            // Remove any empty parts of the vector
+            vector<string>::iterator it = remove_if( vsTokensBasic.begin(), vsTokensBasic.end(), mem_fn(&string::empty) );
+            vsTokensBasic.erase( it, vsTokensBasic.end() );
+
+            if ( isNumber(  trim( vsTokensBasic[ 1 ] ) ) ){
+                m_parameters->setStartTime( toDouble( trim( vsTokensBasic[ 1] ) ) );
             }
             else {
                 m_errorHandler->error_simple_msg("Could not read number of KMC simulation time from input file. Is it a number?");
@@ -382,7 +367,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
             if ( vsTokens[ 0].compare( "log") == 0 ) {
@@ -434,7 +419,7 @@ void IO::readInputFile()
             }
 
             // Remove any empty parts of the vector
-            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fun_ref(&string::empty) );
+            vector<string>::iterator it = remove_if( vsTokens.begin(), vsTokens.end(), mem_fn(&string::empty) );
             vsTokens.erase( it, vsTokens.end() );
 
             for ( unsigned int i = 0; i < vsTokens.size(); i++ ){
@@ -490,10 +475,8 @@ string IO::simplified( string str )
     bool is_white = false;
     bool was_white = false;
     bool append = false;
-    size_t i = 0;
     size_t n = str.size();
     size_t nm = n - 1;
-    string::iterator it = str.begin();
 
     for (size_t i = 0; i < n; i++) {
         c = str[i];
@@ -520,9 +503,7 @@ string IO::simplified( string str )
 
 bool IO::isNumber( string str){
     char c;
-    size_t i = 0;
     size_t n = str.size();
-    string::iterator it = str.begin();
 
     bool bPlusFound = false;
     bool bPlusFound2 = false;

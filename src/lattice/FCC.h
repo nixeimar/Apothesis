@@ -56,6 +56,10 @@ public:
     /// Sets the minimun initial height for the lattice.
     void setInitialHeight( int  );
 
+    void readHeightsFromFile() override;
+
+    void readSpeciesFromFile() override;
+
     /// Count the neighbors in the different levels
     int calculateNeighNum( int,  int);
 

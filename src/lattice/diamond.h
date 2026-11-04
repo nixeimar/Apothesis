@@ -47,6 +47,10 @@ public:
     /// Sets the minimun initial height for the lattice.
     void setInitialHeight( int  );
 
+    void readHeightsFromFile() override;
+
+    void readSpeciesFromFile() override;
+
     /// Builds a  stepped surface
     virtual void buildSteps();
 

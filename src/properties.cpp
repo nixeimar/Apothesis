@@ -30,8 +30,10 @@ double Properties::getRMS()
 
     mean = sum/(double)m_lattice->getSize();
 
-    for (unsigned int i=0; i<m_lattice->getSize(); i++)
-        dev += m_lattice->getSite( i )->getHeight()*m_lattice->getSite( i )->getHeight();
+    for (unsigned int i=0; i<m_lattice->getSize(); i++){
+        double diff = m_lattice->getSite( i )->getHeight() - mean;
+        dev += diff*diff;
+    }
 
     return sqrt( dev/(double)m_lattice->getSize() );
 }

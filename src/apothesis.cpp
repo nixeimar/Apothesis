@@ -26,7 +26,6 @@
 #include "string.h"
 #include "reaction.h"
 #include "extLibs/random_generator.h"
-#include <bits/stdc++.h>
 #include "reader.h"
 #include "reaction.h"
 // #include "src/processes/parameters.h"
@@ -47,12 +46,12 @@ using namespace MicroProcesses;
 //using namespace Utils;
 
 Apothesis::Apothesis(int argc, char *argv[])
-    : pLattice(0),
-      pReader(0),
-      m_dProcTime(0.0),
+    : pReader(0),
+      pLattice(0),
+      pErrorHandler(0),
+      m_debugMode(false),
       m_dRTot(0.0),
-      m_dProcRate(0.0),
-      m_debugMode(false)
+      m_dProcRate(0.0)
 {
     m_iArgc = argc;
     m_vcArgv = argv;
@@ -77,6 +76,10 @@ Apothesis::~Apothesis()
     delete pParameters;
     delete pErrorHandler;
     delete pRandomGen;
+
+    for ( auto& proc: m_processMap )
+        delete proc.first;
+    m_processMap.clear();
 }
 
 void Apothesis::init()
@@ -87,6 +90,8 @@ void Apothesis::init()
     //Open the output file
     if ( !pIO->outputOpen() )
         pIO->openOutputFile("Output");
+
+    m_dProcTime = pParameters->getStartTime();
 
     // Initialize Random generator
     if ( pParameters->getRandGenInit() != 0.0 )
@@ -104,27 +109,36 @@ void Apothesis::init()
     else if ( pParameters->getLatticeType() == "Diamond" )
         pLattice = new Diamond(this);
 
-
     pLattice->setX( pParameters->getLatticeXDim() );
     pLattice->setY( pParameters->getLatticeYDim() );
-    if (pParameters->getHeightFileExist()){
-        pLattice->setInitialHeightAllSites( pParameters->getHeightData() );
-        pLattice->setVariableHeightsFromFile( true );
-    }
-    else{
-        pLattice->setInitialHeight( pParameters->getLatticeHeight() );
-        pLattice->setVariableHeightsFromFile( false );
-    }
-    pLattice->setLabels( pParameters->getLatticeLabels() );
-    pLattice->build();
 
-    // TODO: Here we must take into account the case of two or more species participating in the film growth
-    // and the user should give the per cent of each species in t=0s e.g. 0.8Ga 0.2As
-    for ( Site* s:pLattice->getSites() ){
-        s->setLabel(  pParameters->getLatticeLabels() );
-        s->setBelowLabel(  pParameters->getLatticeLabels() );
-        s->setOccupied( false ); //Start from clear surface
+    // Build the sites of the lattice
+    pLattice->buildSites();
+
+    //For the heights
+    if ( !pParameters->isReadHeightsFromFile() )
+        pLattice->setInitialHeight( pParameters->getLatticeHeight() );
+    else
+        //This is supported only for SimpleCubic cases
+        pLattice->readHeightsFromFile();
+
+    //For the species
+    if ( !pParameters->isReadSpeciesFromFile() ) {
+//        pLattice->setLabels( pParameters->getLatticeLabels() );
+
+        // TODO: Here we must take into account the case of two or more species participating in the film growth
+        // and the user should give the per cent of each species in t=0s e.g. 0.8Ga 0.2As
+        for ( Site* s:pLattice->getSites() ){
+            s->setLabel(  pParameters->getLatticeLabels() );
+            s->setBelowLabel( pParameters->getLatticeLabels() );
+        }
     }
+    else
+        //This is supported only for SimpleCubic cases
+        pLattice->readSpeciesFromFile();
+
+    //Build the lattice
+    pLattice->build();
 
     if ( pLattice->hasSteps() )
         pLattice->buildSteps();
@@ -137,7 +151,7 @@ void Apothesis::init()
     //Print parameters to check: To be move in debug version
     pParameters->printInfo();
 
-    //An empty set used for the initialization of the processMap
+    //An empty set is used for the initialization of the processMap
     set< Site* > emptySet;
 
     //Create the processes
@@ -442,7 +456,6 @@ void Apothesis::exec()
     //    pLattice->writeXYZ( "initial.xzy" );
 
     // The average height for the first time
-    double timeGrowth = 0;
     double meanDHPrevStep = pProperties->getMeanDH();
     double prevTimeStep = 0.0;
 
@@ -492,8 +505,6 @@ void Apothesis::exec()
                 Site* s = *next( p.second.begin(), m_iSiteNum );
 
                 //Compute the average height before performing the process to measure the growth rate
-                timeGrowth = m_dProcTime;
-
                 p.first->perform( s );
 
                 //Count the event for this class

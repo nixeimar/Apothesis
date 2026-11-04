@@ -24,6 +24,10 @@ Diamond::Diamond(Apothesis *apothesis) : Lattice(apothesis)
 
 void Diamond::setInitialHeight( int height ) { m_iHeight = height; }
 
+void Diamond::readHeightsFromFile() { cout << "Reading file for height is not supported yet for Diamond."; EXIT; }
+
+void Diamond::readSpeciesFromFile() { cout << "Reading file for species is not supported yet for Diamond."; EXIT; }
+
 void Diamond::build(){
     // The sites of the lattice.
     m_vSites.resize(getSize());
@@ -73,4 +77,4 @@ void Diamond::mf_neigh() {
     }
 }
 
-unordered_map<string, double> Diamond::computeCoverages( vector<string> species){ }
+unordered_map<string, double> Diamond::computeCoverages( vector<string> species){ return unordered_map<string, double>();}

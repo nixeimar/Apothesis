@@ -270,8 +270,8 @@ class IO: public Pointers
     /// The keyword for storing the name of heights file.
     string m_sHeights;
 
-    ///The keyword for number of runs
-    string m_sRuns;
+    /// The keyword for storing the start time.
+    string m_sStartTime ;
 
     // trim from start (in place)
     static inline void ltrim(std::string &s) {

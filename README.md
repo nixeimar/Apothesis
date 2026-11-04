@@ -10,6 +10,9 @@ It is still under development but please feel free to contact me if you have som
 
 Compile - qmake
 --------------------------------------------------------------------------------------------------------------
+To compile Apothesis using qmake, follow these steps:
+
+Step 1: Compile the Code:
 In the Apothesis directory run 
 ```
 qmake
@@ -20,9 +23,13 @@ and then
 ```
 make
 ```
+Step 2: Copy the Input File
+Copy the input.kmc file from the src/ directory:
+
 From `src/input.kmc` copy the `input.kmc` file.
 
 Paste the `input.kmc` file in the `Apothesis` folder.
+
 
 And then in terminal type
 ```
@@ -65,6 +72,22 @@ From `src/input.kmc` copy the `input.kmc` file and put it inside the build folde
 ./Apothesis
 
 ```
+
+## Build on Windows (MSYS2 + MinGW)
+
+1. Install MSYS2
+2. Install dependencies:
+   ```pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake```
+
+3. Open "MSYS2 MinGW64" terminal
+
+4. Build:
+   ```
+   mkdir build
+   cd build
+   cmake -G "MinGW Makefiles" -DCMAKE_CXX_STANDARD=17 ..
+   mingw32-make
+   ```
 
 Contact information:
 Nikolaos (Nikos) Cheimarios: 
