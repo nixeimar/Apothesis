@@ -22,6 +22,12 @@ Diamond::Diamond(Apothesis *apothesis) : Lattice(apothesis)
     m_Type = Lattice::Diamond;
 }
 
+Diamond::~Diamond()
+{
+    for (int i = 0; i < getSize(); i++)
+        delete m_vSites[i];
+}
+
 void Diamond::setInitialHeight( int height ) { m_iHeight = height; }
 
 void Diamond::readHeightsFromFile() { cout << "Reading file for height is not supported yet for Diamond."; EXIT; }
@@ -29,6 +35,10 @@ void Diamond::readHeightsFromFile() { cout << "Reading file for height is not su
 void Diamond::readSpeciesFromFile() { cout << "Reading file for species is not supported yet for Diamond."; EXIT; }
 
 void Diamond::build(){
+    // Free sites previously allocated by buildSites()
+    for (int i = 0; i < m_vSites.size(); i++)
+        delete m_vSites[i];
+
     // The sites of the lattice.
     m_vSites.resize(getSize());
     for (int i = 0; i < m_vSites.size(); i++)
@@ -61,19 +71,14 @@ void Diamond::writeXYZ(string){}
 
 void Diamond::mf_neigh() {
 
-    // The sites of the lattice.
-    m_vSites.resize(getSize());
-
-    int L = getSize();
-
     for (int site = 0; site < getSize(); site++) {
-        int x = site / L;
-        int y = site % L;
+        int x = site / m_iSizeY;
+        int y = site % m_iSizeY;
 
-        m_vSites[ site ]->setNeigh( m_vSites[ ((x + 1) % L) * L + y ]); //Right
-        m_vSites[ site ]->setNeigh( m_vSites[ x * L + ((y + 1) % L) ]); //Down
-        m_vSites[ site ]->setNeigh( m_vSites[ ((x - 1 + L) % L) * L + y ]); //Left
-        m_vSites[ site ]->setNeigh( m_vSites[ x * L + ((y - 1 + L) % L) ]); //Up
+        m_vSites[ site ]->setNeigh( m_vSites[ ((x + 1) % m_iSizeX) * m_iSizeY + y ]); //Down
+        m_vSites[ site ]->setNeigh( m_vSites[ x * m_iSizeY + ((y + 1) % m_iSizeY) ]); //Right
+        m_vSites[ site ]->setNeigh( m_vSites[ ((x - 1 + m_iSizeX) % m_iSizeX) * m_iSizeY + y ]); //Up
+        m_vSites[ site ]->setNeigh( m_vSites[ x * m_iSizeY + ((y - 1 + m_iSizeY) % m_iSizeY) ]); //Left
     }
 }
 

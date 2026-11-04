@@ -56,6 +56,8 @@ Apothesis::Apothesis(int argc, char *argv[])
     m_iArgc = argc;
     m_vcArgv = argv;
 
+    pErrorHandler = new Utils::ErrorHandler(this);
+
     pParameters = new Utils::Parameters(this);
     pProperties = new Utils::Properties(this);
     pRandomGen = new RandomGen::RandomGenerator( this );
