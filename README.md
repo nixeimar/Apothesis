@@ -23,6 +23,15 @@ nested values. Start with [`input.json`](input.json) and the
 Running `./apothesis` without arguments selects `input.json` in the working
 directory. Input files must use the versioned JSON format.
 
+## ZGB growth in 3D
+
+The root `input.json` selects the Cheimarios 2023 chemistry on explicit 3D
+simple-cubic sites. Reactions incorporate an occupied solid unit, with a solid
+first neighbor beneath it; pair events use four same-height lateral neighbors.
+Generic AB, B and AB2 are effective chemical particles, not resolved molecules.
+See the [3D model guide](doc/zgb-3d.md) and the separate
+[height-field reproduction](doc/zgb-growth-2023.md), including validation limits.
+
 ## Atomistic surface construction
 
 Create explicit fixed-site crystal slabs and export them as extended XYZ:

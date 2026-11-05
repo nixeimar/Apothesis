@@ -9,6 +9,11 @@ For fixed-site 3D crystal geometry, use `lattice.representation: "atomistic"`
 and the [atomistic surface guide](atomistic-surfaces.md). The sections below
 describe the existing height-field simulation input.
 
+Named `model.type` presets select the [height-field ZGB model](zgb-growth-2023.md)
+or its [explicit 3D implementation](zgb-3d.md). These define their own kinetics
+and output fields and do not accept generic `system`/`processes` sections.
+The root `input.json` selects `cheimarios_zgb_2023_3d`.
+
 ## Select and validate an input
 
 ```sh

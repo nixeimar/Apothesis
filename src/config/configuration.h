@@ -6,6 +6,8 @@
 #include <optional>
 #include "../lattice/atomistic_surface.h"
 #include "../processes/atomistic_kmc.h"
+#include "../processes/zgb_growth.h"
+#include "../processes/zgb_3d.h"
 #include <string>
 #include <variant>
 #include <utility>
@@ -38,6 +40,8 @@ struct Process {
 
 struct Configuration {
     Value document;
+    std::optional<ZGB::Options> zgb;
+    std::optional<ZGB3D::Options> zgb3d;
     std::optional<Atomistic::Options> atomisticSurface;
     std::optional<Atomistic::RunOptions> atomisticSimulation;
     double temperature = 0, pressure = 0, startTime = 0, endTime = 0;

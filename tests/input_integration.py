@@ -129,4 +129,60 @@ with tempfile.TemporaryDirectory(prefix='apothesis-integration-') as temp:
     assert 'system.parameters.temperature' in result.stderr
     run(['--input'], success=False)
 
+
+    # Named height-field model: actual CLI dispatch, inventory, reproducibility.
+    zgb = json.loads((root / 'examples/zgb-growth-2023.json').read_text())
+    zgb['lattice']['parameters']['dimensions'] = [4, 4]
+    zgb['simulation'].update(duration=100, random_seed=1234)
+    zgb_path = work / 'zgb.json'
+    zgb_path.write_text(json.dumps(zgb))
+    run(['--validate-input', str(zgb_path)])
+    run([str(zgb_path)])
+    summary = json.loads((work / 'zgb_summary.json').read_text())
+    assert summary['events'] > 0 and summary['reactions'] > 0
+    assert abs(summary['mean_height'] - (10 + summary['reactions']/16)) < 1e-10
+    assert abs(summary['coverage_ab'] - (summary['ab_adsorptions']-summary['reactions'])/16) < 1e-10
+    run([str(zgb_path)])
+    assert summary == json.loads((work / 'zgb_summary.json').read_text())
+    for section, field, value in [('model', 'y_ab', 1.1), ('lattice', 'dimensions', [2,4])]:
+        candidate = json.loads(json.dumps(zgb));candidate[section]['parameters'][field] = value
+        zgb_path.write_text(json.dumps(candidate))
+        run(['--validate-input',str(zgb_path)],success=False)
+
+    # 3D chemistry must export real occupied sites and separate adsorbate roles.
+    zgb3d = json.loads((root / 'examples/zgb-growth-3d.json').read_text())
+    zgb3d['lattice']['parameters'].update(repetitions=[4,4,16], occupied_unit_cells=2)
+    zgb3d_path = work / 'zgb3d.json'
+    zgb3d_path.write_text(json.dumps(zgb3d))
+    run(['--validate-input', str(zgb3d_path)])
+    run([str(zgb3d_path)])
+    summary = json.loads((work / 'zgb3d_summary.json').read_text())
+    assert summary['representation'] == 'explicit_3d_occupancy'
+    assert summary['solid_units'] == 32 + summary['reactions']
+    xyz = (work / 'zgb3d_final.xyz').read_text().splitlines()
+    assert 'chemical_state:S:1:role:S:1' in xyz[1]
+    points = [row.split() for row in xyz[2:]]
+    assert len(points) == int(xyz[0])
+    assert sum(row[7] == 'solid' for row in points) == summary['solid_units']
+    assert sum(row[6] == 'AB2_solid' for row in points) == summary['reactions']
+    assert sum(row[6] == 'AB_adsorbate' for row in points) == summary['ab_adsorptions'] - summary['reactions']
+    assert sum(row[6] == 'B_adsorbate' for row in points) == 2*summary['b2_adsorptions'] - summary['reactions']
+    candidate = json.loads(json.dumps(zgb3d));candidate['lattice']['type']='FCC'
+    zgb3d_path.write_text(json.dumps(candidate))
+    run(['--validate-input',str(zgb3d_path)],success=False)
+
+    # Exercise both ensemble modes and verify the runner really chooses 3D.
+    for representation in ['height_field','3d']:
+        sweep = work / ('sweep-' + representation)
+        result = subprocess.run([sys.executable,str(root/'scripts/reproduce_zgb_2023.py'),
+            '--binary',binary,'--output',str(sweep),'--representation',representation,
+            '--size','4','--trials','2','--y','0.4','--variant','growth',
+            '--growth-duration','100'],capture_output=True,text=True,timeout=30)
+        assert result.returncode == 0, result.stdout+result.stderr
+        summary_name = 'zgb3d_summary.json' if representation == '3d' else 'zgb_summary.json'
+        assert len(list(sweep.glob('*/'+summary_name))) == 2
+        if representation == '3d':
+            assert not list(sweep.glob('*/zgb_summary.json'))
+            assert not list(sweep.glob('*/*.xyz'))
+
 print('All input integration tests passed.')

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "description": "Catalytic ZGB reference for Figure 3a (no growth)",
+  "model": {
+    "type": "cheimarios_zgb_2023",
+    "parameters": {
+      "variant": "catalytic",
+      "y_ab": 0.45,
+      "reaction_rate": 100000,
+      "pair_convention": "zgb_attempts",
+      "reaction_selection": "sites"
+    }
+  },
+  "lattice": {
+    "type": "SimpleCubic",
+    "parameters": {
+      "dimensions": [
+        100,
+        100
+      ],
+      "initial_height": 10
+    }
+  },
+  "simulation": {
+    "start_time": 0,
+    "duration": 100,
+    "random_seed": 1234
+  },
+  "output": {
+    "log_interval": 1
+  }
+}

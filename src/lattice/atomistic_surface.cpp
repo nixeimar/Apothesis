@@ -165,7 +165,22 @@ Surface build(const Options& o) {
             fractions.push_back(fractional);
         }
     for (auto id : o.vacancies) s.sites[id].occupied=false;
-    connect(s,fractions);
+    if (o.crystal=="SimpleCubic" && s.neighborCutoff>=o.latticeConstant*(1-1e-12) &&
+        s.neighborCutoff<std::sqrt(2.0)*o.latticeConstant*(1-1e-12)) {
+        // Exact first-neighbor graph avoids a spatial search over large SC slabs.
+        const auto nx=o.repetitions[0],ny=o.repetitions[1],nz=o.repetitions[2];
+        for (int z=0;z<nz;++z) for (int y=0;y<ny;++y) for (int x=0;x<nx;++x) {
+            const auto id=static_cast<std::size_t>((z*ny+y)*nx+x);
+            for (int axis=0;axis<3;++axis) for (int step:{-1,1}) {
+                std::array<int,3> c{{x,y,z}};c[axis]+=step;
+                const int size=o.repetitions[axis];
+                if (o.periodic[axis]) c[axis]=(c[axis]+size)%size;
+                else if (c[axis]<0 || c[axis]>=size) continue;
+                s.sites[id].neighbors.push_back(static_cast<std::size_t>((c[2]*ny+c[1])*nx+c[0]));
+            }
+            std::sort(s.sites[id].neighbors.begin(),s.sites[id].neighbors.end());
+        }
+    } else connect(s,fractions);
     return s;
 }
 std::size_t Surface::atomCount() const {

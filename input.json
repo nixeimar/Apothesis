@@ -1,129 +1,52 @@
 {
   "schema_version": 1,
-  "description": "Fixed-site atomistic Cu adsorption, nearest-neighbor diffusion and desorption; illustrative rates, not calibrated Cu kinetics",
+  "description": "ZGB chemistry on an explicit 3D simple-cubic slab; generic AB/B/AB2 are effective particles",
+  "model": {
+    "type": "cheimarios_zgb_2023_3d",
+    "parameters": {
+      "variant": "growth",
+      "y_ab": 0.4,
+      "reaction_rate": 100000,
+      "pair_convention": "zgb_attempts",
+      "reaction_selection": "sites"
+    }
+  },
   "lattice": {
     "representation": "atomistic",
-    "type": "FCC",
+    "type": "SimpleCubic",
     "parameters": {
+      "lattice_constant": 1,
       "length_unit": "angstrom",
-      "orientation": "100",
-      "lattice_constant": 3.615,
       "repetitions": [
-        4,
-        4,
-        4
+        20,
+        20,
+        30
       ],
-      "initial_species": "Cu",
+      "occupied_unit_cells": 10,
+      "fixed_unit_cells": 1,
+      "initial_species": "substrate",
       "periodic": [
         true,
         true,
         false
       ],
-      "vacuum": 15,
-      "fixed_unit_cells": 1,
-      "vacancies": [],
-      "occupied_unit_cells": 2
+      "vacuum": 5
     }
   },
   "species": {
-    "Cu": {
+    "substrate": {
       "parameters": {
-        "element": "Cu"
+        "element": "X"
       }
-    }
-  },
-  "system": {
-    "parameters": {
-      "temperature": 600
     }
   },
   "simulation": {
-    "duration": 1,
-    "random_seed": 1234,
-    "max_events": 200
+    "duration": 100,
+    "random_seed": 1234
   },
-  "processes": [
-    {
-      "id": "cu_adsorption",
-      "type": "adsorption",
-      "reactants": [
-        {
-          "species": "Cu",
-          "phase": "gas"
-        },
-        {
-          "vacancy": true
-        }
-      ],
-      "products": [
-        {
-          "species": "Cu",
-          "phase": "surface"
-        }
-      ],
-      "rate": {
-        "model": "constant",
-        "parameters": {
-          "value": 5
-        }
-      },
-      "parameters": {
-        "min_coordination": 1
-      }
-    },
-    {
-      "id": "cu_diffusion",
-      "type": "diffusion",
-      "reactants": [
-        {
-          "species": "Cu",
-          "phase": "surface"
-        }
-      ],
-      "products": [
-        {
-          "species": "Cu",
-          "phase": "surface"
-        }
-      ],
-      "rate": {
-        "model": "constant",
-        "parameters": {
-          "value": 10
-        }
-      },
-      "parameters": {
-        "min_coordination": 1
-      }
-    },
-    {
-      "id": "cu_desorption",
-      "type": "desorption",
-      "reactants": [
-        {
-          "species": "Cu",
-          "phase": "surface"
-        }
-      ],
-      "products": [
-        {
-          "vacancy": true
-        },
-        {
-          "species": "Cu",
-          "phase": "gas"
-        }
-      ],
-      "rate": {
-        "model": "constant",
-        "parameters": {
-          "value": 1
-        }
-      }
-    }
-  ],
   "output": {
-    "log_interval": 0.01,
-    "lattice_interval": 0.02
+    "log_interval": 1,
+    "lattice_interval": 10,
+    "write_xyz": true
   }
 }

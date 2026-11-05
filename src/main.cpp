@@ -74,6 +74,18 @@ int main(int argc, char* argv[])
         else if (argc==3 && (string(argv[1])=="--input" || string(argv[1])=="-i")) input=argv[2];
         else if (argc!=1) throw std::runtime_error("Usage: apothesis [--input|-i] <input.json>");
         const auto configuration=Config::readJson(input);
+        if (configuration.zgb3d) {
+            cout<<"Running ZGB chemistry on explicit 3D site occupancy ..."<<endl;
+            ZGB3D::runToFiles(*configuration.zgb3d);
+            cout<<"Finished. See zgb3d_summary.json and zgb3d.log."<<endl;
+            return 0;
+        }
+        if (configuration.zgb) {
+            cout<<"Running Cheimarios 2023 height-field ZGB model ..."<<endl;
+            ZGB::runToFiles(*configuration.zgb);
+            cout<<"Finished. See zgb_summary.json and zgb.log."<<endl;
+            return 0;
+        }
         if (configuration.atomisticSurface) {
             if (!configuration.atomisticSimulation)
                 throw std::runtime_error("Atomistic geometry-only input: add system, simulation, processes and output to run KMC, or use --build-surface.");

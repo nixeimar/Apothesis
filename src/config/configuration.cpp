@@ -136,13 +136,13 @@ void validateTopology(const std::string& type, const std::vector<Term>& r,
         for (const auto& t : p) if (t.vacancy || t.coefficient != 1) fail(path, "reaction products must be species with coefficient one");
     } else fail(path + ".type", "unsupported process type '" + type + "'");
 }
-std::string elementFor(const Json& species,const std::string& name) {
+std::string elementFor(const Json& species,const std::string& name,bool allowPseudo=false) {
     const std::string path="species."+name;
     if (!species.contains(name)) fail(path,"undefined species");
     const auto& parameters=required(species.at(name),"parameters",path);
     const auto element=text(required(parameters,"element",path+".parameters"),path+".parameters.element");
     const std::string elements=" H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og ";
-    if (elements.find(" "+element+" ")==std::string::npos) fail(path+".parameters.element","expected a chemical element symbol");
+    if (!(allowPseudo && element=="X") && elements.find(" "+element+" ")==std::string::npos) fail(path+".parameters.element","expected a chemical element symbol");
     return element;
 }
 Atomistic::RunOptions atomisticRun(const Json& root) {
@@ -209,7 +209,7 @@ Atomistic::RunOptions atomisticRun(const Json& root) {
     Atomistic::validate(o);
     return o;
 }
-Atomistic::Options surfaceOptions(const Json& root) {
+Atomistic::Options surfaceOptions(const Json& root,bool allowPseudo=false) {
     const auto& lattice = required(root, "lattice", "input");
     keys(lattice, "lattice", {"representation", "type", "parameters"});
     const auto& p = required(lattice, "parameters", "lattice");
@@ -260,9 +260,69 @@ Atomistic::Options surfaceOptions(const Json& root) {
     object(species, "species");
     for (auto it=species.begin();it!=species.end();++it) keys(it.value(), "species." + it.key(), {"description", "parameters"});
     if (!species.contains(o.species)) fail(path + ".initial_species", "undefined species");
-    o.element = elementFor(species,o.species);
+    o.element = elementFor(species,o.species,allowPseudo);
     Atomistic::validate(o);
     return o;
+}
+
+ZGB::Options zgbOptions(const Json& root,bool volume) {
+    const auto& model=required(root,"model","input");
+    keys(model,"model",{"type","parameters","description"});
+    const auto& p=required(model,"parameters","model");
+    object(p,"model.parameters");
+    ZGB::Options o;
+    if (p.contains("variant")) {
+        auto variant=text(p.at("variant"),"model.parameters.variant");
+        if (variant!="growth" && variant!="catalytic") fail("model.parameters.variant","expected growth or catalytic");
+        o.growth=variant=="growth";
+    }
+    o.yAB=number(required(p,"y_ab","model.parameters"),"model.parameters.y_ab");
+    if (p.contains("reaction_rate")) o.reactionRate=number(p.at("reaction_rate"),"model.parameters.reaction_rate",true);
+    if (p.contains("pair_convention")) o.pairConvention=text(p.at("pair_convention"),"model.parameters.pair_convention");
+    if (p.contains("reaction_selection")) o.reactionSelection=text(p.at("reaction_selection"),"model.parameters.reaction_selection");
+    const auto& lattice=required(root,"lattice","input");
+    keys(lattice,"lattice",{"representation","type","parameters"});
+    if (text(required(lattice,"type","lattice"),"lattice.type")!="SimpleCubic") fail("lattice.type","ZGB requires SimpleCubic");
+    const auto& lp=required(lattice,"parameters","lattice");object(lp,"lattice.parameters");
+    if (!volume) {
+        if (lattice.contains("representation") && text(lattice.at("representation"),"lattice.representation")!="height_field")
+            fail("lattice.representation","use cheimarios_zgb_2023_3d for atomistic ZGB");
+        const auto& dims=required(lp,"dimensions","lattice.parameters");
+        if (!dims.is_array() || dims.size()!=2) fail("lattice.parameters.dimensions","expected [nx, ny]");
+        o.x=integer(dims[0],"lattice.parameters.dimensions",true);o.y=integer(dims[1],"lattice.parameters.dimensions",true);
+        o.initialHeight=integer(required(lp,"initial_height","lattice.parameters"),"lattice.parameters.initial_height");
+        for (const auto& field:{"initial_height_file","initial_species_file","steps","repetitions","occupied_unit_cells"})
+            if (lp.contains(field)) fail(std::string("lattice.parameters.")+field,"not supported by the predefined height-field ZGB model");
+    } else {
+        if (text(required(lattice,"representation","lattice"),"lattice.representation")!="atomistic") fail("lattice.representation","3D ZGB requires atomistic");
+        auto geometry=surfaceOptions(root,true);
+        o.x=geometry.repetitions[0];o.y=geometry.repetitions[1];
+        if (geometry.occupiedUnitCells<1 || geometry.occupiedUnitCells>=geometry.repetitions[2])
+            fail("lattice.parameters.occupied_unit_cells","3D ZGB requires occupied layers and empty growth headroom");
+        o.initialHeight=geometry.occupiedUnitCells;
+    }
+    const auto& sim=required(root,"simulation","input");
+    keys(sim,"simulation",{"start_time","duration","random_seed","max_events","parameters"});
+    if (sim.contains("start_time")) o.start=number(sim.at("start_time"),"simulation.start_time");
+    o.end=o.start+number(required(sim,"duration","simulation"),"simulation.duration",true);
+    if (sim.contains("random_seed")) o.seed=integer(sim.at("random_seed"),"simulation.random_seed");
+    if (sim.contains("max_events")) o.maxEvents=integer(sim.at("max_events"),"simulation.max_events");
+    const auto& output=required(root,"output","input");
+    if (volume) keys(output,"output",{"log_interval","lattice_interval","write_xyz","parameters"});
+    else keys(output,"output",{"log_interval","parameters"});
+    o.logInterval=number(required(output,"log_interval","output"),"output.log_interval",true);
+    if (root.contains("processes") || root.contains("system")) fail("model","predefined ZGB kinetics do not accept system or processes sections");
+    ZGB::validate(o);return o;
+}
+ZGB3D::Options zgb3dOptions(const Json& root) {
+    ZGB3D::Options o;o.kinetics=zgbOptions(root,true);o.geometry=surfaceOptions(root,true);
+    const auto& output=root.at("output");
+    if (output.contains("lattice_interval")) o.snapshotInterval=number(output.at("lattice_interval"),"output.lattice_interval");
+    if (output.contains("write_xyz")) {
+        if (!output.at("write_xyz").is_boolean()) fail("output.write_xyz","expected a boolean");
+        o.writeXYZ=output.at("write_xyz").get<bool>();
+    }
+    ZGB3D::validate(o);return o;
 }
 } // namespace
 
@@ -289,9 +349,18 @@ Configuration readJson(const std::string& filename) {
             return true;
         });
     } catch (const Json::exception& e) { fail(filename, e.what()); }
-    keys(root, "input", {"schema_version", "description", "parameters", "system", "simulation", "lattice", "species", "processes", "output"});
+    keys(root, "input", {"schema_version", "description", "parameters", "model", "system", "simulation", "lattice", "species", "processes", "output"});
     if (integer(required(root, "schema_version", "input"), "schema_version") != 1) fail("schema_version", "only version 1 is supported");
     Configuration c;
+    if (root.contains("model")) {
+        const auto& model=root.at("model");
+        auto type=text(required(model,"type","model"),"model.type");
+        if (type=="cheimarios_zgb_2023") c.zgb=zgbOptions(root,false);
+        else if (type=="cheimarios_zgb_2023_3d") {
+            c.zgb3d=zgb3dOptions(root);c.atomisticSurface=c.zgb3d->geometry;
+        } else fail("model.type","unsupported predefined model");
+        c.document=convert(root);return c;
+    }
     const auto& latticeDefinition = required(root, "lattice", "input");
     object(latticeDefinition, "lattice");
     if (latticeDefinition.contains("representation")) {

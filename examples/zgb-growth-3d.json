@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "description": "ZGB chemistry on an explicit 3D simple-cubic slab; generic AB/B/AB2 are effective particles",
+  "model": {
+    "type": "cheimarios_zgb_2023_3d",
+    "parameters": {
+      "variant": "growth",
+      "y_ab": 0.4,
+      "reaction_rate": 100000,
+      "pair_convention": "zgb_attempts",
+      "reaction_selection": "sites"
+    }
+  },
+  "lattice": {
+    "representation": "atomistic",
+    "type": "SimpleCubic",
+    "parameters": {
+      "lattice_constant": 1,
+      "length_unit": "angstrom",
+      "repetitions": [
+        20,
+        20,
+        30
+      ],
+      "occupied_unit_cells": 10,
+      "fixed_unit_cells": 1,
+      "initial_species": "substrate",
+      "periodic": [
+        true,
+        true,
+        false
+      ],
+      "vacuum": 5
+    }
+  },
+  "species": {
+    "substrate": {
+      "parameters": {
+        "element": "X"
+      }
+    }
+  },
+  "simulation": {
+    "duration": 100,
+    "random_seed": 1234
+  },
+  "output": {
+    "log_interval": 1,
+    "lattice_interval": 10,
+    "write_xyz": true
+  }
+}
