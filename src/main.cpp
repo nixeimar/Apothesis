@@ -32,6 +32,7 @@
 #include <iostream>
 #include <list>
 #include <memory>
+#include <filesystem>
 #include "config/configuration.h"
 #include "site.h"
 #include "lattice.h"
@@ -74,6 +75,14 @@ int main(int argc, char* argv[])
         else if (argc==3 && (string(argv[1])=="--input" || string(argv[1])=="-i")) input=argv[2];
         else if (argc!=1) throw std::runtime_error("Usage: apothesis [--input|-i] <input.json>");
         const auto configuration=Config::readJson(input);
+        if (configuration.surfaceKMC) {
+            cout<<"Running explicit surface processes on 3D site occupancy ..."<<endl;
+            SurfaceKMC::runToFiles(*configuration.surfaceKMC);
+            cout<<"Finished. Output directory: "<<std::filesystem::current_path()<<endl;
+            cout<<"See surface_summary.json and surface.log";
+            if (configuration.surfaceKMC->writeXYZ) cout<<", surface_initial.xyz, surface_final.xyz and surface_trajectory.xyz";
+            cout<<'.'<<endl;return 0;
+        }
         if (configuration.zgb3d) {
             cout<<"Running ZGB chemistry on explicit 3D site occupancy ..."<<endl;
             ZGB3D::runToFiles(*configuration.zgb3d);

@@ -324,6 +324,97 @@ ZGB3D::Options zgb3dOptions(const Json& root) {
     }
     ZGB3D::validate(o);return o;
 }
+
+SurfaceKMC::Options explicitSurfaceOptions(const Json& root) {
+    const auto& model=root.at("model");keys(model,"model",{"type","parameters","description"});
+    const auto& lattice=required(root,"lattice","input");
+    if (text(required(lattice,"representation","lattice"),"lattice.representation")!="atomistic") fail("lattice.representation","surface_kmc_3d requires atomistic");
+    SurfaceKMC::Options o;o.geometry=surfaceOptions(root,true);
+    const auto& species=root.at("species");
+    for (auto it=species.begin();it!=species.end();++it) {
+        if (it.key().empty() || it.key().find_first_of(" \t\n\r\"")!=std::string::npos) fail("species","names must be nonempty tokens without quotes or whitespace");
+        o.elements[it.key()]=elementFor(species,it.key(),true);
+    }
+    double temperature=0;
+    if (root.contains("system")) {
+        const auto& system=root.at("system");keys(system,"system",{"parameters"});
+        const auto& p=required(system,"parameters","system");
+        if (p.contains("temperature")) temperature=number(p.at("temperature"),"system.parameters.temperature",true);
+    }
+    const auto& sim=required(root,"simulation","input");keys(sim,"simulation",{"start_time","duration","random_seed","max_events","parameters"});
+    if (sim.contains("start_time")) o.start=number(sim.at("start_time"),"simulation.start_time");
+    o.end=o.start+number(required(sim,"duration","simulation"),"simulation.duration",true);
+    if (sim.contains("random_seed")) o.seed=integer(sim.at("random_seed"),"simulation.random_seed");
+    if (sim.contains("max_events")) o.maxEvents=integer(sim.at("max_events"),"simulation.max_events");
+    const auto& output=required(root,"output","input");keys(output,"output",{"log_interval","lattice_interval","write_xyz","parameters"});
+    o.logInterval=number(required(output,"log_interval","output"),"output.log_interval",true);
+    if (output.contains("lattice_interval")) o.snapshotInterval=number(output.at("lattice_interval"),"output.lattice_interval");
+    if (output.contains("write_xyz")) {if (!output.at("write_xyz").is_boolean()) fail("output.write_xyz","expected a boolean");o.writeXYZ=output.at("write_xyz").get<bool>();}
+    const auto& processes=required(root,"processes","input");
+    if (!processes.is_array() || processes.empty()) fail("processes","expected a nonempty array");
+    for (std::size_t index=0;index<processes.size();++index) {
+        const auto path="processes["+std::to_string(index)+"]";const auto& j=processes[index];
+        keys(j,path,{"id","type","description","reactants","products","rate","parameters"});
+        SurfaceKMC::Rule r;r.id=text(required(j,"id",path),path+".id");r.type=text(required(j,"type",path),path+".type");
+        if (r.id.find_first_of(" \t\r\n\"")!=std::string::npos) fail(path+".id","expected a token without whitespace or quotes");
+        std::map<int,std::string> before;std::map<int,SurfaceKMC::Product> after;
+        int gasReactants=0,gasProducts=0;
+        for (bool products:{false,true}) {
+            const std::string side=products ? "products" : "reactants";const auto& list=required(j,side,path);
+            if (!list.is_array() || list.empty()) fail(path+"."+side,"expected a nonempty array");
+            for (const auto& term:list) {
+                const auto tp=path+"."+side;keys(term,tp,{"species","phase","site","vacancy","coefficient"});
+                if (term.contains("coefficient") && integer(term.at("coefficient"),tp+".coefficient",true)!=1) fail(tp+".coefficient","write one term per site slot; coefficients must be one");
+                bool vacant=term.contains("vacancy");std::string name,phase;
+                if (vacant) {
+                    if (!term.at("vacancy").is_boolean() || !term.at("vacancy").get<bool>() || term.contains("species") || term.contains("phase")) fail(tp,"vacancy must be true without species or phase");
+                } else {
+                    name=text(required(term,"species",tp),tp+".species");
+                    if (!o.elements.count(name)) fail(tp+".species","undefined species '"+name+"'");
+                    phase=text(required(term,"phase",tp),tp+".phase");
+                    if (phase!="gas" && phase!="surface" && phase!="solid") fail(tp+".phase","expected gas, surface or solid");
+                    if (phase=="gas") {
+                        if (term.contains("site")) fail(tp+".site","gas reservoirs do not occupy a site slot");
+                        if (products) ++gasProducts;else ++gasReactants;
+                        continue;
+                    }
+                    if (!products && phase=="solid") fail(tp+".phase","solid reactants/removal are not supported by this top-surface engine");
+                }
+                const int slot=integer(required(term,"site",tp),tp+".site");
+                if (slot>1) fail(tp+".site","supported slots are 0 and 1");
+                if (products) {if (!after.emplace(slot,SurfaceKMC::Product{name,phase=="solid"}).second) fail(tp+".site","duplicate site slot");}
+                else if (!before.emplace(slot,name).second) fail(tp+".site","duplicate site slot");
+            }
+        }
+        if (before.empty() || before.size()!=after.size() || !before.count(0) || !after.count(0) || (before.size()==2 && (!before.count(1) || !after.count(1)))) fail(path,"reactants and products must each define the same one or two slots, starting at zero");
+        for (std::size_t slot=0;slot<before.size();++slot) {r.before.push_back(before.at(static_cast<int>(slot)));r.after.push_back(after.at(static_cast<int>(slot)));}
+        const auto& p=required(j,"parameters",path);object(p,path+".parameters");
+        r.counting=text(required(p,"counting",path+".parameters"),path+".parameters.counting");
+        if (r.before.size()==2) {
+            if (text(required(p,"neighbors",path+".parameters"),path+".parameters.neighbors")!="lateral_first") fail(path+".parameters.neighbors","only lateral_first is implemented");
+            const auto& same=required(p,"same_height",path+".parameters");
+            if (!same.is_boolean() || !same.get<bool>()) fail(path+".parameters.same_height","this engine currently requires same-height neighbors");
+        } else if (p.contains("neighbors") || p.contains("same_height")) fail(path+".parameters","single-site events do not use neighbor conditions");
+        if (r.type=="adsorption") {
+            if (!gasReactants || gasProducts || std::any_of(r.before.begin(),r.before.end(),[](const std::string& a){return !a.empty();}) || std::any_of(r.after.begin(),r.after.end(),[](const SurfaceKMC::Product& a){return a.species.empty() || a.solid;})) fail(path,"adsorption requires gas + vacant slots -> occupied surface slots");
+        } else if (r.type=="desorption") {
+            if (gasReactants || !gasProducts || std::any_of(r.before.begin(),r.before.end(),[](const std::string& a){return a.empty();}) || std::any_of(r.after.begin(),r.after.end(),[](const SurfaceKMC::Product& a){return !a.species.empty();})) fail(path,"desorption requires occupied surface slots -> vacant slots + gas");
+        } else if (r.type=="diffusion" && (gasReactants || gasProducts)) fail(path,"diffusion cannot exchange gas species");
+        const auto& rate=required(j,"rate",path);keys(rate,path+".rate",{"model","parameters"});
+        const auto modelName=text(required(rate,"model",path+".rate"),path+".rate.model");
+        const auto& rp=required(rate,"parameters",path+".rate");object(rp,path+".rate.parameters");
+        if (modelName=="constant") r.rate=number(required(rp,"value",path+".rate.parameters"),path+".rate.parameters.value");
+        else if (modelName=="arrhenius") {
+            if (!temperature) fail("system.parameters.temperature","required for Arrhenius rates");
+            const double prefactor=number(required(rp,"prefactor",path+".rate.parameters"),path+".rate.parameters.prefactor");
+            const double barrier=number(required(rp,"activation_energy",path+".rate.parameters"),path+".rate.parameters.activation_energy");
+            if (rp.contains("bond_energy") || rp.contains("migration_energy")) fail(path+".rate.parameters","environment-dependent barriers are not implemented by surface_kmc_3d");
+            r.rate=prefactor*std::exp(-barrier/(8.31446261815324*temperature));
+        } else fail(path+".rate.model","supported models are constant and arrhenius");
+        o.processes.push_back(std::move(r));
+    }
+    SurfaceKMC::validate(o);return o;
+}
 } // namespace
 
 double Value::number() const {
@@ -355,7 +446,8 @@ Configuration readJson(const std::string& filename) {
     if (root.contains("model")) {
         const auto& model=root.at("model");
         auto type=text(required(model,"type","model"),"model.type");
-        if (type=="cheimarios_zgb_2023") c.zgb=zgbOptions(root,false);
+        if (type=="surface_kmc_3d") {c.surfaceKMC=explicitSurfaceOptions(root);c.atomisticSurface=c.surfaceKMC->geometry;}
+        else if (type=="cheimarios_zgb_2023") c.zgb=zgbOptions(root,false);
         else if (type=="cheimarios_zgb_2023_3d") {
             c.zgb3d=zgb3dOptions(root);c.atomisticSurface=c.zgb3d->geometry;
         } else fail("model.type","unsupported predefined model");

@@ -73,6 +73,7 @@ set(extLibs_files
     ./src/extLibs/mersenne.cpp
 )
 set(process_files
+    ./src/processes/surface_kmc.cpp
     ./src/processes/zgb_growth.cpp
     ./src/processes/zgb_3d.cpp
     ./src/processes/atomistic_kmc.cpp
@@ -140,11 +141,13 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 include(CTest)
 if(BUILD_TESTING)
-    add_executable(input_tests tests/input_tests.cpp src/config/configuration.cpp src/lattice/atomistic_surface.cpp src/processes/atomistic_kmc.cpp src/processes/zgb_growth.cpp src/processes/zgb_3d.cpp)
-    add_executable(atomistic_tests tests/atomistic_tests.cpp src/config/configuration.cpp src/lattice/atomistic_surface.cpp src/processes/atomistic_kmc.cpp src/processes/zgb_growth.cpp src/processes/zgb_3d.cpp)
-    add_executable(atomistic_kmc_tests tests/atomistic_kmc_tests.cpp src/config/configuration.cpp src/lattice/atomistic_surface.cpp src/processes/atomistic_kmc.cpp src/processes/zgb_growth.cpp src/processes/zgb_3d.cpp)
-    add_executable(zgb_tests tests/zgb_tests.cpp src/config/configuration.cpp src/lattice/atomistic_surface.cpp src/processes/atomistic_kmc.cpp src/processes/zgb_growth.cpp src/processes/zgb_3d.cpp)
-    add_executable(zgb3d_tests tests/zgb3d_tests.cpp src/config/configuration.cpp src/lattice/atomistic_surface.cpp src/processes/atomistic_kmc.cpp src/processes/zgb_growth.cpp src/processes/zgb_3d.cpp)
+    add_executable(input_tests tests/input_tests.cpp src/config/configuration.cpp src/lattice/atomistic_surface.cpp src/processes/atomistic_kmc.cpp src/processes/zgb_growth.cpp src/processes/zgb_3d.cpp src/processes/surface_kmc.cpp)
+    add_executable(atomistic_tests tests/atomistic_tests.cpp src/config/configuration.cpp src/lattice/atomistic_surface.cpp src/processes/atomistic_kmc.cpp src/processes/zgb_growth.cpp src/processes/zgb_3d.cpp src/processes/surface_kmc.cpp)
+    add_executable(atomistic_kmc_tests tests/atomistic_kmc_tests.cpp src/config/configuration.cpp src/lattice/atomistic_surface.cpp src/processes/atomistic_kmc.cpp src/processes/zgb_growth.cpp src/processes/zgb_3d.cpp src/processes/surface_kmc.cpp)
+    add_executable(zgb_tests tests/zgb_tests.cpp src/config/configuration.cpp src/lattice/atomistic_surface.cpp src/processes/atomistic_kmc.cpp src/processes/zgb_growth.cpp src/processes/zgb_3d.cpp src/processes/surface_kmc.cpp)
+    add_executable(zgb3d_tests tests/zgb3d_tests.cpp src/config/configuration.cpp src/lattice/atomistic_surface.cpp src/processes/atomistic_kmc.cpp src/processes/zgb_growth.cpp src/processes/zgb_3d.cpp src/processes/surface_kmc.cpp)
+    add_executable(surface_kmc_tests tests/surface_kmc_tests.cpp src/config/configuration.cpp src/lattice/atomistic_surface.cpp src/processes/atomistic_kmc.cpp src/processes/zgb_growth.cpp src/processes/zgb_3d.cpp src/processes/surface_kmc.cpp)
+    add_test(NAME explicit_surface_processes COMMAND surface_kmc_tests ${CMAKE_CURRENT_SOURCE_DIR}/examples/zgb-explicit-3d.json)
     add_test(NAME zgb_growth COMMAND zgb_tests ${CMAKE_CURRENT_SOURCE_DIR}/examples/zgb-growth-2023.json)
     add_test(NAME zgb_3d COMMAND zgb3d_tests ${CMAKE_CURRENT_SOURCE_DIR}/examples/zgb-growth-3d.json)
     add_test(NAME atomistic_kmc COMMAND atomistic_kmc_tests ${CMAKE_CURRENT_SOURCE_DIR}/examples/atomistic-kmc.json)

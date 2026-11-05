@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "description": "Explicit user-defined ZGB adsorption and growth processes on fixed 3D sites; effective chemical units",
+  "model": {
+    "type": "surface_kmc_3d",
+    "parameters": {}
+  },
+  "lattice": {
+    "representation": "atomistic",
+    "type": "SimpleCubic",
+    "parameters": {
+      "lattice_constant": 1,
+      "length_unit": "angstrom",
+      "repetitions": [
+        20,
+        20,
+        30
+      ],
+      "occupied_unit_cells": 10,
+      "fixed_unit_cells": 1,
+      "initial_species": "substrate",
+      "periodic": [
+        true,
+        true,
+        false
+      ],
+      "vacuum": 5
+    }
+  },
+  "species": {
+    "substrate": {
+      "parameters": {
+        "element": "X"
+      }
+    },
+    "AB": {
+      "parameters": {
+        "element": "X"
+      }
+    },
+    "B2": {
+      "parameters": {
+        "element": "X"
+      }
+    },
+    "B": {
+      "parameters": {
+        "element": "X"
+      }
+    },
+    "AB2": {
+      "parameters": {
+        "element": "X"
+      }
+    }
+  },
+  "simulation": {
+    "duration": 100,
+    "random_seed": 1234
+  },
+  "output": {
+    "log_interval": 1,
+    "lattice_interval": 10,
+    "write_xyz": true
+  },
+  "processes": [
+    {
+      "id": "ab_adsorption",
+      "type": "adsorption",
+      "reactants": [
+        {
+          "species": "AB",
+          "phase": "gas"
+        },
+        {
+          "vacancy": true,
+          "site": 0
+        }
+      ],
+      "products": [
+        {
+          "species": "AB",
+          "phase": "surface",
+          "site": 0
+        }
+      ],
+      "rate": {
+        "model": "constant",
+        "parameters": {
+          "value": 0.4
+        }
+      },
+      "parameters": {
+        "counting": "sites"
+      }
+    },
+    {
+      "id": "b2_adsorption",
+      "type": "adsorption",
+      "reactants": [
+        {
+          "species": "B2",
+          "phase": "gas"
+        },
+        {
+          "vacancy": true,
+          "site": 0
+        },
+        {
+          "vacancy": true,
+          "site": 1
+        }
+      ],
+      "products": [
+        {
+          "species": "B",
+          "phase": "surface",
+          "site": 0
+        },
+        {
+          "species": "B",
+          "phase": "surface",
+          "site": 1
+        }
+      ],
+      "rate": {
+        "model": "constant",
+        "parameters": {
+          "value": 0.3
+        }
+      },
+      "parameters": {
+        "counting": "undirected_pairs",
+        "neighbors": "lateral_first",
+        "same_height": true
+      }
+    },
+    {
+      "id": "ab_b_growth",
+      "type": "reaction",
+      "reactants": [
+        {
+          "species": "AB",
+          "phase": "surface",
+          "site": 0
+        },
+        {
+          "species": "B",
+          "phase": "surface",
+          "site": 1
+        }
+      ],
+      "products": [
+        {
+          "species": "AB2",
+          "phase": "solid",
+          "site": 0
+        },
+        {
+          "vacancy": true,
+          "site": 1
+        }
+      ],
+      "rate": {
+        "model": "constant",
+        "parameters": {
+          "value": 100000.0
+        }
+      },
+      "parameters": {
+        "counting": "reactive_sites",
+        "neighbors": "lateral_first",
+        "same_height": true
+      }
+    }
+  ]
+}

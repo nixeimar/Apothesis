@@ -22,7 +22,7 @@ After rebuilding:
 The supplied case uses a 100 × 100 square lattice, initial height 10, lateral
 periodic boundaries, y_AB = 0.4 and reaction constant 100000 s^-1.
 The default example stops at 100 s or earlier absorption. The root `input.json`
-now selects the separate [explicit 3D ZGB backend](zgb-3d.md); this example selects
+now defines this chemistry through [explicit 3D processes](explicit-surface-processes.md); this example selects
 the original height-field reproduction.
 
 For the nongrowing ZGB reference (including the Figure 3a composition):

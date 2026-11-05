@@ -25,8 +25,10 @@ directory. Input files must use the versioned JSON format.
 
 ## ZGB growth in 3D
 
-The root `input.json` selects the Cheimarios 2023 chemistry on explicit 3D
-simple-cubic sites. Reactions incorporate an occupied solid unit, with a solid
+The root `input.json` defines the Cheimarios 2023 chemistry through an explicit
+`processes` array on 3D simple-cubic sites using `surface_kmc_3d`. Species, rates,
+reactant patterns and product transformations are supplied in JSON. See the
+[explicit process guide](doc/explicit-surface-processes.md). Reactions incorporate an occupied solid unit, with a solid
 first neighbor beneath it; pair events use four same-height lateral neighbors.
 Generic AB, B and AB2 are effective chemical particles, not resolved molecules.
 See the [3D model guide](doc/zgb-3d.md) and the separate

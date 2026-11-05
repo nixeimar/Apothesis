@@ -11,14 +11,15 @@ fully resolved molecular model.
 
 ## Run locally
 
-The root `input.json` now selects this backend:
+The preset example selects this backend; the root `input.json` now uses the
+[generic engine with explicit processes](explicit-surface-processes.md):
 
 ```sh
-./apothesis --validate-input input.json
-./apothesis
+./apothesis --validate-input examples/zgb-growth-3d.json
+./apothesis --input examples/zgb-growth-3d.json
 ```
 
-The identical preset is [`examples/zgb-growth-3d.json`](../examples/zgb-growth-3d.json).
+The predefined preset is [`examples/zgb-growth-3d.json`](../examples/zgb-growth-3d.json).
 It creates a 20 × 20 × 30 simple-cubic candidate lattice (12000 sites), with ten
 initially occupied layers (4000 substrate particles), one fixed bottom layer,
 and twenty empty growth layers. The reaction rate is 100000 s^-1 and y_AB = 0.4.

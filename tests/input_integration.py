@@ -185,4 +185,55 @@ with tempfile.TemporaryDirectory(prefix='apothesis-integration-') as temp:
             assert not list(sweep.glob('*/zgb_summary.json'))
             assert not list(sweep.glob('*/*.xyz'))
 
+
+    # Chemistry is explicit, and labels/rates/channels are driven by input.
+    generic = json.loads((root/'examples/zgb-explicit-3d.json').read_text())
+    generic['lattice']['parameters'].update(repetitions=[4,4,16],occupied_unit_cells=2)
+    generic_path=work/'generic.json'
+    generic_path.write_text(json.dumps(generic))
+    run(['--validate-input',str(generic_path)]);run([str(generic_path)])
+    generic_summary=json.loads((work/'surface_summary.json').read_text())
+    counts=generic_summary['process_counts']
+    assert counts['ab_b_growth']>0 and generic_summary['solid_units']==32+counts['ab_b_growth']
+    assert generic_summary['adsorbate_counts'].get('AB',0)==counts['ab_adsorption']-counts['ab_b_growth']
+    assert generic_summary['adsorbate_counts'].get('B',0)==2*counts['b2_adsorption']-counts['ab_b_growth']
+    assert 'surface_final.xyz' in run([str(generic_path)]).stdout
+    assert generic_summary==json.loads((work/'surface_summary.json').read_text())
+    # No implicit reaction remains when the process is removed.
+    no_reaction=json.loads(json.dumps(generic));no_reaction['processes'].pop()
+    generic_path.write_text(json.dumps(no_reaction));run([str(generic_path)])
+    assert json.loads((work/'surface_summary.json').read_text())['solid_units']==32
+    # Renaming every chemical label and modifying a rate actually changes dynamics.
+    renamed=json.loads(json.dumps(generic))
+    names={name:'custom_'+name for name in renamed['species']}
+    renamed['species']={names[k]:v for k,v in renamed['species'].items()}
+    renamed['lattice']['parameters']['initial_species']=names['substrate']
+    for process in renamed['processes']:
+        for term in process['reactants']+process['products']:
+            if 'species' in term:term['species']=names[term['species']]
+    renamed['processes'][0]['rate']['parameters']['value']=0
+    generic_path.write_text(json.dumps(renamed));run([str(generic_path)])
+    result=json.loads((work/'surface_summary.json').read_text())
+    assert result['process_counts']['ab_adsorption']==0 and result['process_counts']['ab_b_growth']==0
+    assert result['adsorbate_counts'].get('custom_B',0)>0
+    # Arrhenius rates require temperature and use the declared activation energy.
+    activated=json.loads(json.dumps(generic))
+    activated['system']={'parameters':{'temperature':600}}
+    activated['processes'][0]['rate']={'model':'arrhenius','parameters':{'prefactor':100,'activation_energy':10000}}
+    generic_path.write_text(json.dumps(activated));run([str(generic_path)])
+    import math
+    assert abs(json.loads((work/'surface_summary.json').read_text())['process_rates']['ab_adsorption']-100*math.exp(-10000/(8.31446261815324*600)))<1e-12
+    for mutate in [
+        lambda c:c['processes'][2]['products'][0].update(species='unknown'),
+        lambda c:c['processes'][2]['products'][0].update(site=1),
+        lambda c:c['processes'][1]['parameters'].update(same_height=False),
+        lambda c:c['processes'][1]['parameters'].update(neighbors='diagonal'),
+        lambda c:c['processes'][0]['rate']['parameters'].update(value=-1),
+        lambda c:c['processes'][1].update(id='ab_adsorption'),
+        lambda c:c['processes'][0]['reactants'][1].update(coefficient=2),
+        lambda c:c['processes'][2]['reactants'][0].update(phase='solid'),
+    ]:
+        bad=json.loads(json.dumps(generic));mutate(bad);generic_path.write_text(json.dumps(bad))
+        run(['--validate-input',str(generic_path)],success=False)
+
 print('All input integration tests passed.')

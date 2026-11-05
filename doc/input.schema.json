@@ -12,6 +12,9 @@
     },
     {
       "$ref": "#/$defs/zgb3DInput"
+    },
+    {
+      "$ref": "#/$defs/explicitSurfaceInput"
     }
   ],
   "$defs": {
@@ -1101,6 +1104,412 @@
         "simulation",
         "output",
         "species"
+      ],
+      "additionalProperties": false
+    },
+    "surfaceTerm": {
+      "type": "object",
+      "properties": {
+        "species": {
+          "type": "string",
+          "minLength": 1
+        },
+        "phase": {
+          "enum": [
+            "gas",
+            "surface",
+            "solid"
+          ]
+        },
+        "vacancy": {
+          "const": true
+        },
+        "site": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "coefficient": {
+          "const": 1
+        }
+      },
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "vacancy",
+            "site"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "species"
+                ]
+              },
+              {
+                "required": [
+                  "phase"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "species",
+            "phase"
+          ],
+          "not": {
+            "required": [
+              "vacancy"
+            ]
+          },
+          "if": {
+            "properties": {
+              "phase": {
+                "const": "gas"
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "required": [
+                "site"
+              ]
+            }
+          },
+          "else": {
+            "required": [
+              "site"
+            ]
+          }
+        }
+      ]
+    },
+    "surfaceProcess": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "reactants",
+        "products",
+        "rate",
+        "parameters"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "adsorption",
+            "desorption",
+            "diffusion",
+            "reaction"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "reactants": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/surfaceTerm"
+          }
+        },
+        "products": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/surfaceTerm"
+          }
+        },
+        "rate": {
+          "type": "object",
+          "required": [
+            "model",
+            "parameters"
+          ],
+          "properties": {
+            "model": {
+              "enum": [
+                "constant",
+                "arrhenius"
+              ]
+            },
+            "parameters": {
+              "$ref": "#/$defs/parameters"
+            }
+          },
+          "additionalProperties": false
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "counting"
+          ],
+          "properties": {
+            "counting": {
+              "enum": [
+                "sites",
+                "undirected_pairs",
+                "reactive_sites"
+              ]
+            },
+            "neighbors": {
+              "const": "lateral_first"
+            },
+            "same_height": {
+              "const": true
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "counting": {
+                    "enum": [
+                      "undirected_pairs",
+                      "reactive_sites"
+                    ]
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "neighbors",
+                  "same_height"
+                ]
+              }
+            }
+          ],
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "explicitSurfaceInput": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 1,
+          "type": "integer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/parameters"
+        },
+        "simulation": {
+          "type": "object",
+          "properties": {
+            "start_time": {
+              "type": "number",
+              "minimum": 0
+            },
+            "duration": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "random_seed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "parameters": {
+              "$ref": "#/$defs/parameters"
+            },
+            "max_events": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          },
+          "required": [
+            "duration"
+          ],
+          "additionalProperties": false
+        },
+        "model": {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "const": "surface_kmc_3d"
+            },
+            "description": {
+              "type": "string"
+            },
+            "parameters": {
+              "$ref": "#/$defs/parameters"
+            }
+          },
+          "additionalProperties": false
+        },
+        "lattice": {
+          "type": "object",
+          "required": [
+            "representation",
+            "type",
+            "parameters"
+          ],
+          "properties": {
+            "representation": {
+              "const": "atomistic"
+            },
+            "type": {
+              "const": "SimpleCubic"
+            },
+            "parameters": {
+              "type": "object",
+              "required": [
+                "lattice_constant",
+                "repetitions",
+                "initial_species",
+                "occupied_unit_cells"
+              ],
+              "properties": {
+                "lattice_constant": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "repetitions": {
+                  "type": "array",
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "items": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1000000
+                  }
+                },
+                "initial_species": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "length_unit": {
+                  "const": "angstrom"
+                },
+                "orientation": {
+                  "enum": [
+                    "100",
+                    "0001"
+                  ]
+                },
+                "c_over_a": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "neighbor_cutoff": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "vacuum": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "fixed_unit_cells": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "periodic": {
+                  "const": [
+                    true,
+                    true,
+                    false
+                  ]
+                },
+                "origin": {
+                  "type": "array",
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "vacancies": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "occupied_unit_cells": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000000
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "output": {
+          "type": "object",
+          "required": [
+            "log_interval"
+          ],
+          "properties": {
+            "log_interval": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "parameters": {
+              "$ref": "#/$defs/parameters"
+            },
+            "lattice_interval": {
+              "type": "number",
+              "minimum": 0
+            },
+            "write_xyz": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "species": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/species"
+          }
+        },
+        "processes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/surfaceProcess"
+          }
+        },
+        "system": {
+          "type": "object",
+          "required": [
+            "parameters"
+          ],
+          "properties": {
+            "parameters": {
+              "$ref": "#/$defs/parameters"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schema_version",
+        "model",
+        "lattice",
+        "simulation",
+        "output",
+        "species",
+        "processes"
       ],
       "additionalProperties": false
     }

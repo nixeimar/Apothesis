@@ -12,7 +12,8 @@ describe the existing height-field simulation input.
 Named `model.type` presets select the [height-field ZGB model](zgb-growth-2023.md)
 or its [explicit 3D implementation](zgb-3d.md). These define their own kinetics
 and output fields and do not accept generic `system`/`processes` sections.
-The root `input.json` selects `cheimarios_zgb_2023_3d`.
+The root `input.json` selects `surface_kmc_3d`, with all chemistry defined in an
+explicit `processes` array; see the [explicit surface process guide](explicit-surface-processes.md).
 
 ## Select and validate an input
 
