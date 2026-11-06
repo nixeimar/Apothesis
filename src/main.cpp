@@ -56,9 +56,9 @@ int main(int argc, char* argv[])
             if (argc == 5 && string(argv[3]) != "--output")
                 throw std::runtime_error("Usage: apothesis --build-surface <input.json> [--output <surface.xyz>]");
             const auto config = Config::readJson(argv[2]);
-            if (!config.atomisticSurface)
+            if (!config.atomisticSurface && !config.diamondCVD && !(config.surfaceKMC && config.surfaceKMC->customGeometry))
                 throw std::runtime_error("--build-surface requires lattice.representation: atomistic");
-            const auto surface = Atomistic::build(*config.atomisticSurface);
+            const auto surface = config.diamondCVD ? config.diamondCVD->lattice : config.surfaceKMC && config.surfaceKMC->customGeometry ? *config.surfaceKMC->customGeometry : Atomistic::build(*config.atomisticSurface);
             const string output = argc == 5 ? argv[4] : "surface.xyz";
             surface.writeXYZ(output);
             cout << "Created " << surface.atomCount() << " atoms on " << surface.sites.size()
@@ -75,6 +75,12 @@ int main(int argc, char* argv[])
         else if (argc==3 && (string(argv[1])=="--input" || string(argv[1])=="-i")) input=argv[2];
         else if (argc!=1) throw std::runtime_error("Usage: apothesis [--input|-i] <input.json>");
         const auto configuration=Config::readJson(input);
+        if (configuration.diamondCVD) {
+            cout<<"Running diamond (111) covalent C/H growth ..."<<endl;
+            DiamondCVD::runToFiles(*configuration.diamondCVD);
+            cout<<"Finished. See diamond_summary.json, diamond.log and diamond_*.xyz in "<<std::filesystem::current_path()<<endl;
+            return 0;
+        }
         if (configuration.surfaceKMC) {
             cout<<"Running explicit surface processes on 3D site occupancy ..."<<endl;
             SurfaceKMC::runToFiles(*configuration.surfaceKMC);

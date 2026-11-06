@@ -1,0 +1,212 @@
+{
+  "schema_version": 1,
+  "description": "Custom fixed coordinates with a supported overhang, adsorption and solid desorption",
+  "model": {
+    "type": "surface_kmc_3d",
+    "parameters": {
+      "surface_sites": "gas_exposed",
+      "max_embeddings": 100000,
+      "max_search_steps": 1000000
+    }
+  },
+  "lattice": {
+    "representation": "atomistic",
+    "type": "Custom",
+    "parameters": {
+      "cell": [
+        8,
+        4,
+        4
+      ],
+      "periodic": [
+        false,
+        false,
+        false
+      ],
+      "neighbor_cutoff": 1.01,
+      "site_volume": 1,
+      "initial_species": "substrate",
+      "sites": [
+        {
+          "position": [
+            0,
+            1,
+            0
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            1,
+            1,
+            0
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            1,
+            1,
+            1
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            2,
+            1,
+            1
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            3,
+            1,
+            1
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            1,
+            1,
+            2
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2,
+            1,
+            2
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3,
+            1,
+            2
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0,
+            1,
+            1
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0,
+            1,
+            2
+          ],
+          "occupied": false,
+          "fixed": false
+        }
+      ]
+    }
+  },
+  "species": {
+    "substrate": {
+      "parameters": {
+        "element": "X"
+      }
+    },
+    "P": {
+      "parameters": {
+        "element": "X"
+      }
+    },
+    "Q": {
+      "parameters": {
+        "element": "X"
+      }
+    }
+  },
+  "simulation": {
+    "duration": 10,
+    "random_seed": 1234,
+    "max_events": 5
+  },
+  "output": {
+    "log_interval": 1,
+    "lattice_interval": 0,
+    "write_xyz": true
+  },
+  "processes": [
+    {
+      "id": "adsorb_P",
+      "type": "adsorption",
+      "reactants": [
+        {
+          "species": "P",
+          "phase": "gas"
+        },
+        {
+          "vacancy": true,
+          "site": 0
+        }
+      ],
+      "products": [
+        {
+          "species": "P",
+          "phase": "surface",
+          "site": 0
+        }
+      ],
+      "rate": {
+        "model": "constant",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "parameters": {
+        "counting": "sites"
+      }
+    },
+    {
+      "id": "solid_desorption",
+      "type": "desorption",
+      "reactants": [
+        {
+          "species": "substrate",
+          "phase": "solid",
+          "site": 0
+        }
+      ],
+      "products": [
+        {
+          "vacancy": true,
+          "site": 0
+        },
+        {
+          "species": "substrate",
+          "phase": "gas"
+        }
+      ],
+      "rate": {
+        "model": "constant",
+        "parameters": {
+          "value": 0.1
+        }
+      },
+      "parameters": {
+        "counting": "sites"
+      }
+    }
+  ]
+}

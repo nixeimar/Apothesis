@@ -61,7 +61,7 @@ string IO::getInputPath() const {return m_inputFilename;}
 void IO::readInputFile()
 {
     auto configuration = Config::readJson(m_inputFilename);
-    if (configuration.zgb || configuration.zgb3d || configuration.surfaceKMC)
+    if (configuration.zgb || configuration.zgb3d || configuration.surfaceKMC || configuration.diamondCVD)
         throw std::runtime_error("Use the executable predefined ZGB backend for named models.");
     if (configuration.atomisticSurface)
         throw std::runtime_error("Use the executable atomistic KMC backend or --build-surface for atomistic input.");

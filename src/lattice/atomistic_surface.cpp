@@ -183,6 +183,44 @@ Surface build(const Options& o) {
     } else connect(s,fractions);
     return s;
 }
+
+Vec3 displacement(const Surface& s,const Vec3& from,const Vec3& to) {
+    const double volume=dot(s.cell[0],cross(s.cell[1],s.cell[2]));
+    if (!std::isfinite(volume) || volume<=0) throw std::runtime_error("invalid geometric cell");
+    Vec3 delta{{to[0]-from[0],to[1]-from[1],to[2]-from[2]}},f;
+    for (int k=0;k<3;++k) {f[k]=dot(delta,cross(s.cell[(k+1)%3],s.cell[(k+2)%3]))/volume;if(s.periodic[k]) f[k]-=std::round(f[k]);}
+    Vec3 best=cartesian(s.cell,f);double distance=dot(best,best);
+    for (int x=-1;x<=1;++x) for (int y=-1;y<=1;++y) for (int z=-1;z<=1;++z) {
+        if ((!s.periodic[0] && x) || (!s.periodic[1] && y) || (!s.periodic[2] && z)) continue;
+        auto d=cartesian(s.cell,{{f[0]+x,f[1]+y,f[2]+z}});auto r=dot(d,d);
+        if (r<distance) {distance=r;best=d;}
+    }
+    return best;
+}
+std::vector<std::vector<std::size_t>> neighborGraph(const Surface& source,double minimum,double maximum,bool sameHeight) {
+    if (!std::isfinite(minimum) || !std::isfinite(maximum) || minimum<0 || maximum<=minimum) throw std::runtime_error("neighbor distance interval requires 0 <= min_distance < max_distance");
+    const double volume=dot(source.cell[0],cross(source.cell[1],source.cell[2]));
+    if (!std::isfinite(volume) || volume<=0) throw std::runtime_error("invalid geometric cell");
+    for (int k=0;k<3;++k) {
+        const auto normal=cross(source.cell[(k+1)%3],source.cell[(k+2)%3]);
+        const double height=volume/std::sqrt(dot(normal,normal));
+        if (source.periodic[k] && 2*maximum>=height) throw std::runtime_error("periodic cell heights must exceed twice the process neighbor distance");
+    }
+    Surface s=source;s.neighborCutoff=maximum;
+    std::vector<Vec3> fractions;fractions.reserve(s.sites.size());
+    for (auto& site:s.sites) {
+        site.neighbors.clear();Vec3 f;
+        for (int k=0;k<3;++k) {f[k]=dot(site.position,cross(s.cell[(k+1)%3],s.cell[(k+2)%3]))/volume;if(s.periodic[k]) f[k]-=std::floor(f[k]);}
+        fractions.push_back(f);
+    }
+    connect(s,fractions);
+    std::vector<std::vector<std::size_t>> result(s.sites.size());
+    for (const auto& site:s.sites) for (auto j:site.neighbors) {
+        auto d=displacement(s,site.position,s.sites[j].position);const double r2=dot(d,d);
+        if (r2>=minimum*minimum*(1-1e-12) && (!sameHeight || std::abs(d[2])<=maximum*1e-7)) result[site.id].push_back(j);
+    }
+    return result;
+}
 std::size_t Surface::atomCount() const {
     return static_cast<std::size_t>(std::count_if(sites.begin(),sites.end(),[](const Site& s){return s.occupied;}));
 }

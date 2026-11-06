@@ -10,12 +10,15 @@
 
 namespace SurfaceKMC {
 void validate(const Options& o) {
-    Atomistic::validate(o.geometry);
+    if (!o.customGeometry) Atomistic::validate(o.geometry);
     const auto& g=o.geometry;
-    if (g.crystal!="SimpleCubic" || !g.periodic[0] || !g.periodic[1] || g.periodic[2] ||
-        g.occupiedUnitCells<1 || g.occupiedUnitCells>=g.repetitions[2])
+    if (o.surfaceSites!="gas_exposed" && o.surfaceSites!="column_tops") throw std::runtime_error("model.parameters.surface_sites: expected gas_exposed or column_tops");
+    if (!o.maxEmbeddings || !o.maxSearchSteps) throw std::runtime_error("matching search limits must be positive");
+    if (o.surfaceSites=="gas_exposed" && ((!o.customGeometry && g.periodic[2]) || (o.customGeometry && o.customGeometry->periodic[2]))) throw std::runtime_error("gas_exposed requires open z");
+    if (o.surfaceSites=="column_tops" && (o.customGeometry || g.crystal!="SimpleCubic" || !g.periodic[0] || !g.periodic[1] || g.periodic[2] ||
+        g.occupiedUnitCells<1 || g.occupiedUnitCells>=g.repetitions[2]))
         throw std::runtime_error("surface_kmc_3d requires a SimpleCubic slab, lateral PBC, open z and occupied layers with growth headroom");
-    if (g.neighborCutoff && (g.neighborCutoff<g.latticeConstant || g.neighborCutoff>=std::sqrt(2.0)*g.latticeConstant))
+    if (o.surfaceSites=="column_tops" && g.neighborCutoff && (g.neighborCutoff<g.latticeConstant || g.neighborCutoff>=std::sqrt(2.0)*g.latticeConstant))
         throw std::runtime_error("surface_kmc_3d requires the first SC neighbor shell");
     if (!std::isfinite(o.start) || o.start<0 || !std::isfinite(o.end) || o.end<=o.start ||
         !std::isfinite(o.logInterval) || o.logInterval<=0 || !std::isfinite(o.snapshotInterval) || o.snapshotInterval<0)
@@ -25,19 +28,42 @@ void validate(const Options& o) {
     for (const auto& p:o.processes) {
         if (p.id.empty() || !ids.insert(p.id).second) throw std::runtime_error("processes: IDs must be nonempty and unique");
         if (p.type!="adsorption" && p.type!="desorption" && p.type!="diffusion" && p.type!="reaction") throw std::runtime_error("processes.type: unsupported process type");
-        if (p.before.empty() || p.before.size()>2 || p.after.size()!=p.before.size()) throw std::runtime_error("processes: use one or two explicit binding-site slots");
-        if (p.counting!="sites" && p.counting!="undirected_pairs" && p.counting!="reactive_sites") throw std::runtime_error("processes.parameters.counting: unsupported counting convention");
-        if ((p.before.size()==1)!=(p.counting=="sites")) throw std::runtime_error("processes.parameters.counting: sites requires one slot; pair counting requires two");
+        if (p.before.empty() || (o.surfaceSites=="column_tops" && p.before.size()>2) || p.after.size()!=p.before.size()) throw std::runtime_error("processes: define the same nonempty slot set on both sides; more than two slots require gas_exposed mode");
+        if (p.counting!="sites" && p.counting!="undirected_pairs" && p.counting!="reactive_sites" && !(o.surfaceSites=="gas_exposed" && (p.counting=="embeddings" || p.counting=="unique_site_sets"))) throw std::runtime_error("processes.parameters.counting: unsupported counting convention");
+        if ((p.counting=="sites" && p.before.size()!=1) || ((p.counting=="undirected_pairs" || p.counting=="reactive_sites") && p.before.size()!=2)) throw std::runtime_error("processes.parameters.counting: sites requires one slot; pair counting requires two");
         if (!std::isfinite(p.rate) || p.rate<0) throw std::runtime_error("processes.rate: must be finite and nonnegative");
+        if(p.before.size()>64) throw std::runtime_error("matching resource limit: patterns may contain at most 64 sites");
+        if (!p.beforeSolid.empty() && p.beforeSolid.size()!=p.before.size()) throw std::runtime_error("reactant phases must match slot count");
+        if (o.surfaceSites=="column_tops" && std::any_of(p.beforeSolid.begin(),p.beforeSolid.end(),[](bool b){return b;})) throw std::runtime_error("solid reactants require gas_exposed mode");
+        if (o.surfaceSites=="gas_exposed") {
+            std::vector<bool> reached(p.before.size(),false);reached[0]=true;
+            for (const auto& link:p.links) {
+                if (link.first>=p.before.size() || link.second>=p.before.size() || link.first==link.second) throw std::runtime_error("process links must connect distinct defined slots");
+                if (link.neighbors!="first" && link.neighbors!="lateral_first" && link.neighbors!="distance") throw std::runtime_error("unsupported neighbor relation");
+                if (link.neighbors=="distance" && (!std::isfinite(link.minDistance) || !std::isfinite(link.maxDistance) || link.minDistance<0 || link.maxDistance<=link.minDistance)) throw std::runtime_error("invalid process neighbor distance range");
+            }
+            for (std::size_t pass=0;pass<p.before.size();++pass) for (const auto& link:p.links) if (reached[link.first] || reached[link.second]) reached[link.first]=reached[link.second]=true;
+            if (std::find(reached.begin(),reached.end(),false)!=reached.end()) throw std::runtime_error("process links must form a connected pattern");
+        } else if (!p.links.empty()) {
+            if (p.links.size()!=1 || p.links[0].neighbors!="lateral_first" || !p.links[0].sameHeight) throw std::runtime_error("general links require gas_exposed mode");
+        }
         bool changed=false;int solids=0;
         for (std::size_t i=0;i<p.before.size();++i) {
             if (!p.before[i].empty() && !o.elements.count(p.before[i])) throw std::runtime_error("processes.reactants: undefined species");
             if (!p.after[i].species.empty() && !o.elements.count(p.after[i].species)) throw std::runtime_error("processes.products: undefined species");
             if (p.after[i].solid && p.after[i].species.empty()) throw std::runtime_error("processes.products: solid product needs a species");
-            solids+=p.after[i].solid;changed|=p.before[i]!=p.after[i].species || p.after[i].solid;
+            solids+=p.after[i].solid;changed|=p.before[i]!=p.after[i].species || ((!p.beforeSolid.empty() && p.beforeSolid[i])!=p.after[i].solid);
         }
-        if (!changed || solids>1) throw std::runtime_error("processes: an event must change state and may incorporate at most one solid unit");
-        if (p.type=="diffusion" && (p.before.size()!=2 || solids || p.before[0].empty() || !p.before[1].empty() || !p.after[0].species.empty() || p.after[1].species!=p.before[0]))
+        if (!changed || (o.surfaceSites=="column_tops" && solids>1)) throw std::runtime_error("processes: an event must change state; multiple solid products require gas_exposed mode");
+        if(p.type=="diffusion" && o.surfaceSites=="gas_exposed") {
+            std::multiset<std::pair<std::string,bool>> before,after;
+            for(std::size_t i=0;i<p.before.size();++i) {
+                if(!p.before[i].empty()) before.emplace(p.before[i],!p.beforeSolid.empty() && p.beforeSolid[i]);
+                if(!p.after[i].species.empty()) after.emplace(p.after[i].species,p.after[i].solid);
+            }
+            if(before!=after) throw std::runtime_error("diffusion must conserve species and phase inventories");
+        }
+        if (p.type=="diffusion" && o.surfaceSites=="column_tops" && (p.before.size()!=2 || solids || p.before[0].empty() || !p.before[1].empty() || !p.after[0].species.empty() || p.after[1].species!=p.before[0]))
             throw std::runtime_error("processes.diffusion: requires surface species at slot 0 and vacancy at slot 1, exchanged in products");
     }
 }
@@ -47,8 +73,9 @@ void Simulation::Catalog::set(std::size_t id,bool present) {
     else if (!present && p>=0) {auto last=ids.back();ids[static_cast<std::size_t>(p)]=last;positions[last]=p;ids.pop_back();p=-1;}
 }
 Simulation::Simulation(Options options):m_options(std::move(options)) {
-    validate(m_options);m_solid=Atomistic::build(m_options.geometry);m_solid.elements=m_options.elements;
+    validate(m_options);m_solid=m_options.customGeometry ? *m_options.customGeometry : Atomistic::build(m_options.geometry);m_solid.elements=m_options.elements;
     const auto n=m_solid.sites.size();m_ads.resize(n);m_binding.assign(n,false);m_deposited.assign(n,false);
+    if (graphMode()) {initializeGraph();return;}
     m_neighbors.resize(n);m_incident.resize(n);m_edges.resize(2*n);m_up.assign(n,n);m_down.assign(n,n);
     const double a=m_options.geometry.latticeConstant,tol=a*1e-7;
     for (const auto& site:m_solid.sites) {
@@ -103,7 +130,9 @@ void Simulation::refresh(std::size_t id) {
     }
 }
 void Simulation::apply(std::size_t process,std::size_t first,std::size_t second) {
-    const auto& p=m_options.processes.at(process);m_ads.at(first);
+    const auto& p=m_options.processes.at(process);
+    if (graphMode()) {if (p.before.size()>2) throw std::runtime_error("multi-site apply requires a site vector");apply(process,p.before.size()==1 ? std::vector<std::size_t>{first} : std::vector<std::size_t>{first,second});return;}
+    m_ads.at(first);
     if (p.before.size()==2) {
         m_ads.at(second);
         if (std::find(m_neighbors[first].begin(),m_neighbors[first].end(),second)==m_neighbors[first].end()) throw std::runtime_error("process requires lateral same-height first neighbors");
@@ -126,8 +155,17 @@ void Simulation::apply(std::size_t process,std::size_t first,std::size_t second)
     refresh(first);if (p.before.size()==2) refresh(second);
     ++m_counts[process];++m_steps;
 }
-std::size_t Simulation::eligibleCount(std::size_t process) const {return m_catalogs.at(process).ids.size();}
+std::size_t Simulation::eligibleCount(std::size_t process) const {return graphMode() ? m_graphCatalogs.at(process).size() : m_catalogs.at(process).ids.size();}
 bool Simulation::catalogConsistent() const {
+    if (graphMode()) {
+        const auto expected=enumerateGraph();
+        if (expected.size()!=m_graphCatalogs.size()) return false;
+        for (std::size_t i=0;i<expected.size();++i) {
+            if(expected[i].size()!=m_graphCatalogs[i].size()) return false;
+            for(std::size_t j=0;j<expected[i].size();++j) if(expected[i][j].assignments!=m_graphCatalogs[i][j].assignments) return false;
+        }
+        return true;
+    }
     for (std::size_t i=0;i<m_catalogs.size();++i) {
         const auto& c=m_catalogs[i];
         for (std::size_t id=0;id<c.positions.size();++id) if ((c.positions[id]>=0)!=eligible(m_options.processes[i],id)) return false;
@@ -136,10 +174,11 @@ bool Simulation::catalogConsistent() const {
     }
     return true;
 }
-double Simulation::meanHeight() const {return m_solidCount/(static_cast<double>(m_options.geometry.repetitions[0])*m_options.geometry.repetitions[1]);}
+double Simulation::meanHeight() const {if(graphMode()) return m_solidCount*m_siteVolume/m_area;return m_solidCount/(static_cast<double>(m_options.geometry.repetitions[0])*m_options.geometry.repetitions[1]);}
 double Simulation::timeAverageHeight() const {return m_time>m_options.start ? static_cast<double>(m_integral/(m_time-m_options.start)) : m_initialMean;}
 double Simulation::growthRate() const {return m_time>m_options.start ? (meanHeight()-m_initialMean)/(m_time-m_options.start) : 0;}
 void Simulation::run(const std::function<void(const Simulation&,bool)>& observe) {
+    if (graphMode()) {runGraph(observe);return;}
     if (observe) observe(*this,false);
     while (m_time<m_options.end) {
         if (m_capacity) {m_stop="capacity_limit";break;}
@@ -179,7 +218,9 @@ void Simulation::writeXYZ(std::ostream& out) const {
     std::size_t particles=m_solidCount;for (const auto& a:m_ads) particles+=!a.empty();
     out<<std::setprecision(17)<<particles<<"\nLattice=\"";
     for (int i=0;i<3;++i) for (int j=0;j<3;++j) out<<(i||j ? " " : "")<<m_solid.cell[i][j];
-    out<<"\" Properties=species:S:1:pos:R:3:site_id:I:1:fixed:L:1:chemical_species:S:1:role:S:1 pbc=\"T T F\" Time="<<m_time<<'\n';
+    out<<"\" Properties=species:S:1:pos:R:3:site_id:I:1:fixed:L:1:chemical_species:S:1:role:S:1 pbc=\"";
+    for(int axis=0;axis<3;++axis) out<<(axis ? " " : "")<<(m_solid.periodic[axis] ? "T" : "F");
+    out<<"\" Time="<<m_time<<'\n';
     for (const auto& site:m_solid.sites) {
         if (!site.occupied && m_ads[site.id].empty()) continue;
         const auto& species=site.occupied ? site.species : m_ads[site.id];
@@ -204,7 +245,7 @@ void runToFiles(const Options& options) {
     for (std::size_t i=0;i<options.processes.size();++i) {counts[options.processes[i].id]=simulation.counts()[i];rates[options.processes[i].id]=options.processes[i].rate;}
     for (const auto& name:simulation.adsorbates()) if (!name.empty()) ads[name]=ads.value(name,std::uint64_t(0))+1;
     for (const auto& site:simulation.solid().sites) if (site.occupied) film[site.species]=film.value(site.species,std::uint64_t(0))+1;
-    nlohmann::json summary={{"model","surface_kmc_3d"},{"representation","explicit_3d_occupancy"},{"repetitions",options.geometry.repetitions},{"start_time",options.start},{"requested_end_time",options.end},{"time",simulation.time()},{"seed",simulation.options().seed},{"stop_reason",simulation.stopReason()},{"capacity_limited",simulation.capacityLimited()},{"poisoned",simulation.stopReason()=="absorbing"},{"events",simulation.steps()},{"solid_units",simulation.solid().atomCount()},{"mean_height",simulation.meanHeight()},{"time_average_height",simulation.timeAverageHeight()},{"mean_growth_rate",simulation.growthRate()},{"process_counts",counts},{"process_rates",rates},{"adsorbate_counts",ads},{"solid_species_counts",film}};
+    nlohmann::json summary={{"model","surface_kmc_3d"},{"representation","explicit_3d_occupancy"},{"surface_sites",options.surfaceSites},{"height_unit",simulation.heightUnit()},{"growth_rate_unit",simulation.heightUnit()+"/s"},{"lattice_type",options.geometry.crystal},{"candidate_sites",simulation.solid().sites.size()},{"neighbor_cutoff",simulation.solid().neighborCutoff},{"site_volume",simulation.siteVolume()},{"repetitions",options.customGeometry ? nlohmann::json(nullptr) : nlohmann::json(options.geometry.repetitions)},{"start_time",options.start},{"requested_end_time",options.end},{"time",simulation.time()},{"seed",simulation.options().seed},{"stop_reason",simulation.stopReason()},{"capacity_limited",simulation.capacityLimited()},{"poisoned",simulation.stopReason()=="absorbing"},{"events",simulation.steps()},{"solid_units",simulation.solid().atomCount()},{"mean_height",simulation.meanHeight()},{"time_average_height",simulation.timeAverageHeight()},{"mean_growth_rate",simulation.growthRate()},{"process_counts",counts},{"process_rates",rates},{"adsorbate_counts",ads},{"solid_species_counts",film}};
     std::ofstream result("surface_summary.json");result<<summary.dump(2)<<'\n';result.close();log.close();
     if (options.writeXYZ) {std::ofstream final("surface_final.xyz");simulation.writeXYZ(final);final.close();trajectory.close();if (!final || !trajectory) throw std::runtime_error("failed to write surface geometry");}
     if (!result || !log) throw std::runtime_error("failed to write surface summary/log");

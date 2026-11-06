@@ -23,9 +23,18 @@ nested values. Start with [`input.json`](input.json) and the
 Running `./apothesis` without arguments selects `input.json` in the working
 directory. Input files must use the versioned JSON format.
 
+## Diamond CVD
+
+The root `input.json` now runs a small hydrogen-passivated diamond (111) case
+with explicit C/H atoms and all 12 Table II reaction families from Battaile,
+Srolovitz and Butler (1997). See the [diamond model guide](doc/diamond-cvd-1997.md)
+for kinetic units, geometry assumptions, event limits and validation status.
+This is a mechanism implementation, not a validated reproduction of the paper's
+numerical growth-rate/defect curves.
+
 ## ZGB growth in 3D
 
-The root `input.json` defines the Cheimarios 2023 chemistry through an explicit
+The `examples/zgb-explicit-3d.json` input defines Cheimarios 2023 chemistry through an explicit
 `processes` array on 3D simple-cubic sites using `surface_kmc_3d`. Species, rates,
 reactant patterns and product transformations are supplied in JSON. See the
 [explicit process guide](doc/explicit-surface-processes.md). Reactions incorporate an occupied solid unit, with a solid
@@ -33,6 +42,16 @@ first neighbor beneath it; pair events use four same-height lateral neighbors.
 Generic AB, B and AB2 are effective chemical particles, not resolved molecules.
 See the [3D model guide](doc/zgb-3d.md) and the separate
 [height-field reproduction](doc/zgb-growth-2023.md), including validation limits.
+
+## General geometry and multi-site events
+
+Use `surface_kmc_3d` with `model.parameters.surface_sites: "gas_exposed"` for
+FCC, BCC, HCP, diamond, simple-cubic or custom fixed candidate coordinates.
+Process links define neighbor relations and distance ranges; connected patterns
+can contain more than two sites. See the [geometry and event-matching guide](doc/general-surface-geometry.md),
+[FCC multi-site example](examples/surface-fcc-multisite.json) and
+[custom-coordinate example](examples/surface-custom-coordinates.json).
+The ZGB example explicitly retains `column_tops` mode for paper comparisons.
 
 ## Atomistic surface construction
 

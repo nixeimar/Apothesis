@@ -15,6 +15,9 @@
     },
     {
       "$ref": "#/$defs/explicitSurfaceInput"
+    },
+    {
+      "$ref": "#/$defs/diamondCVDInput"
     }
   ],
   "$defs": {
@@ -1126,8 +1129,7 @@
         },
         "site": {
           "type": "integer",
-          "minimum": 0,
-          "maximum": 1
+          "minimum": 0
         },
         "coefficient": {
           "const": 1
@@ -1256,36 +1258,36 @@
               "enum": [
                 "sites",
                 "undirected_pairs",
-                "reactive_sites"
+                "reactive_sites",
+                "embeddings",
+                "unique_site_sets"
               ]
             },
             "neighbors": {
-              "const": "lateral_first"
+              "enum": [
+                "first",
+                "lateral_first",
+                "distance"
+              ]
             },
             "same_height": {
-              "const": true
+              "type": "boolean"
+            },
+            "links": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/surfaceLink"
+              }
+            },
+            "min_distance": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_distance": {
+              "type": "number",
+              "exclusiveMinimum": 0
             }
           },
-          "allOf": [
-            {
-              "if": {
-                "properties": {
-                  "counting": {
-                    "enum": [
-                      "undirected_pairs",
-                      "reactive_sites"
-                    ]
-                  }
-                }
-              },
-              "then": {
-                "required": [
-                  "neighbors",
-                  "same_height"
-                ]
-              }
-            }
-          ],
           "additionalProperties": true
         }
       },
@@ -1347,110 +1349,37 @@
               "type": "string"
             },
             "parameters": {
-              "$ref": "#/$defs/parameters"
-            }
-          },
-          "additionalProperties": false
-        },
-        "lattice": {
-          "type": "object",
-          "required": [
-            "representation",
-            "type",
-            "parameters"
-          ],
-          "properties": {
-            "representation": {
-              "const": "atomistic"
-            },
-            "type": {
-              "const": "SimpleCubic"
-            },
-            "parameters": {
               "type": "object",
-              "required": [
-                "lattice_constant",
-                "repetitions",
-                "initial_species",
-                "occupied_unit_cells"
-              ],
               "properties": {
-                "lattice_constant": {
-                  "type": "number",
-                  "exclusiveMinimum": 0
-                },
-                "repetitions": {
-                  "type": "array",
-                  "minItems": 3,
-                  "maxItems": 3,
-                  "items": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 1000000
-                  }
-                },
-                "initial_species": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "length_unit": {
-                  "const": "angstrom"
-                },
-                "orientation": {
+                "surface_sites": {
                   "enum": [
-                    "100",
-                    "0001"
+                    "column_tops",
+                    "gas_exposed"
                   ]
                 },
-                "c_over_a": {
-                  "type": "number",
-                  "exclusiveMinimum": 0
-                },
-                "neighbor_cutoff": {
-                  "type": "number",
-                  "exclusiveMinimum": 0
-                },
-                "vacuum": {
-                  "type": "number",
-                  "minimum": 0
-                },
-                "fixed_unit_cells": {
+                "max_embeddings": {
                   "type": "integer",
-                  "minimum": 0
+                  "minimum": 1
                 },
-                "periodic": {
-                  "const": [
-                    true,
-                    true,
-                    false
-                  ]
-                },
-                "origin": {
-                  "type": "array",
-                  "minItems": 3,
-                  "maxItems": 3,
-                  "items": {
-                    "type": "number"
-                  }
-                },
-                "vacancies": {
-                  "type": "array",
-                  "uniqueItems": true,
-                  "items": {
-                    "type": "integer",
-                    "minimum": 0
-                  }
-                },
-                "occupied_unit_cells": {
+                "max_search_steps": {
                   "type": "integer",
-                  "minimum": 1,
-                  "maximum": 1000000
+                  "minimum": 1
                 }
               },
               "additionalProperties": true
             }
           },
           "additionalProperties": false
+        },
+        "lattice": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/atomisticLattice"
+            },
+            {
+              "$ref": "#/$defs/customSurfaceLattice"
+            }
+          ]
         },
         "output": {
           "type": "object",
@@ -1510,6 +1439,458 @@
         "output",
         "species",
         "processes"
+      ],
+      "additionalProperties": false
+    },
+    "surfaceLink": {
+      "type": "object",
+      "required": [
+        "sites"
+      ],
+      "properties": {
+        "sites": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "neighbors": {
+          "enum": [
+            "first",
+            "lateral_first",
+            "distance"
+          ]
+        },
+        "same_height": {
+          "type": "boolean"
+        },
+        "min_distance": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max_distance": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "neighbors": {
+                "const": "distance"
+              }
+            },
+            "required": [
+              "neighbors"
+            ]
+          },
+          "then": {
+            "required": [
+              "max_distance"
+            ]
+          }
+        }
+      ]
+    },
+    "customSurfaceLattice": {
+      "type": "object",
+      "required": [
+        "representation",
+        "type",
+        "parameters"
+      ],
+      "properties": {
+        "representation": {
+          "const": "atomistic"
+        },
+        "type": {
+          "const": "Custom"
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "cell",
+            "neighbor_cutoff",
+            "site_volume",
+            "initial_species",
+            "sites"
+          ],
+          "properties": {
+            "cell": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            },
+            "neighbor_cutoff": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "site_volume": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "initial_species": {
+              "type": "string",
+              "minLength": 1
+            },
+            "periodic": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "boolean"
+              }
+            },
+            "length_unit": {
+              "const": "angstrom"
+            },
+            "sites": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1000000,
+              "items": {
+                "type": "object",
+                "required": [
+                  "position",
+                  "occupied"
+                ],
+                "properties": {
+                  "position": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "occupied": {
+                    "type": "boolean"
+                  },
+                  "fixed": {
+                    "type": "boolean"
+                  },
+                  "species": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "diamondCVDInput": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 1,
+          "type": "integer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/parameters"
+        },
+        "simulation": {
+          "type": "object",
+          "properties": {
+            "start_time": {
+              "type": "number",
+              "minimum": 0
+            },
+            "duration": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "random_seed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "parameters": {
+              "$ref": "#/$defs/parameters"
+            },
+            "max_events": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          },
+          "required": [
+            "duration"
+          ],
+          "additionalProperties": false
+        },
+        "model": {
+          "type": "object",
+          "required": [
+            "type",
+            "parameters"
+          ],
+          "properties": {
+            "type": {
+              "const": "diamond_cvd_1997"
+            },
+            "description": {
+              "type": "string"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "initial_passivation": {
+                  "type": "boolean"
+                },
+                "ch_bond_length": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "site_volume": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "lattice": {
+          "$ref": "#/$defs/customSurfaceLattice"
+        },
+        "output": {
+          "type": "object",
+          "required": [
+            "log_interval"
+          ],
+          "properties": {
+            "log_interval": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "parameters": {
+              "$ref": "#/$defs/parameters"
+            },
+            "lattice_interval": {
+              "type": "number",
+              "minimum": 0
+            },
+            "write_xyz": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "species": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/species"
+          }
+        },
+        "processes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "type",
+              "event",
+              "parameters",
+              "rate"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "const": "reaction"
+              },
+              "description": {
+                "type": "string"
+              },
+              "event": {
+                "enum": [
+                  "hydrogen_addition",
+                  "hydrogen_removal",
+                  "adsorb_carbon",
+                  "desorb_hydrocarbon",
+                  "append_methyl",
+                  "dimer_opening",
+                  "dimer_closing",
+                  "carbon_incorporation"
+                ]
+              },
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "type": "string"
+                  },
+                  "hydrogens": {
+                    "type": "integer",
+                    "minimum": -1,
+                    "maximum": 4
+                  }
+                },
+                "additionalProperties": true
+              },
+              "rate": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "model",
+                      "parameters"
+                    ],
+                    "properties": {
+                      "model": {
+                        "const": "thermochemical"
+                      },
+                      "parameters": {
+                        "type": "object",
+                        "properties": {
+                          "A": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "temperature_power": {
+                            "type": "number"
+                          },
+                          "activation_energy_kcal_mol": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "reaction_enthalpy_kcal_mol": {
+                            "type": "number"
+                          },
+                          "reaction_entropy_cal_mol_K": {
+                            "type": "number"
+                          },
+                          "standard_concentration_mol_cm3": {
+                            "type": "number",
+                            "exclusiveMinimum": 0
+                          },
+                          "gas_reactant": {
+                            "type": "string"
+                          },
+                          "reverse": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "A",
+                          "temperature_power",
+                          "activation_energy_kcal_mol",
+                          "reaction_enthalpy_kcal_mol",
+                          "reaction_entropy_cal_mol_K",
+                          "standard_concentration_mol_cm3",
+                          "reverse"
+                        ],
+                        "additionalProperties": true
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "model",
+                      "parameters"
+                    ],
+                    "properties": {
+                      "model": {
+                        "const": "constant"
+                      },
+                      "parameters": {
+                        "type": "object",
+                        "required": [
+                          "value"
+                        ],
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "minimum": 0
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "system": {
+          "type": "object",
+          "required": [
+            "parameters"
+          ],
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "required": [
+                "temperature",
+                "gas_temperature",
+                "partial_pressures_torr"
+              ],
+              "properties": {
+                "temperature": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "gas_temperature": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "partial_pressures_torr": {
+                  "type": "object",
+                  "required": [
+                    "H",
+                    "H2",
+                    "CH3",
+                    "C2H2"
+                  ],
+                  "additionalProperties": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schema_version",
+        "model",
+        "lattice",
+        "simulation",
+        "output",
+        "species",
+        "processes",
+        "system"
       ],
       "additionalProperties": false
     }

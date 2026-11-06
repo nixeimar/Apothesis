@@ -325,16 +325,73 @@ ZGB3D::Options zgb3dOptions(const Json& root) {
     ZGB3D::validate(o);return o;
 }
 
+
+Atomistic::Surface customSurface(const Json& root,const std::map<std::string,std::string>& elements,double& siteVolume) {
+    const auto& lattice=root.at("lattice");keys(lattice,"lattice",{"representation","type","parameters"});
+    const auto& p=required(lattice,"parameters","lattice");object(p,"lattice.parameters");
+    const auto path=std::string("lattice.parameters");Atomistic::Surface s;s.elements=elements;
+    for(const auto& field:{"repetitions","vacancies","fixed_unit_cells","occupied_unit_cells","origin","lattice_constant","orientation","c_over_a","vacuum"}) if(p.contains(field)) fail(path+"."+field,"Custom geometry uses explicit positions, occupancy and cell");
+    s.neighborCutoff=number(required(p,"neighbor_cutoff",path),path+".neighbor_cutoff",true);
+    siteVolume=number(required(p,"site_volume",path),path+".site_volume",true);
+    auto name=text(required(p,"initial_species",path),path+".initial_species");
+    if(!elements.count(name)) fail(path+".initial_species","undefined species");s.element=elements.at(name);
+    const auto& cell=required(p,"cell",path);
+    if(!cell.is_array() || cell.size()!=3) fail(path+".cell","Custom geometry requires [Lx, Ly, Lz] orthorhombic box lengths");
+    s.cell={{{{0,0,0}},{{0,0,0}},{{0,0,0}}}};
+    for(int axis=0;axis<3;++axis) s.cell[axis][axis]=number(cell[axis],path+".cell",true);
+    s.periodic={{false,false,false}};
+    if(p.contains("periodic")) {
+        const auto& periodic=p.at("periodic");if(!periodic.is_array() || periodic.size()!=3) fail(path+".periodic","expected three booleans");
+        for(int axis=0;axis<3;++axis) {if(!periodic[axis].is_boolean()) fail(path+".periodic","expected three booleans");s.periodic[axis]=periodic[axis].get<bool>();}
+    }
+    if(p.contains("length_unit") && text(p.at("length_unit"),path+".length_unit")!="angstrom") fail(path+".length_unit","only angstrom is supported");
+    const auto& sites=required(p,"sites",path);
+    if(!sites.is_array() || sites.empty() || sites.size()>1000000) fail(path+".sites","expected 1 to 1000000 explicit candidate sites");
+    std::set<Atomistic::Vec3> unique;
+    for(const auto& j:sites) {
+        keys(j,path+".sites",{"position","species","occupied","fixed"});
+        const auto& xyz=required(j,"position",path+".sites");if(!xyz.is_array() || xyz.size()!=3) fail(path+".sites.position","expected [x,y,z]");
+        Atomistic::Vec3 position;
+        for(int axis=0;axis<3;++axis) {
+            position[axis]=number(xyz[axis],path+".sites.position");
+            if(position[axis]>s.cell[axis][axis] || (s.periodic[axis] && position[axis]>=s.cell[axis][axis])) fail(path+".sites.position","coordinates must lie inside the custom box (periodic upper faces are excluded)");
+        }
+        if(!unique.insert(position).second) fail(path+".sites.position","duplicate coordinates");
+        auto species=j.contains("species") ? text(j.at("species"),path+".sites.species") : name;
+        if(!elements.count(species)) fail(path+".sites.species","undefined species");
+        const auto& occupied=required(j,"occupied",path+".sites");if(!occupied.is_boolean()) fail(path+".sites.occupied","expected a boolean");
+        bool fixed=false;if(j.contains("fixed")) {if(!j.at("fixed").is_boolean()) fail(path+".sites.fixed","expected a boolean");fixed=j.at("fixed").get<bool>();}
+        if(fixed && !occupied.get<bool>()) fail(path+".sites.fixed","fixed sites must be occupied");
+        s.sites.push_back({s.sites.size(),position,species,occupied.get<bool>(),fixed,{}});
+    }
+    auto neighbors=Atomistic::neighborGraph(s,0,s.neighborCutoff);
+    for(auto& site:s.sites) {
+        site.neighbors=std::move(neighbors[site.id]);
+        for(auto j:site.neighbors) {const auto d=Atomistic::displacement(s,site.position,s.sites[j].position);if(d[0]*d[0]+d[1]*d[1]+d[2]*d[2]<1e-20) fail(path+".sites.position","coincident periodic sites");}
+    }
+    return s;
+}
 SurfaceKMC::Options explicitSurfaceOptions(const Json& root) {
     const auto& model=root.at("model");keys(model,"model",{"type","parameters","description"});
     const auto& lattice=required(root,"lattice","input");
     if (text(required(lattice,"representation","lattice"),"lattice.representation")!="atomistic") fail("lattice.representation","surface_kmc_3d requires atomistic");
-    SurfaceKMC::Options o;o.geometry=surfaceOptions(root,true);
-    const auto& species=root.at("species");
+    SurfaceKMC::Options o;
+    o.surfaceSites="gas_exposed";
+    if(model.contains("parameters")) {
+        const auto& p=model.at("parameters");
+        if(p.contains("surface_sites")) o.surfaceSites=text(p.at("surface_sites"),"model.parameters.surface_sites");
+        if(p.contains("max_embeddings")) o.maxEmbeddings=integer(p.at("max_embeddings"),"model.parameters.max_embeddings",true);
+        if(p.contains("max_search_steps")) o.maxSearchSteps=integer(p.at("max_search_steps"),"model.parameters.max_search_steps",true);
+    }
+    const auto& species=required(root,"species","input");object(species,"species");
     for (auto it=species.begin();it!=species.end();++it) {
         if (it.key().empty() || it.key().find_first_of(" \t\n\r\"")!=std::string::npos) fail("species","names must be nonempty tokens without quotes or whitespace");
+        keys(it.value(),"species."+it.key(),{"description","parameters"});
         o.elements[it.key()]=elementFor(species,it.key(),true);
     }
+    if(text(required(lattice,"type","lattice"),"lattice.type")=="Custom") {
+        o.customGeometry=customSurface(root,o.elements,o.siteVolume);o.geometry.crystal="Custom";
+    } else o.geometry=surfaceOptions(root,true);
     double temperature=0;
     if (root.contains("system")) {
         const auto& system=root.at("system");keys(system,"system",{"parameters"});
@@ -357,7 +414,7 @@ SurfaceKMC::Options explicitSurfaceOptions(const Json& root) {
         keys(j,path,{"id","type","description","reactants","products","rate","parameters"});
         SurfaceKMC::Rule r;r.id=text(required(j,"id",path),path+".id");r.type=text(required(j,"type",path),path+".type");
         if (r.id.find_first_of(" \t\r\n\"")!=std::string::npos) fail(path+".id","expected a token without whitespace or quotes");
-        std::map<int,std::string> before;std::map<int,SurfaceKMC::Product> after;
+        std::map<int,std::string> before;std::map<int,bool> beforeSolid;std::map<int,SurfaceKMC::Product> after;
         int gasReactants=0,gasProducts=0;
         for (bool products:{false,true}) {
             const std::string side=products ? "products" : "reactants";const auto& list=required(j,side,path);
@@ -378,23 +435,42 @@ SurfaceKMC::Options explicitSurfaceOptions(const Json& root) {
                         if (products) ++gasProducts;else ++gasReactants;
                         continue;
                     }
-                    if (!products && phase=="solid") fail(tp+".phase","solid reactants/removal are not supported by this top-surface engine");
+                    if (!products && phase=="solid" && o.surfaceSites=="column_tops") fail(tp+".phase","solid reactants require gas_exposed mode");
                 }
                 const int slot=integer(required(term,"site",tp),tp+".site");
-                if (slot>1) fail(tp+".site","supported slots are 0 and 1");
                 if (products) {if (!after.emplace(slot,SurfaceKMC::Product{name,phase=="solid"}).second) fail(tp+".site","duplicate site slot");}
-                else if (!before.emplace(slot,name).second) fail(tp+".site","duplicate site slot");
+                else {if (!before.emplace(slot,name).second) fail(tp+".site","duplicate site slot");beforeSolid[slot]=phase=="solid";}
             }
         }
-        if (before.empty() || before.size()!=after.size() || !before.count(0) || !after.count(0) || (before.size()==2 && (!before.count(1) || !after.count(1)))) fail(path,"reactants and products must each define the same one or two slots, starting at zero");
-        for (std::size_t slot=0;slot<before.size();++slot) {r.before.push_back(before.at(static_cast<int>(slot)));r.after.push_back(after.at(static_cast<int>(slot)));}
+        if(before.empty() || before.size()!=after.size()) fail(path,"reactants and products must define the same site slots");
+        for(std::size_t slot=0;slot<before.size();++slot) {
+            if(!before.count(static_cast<int>(slot)) || !after.count(static_cast<int>(slot))) fail(path,"site slots must be contiguous from zero and present on both sides");
+            r.before.push_back(before.at(static_cast<int>(slot)));r.beforeSolid.push_back(beforeSolid.at(static_cast<int>(slot)));r.after.push_back(after.at(static_cast<int>(slot)));
+        }
         const auto& p=required(j,"parameters",path);object(p,path+".parameters");
         r.counting=text(required(p,"counting",path+".parameters"),path+".parameters.counting");
-        if (r.before.size()==2) {
-            if (text(required(p,"neighbors",path+".parameters"),path+".parameters.neighbors")!="lateral_first") fail(path+".parameters.neighbors","only lateral_first is implemented");
-            const auto& same=required(p,"same_height",path+".parameters");
-            if (!same.is_boolean() || !same.get<bool>()) fail(path+".parameters.same_height","this engine currently requires same-height neighbors");
-        } else if (p.contains("neighbors") || p.contains("same_height")) fail(path+".parameters","single-site events do not use neighbor conditions");
+        auto parseLink=[&](const Json& link,std::size_t first,std::size_t second) {
+            SurfaceKMC::Link l;l.first=first;l.second=second;
+            if(link.contains("neighbors")) l.neighbors=text(link.at("neighbors"),path+".parameters.neighbors");
+            if(link.contains("same_height")) {if(!link.at("same_height").is_boolean()) fail(path+".parameters.same_height","expected a boolean");l.sameHeight=link.at("same_height").get<bool>();}
+            if(l.neighbors=="distance") {
+                if(link.contains("min_distance")) l.minDistance=number(link.at("min_distance"),path+".parameters.min_distance");
+                l.maxDistance=number(required(link,"max_distance",path+".parameters"),path+".parameters.max_distance",true);
+            } else if(link.contains("min_distance") || link.contains("max_distance")) fail(path+".parameters","distance bounds require neighbors: distance");
+            r.links.push_back(l);
+        };
+        if(p.contains("links")) {
+            if(p.contains("neighbors") || p.contains("same_height") || p.contains("min_distance") || p.contains("max_distance")) fail(path+".parameters","put per-link geometry inside links, without competing shorthand conditions");
+            const auto& links=p.at("links");if(!links.is_array()) fail(path+".parameters.links","expected an array");
+            for(const auto& link:links) {
+                keys(link,path+".parameters.links",{"sites","neighbors","same_height","min_distance","max_distance"});
+                const auto& ends=required(link,"sites",path+".parameters.links");
+                if(!ends.is_array() || ends.size()!=2) fail(path+".parameters.links.sites","expected two slot indices");
+                parseLink(link,integer(ends[0],path+".parameters.links.sites"),integer(ends[1],path+".parameters.links.sites"));
+            }
+        } else if(r.before.size()==2) parseLink(p,0,1);
+        else if(r.before.size()>2) fail(path+".parameters.links","multi-site processes require a connected links array");
+        else if(p.contains("neighbors") || p.contains("same_height")) fail(path+".parameters","single-site events do not use neighbor conditions");
         if (r.type=="adsorption") {
             if (!gasReactants || gasProducts || std::any_of(r.before.begin(),r.before.end(),[](const std::string& a){return !a.empty();}) || std::any_of(r.after.begin(),r.after.end(),[](const SurfaceKMC::Product& a){return a.species.empty() || a.solid;})) fail(path,"adsorption requires gas + vacant slots -> occupied surface slots");
         } else if (r.type=="desorption") {
@@ -414,6 +490,60 @@ SurfaceKMC::Options explicitSurfaceOptions(const Json& root) {
         o.processes.push_back(std::move(r));
     }
     SurfaceKMC::validate(o);return o;
+}
+
+DiamondCVD::Options diamondOptions(const Json& root) {
+    DiamondCVD::Options o;const auto& model=root.at("model");keys(model,"model",{"type","description","parameters"});
+    const auto& mp=required(model,"parameters","model");object(mp,"model.parameters");
+    const auto& lattice=required(root,"lattice","input");keys(lattice,"lattice",{"representation","type","parameters"});
+    if(text(required(lattice,"type","lattice"),"lattice.type")!="Custom" || text(required(lattice,"representation","lattice"),"lattice.representation")!="atomistic") fail("lattice","diamond_cvd_1997 requires explicit oriented Custom carbon candidate coordinates");
+    const auto& species=required(root,"species","input");object(species,"species");
+    std::map<std::string,std::string> elements;
+    for(auto it=species.begin();it!=species.end();++it) {keys(it.value(),"species."+it.key(),{"description","parameters"});elements[it.key()]=elementFor(species,it.key());}
+    if(std::none_of(elements.begin(),elements.end(),[](const auto& entry){return entry.second=="H";})) fail("species","diamond CVD requires a declared hydrogen element species");
+    o.lattice=customSurface(root,elements,o.siteVolume);
+    for(const auto& site:o.lattice.sites) if(elements.at(site.species)!="C") fail("lattice.parameters.sites.species","initial diamond candidate sites must be carbon");
+    if(mp.contains("site_volume") && number(mp.at("site_volume"),"model.parameters.site_volume",true)!=o.siteVolume) fail("model.parameters.site_volume","must match the lattice site_volume");
+    if(mp.contains("initial_passivation")) {if(!mp.at("initial_passivation").is_boolean()) fail("model.parameters.initial_passivation","expected a boolean");o.passivate=mp.at("initial_passivation").get<bool>();}
+    if(mp.contains("ch_bond_length")) o.chLength=number(mp.at("ch_bond_length"),"model.parameters.ch_bond_length",true);
+    const auto& system=required(root,"system","input");keys(system,"system",{"parameters"});const auto& sp=required(system,"parameters","system");
+    o.temperature=number(required(sp,"temperature","system.parameters"),"system.parameters.temperature",true);
+    o.gasTemperature=number(required(sp,"gas_temperature","system.parameters"),"system.parameters.gas_temperature",true);
+    const auto& pressures=required(sp,"partial_pressures_torr","system.parameters");object(pressures,"system.parameters.partial_pressures_torr");
+    for(auto it=pressures.begin();it!=pressures.end();++it) o.pressuresTorr[it.key()]=number(it.value(),"system.parameters.partial_pressures_torr."+it.key());
+    for(const auto& gas:{"H","H2","CH3","C2H2"}) if(!o.pressuresTorr.count(gas)) fail("system.parameters.partial_pressures_torr",std::string("required reservoir ")+gas);
+    const auto& sim=required(root,"simulation","input");keys(sim,"simulation",{"start_time","duration","random_seed","max_events","parameters"});
+    if(sim.contains("start_time")) o.start=number(sim.at("start_time"),"simulation.start_time");
+    o.end=o.start+number(required(sim,"duration","simulation"),"simulation.duration",true);
+    if(sim.contains("random_seed")) o.seed=integer(sim.at("random_seed"),"simulation.random_seed");
+    if(sim.contains("max_events")) o.maxEvents=integer(sim.at("max_events"),"simulation.max_events");
+    const auto& output=required(root,"output","input");keys(output,"output",{"log_interval","lattice_interval","write_xyz","parameters"});
+    o.logInterval=number(required(output,"log_interval","output"),"output.log_interval",true);
+    if(output.contains("lattice_interval")) o.snapshotInterval=number(output.at("lattice_interval"),"output.lattice_interval");
+    if(output.contains("write_xyz")) {if(!output.at("write_xyz").is_boolean()) fail("output.write_xyz","expected a boolean");o.writeXYZ=output.at("write_xyz").get<bool>();}
+    const auto& list=required(root,"processes","input");if(!list.is_array() || list.empty()) fail("processes","explicit diamond process channels are required");
+    auto signedNumber=[&](const Json& j,const std::string& path) {if(!j.is_number() || !std::isfinite(j.get<double>())) fail(path,"expected a finite number");return j.get<double>();};
+    for(std::size_t index=0;index<list.size();++index) {
+        const auto path="processes["+std::to_string(index)+"]";const auto& j=list[index];keys(j,path,{"id","type","event","description","parameters","rate"});
+        if(text(required(j,"type",path),path+".type")!="reaction") fail(path+".type","covalent channels use reaction type");
+        DiamondCVD::Process p;p.id=text(required(j,"id",path),path+".id");p.event=text(required(j,"event",path),path+".event");
+        const auto& cp=required(j,"parameters",path);object(cp,path+".parameters");
+        if(cp.contains("domain")) {if(!cp.at("domain").is_string()) fail(path+".parameters.domain","expected a string");p.domain=cp.at("domain").get<std::string>();}
+        if(cp.contains("hydrogens")) {if(!cp.at("hydrogens").is_number_integer() || cp.at("hydrogens").get<double>()< -1 || cp.at("hydrogens").get<double>()>4) fail(path+".parameters.hydrogens","expected an integer -1..4");p.hydrogens=cp.at("hydrogens").get<int>();}
+        const auto& rate=required(j,"rate",path);keys(rate,path+".rate",{"model","parameters"});const auto rateModel=text(required(rate,"model",path+".rate"),path+".rate.model");const auto& rp=required(rate,"parameters",path+".rate");object(rp,path+".rate.parameters");
+        if(rateModel=="constant") p.rate=number(required(rp,"value",path+".rate.parameters"),path+".rate.parameters.value");
+        else if(rateModel=="thermochemical") {
+            auto get=[&](const std::string& name){return signedNumber(required(rp,name,path+".rate.parameters"),path+".rate.parameters."+name);};
+            const auto& reverse=required(rp,"reverse",path+".rate.parameters");if(!reverse.is_boolean()) fail(path+".rate.parameters.reverse","expected a boolean");
+            p.rate=DiamondCVD::rateCoefficient(get("A"),get("temperature_power"),get("activation_energy_kcal_mol"),get("reaction_enthalpy_kcal_mol"),get("reaction_entropy_cal_mol_K"),get("standard_concentration_mol_cm3"),o.temperature,reverse.get<bool>());
+            if(rp.contains("gas_reactant")) {
+                if(!rp.at("gas_reactant").is_string()) fail(path+".rate.parameters.gas_reactant","expected a reservoir name or empty string");
+                auto gas=rp.at("gas_reactant").get<std::string>();if(!gas.empty()) {if(!o.pressuresTorr.count(gas)) fail(path+".rate.parameters.gas_reactant","undefined gas reservoir");p.rate*=o.pressuresTorr.at(gas)/760/(82.057366080960*o.gasTemperature);}
+            }
+        } else fail(path+".rate.model","diamond rates support constant or thermochemical");
+        o.processes.push_back(std::move(p));
+    }
+    DiamondCVD::validate(o);return o;
 }
 } // namespace
 
@@ -446,7 +576,8 @@ Configuration readJson(const std::string& filename) {
     if (root.contains("model")) {
         const auto& model=root.at("model");
         auto type=text(required(model,"type","model"),"model.type");
-        if (type=="surface_kmc_3d") {c.surfaceKMC=explicitSurfaceOptions(root);c.atomisticSurface=c.surfaceKMC->geometry;}
+        if (type=="diamond_cvd_1997") c.diamondCVD=diamondOptions(root);
+        else if (type=="surface_kmc_3d") {c.surfaceKMC=explicitSurfaceOptions(root);if(!c.surfaceKMC->customGeometry) c.atomisticSurface=c.surfaceKMC->geometry;}
         else if (type=="cheimarios_zgb_2023") c.zgb=zgbOptions(root,false);
         else if (type=="cheimarios_zgb_2023_3d") {
             c.zgb3d=zgb3dOptions(root);c.atomisticSurface=c.zgb3d->geometry;

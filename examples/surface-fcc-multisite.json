@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "description": "FCC geometry and simultaneous three-site solid incorporation; illustrative constant rates",
+  "model": {
+    "type": "surface_kmc_3d",
+    "parameters": {
+      "surface_sites": "gas_exposed",
+      "max_embeddings": 100000,
+      "max_search_steps": 1000000
+    }
+  },
+  "lattice": {
+    "representation": "atomistic",
+    "type": "FCC",
+    "parameters": {
+      "lattice_constant": 3.615,
+      "length_unit": "angstrom",
+      "repetitions": [
+        4,
+        4,
+        5
+      ],
+      "occupied_unit_cells": 2,
+      "fixed_unit_cells": 1,
+      "initial_species": "substrate",
+      "periodic": [
+        true,
+        true,
+        false
+      ],
+      "vacuum": 5
+    }
+  },
+  "species": {
+    "substrate": {
+      "parameters": {
+        "element": "X"
+      }
+    },
+    "P": {
+      "parameters": {
+        "element": "X"
+      }
+    },
+    "Q": {
+      "parameters": {
+        "element": "X"
+      }
+    }
+  },
+  "simulation": {
+    "duration": 10,
+    "random_seed": 1234,
+    "max_events": 100
+  },
+  "output": {
+    "log_interval": 1,
+    "lattice_interval": 0,
+    "write_xyz": true
+  },
+  "processes": [
+    {
+      "id": "adsorb_P",
+      "type": "adsorption",
+      "reactants": [
+        {
+          "species": "P",
+          "phase": "gas"
+        },
+        {
+          "vacancy": true,
+          "site": 0
+        }
+      ],
+      "products": [
+        {
+          "species": "P",
+          "phase": "surface",
+          "site": 0
+        }
+      ],
+      "rate": {
+        "model": "constant",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "parameters": {
+        "counting": "sites"
+      }
+    },
+    {
+      "id": "three_site_growth",
+      "type": "reaction",
+      "reactants": [
+        {
+          "species": "P",
+          "phase": "surface",
+          "site": 0
+        },
+        {
+          "species": "P",
+          "phase": "surface",
+          "site": 1
+        },
+        {
+          "species": "P",
+          "phase": "surface",
+          "site": 2
+        }
+      ],
+      "products": [
+        {
+          "species": "Q",
+          "phase": "solid",
+          "site": 0
+        },
+        {
+          "species": "Q",
+          "phase": "solid",
+          "site": 1
+        },
+        {
+          "species": "Q",
+          "phase": "solid",
+          "site": 2
+        }
+      ],
+      "rate": {
+        "model": "constant",
+        "parameters": {
+          "value": 2
+        }
+      },
+      "parameters": {
+        "counting": "unique_site_sets",
+        "links": [
+          {
+            "sites": [
+              0,
+              1
+            ],
+            "neighbors": "first",
+            "same_height": false
+          },
+          {
+            "sites": [
+              1,
+              2
+            ],
+            "neighbors": "first",
+            "same_height": false
+          }
+        ]
+      }
+    }
+  ]
+}

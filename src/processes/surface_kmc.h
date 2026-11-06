@@ -4,19 +4,34 @@
 #include <functional>
 #include <random>
 #include <map>
+#include <memory>
+#include <optional>
+#include <cmath>
 
 namespace SurfaceKMC {
-// Empty species denotes a vacant binding site. A solid product incorporates
-// one effective growth unit and exposes the next fixed crystal site above it.
+// Empty species denotes a vacancy. Solid products update mapped crystal nodes;
+// exposure follows either the general geometry or the selected column model.
 struct Product { std::string species; bool solid=false; };
+struct Link {
+    std::size_t first=0,second=1;
+    std::string neighbors="first";
+    double minDistance=0,maxDistance=0;
+    bool sameHeight=false;
+};
 struct Rule {
     std::string id,type,counting="sites";
     std::vector<std::string> before;
     std::vector<Product> after;
+    std::vector<bool> beforeSolid;
+    std::vector<Link> links;
     double rate=0;
 };
 struct Options {
     Atomistic::Options geometry;
+    std::optional<Atomistic::Surface> customGeometry;
+    std::string surfaceSites="column_tops";
+    double siteVolume=0;
+    std::size_t maxEmbeddings=100000,maxSearchSteps=1000000;
     std::map<std::string,std::string> elements;
     std::vector<Rule> processes;
     double start=0,end=100,logInterval=1,snapshotInterval=10;
@@ -29,6 +44,10 @@ public:
     explicit Simulation(Options options);
     void run(const std::function<void(const Simulation&,bool)>& observe={});
     void apply(std::size_t process,std::size_t first,std::size_t second=0);
+    void apply(std::size_t process,const std::vector<std::size_t>& sites);
+    bool graphMode() const {return m_options.surfaceSites=="gas_exposed";}
+    double siteVolume() const {return graphMode() ? m_siteVolume : std::pow(m_options.geometry.latticeConstant,3);}
+    std::string heightUnit() const {return graphMode() ? "angstrom" : "layers";}
     const Atomistic::Surface& solid() const {return m_solid;}
     const std::vector<std::string>& adsorbates() const {return m_ads;}
     const Options& options() const {return m_options;}
@@ -66,6 +85,20 @@ private:
     long double m_integral=0;
     bool m_capacity=false;
     std::string m_stop;
+    using Graph=std::vector<std::vector<std::size_t>>;
+    struct EventGroup {std::vector<std::vector<std::size_t>> assignments;};
+    std::vector<std::vector<std::shared_ptr<const Graph>>> m_relations;
+    std::vector<std::vector<EventGroup>> m_graphCatalogs;
+    std::vector<bool> m_exposed;
+    double m_area=0,m_siteVolume=0,m_top=0;
+    void initializeGraph();
+    void graphAccess(const std::vector<bool>& occupied,std::vector<bool>& binding,std::vector<bool>& exposed) const;
+    bool graphSupported(const std::vector<bool>& occupied) const;
+    bool graphSlot(const Rule& rule,std::size_t slot,std::size_t id) const;
+    bool graphTransition(const Rule& rule,const std::vector<std::size_t>& sites) const;
+    std::vector<std::vector<EventGroup>> enumerateGraph() const;
+    void rebuildGraph();
+    void runGraph(const std::function<void(const Simulation&,bool)>& observe);
     bool matches(const Rule& rule,std::size_t first,std::size_t second) const;
     bool eligible(const Rule& rule,std::size_t candidate) const;
     void refresh(std::size_t site);

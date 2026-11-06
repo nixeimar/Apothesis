@@ -236,4 +236,75 @@ with tempfile.TemporaryDirectory(prefix='apothesis-integration-') as temp:
         bad=json.loads(json.dumps(generic));mutate(bad);generic_path.write_text(json.dumps(bad))
         run(['--validate-input',str(generic_path)],success=False)
 
+
+    # General geometry: FCC multi-site chemistry, direct coordinates and export.
+    fcc=json.loads((root/'examples/surface-fcc-multisite.json').read_text())
+    generic_path.write_text(json.dumps(fcc));run(['--validate-input',str(generic_path)]);run([str(generic_path)])
+    fcc_summary=json.loads((work/'surface_summary.json').read_text())
+    assert fcc_summary['lattice_type']=='FCC' and fcc_summary['height_unit']=='angstrom'
+    assert fcc_summary['process_counts']['three_site_growth']>0
+    assert fcc_summary['solid_units']==128+3*fcc_summary['process_counts']['three_site_growth']
+    custom=json.loads((root/'examples/surface-custom-coordinates.json').read_text())
+    generic_path.write_text(json.dumps(custom));run(['--validate-input',str(generic_path)])
+    run(['--build-surface',str(generic_path),'--output','custom-initial.xyz'])
+    assert (work/'custom-initial.xyz').read_text().splitlines()[0]=='5'
+    run([str(generic_path)])
+    custom_summary=json.loads((work/'surface_summary.json').read_text())
+    assert custom_summary['candidate_sites']==10 and custom_summary['height_unit']=='angstrom'
+    assert 'pbc="F F F"' in (work/'surface_final.xyz').read_text()
+    assert custom_summary['process_counts']['adsorb_P']>0
+    for mutate in [
+        lambda c:c['lattice']['parameters'].pop('site_volume'),
+        lambda c:c['lattice']['parameters']['sites'][1].update(position=[0,1,0]),
+        lambda c:c['lattice']['parameters']['sites'][0].update(occupied=False),
+        lambda c:c['lattice']['parameters'].update(periodic=[False,False,True]),
+        lambda c:c['lattice']['parameters'].update(repetitions=[4,4,4]),
+    ]:
+        bad=json.loads(json.dumps(custom));mutate(bad);generic_path.write_text(json.dumps(bad));run(['--validate-input',str(generic_path)],success=False)
+    for mutate in [
+        lambda c:c['processes'][1]['parameters']['links'].pop(),
+        lambda c:c['processes'][1]['parameters']['links'][0].update(sites=[0,7]),
+        lambda c:c['processes'][1]['parameters']['links'][0].update(neighbors='not-a-geometry'),
+        lambda c:c['processes'][1]['parameters']['links'][0].update(neighbors='distance',min_distance=2,max_distance=1),
+        lambda c:c['processes'][1]['reactants'][1].update(site=5),
+    ]:
+        bad=json.loads(json.dumps(fcc));mutate(bad);generic_path.write_text(json.dumps(bad));run(['--validate-input',str(generic_path)],success=False)
+
+
+    # Full covalent diamond backend: all Table II channels, real C/H output.
+    diamond=json.loads((root/'examples/diamond-cvd-1997.json').read_text())
+    diamond['simulation'].update(duration=.001,max_events=300)
+    diamond_path=work/'diamond.json';diamond_path.write_text(json.dumps(diamond))
+    run(['--validate-input',str(diamond_path)])
+    run(['--build-surface',str(diamond_path),'--output','diamond-carbon.xyz'])
+    assert (work/'diamond-carbon.xyz').read_text().splitlines()[0]=='40'
+    run([str(diamond_path)])
+    ds=json.loads((work/'diamond_summary.json').read_text())
+    assert len(ds['process_counts'])==22 and ds['events']>0
+    assert not ds['numerical_reproduction_validated']
+    initial=(work/'diamond_initial.xyz').read_text().splitlines()
+    assert int(initial[0])==48 and sum(line.startswith('H ') for line in initial[2:])==8
+    assert sum(line.startswith('C ') for line in initial[2:])==40
+    assert 'parent:I:1' in initial[1]
+    final=(work/'diamond_final.xyz').read_text()
+    run([str(diamond_path)])
+    assert final==(work/'diamond_final.xyz').read_text()
+    assert ds==json.loads((work/'diamond_summary.json').read_text())
+    for mutate in [
+        lambda c:c['system']['parameters'].pop('gas_temperature'),
+        lambda c:c['system']['parameters']['partial_pressures_torr'].update(H=-1),
+        lambda c:c['processes'][0].update(event='unimplemented_chemistry'),
+        lambda c:c['processes'][0]['rate']['parameters'].update(activation_energy_kcal_mol=-1),
+        lambda c:c['processes'][1].update(id='r1_forward'),
+        lambda c:c['processes'][0]['parameters'].update(domain='unsupported'),
+        lambda c:c['processes'][8]['parameters'].update(hydrogens=3),
+    ]:
+        bad=json.loads(json.dumps(diamond));mutate(bad);diamond_path.write_text(json.dumps(bad));run(['--validate-input',str(diamond_path)],success=False)
+    generated=work/'diamond-generated.json'
+    result=subprocess.run([sys.executable,str(root/'scripts/create_diamond_1997_input.py'),'--output',str(generated),
+        '--nx','3','--ny','2','--cells','3','--max-events','10','--duration','.00001'],capture_output=True,text=True,timeout=30)
+    assert result.returncode==0,result.stdout+result.stderr
+    run(['--validate-input',str(generated)]);run([str(generated)])
+    assert json.loads((work/'diamond_summary.json').read_text())['initial_diamond_carbon_atoms']==60
+
 print('All input integration tests passed.')

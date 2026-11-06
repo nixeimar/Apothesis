@@ -3,7 +3,9 @@
   "description": "Explicit user-defined ZGB adsorption and growth processes on fixed 3D sites; effective chemical units",
   "model": {
     "type": "surface_kmc_3d",
-    "parameters": {}
+    "parameters": {
+      "surface_sites": "column_tops"
+    }
   },
   "lattice": {
     "representation": "atomistic",

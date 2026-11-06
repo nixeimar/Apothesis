@@ -42,5 +42,10 @@ struct Surface {
 };
 std::size_t validate(const Options& options);
 Surface build(const Options& options);
+// Geometric distance graphs for process-specific shells. Distances use the
+// periodic cell, including the skew HCP basis, independently of occupancy.
+Vec3 displacement(const Surface& surface,const Vec3& from,const Vec3& to);
+std::vector<std::vector<std::size_t>> neighborGraph(const Surface& surface,
+    double minDistance,double maxDistance,bool sameHeight=false);
 } // namespace Atomistic
 #endif

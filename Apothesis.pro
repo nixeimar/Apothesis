@@ -55,6 +55,8 @@ HEADERS += ./src/apothesis.h \
            ./src/lattice/diamond.h
 
 SOURCES += ./src/apothesis.cpp \
+           ./src/processes/diamond_cvd.cpp \
+           ./src/processes/surface_graph.cpp \
            ./src/processes/surface_kmc.cpp \
            ./src/processes/zgb_growth.cpp \
            ./src/processes/zgb_3d.cpp \

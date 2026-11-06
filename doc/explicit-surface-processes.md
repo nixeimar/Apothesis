@@ -2,8 +2,11 @@
 
 Select `model.type: "surface_kmc_3d"`. This model supplies surface geometry and
 an event engine; it does not supply chemical species or implicit adsorption or
-reaction channels. Every event comes from `processes`. The root `input.json`
-is the complete [explicit ZGB example](../examples/zgb-explicit-3d.json).
+reaction channels. Every event comes from `processes`. The
+[explicit ZGB example](../examples/zgb-explicit-3d.json) uses
+`surface_sites: "column_tops"` to preserve its original surface restrictions.
+The [general geometry and matching guide](general-surface-geometry.md) describes
+`gas_exposed` mode for other crystals, custom positions and multi-site patterns.
 
 ## Define adsorption
 
@@ -65,7 +68,7 @@ product identity, change the species in the pattern; names are not hardcoded.
 Removing a process removes its events completely. Independent process IDs keep
 separate counters even when their patterns are identical.
 
-Every pattern must explicitly define the same slots on both sides: slot 0 for
+In `column_tops` mode, every pattern must explicitly define the same slots on both sides: slot 0 for
 single-site events, or slots 0 and 1 for pair events. Each slot appears once per
 side. Write separate terms for pair slots rather than `coefficient: 2`.
 
@@ -104,16 +107,14 @@ supports solid-atom adsorption, diffusion and desorption.
 
 ## Scope and validation
 
-The current generic engine supports arbitrary declared species and any number
-of one-site or two-site processes on a simple-cubic supported slab. Pair events
-currently require four lateral, same-height first neighbors. It rejects other
-neighbor geometries, solid reactants/removal, patterns larger than two slots,
-multiple simultaneous solid products, and processes that do not change state.
-Coordinates remain fixed, and no overhangs or buried cavities are admitted.
-These are engine capabilities, not assumptions inferred from chemical labels.
-Molecular formulas and atom conservation are not inferred from names; the user
-must supply physically consistent species and stoichiometry. AB2 remains one
-effective growth unit, not constituent molecular atoms.
+The `column_tops` mode used in this example retains the paper's simple-cubic,
+one-/two-site surface rules. `gas_exposed` mode supports generated SC/BCC/FCC/HCP/
+diamond slabs and custom candidate coordinates, connected multi-site patterns,
+configurable distance links, solid removal and simultaneous solid products.
+See the [general geometry guide](general-surface-geometry.md) for counting,
+connectivity, thickness units and performance limits. All modes use fixed
+coordinates and effective chemical units. Molecular formulas and chemical atom
+conservation are not inferred from species names.
 
 Extra custom values in `parameters` are retained in the input document. They
 affect dynamics only when the engine implements them. Structural misspellings,

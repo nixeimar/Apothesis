@@ -11,8 +11,9 @@ fully resolved molecular model.
 
 ## Run locally
 
-The preset example selects this backend; the root `input.json` now uses the
-[generic engine with explicit processes](explicit-surface-processes.md):
+The preset example selects this backend. The root `input.json` now runs the
+[diamond CVD model](diamond-cvd-1997.md); the separate
+[explicit-process ZGB example](explicit-surface-processes.md) remains available:
 
 ```sh
 ./apothesis --validate-input examples/zgb-growth-3d.json

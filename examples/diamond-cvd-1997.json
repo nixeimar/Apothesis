@@ -1,0 +1,3170 @@
+{
+  "schema_version": 1,
+  "description": "Diamond (111), all Table II chemical channels; kinetic/bond assumptions documented in doc/diamond-cvd-1997.md",
+  "model": {
+    "type": "diamond_cvd_1997",
+    "parameters": {
+      "initial_passivation": true,
+      "site_volume": 5.673085657875001,
+      "ch_bond_length": 1.09,
+      "reference": "Battaile, Srolovitz and Butler, J. Appl. Phys. 82, 6293 (1997)",
+      "surface_carbon_atoms": 8,
+      "lattice_constant_angstrom": 3.567
+    }
+  },
+  "lattice": {
+    "representation": "atomistic",
+    "type": "Custom",
+    "parameters": {
+      "cell": [
+        5.04449977698483,
+        8.737329912507596,
+        37.06935138358911
+      ],
+      "periodic": [
+        true,
+        true,
+        false
+      ],
+      "neighbor_cutoff": 1.560001870726042,
+      "site_volume": 5.673085657875001,
+      "initial_species": "C",
+      "sites": [
+        {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            2.184332478126899,
+            0.0
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            2.522249888492415,
+            0.0,
+            0.0
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            2.184332478126899,
+            0.0
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            0.0,
+            4.368664956253798,
+            0.0
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            6.552997434380696,
+            0.0
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            2.522249888492415,
+            4.368664956253798,
+            0.0
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            6.552997434380696,
+            0.0
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            0.0,
+            0.0,
+            1.5445563076495463
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            2.184332478126899,
+            1.5445563076495463
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            2.522249888492415,
+            0.0,
+            1.5445563076495463
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            2.184332478126899,
+            1.5445563076495463
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            0.0,
+            4.368664956253798,
+            1.5445563076495463
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            6.552997434380696,
+            1.5445563076495463
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            2.522249888492415,
+            4.368664956253798,
+            1.5445563076495463
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            6.552997434380696,
+            1.5445563076495463
+          ],
+          "occupied": true,
+          "fixed": true
+        },
+        {
+          "position": [
+            0.0,
+            1.4562216520845992,
+            2.059408410199395
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            3.6405541302114983,
+            2.059408410199395
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            1.4562216520845992,
+            2.059408410199395
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            3.6405541302114983,
+            2.059408410199395
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            5.824886608338397,
+            2.059408410199395
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            8.009219086465297,
+            2.059408410199395
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            5.824886608338397,
+            2.059408410199395
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            8.009219086465297,
+            2.059408410199395
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            1.4562216520845992,
+            3.6039647178489416
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            3.6405541302114983,
+            3.6039647178489416
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            1.4562216520845992,
+            3.6039647178489416
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            3.6405541302114983,
+            3.6039647178489416
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            5.824886608338397,
+            3.6039647178489416
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            8.009219086465297,
+            3.6039647178489416
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            5.824886608338397,
+            3.6039647178489416
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            8.009219086465297,
+            3.6039647178489416
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            0.7281108260422996,
+            4.11881682039879
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            2.9124433041691984,
+            4.11881682039879
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            0.7281108260422996,
+            4.11881682039879
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            2.9124433041691984,
+            4.11881682039879
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            5.096775782296098,
+            4.11881682039879
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            7.281108260422996,
+            4.11881682039879
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            5.096775782296098,
+            4.11881682039879
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            7.281108260422996,
+            4.11881682039879
+          ],
+          "occupied": true,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            0.7281108260422996,
+            5.663373128048336
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            2.9124433041691984,
+            5.663373128048336
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            0.7281108260422996,
+            5.663373128048336
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            2.9124433041691984,
+            5.663373128048336
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            5.096775782296098,
+            5.663373128048336
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            7.281108260422996,
+            5.663373128048336
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            5.096775782296098,
+            5.663373128048336
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            7.281108260422996,
+            5.663373128048336
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            0.0,
+            6.178225230598185
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            2.184332478126899,
+            6.178225230598185
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            0.0,
+            6.178225230598185
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            2.184332478126899,
+            6.178225230598185
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            4.368664956253798,
+            6.178225230598185
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            6.552997434380696,
+            6.178225230598185
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            4.368664956253798,
+            6.178225230598185
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            6.552997434380696,
+            6.178225230598185
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            0.0,
+            7.722781538247732
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            2.184332478126899,
+            7.722781538247732
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            0.0,
+            7.722781538247732
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            2.184332478126899,
+            7.722781538247732
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            4.368664956253798,
+            7.722781538247732
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            6.552997434380696,
+            7.722781538247732
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            4.368664956253798,
+            7.722781538247732
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            6.552997434380696,
+            7.722781538247732
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            1.4562216520845992,
+            8.23763364079758
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            3.6405541302114983,
+            8.23763364079758
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            1.4562216520845992,
+            8.23763364079758
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            3.6405541302114983,
+            8.23763364079758
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            5.824886608338397,
+            8.23763364079758
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            8.009219086465297,
+            8.23763364079758
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            5.824886608338397,
+            8.23763364079758
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            8.009219086465297,
+            8.23763364079758
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            1.4562216520845992,
+            9.782189948447128
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            3.6405541302114983,
+            9.782189948447128
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            1.4562216520845992,
+            9.782189948447128
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            3.6405541302114983,
+            9.782189948447128
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            5.824886608338397,
+            9.782189948447128
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            8.009219086465297,
+            9.782189948447128
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            5.824886608338397,
+            9.782189948447128
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            8.009219086465297,
+            9.782189948447128
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            0.7281108260422996,
+            10.297042050996975
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            2.9124433041691984,
+            10.297042050996975
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            0.7281108260422996,
+            10.297042050996975
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            2.9124433041691984,
+            10.297042050996975
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            5.096775782296098,
+            10.297042050996975
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            7.281108260422996,
+            10.297042050996975
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            5.096775782296098,
+            10.297042050996975
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            7.281108260422996,
+            10.297042050996975
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            0.7281108260422996,
+            11.841598358646522
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            2.9124433041691984,
+            11.841598358646522
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            0.7281108260422996,
+            11.841598358646522
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            2.9124433041691984,
+            11.841598358646522
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            5.096775782296098,
+            11.841598358646522
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            7.281108260422996,
+            11.841598358646522
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            5.096775782296098,
+            11.841598358646522
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            7.281108260422996,
+            11.841598358646522
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            0.0,
+            12.35645046119637
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            2.184332478126899,
+            12.35645046119637
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            0.0,
+            12.35645046119637
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            2.184332478126899,
+            12.35645046119637
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            4.368664956253798,
+            12.35645046119637
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            6.552997434380696,
+            12.35645046119637
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            4.368664956253798,
+            12.35645046119637
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            6.552997434380696,
+            12.35645046119637
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            0.0,
+            13.901006768845917
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            2.184332478126899,
+            13.901006768845917
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            0.0,
+            13.901006768845917
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            2.184332478126899,
+            13.901006768845917
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            4.368664956253798,
+            13.901006768845917
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            6.552997434380696,
+            13.901006768845917
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            4.368664956253798,
+            13.901006768845917
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            6.552997434380696,
+            13.901006768845917
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            1.4562216520845992,
+            14.415858871395766
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            3.6405541302114983,
+            14.415858871395766
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            1.4562216520845992,
+            14.415858871395766
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            3.6405541302114983,
+            14.415858871395766
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            5.824886608338397,
+            14.415858871395766
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            8.009219086465297,
+            14.415858871395766
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            5.824886608338397,
+            14.415858871395766
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            8.009219086465297,
+            14.415858871395766
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            1.4562216520845992,
+            15.960415179045313
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            3.6405541302114983,
+            15.960415179045313
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            1.4562216520845992,
+            15.960415179045313
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            3.6405541302114983,
+            15.960415179045313
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            5.824886608338397,
+            15.960415179045313
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            8.009219086465297,
+            15.960415179045313
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            5.824886608338397,
+            15.960415179045313
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            8.009219086465297,
+            15.960415179045313
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            0.7281108260422996,
+            16.47526728159516
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            2.9124433041691984,
+            16.47526728159516
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            0.7281108260422996,
+            16.47526728159516
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            2.9124433041691984,
+            16.47526728159516
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            5.096775782296098,
+            16.47526728159516
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            7.281108260422996,
+            16.47526728159516
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            5.096775782296098,
+            16.47526728159516
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            7.281108260422996,
+            16.47526728159516
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            0.7281108260422996,
+            18.019823589244705
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            2.9124433041691984,
+            18.019823589244705
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            0.7281108260422996,
+            18.019823589244705
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            2.9124433041691984,
+            18.019823589244705
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            5.096775782296098,
+            18.019823589244705
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            7.281108260422996,
+            18.019823589244705
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            5.096775782296098,
+            18.019823589244705
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            7.281108260422996,
+            18.019823589244705
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            0.0,
+            18.534675691794554
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            2.184332478126899,
+            18.534675691794554
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            0.0,
+            18.534675691794554
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            2.184332478126899,
+            18.534675691794554
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            4.368664956253798,
+            18.534675691794554
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            6.552997434380696,
+            18.534675691794554
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            4.368664956253798,
+            18.534675691794554
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            6.552997434380696,
+            18.534675691794554
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            0.0,
+            20.0792319994441
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            2.184332478126899,
+            20.0792319994441
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            0.0,
+            20.0792319994441
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            2.184332478126899,
+            20.0792319994441
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            4.368664956253798,
+            20.0792319994441
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            6.552997434380696,
+            20.0792319994441
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            4.368664956253798,
+            20.0792319994441
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            6.552997434380696,
+            20.0792319994441
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            1.4562216520845992,
+            20.594084101993953
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            3.6405541302114983,
+            20.594084101993953
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            1.4562216520845992,
+            20.594084101993953
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            3.6405541302114983,
+            20.594084101993953
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            5.824886608338397,
+            20.594084101993953
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            8.009219086465297,
+            20.594084101993953
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            5.824886608338397,
+            20.594084101993953
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            8.009219086465297,
+            20.594084101993953
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            1.4562216520845992,
+            22.138640409643497
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            3.6405541302114983,
+            22.138640409643497
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            1.4562216520845992,
+            22.138640409643497
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            3.6405541302114983,
+            22.138640409643497
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            5.824886608338397,
+            22.138640409643497
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            8.009219086465297,
+            22.138640409643497
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            5.824886608338397,
+            22.138640409643497
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            8.009219086465297,
+            22.138640409643497
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            0.7281108260422996,
+            22.653492512193345
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            2.9124433041691984,
+            22.653492512193345
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            0.7281108260422996,
+            22.653492512193345
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            2.9124433041691984,
+            22.653492512193345
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            5.096775782296098,
+            22.653492512193345
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            7.281108260422996,
+            22.653492512193345
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            5.096775782296098,
+            22.653492512193345
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            7.281108260422996,
+            22.653492512193345
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            0.7281108260422996,
+            24.198048819842892
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            2.9124433041691984,
+            24.198048819842892
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            0.7281108260422996,
+            24.198048819842892
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            2.9124433041691984,
+            24.198048819842892
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            5.096775782296098,
+            24.198048819842892
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            7.281108260422996,
+            24.198048819842892
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            5.096775782296098,
+            24.198048819842892
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            7.281108260422996,
+            24.198048819842892
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            0.0,
+            24.71290092239274
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            2.184332478126899,
+            24.71290092239274
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            0.0,
+            24.71290092239274
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            2.184332478126899,
+            24.71290092239274
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            4.368664956253798,
+            24.71290092239274
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            6.552997434380696,
+            24.71290092239274
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            4.368664956253798,
+            24.71290092239274
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            6.552997434380696,
+            24.71290092239274
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            0.0,
+            26.257457230042288
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            2.184332478126899,
+            26.257457230042288
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            0.0,
+            26.257457230042288
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            2.184332478126899,
+            26.257457230042288
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            4.368664956253798,
+            26.257457230042288
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            6.552997434380696,
+            26.257457230042288
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            4.368664956253798,
+            26.257457230042288
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            6.552997434380696,
+            26.257457230042288
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            1.4562216520845992,
+            26.772309332592133
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            3.6405541302114983,
+            26.772309332592133
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            1.4562216520845992,
+            26.772309332592133
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            3.6405541302114983,
+            26.772309332592133
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            5.824886608338397,
+            26.772309332592133
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            8.009219086465297,
+            26.772309332592133
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            5.824886608338397,
+            26.772309332592133
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            8.009219086465297,
+            26.772309332592133
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            1.4562216520845992,
+            28.31686564024168
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            3.6405541302114983,
+            28.31686564024168
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            1.4562216520845992,
+            28.31686564024168
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            3.6405541302114983,
+            28.31686564024168
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            5.824886608338397,
+            28.31686564024168
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            8.009219086465297,
+            28.31686564024168
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            5.824886608338397,
+            28.31686564024168
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            8.009219086465297,
+            28.31686564024168
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            0.7281108260422996,
+            28.831717742791533
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            2.9124433041691984,
+            28.831717742791533
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            0.7281108260422996,
+            28.831717742791533
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            2.9124433041691984,
+            28.831717742791533
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            5.096775782296098,
+            28.831717742791533
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            7.281108260422996,
+            28.831717742791533
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            5.096775782296098,
+            28.831717742791533
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            7.281108260422996,
+            28.831717742791533
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            0.7281108260422996,
+            30.37627405044108
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            2.9124433041691984,
+            30.37627405044108
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            0.7281108260422996,
+            30.37627405044108
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            2.9124433041691984,
+            30.37627405044108
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            5.096775782296098,
+            30.37627405044108
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            7.281108260422996,
+            30.37627405044108
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            5.096775782296098,
+            30.37627405044108
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            7.281108260422996,
+            30.37627405044108
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            0.0,
+            30.89112615299093
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            2.184332478126899,
+            30.89112615299093
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            0.0,
+            30.89112615299093
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            2.184332478126899,
+            30.89112615299093
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            4.368664956253798,
+            30.89112615299093
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            6.552997434380696,
+            30.89112615299093
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            4.368664956253798,
+            30.89112615299093
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            6.552997434380696,
+            30.89112615299093
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            0.0,
+            32.43568246064047
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            2.184332478126899,
+            32.43568246064047
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            0.0,
+            32.43568246064047
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            2.184332478126899,
+            32.43568246064047
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            4.368664956253798,
+            32.43568246064047
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            6.552997434380696,
+            32.43568246064047
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            4.368664956253798,
+            32.43568246064047
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            6.552997434380696,
+            32.43568246064047
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            1.4562216520845992,
+            32.95053456319032
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            3.6405541302114983,
+            32.95053456319032
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            1.4562216520845992,
+            32.95053456319032
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            3.6405541302114983,
+            32.95053456319032
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            5.824886608338397,
+            32.95053456319032
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            8.009219086465297,
+            32.95053456319032
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            5.824886608338397,
+            32.95053456319032
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            8.009219086465297,
+            32.95053456319032
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            1.4562216520845992,
+            34.49509087083987
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            3.6405541302114983,
+            34.49509087083987
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            1.4562216520845992,
+            34.49509087083987
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            3.6405541302114983,
+            34.49509087083987
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            5.824886608338397,
+            34.49509087083987
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            8.009219086465297,
+            34.49509087083987
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            5.824886608338397,
+            34.49509087083987
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            8.009219086465297,
+            34.49509087083987
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            0.7281108260422996,
+            35.00994297338972
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            2.9124433041691984,
+            35.00994297338972
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            0.7281108260422996,
+            35.00994297338972
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            2.9124433041691984,
+            35.00994297338972
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            5.096775782296098,
+            35.00994297338972
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            7.281108260422996,
+            35.00994297338972
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            5.096775782296098,
+            35.00994297338972
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            7.281108260422996,
+            35.00994297338972
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            0.7281108260422996,
+            36.55449928103926
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            2.9124433041691984,
+            36.55449928103926
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            0.7281108260422996,
+            36.55449928103926
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            2.9124433041691984,
+            36.55449928103926
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            1.2611249442462076,
+            5.096775782296098,
+            36.55449928103926
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            0.0,
+            7.281108260422996,
+            36.55449928103926
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            3.7833748327386227,
+            5.096775782296098,
+            36.55449928103926
+          ],
+          "occupied": false,
+          "fixed": false
+        },
+        {
+          "position": [
+            2.522249888492415,
+            7.281108260422996,
+            36.55449928103926
+          ],
+          "occupied": false,
+          "fixed": false
+        }
+      ]
+    }
+  },
+  "species": {
+    "C": {
+      "parameters": {
+        "element": "C"
+      }
+    },
+    "H": {
+      "parameters": {
+        "element": "H"
+      }
+    }
+  },
+  "system": {
+    "parameters": {
+      "temperature": 1200,
+      "gas_temperature": 1200,
+      "partial_pressures_torr": {
+        "H": 0.04,
+        "H2": 18,
+        "CH3": 0.004,
+        "C2H2": 0.04
+      }
+    }
+  },
+  "simulation": {
+    "duration": 2,
+    "random_seed": 1234,
+    "max_events": 200000
+  },
+  "processes": [
+    {
+      "id": "r1_forward",
+      "type": "reaction",
+      "event": "hydrogen_removal",
+      "parameters": {
+        "domain": "diamond",
+        "hydrogens": -1,
+        "table_row": 1
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 130000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 7.3,
+          "reaction_enthalpy_kcal_mol": -9.9,
+          "reaction_entropy_cal_mol_K": 5.3,
+          "reverse": false,
+          "standard_concentration_mol_cm3": 1,
+          "gas_reactant": "H"
+        }
+      }
+    },
+    {
+      "id": "r1_reverse",
+      "type": "reaction",
+      "event": "hydrogen_addition",
+      "parameters": {
+        "domain": "diamond",
+        "hydrogens": -1,
+        "table_row": 1
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 130000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 7.3,
+          "reaction_enthalpy_kcal_mol": -9.9,
+          "reaction_entropy_cal_mol_K": 5.3,
+          "reverse": true,
+          "standard_concentration_mol_cm3": 1,
+          "gas_reactant": "H2"
+        }
+      }
+    },
+    {
+      "id": "r2_forward",
+      "type": "reaction",
+      "event": "hydrogen_addition",
+      "parameters": {
+        "domain": "diamond",
+        "hydrogens": -1,
+        "table_row": 2
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 10000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 0,
+          "reaction_enthalpy_kcal_mol": -96.9,
+          "reaction_entropy_cal_mol_K": -32.8,
+          "reverse": false,
+          "standard_concentration_mol_cm3": 1.016e-05,
+          "gas_reactant": "H"
+        }
+      }
+    },
+    {
+      "id": "r2_reverse",
+      "type": "reaction",
+      "event": "hydrogen_removal",
+      "parameters": {
+        "domain": "diamond",
+        "hydrogens": -1,
+        "table_row": 2
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 10000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 0,
+          "reaction_enthalpy_kcal_mol": -96.9,
+          "reaction_entropy_cal_mol_K": -32.8,
+          "reverse": true,
+          "standard_concentration_mol_cm3": 1.016e-05,
+          "gas_reactant": ""
+        }
+      }
+    },
+    {
+      "id": "r3_forward",
+      "type": "reaction",
+      "event": "desorb_hydrocarbon",
+      "parameters": {
+        "domain": "C1",
+        "hydrogens": 2,
+        "table_row": 3
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 30000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 0,
+          "reaction_enthalpy_kcal_mol": -24.6,
+          "reaction_entropy_cal_mol_K": 7.9,
+          "reverse": false,
+          "standard_concentration_mol_cm3": 1,
+          "gas_reactant": "H"
+        }
+      }
+    },
+    {
+      "id": "r3_reverse",
+      "type": "reaction",
+      "event": "adsorb_carbon",
+      "parameters": {
+        "domain": "C1",
+        "hydrogens": 2,
+        "table_row": 3
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 30000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 0,
+          "reaction_enthalpy_kcal_mol": -24.6,
+          "reaction_entropy_cal_mol_K": 7.9,
+          "reverse": true,
+          "standard_concentration_mol_cm3": 1,
+          "gas_reactant": "CH3"
+        }
+      }
+    },
+    {
+      "id": "r4_forward",
+      "type": "reaction",
+      "event": "adsorb_carbon",
+      "parameters": {
+        "domain": "C1",
+        "hydrogens": 3,
+        "table_row": 4
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 5000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 0,
+          "reaction_enthalpy_kcal_mol": -70.9,
+          "reaction_entropy_cal_mol_K": -42.0,
+          "reverse": false,
+          "standard_concentration_mol_cm3": 1.016e-05,
+          "gas_reactant": "CH3"
+        }
+      }
+    },
+    {
+      "id": "r4_reverse",
+      "type": "reaction",
+      "event": "desorb_hydrocarbon",
+      "parameters": {
+        "domain": "C1",
+        "hydrogens": 3,
+        "table_row": 4
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 5000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 0,
+          "reaction_enthalpy_kcal_mol": -70.9,
+          "reaction_entropy_cal_mol_K": -42.0,
+          "reverse": true,
+          "standard_concentration_mol_cm3": 1.016e-05,
+          "gas_reactant": ""
+        }
+      }
+    },
+    {
+      "id": "r5_forward",
+      "type": "reaction",
+      "event": "adsorb_carbon",
+      "parameters": {
+        "domain": "C2",
+        "hydrogens": 2,
+        "table_row": 5
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 80000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 7.7,
+          "reaction_enthalpy_kcal_mol": -19.0,
+          "reaction_entropy_cal_mol_K": -10.7,
+          "reverse": false,
+          "standard_concentration_mol_cm3": 1.016e-05,
+          "gas_reactant": "C2H2"
+        }
+      }
+    },
+    {
+      "id": "r5_reverse",
+      "type": "reaction",
+      "event": "desorb_hydrocarbon",
+      "parameters": {
+        "domain": "C2",
+        "hydrogens": 2,
+        "table_row": 5
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 80000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 7.7,
+          "reaction_enthalpy_kcal_mol": -19.0,
+          "reaction_entropy_cal_mol_K": -10.7,
+          "reverse": true,
+          "standard_concentration_mol_cm3": 1.016e-05,
+          "gas_reactant": ""
+        }
+      }
+    },
+    {
+      "id": "r6_forward",
+      "type": "reaction",
+      "event": "hydrogen_removal",
+      "parameters": {
+        "domain": "C1",
+        "hydrogens": -1,
+        "table_row": 6
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 28000000.0,
+          "temperature_power": 2,
+          "activation_energy_kcal_mol": 7.7,
+          "reaction_enthalpy_kcal_mol": -11.3,
+          "reaction_entropy_cal_mol_K": 6.6,
+          "reverse": false,
+          "standard_concentration_mol_cm3": 1,
+          "gas_reactant": "H"
+        }
+      }
+    },
+    {
+      "id": "r6_reverse",
+      "type": "reaction",
+      "event": "hydrogen_addition",
+      "parameters": {
+        "domain": "C1",
+        "hydrogens": -1,
+        "table_row": 6
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 28000000.0,
+          "temperature_power": 2,
+          "activation_energy_kcal_mol": 7.7,
+          "reaction_enthalpy_kcal_mol": -11.3,
+          "reaction_entropy_cal_mol_K": 6.6,
+          "reverse": true,
+          "standard_concentration_mol_cm3": 1,
+          "gas_reactant": "H2"
+        }
+      }
+    },
+    {
+      "id": "r7_forward",
+      "type": "reaction",
+      "event": "hydrogen_addition",
+      "parameters": {
+        "domain": "C1",
+        "hydrogens": -1,
+        "table_row": 7
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 10000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 0,
+          "reaction_enthalpy_kcal_mol": -83.0,
+          "reaction_entropy_cal_mol_K": -34.1,
+          "reverse": false,
+          "standard_concentration_mol_cm3": 1.016e-05,
+          "gas_reactant": "H"
+        }
+      }
+    },
+    {
+      "id": "r7_reverse",
+      "type": "reaction",
+      "event": "hydrogen_removal",
+      "parameters": {
+        "domain": "C1",
+        "hydrogens": -1,
+        "table_row": 7
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 10000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 0,
+          "reaction_enthalpy_kcal_mol": -83.0,
+          "reaction_entropy_cal_mol_K": -34.1,
+          "reverse": true,
+          "standard_concentration_mol_cm3": 1.016e-05,
+          "gas_reactant": ""
+        }
+      }
+    },
+    {
+      "id": "r8_forward",
+      "type": "reaction",
+      "event": "hydrogen_removal",
+      "parameters": {
+        "domain": "C2",
+        "hydrogens": -1,
+        "table_row": 8
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 9000000.0,
+          "temperature_power": 2,
+          "activation_energy_kcal_mol": 5.0,
+          "reaction_enthalpy_kcal_mol": -8.9,
+          "reaction_entropy_cal_mol_K": 8.7,
+          "reverse": false,
+          "standard_concentration_mol_cm3": 1,
+          "gas_reactant": "H"
+        }
+      }
+    },
+    {
+      "id": "r8_reverse",
+      "type": "reaction",
+      "event": "hydrogen_addition",
+      "parameters": {
+        "domain": "C2",
+        "hydrogens": -1,
+        "table_row": 8
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 9000000.0,
+          "temperature_power": 2,
+          "activation_energy_kcal_mol": 5.0,
+          "reaction_enthalpy_kcal_mol": -8.9,
+          "reaction_entropy_cal_mol_K": 8.7,
+          "reverse": true,
+          "standard_concentration_mol_cm3": 1,
+          "gas_reactant": "H2"
+        }
+      }
+    },
+    {
+      "id": "r9_forward",
+      "type": "reaction",
+      "event": "hydrogen_addition",
+      "parameters": {
+        "domain": "C2",
+        "hydrogens": -1,
+        "table_row": 9
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 20000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 0,
+          "reaction_enthalpy_kcal_mol": -47.7,
+          "reaction_entropy_cal_mol_K": -36.2,
+          "reverse": false,
+          "standard_concentration_mol_cm3": 1.016e-05,
+          "gas_reactant": "H"
+        }
+      }
+    },
+    {
+      "id": "r9_reverse",
+      "type": "reaction",
+      "event": "hydrogen_removal",
+      "parameters": {
+        "domain": "C2",
+        "hydrogens": -1,
+        "table_row": 9
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 20000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 0,
+          "reaction_enthalpy_kcal_mol": -47.7,
+          "reaction_entropy_cal_mol_K": -36.2,
+          "reverse": true,
+          "standard_concentration_mol_cm3": 1.016e-05,
+          "gas_reactant": ""
+        }
+      }
+    },
+    {
+      "id": "r10_forward",
+      "type": "reaction",
+      "event": "append_methyl",
+      "parameters": {
+        "domain": "C1",
+        "hydrogens": -1,
+        "table_row": 10
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 5000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 0,
+          "reaction_enthalpy_kcal_mol": 0,
+          "reaction_entropy_cal_mol_K": 0,
+          "reverse": false,
+          "standard_concentration_mol_cm3": 1,
+          "gas_reactant": "CH3"
+        }
+      }
+    },
+    {
+      "id": "r11_forward",
+      "type": "reaction",
+      "event": "dimer_opening",
+      "parameters": {
+        "domain": "",
+        "hydrogens": -1,
+        "table_row": 11
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 10000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 0,
+          "reaction_enthalpy_kcal_mol": 4.9,
+          "reaction_entropy_cal_mol_K": 0.4,
+          "reverse": false,
+          "standard_concentration_mol_cm3": 1,
+          "gas_reactant": ""
+        }
+      }
+    },
+    {
+      "id": "r11_reverse",
+      "type": "reaction",
+      "event": "dimer_closing",
+      "parameters": {
+        "domain": "",
+        "hydrogens": -1,
+        "table_row": 11
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 10000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 0,
+          "reaction_enthalpy_kcal_mol": 4.9,
+          "reaction_entropy_cal_mol_K": 0.4,
+          "reverse": true,
+          "standard_concentration_mol_cm3": 1,
+          "gas_reactant": ""
+        }
+      }
+    },
+    {
+      "id": "r12_forward",
+      "type": "reaction",
+      "event": "carbon_incorporation",
+      "parameters": {
+        "domain": "",
+        "hydrogens": -1,
+        "table_row": 12
+      },
+      "rate": {
+        "model": "thermochemical",
+        "parameters": {
+          "A": 20000000000000.0,
+          "temperature_power": 0,
+          "activation_energy_kcal_mol": 8.8,
+          "reaction_enthalpy_kcal_mol": 0,
+          "reaction_entropy_cal_mol_K": 0,
+          "reverse": false,
+          "standard_concentration_mol_cm3": 1,
+          "gas_reactant": ""
+        }
+      }
+    }
+  ],
+  "output": {
+    "log_interval": 0.1,
+    "lattice_interval": 0.5,
+    "write_xyz": true
+  }
+}
